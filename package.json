@@ -1,0 +1,37 @@
+{
+  "name": "san-ssr-php",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "exit 0",
+    "pretest": "node ./test/build-test.js",
+    "test": "npx karma start ./test/karma.conf.js --single-run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/harttle/san-ssr-php.git"
+  },
+  "author": "harttle <yangjvn@126.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/harttle/san-ssr-php/issues"
+  },
+  "homepage": "https://github.com/harttle/san-ssr-php#readme",
+  "devDependencies": {
+    "jasmine-core": "^2.99.0",
+    "karma": "^4.0.1",
+    "karma-chrome-launcher": "^2.0.0",
+    "karma-coverage": "^1.1.2",
+    "karma-jasmine": "^2.0.1",
+    "karma-remap-istanbul": "^0.6.0",
+    "karma-sourcemap-loader": "^0.3.7",
+    "wdio-jasmine-framework": "^0.3.0",
+    "wdio-sauce-service": "^0.4.14",
+    "wdio-spec-reporter": "^0.1.0",
+    "san": "^3.7.8"
+  }
+}

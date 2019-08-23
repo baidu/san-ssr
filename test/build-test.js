@@ -8,7 +8,6 @@ const san = require('san');
 const fs = require('fs');
 const path = require('path');
 
-let htmlTpl = fs.readFileSync(path.resolve(__dirname, 'index-ssr.html.tpl'), 'UTF-8');
 let html = '';
 let specTpls = '';
 
@@ -129,7 +128,7 @@ function buildFile(filePath) {
     }
 };
 
-function writeIn({htmlTpl, html, specTpls}) {
+function writeIn({html, specTpls}) {
     let karmaHtml = fs.readFileSync(path.resolve(__dirname, 'karma-context.html.tpl'), 'UTF-8');
     fs.writeFileSync(
         path.resolve(__dirname, 'karma-context.html'),
@@ -138,13 +137,7 @@ function writeIn({htmlTpl, html, specTpls}) {
     );
 
     fs.writeFileSync(
-        path.resolve(__dirname, 'index-ssr.html'),
-        htmlTpl.replace('##ssr-elements##', html),
-        'UTF-8'
-    );
-
-    fs.writeFileSync(
-        path.resolve(__dirname, 'ssr.spec.js'),
+        path.resolve(__dirname, 'e2e.spec.js'),
         specTpls,
         'UTF-8'
     );
@@ -156,6 +149,6 @@ console.log('----- Build SSR Specs -----');
 
 buildFile(path.resolve(__dirname, './'));
 // write into file
-writeIn({htmlTpl, html, specTpls});
+writeIn({html, specTpls});
 
 console.log();

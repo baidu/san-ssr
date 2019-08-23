@@ -1,18 +1,18 @@
-var san = require('san');
+const san = require('san')
 
-var Label = san.defineComponent({
+const Label = san.defineComponent({
     template: '<u>{{text}}</u>'
-});
+})
 
-var loadSuccess;
-var MyComponent = san.defineComponent({
+let loadSuccess
+const MyComponent = san.defineComponent({
     components: {
         'x-label': san.createComponentLoader(function () {
             return {
                 then: function (success) {
-                    loadSuccess = success;
+                    loadSuccess = success
                 }
-            };
+            }
         })
     },
 
@@ -20,9 +20,9 @@ var MyComponent = san.defineComponent({
 
     attached: function () {
         this.nextTick(function () {
-            loadSuccess(Label);
-        });
+            loadSuccess(Label)
+        })
     }
-});
+})
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

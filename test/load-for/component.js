@@ -1,31 +1,31 @@
-var san = require('san');
+const san = require('san')
 
-var LI = san.defineComponent({
+const LI = san.defineComponent({
     template: '<li><b><slot/></b></li>'
-});
+})
 
-var LoadingLabel = san.defineComponent({
+const LoadingLabel = san.defineComponent({
     template: '<li><slot/></li>'
-});
+})
 
-var loadInvokeCount = 0;
-var loadSuccess;
-var MyComponent = san.defineComponent({
+let loadInvokeCount = 0
+let loadSuccess
+const MyComponent = san.defineComponent({
     components: {
         'x-li': san.createComponentLoader({
             load: function () {
-                loadInvokeCount++;
+                loadInvokeCount++
                 return {
                     then: function (success) {
-                        loadSuccess = success;
+                        loadSuccess = success
                     }
-                };
+                }
             },
             placeholder: LoadingLabel
         })
     },
 
     template: '<ul><x-li s-for="item in list">Hello {{item}}</x-li></ul>'
-});
+})
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

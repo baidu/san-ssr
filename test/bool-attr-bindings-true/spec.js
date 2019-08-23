@@ -1,15 +1,14 @@
-it("bool attr twoway binding, init true", function (done) {
+it('bool attr twoway binding, init true', function (done) {
     // [inject] init
 
-    expect(wrap.getElementsByTagName('button')[0].disabled).toBeTruthy();
-    myComponent.data.set('distate', false);
+    expect(wrap.getElementsByTagName('button')[0].disabled).toBeTruthy()
+    myComponent.data.set('distate', false)
 
     san.nextTick(function () {
-        expect(wrap.getElementsByTagName('button')[0].disabled).toBeFalsy();
+        expect(wrap.getElementsByTagName('button')[0].disabled).toBeFalsy()
 
-        myComponent.dispose();
-        document.body.removeChild(wrap);
-        done();
-    });
-});
-
+        myComponent.dispose()
+        document.body.removeChild(wrap)
+        done()
+    })
+})

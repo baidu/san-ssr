@@ -1,16 +1,16 @@
 
-var san = require('san');
-var Label = san.defineComponent({
+const san = require('san')
+const Label = san.defineComponent({
     template: '<a><span title="{{title}}">{{text}}</span></a>',
 
     attached: function () {
         san.nextTick(function () {
-            this.fire('test');
-        }, this);
+            this.fire('test')
+        }, this)
     }
-});
+})
 
-var MyComponent = san.defineComponent({
+const MyComponent = san.defineComponent({
     components: {
         'ui-label': Label
     },
@@ -18,8 +18,8 @@ var MyComponent = san.defineComponent({
     template: '<div><ui-label title="{{title}}" text="{{text}}" on-test="testHandler(title)"></ui-label></div>',
 
     testHandler: function (title) {
-        this.data.set('title', title + 'test');
+        this.data.set('title', title + 'test')
     }
-});
+})
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

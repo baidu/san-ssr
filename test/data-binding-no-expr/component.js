@@ -1,16 +1,16 @@
 // class and style auto expand
-var san = require('san');
+const san = require('san')
 
-var Label = san.defineComponent({
+const Label = san.defineComponent({
     template: '<a><u s-if="hasu"></u></a>'
-});
+})
 
-var MyComponent = san.defineComponent({
+const MyComponent = san.defineComponent({
     components: {
         'ui-label': Label
     },
 
     template: '<div><ui-label s-ref="l" hasu></ui-label></div>'
-});
+})
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

@@ -1,28 +1,28 @@
-var san = require('san');
+const san = require('san')
 
-var Label = san.defineComponent({
+const Label = san.defineComponent({
     template: '<u><slot/></u>'
-});
+})
 
-var Panel = san.defineComponent({
+const Panel = san.defineComponent({
     template: '<a><slot/></a>'
 })
 
-var LoadingLabel = san.defineComponent({
+const LoadingLabel = san.defineComponent({
     template: '<b><slot/></b>'
-});
+})
 
-var loadSuccess;
-var MyComponent = san.defineComponent({
+let loadSuccess
+const MyComponent = san.defineComponent({
     components: {
         'x-panel': Panel,
         'x-label': san.createComponentLoader({
             load: function () {
                 return {
                     then: function (success) {
-                        loadSuccess = success;
+                        loadSuccess = success
                     }
-                };
+                }
             },
             placeholder: LoadingLabel
         })
@@ -32,9 +32,9 @@ var MyComponent = san.defineComponent({
 
     attached: function () {
         this.nextTick(function () {
-            loadSuccess(Label);
-        });
+            loadSuccess(Label)
+        })
     }
-});
+})
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

@@ -1,16 +1,15 @@
 
-var san = require('san');
+const san = require('san')
 
-
-var Man = san.defineComponent({
+const Man = san.defineComponent({
     template: '<div><slot name="test" var-n="{{data.name}}" var-email="{{data.email}}" var-sex="{{data.sex ? \'male\' : \'female\'}}"><p on-click="emailClick(email)">{{n}},{{sex}},{{email}}</p></slot></div>',
     emailClick: function (email) {
-        clickInfo.email = email;
-        clickInfo.outer = false;
+        clickInfo.email = email
+        clickInfo.outer = false
     }
-});
+})
 
-var MyComponent = san.defineComponent({
+const MyComponent = san.defineComponent({
     components: {
         'x-man': Man
     },
@@ -18,9 +17,9 @@ var MyComponent = san.defineComponent({
     template: '<div><x-man data="{{man}}"></x-man></div>',
 
     emailClick: function (email) {
-        clickInfo.email = 'fail';
-        clickInfo.outer = true;
+        clickInfo.email = 'fail'
+        clickInfo.outer = true
     }
-});
+})
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

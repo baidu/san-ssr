@@ -1,16 +1,16 @@
 // update component
-var san = require('san');
-var Label = san.defineComponent({
+const san = require('san')
+const Label = san.defineComponent({
     template: '<a><span title="{{title}}">{{text}}</span></a>'
-});
+})
 
-var MyComponent = san.defineComponent({
+const MyComponent = san.defineComponent({
     components: {
         'ui-label': Label
     },
 
-    template: '<div><h5><ui-label title="{{name}}" text="{{jokeName}}"></ui-label></h5>'
-        + '<p><a>{{school}}</a><u>{{company}}</u></p></div>'
-});
+    template: '<div><h5><ui-label title="{{name}}" text="{{jokeName}}"></ui-label></h5>' +
+        '<p><a>{{school}}</a><u>{{company}}</u></p></div>'
+})
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

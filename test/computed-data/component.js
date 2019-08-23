@@ -1,14 +1,14 @@
 // computed data
-var san = require('san');
+const san = require('san')
 
-var MyComponent = san.defineComponent({
+const MyComponent = san.defineComponent({
     computed: {
         realTitle: function () {
-            return 'real' + this.data.get('title');
+            return 'real' + this.data.get('title')
         }
     },
 
     template: '<div><b title="{{realTitle}}">{{realTitle}}</b></div>'
-});
+})
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

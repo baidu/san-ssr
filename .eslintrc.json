@@ -1,0 +1,22 @@
+{
+  "extends": ["standard"],
+  "env": {
+    "jasmine": true,
+    "es6": true,
+    "browser": true,
+    "node": true
+  },
+  "plugins": [
+    "jasmine",
+    "standard",
+    "promise"
+  ],
+  "rules": {
+    "no-var": 2,
+    "prefer-const": 2,
+    "no-unused-vars": "off",
+    "no-labels": "off",
+    "indent": "off",
+    "import/export": "off"
+  }
+}

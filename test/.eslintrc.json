@@ -1,0 +1,20 @@
+{
+  "env": {
+    "jasmine": true
+  },
+  "plugins": [
+    "jasmine"
+  ],
+  "globals": {
+    "san": "false",
+    "wrap": "false",
+    "triggerEvent": "false",
+    "clickInfo": "false",
+    "loadSuccess": "false",
+    "loadInvokeCount": "false",
+    "Label": "false",
+    "entityStr": "false",
+    "LI": "false",
+    "myComponent": "false"
+  }
+}

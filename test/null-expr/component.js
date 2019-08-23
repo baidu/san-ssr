@@ -1,6 +1,6 @@
-var san = require('san');
-var MyComponent = san.defineComponent({
+const san = require('san')
+const MyComponent = san.defineComponent({
     template: '<a><b s-if="nullValue === null">b</b></a>'
-});
+})
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

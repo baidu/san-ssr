@@ -1,14 +1,14 @@
 // date data
-var san = require('san');
-var MyComponent = san.defineComponent({
+const san = require('san')
+const MyComponent = san.defineComponent({
     filters: {
         year: function (date) {
             return date.getFullYear()
         }
     },
-    template: '<div>'
-        + '<b title="{{date|year}}">{{date|year}}</b>'
-        + '</div>'
-});
+    template: '<div>' +
+        '<b title="{{date|year}}">{{date|year}}</b>' +
+        '</div>'
+})
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

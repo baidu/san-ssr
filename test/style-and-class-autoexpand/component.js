@@ -1,9 +1,9 @@
 // class and style auto expand
-var san = require('san');
+const san = require('san')
 
-var Label = san.defineComponent({
+var Label = san.defineComponent({   // eslint-disable-line
     components: {
-        'ui-label': Label
+        'ui-label': Label   // eslint-disable-line
     },
 
     template: '<span class="{{classes.main}}" style="{{styles.main}}">label</span>',
@@ -22,17 +22,17 @@ var Label = san.defineComponent({
             }
         }
     }
-});
+})
 
-var MyComponent = san.defineComponent({
+const MyComponent = san.defineComponent({
     components: {
         'ui-label': Label
     },
 
-    template: '<a class="{{classes.main}}" style="{{styles.main}}">'
-        + '<h3 class="{{classes.title}}" style="{{styles.title}}"></h3>'
-        + '<ui-label />'
-        + '</a>',
+    template: '<a class="{{classes.main}}" style="{{styles.main}}">' +
+        '<h3 class="{{classes.title}}" style="{{styles.title}}"></h3>' +
+        '<ui-label />' +
+        '</a>',
 
     initData: function () {
         return {
@@ -41,7 +41,6 @@ var MyComponent = san.defineComponent({
                     width: '50px',
                     height: '50px'
                 },
-
 
                 title: {
                     width: '50px',
@@ -55,6 +54,6 @@ var MyComponent = san.defineComponent({
             }
         }
     }
-});
+})
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

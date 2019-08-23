@@ -1,38 +1,38 @@
 
-var san = require('san');
+const san = require('san')
 
-var MyComponent = san.defineComponent({
-    template: '<form>'
-      + '<fieldset s-for="cate in cates">'
-        + '<label s-for="item in forms[cate]">{{item}}</label>'
-      + '</fieldset>'
-    + '</form>',
+const MyComponent = san.defineComponent({
+    template: '<form>' +
+      '<fieldset s-for="cate in cates">' +
+        '<label s-for="item in forms[cate]">{{item}}</label>' +
+      '</fieldset>' +
+    '</form>',
 
-    initData: function() {
+    initData: function () {
         return {
             formLen: 3
-        };
+        }
     },
 
     computed: {
         forms: function () {
-            var cates = this.data.get('cates');
-            var formLen = this.data.get('formLen');
+            const cates = this.data.get('cates')
+            const formLen = this.data.get('formLen')
 
-            var result = {};
+            const result = {}
             if (cates instanceof Array) {
-                var start = 1;
-                for (var i = 0; i < cates.length; i++) {
-                    result[cates[i]] = [];
-                    for (var j = 0; j < formLen; j++) {
-                        result[cates[i]].push(start++);
+                let start = 1
+                for (let i = 0; i < cates.length; i++) {
+                    result[cates[i]] = []
+                    for (let j = 0; j < formLen; j++) {
+                        result[cates[i]].push(start++)
                     }
                 }
             }
 
-            return result;
+            return result
         }
     }
 })
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

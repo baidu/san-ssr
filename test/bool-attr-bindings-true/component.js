@@ -1,9 +1,9 @@
 // bool attr
-var san = require('san');
-var MyComponent = san.defineComponent({
-    template: '<div>'
-        + '<button disabled="{=distate=}">button</button>'
-        + '</div>'
-});
+const san = require('san')
+const MyComponent = san.defineComponent({
+    template: '<div>' +
+        '<button disabled="{=distate=}">button</button>' +
+        '</div>'
+})
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

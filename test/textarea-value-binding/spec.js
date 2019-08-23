@@ -1,29 +1,26 @@
-it("two way binding textarea value", function (done) {
+it('two way binding textarea value', function (done) {
     // [inject] init
 
-    var span = wrap.getElementsByTagName('span')[0];
-    var input = wrap.getElementsByTagName('textarea')[0];
-    expect(span.title).toBe('errorrik');
-    expect(input.value).toBe('errorrik');
+    const span = wrap.getElementsByTagName('span')[0]
+    const input = wrap.getElementsByTagName('textarea')[0]
+    expect(span.title).toBe('errorrik')
+    expect(input.value).toBe('errorrik')
 
-
-    function doneSpec() {
-        var name = myComponent.data.get('name');
+    function doneSpec () {
+        const name = myComponent.data.get('name')
 
         if (name !== 'errorrik') {
-            expect(span.title).toBe(name);
+            expect(span.title).toBe(name)
 
-            myComponent.dispose();
-            document.body.removeChild(wrap);
-            done();
-            return;
+            myComponent.dispose()
+            document.body.removeChild(wrap)
+            done()
+            return
         }
 
-        setTimeout(doneSpec, 500);
+        setTimeout(doneSpec, 500)
     }
 
-    triggerEvent(input, 'input', 'test' + (+new Date()));
-    setTimeout(doneSpec, 500);
-
-});
-
+    triggerEvent(input, 'input', 'test' + (+new Date()))
+    setTimeout(doneSpec, 500)
+})

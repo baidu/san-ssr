@@ -1,13 +1,13 @@
-var san = require('san');
-var Panel = san.defineComponent({
+const san = require('san')
+const Panel = san.defineComponent({
     template: '<template><slot/></template>'
-});
+})
 
-var MyComponent = san.defineComponent({
+const MyComponent = san.defineComponent({
     components: {
         'x-p': Panel
     },
     template: '<div><x-p>{{text}}</x-p></div>'
-});
+})
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

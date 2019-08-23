@@ -1,12 +1,12 @@
 
-var san = require('san');
+const san = require('san')
 
-var MyComponent = san.defineComponent({
-  template: '<form>'
-      + '<fieldset s-for="cate in cates">'
-        + '<label s-for="item in forms[cate]">{{item}}</label>'
-      + '</fieldset>'
-    + '</form>'
+const MyComponent = san.defineComponent({
+  template: '<form>' +
+      '<fieldset s-for="cate in cates">' +
+        '<label s-for="item in forms[cate]">{{item}}</label>' +
+      '</fieldset>' +
+    '</form>'
 })
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

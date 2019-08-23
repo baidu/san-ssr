@@ -1,21 +1,19 @@
-it("component fill slot", function (done) {
+it('component fill slot', function (done) {
     // [inject] init
 
+    const input = wrap.getElementsByTagName('input')[0]
+    expect(input.value).toBe('er')
+    expect(wrap.getElementsByTagName('b')[0].title).toBe('er')
 
-    var input = wrap.getElementsByTagName('input')[0];
-    expect(input.value).toBe('er');
-    expect(wrap.getElementsByTagName('b')[0].title).toBe('er');
-
-    myComponent.data.set('searchValue', 'san');
+    myComponent.data.set('searchValue', 'san')
 
     san.nextTick(function () {
-        var input = wrap.getElementsByTagName('input')[0];
-        expect(input.value).toBe('san');
-        expect(wrap.getElementsByTagName('b')[0].title).toBe('san');
+        const input = wrap.getElementsByTagName('input')[0]
+        expect(input.value).toBe('san')
+        expect(wrap.getElementsByTagName('b')[0].title).toBe('san')
 
-        myComponent.dispose();
-        document.body.removeChild(wrap);
-        done();
-    });
-});
-
+        myComponent.dispose()
+        document.body.removeChild(wrap)
+        done()
+    })
+})

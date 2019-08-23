@@ -1,14 +1,14 @@
-var san = require('san');
-var MyComponent = san.defineComponent({
+const san = require('san')
+const MyComponent = san.defineComponent({
     template: '<div><u s-if="isWorking(time)">work</u><b s-else>rest</b></div>',
 
     isWorking: function (time) {
         if (time < 9 || time > 18) {
-            return false;
+            return false
         }
 
-        return true;
+        return true
     }
-});
+})
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

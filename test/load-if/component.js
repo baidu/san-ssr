@@ -1,29 +1,29 @@
-var san = require('san');
+const san = require('san')
 
-var Label = san.defineComponent({
+const Label = san.defineComponent({
     template: '<u>{{text}}</u>'
-});
+})
 
-var LoadingLabel = san.defineComponent({
+const LoadingLabel = san.defineComponent({
     template: '<b>{{text}}</b>'
-});
+})
 
-var loadSuccess;
-var MyComponent = san.defineComponent({
+let loadSuccess
+const MyComponent = san.defineComponent({
     components: {
         'x-label': san.createComponentLoader({
             load: function () {
                 return {
                     then: function (success) {
-                        loadSuccess = success;
+                        loadSuccess = success
                     }
-                };
+                }
             },
             placeholder: LoadingLabel
         })
     },
 
     template: '<div><x-label text="{{text}}" s-if="isShow"/></div>'
-});
+})
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

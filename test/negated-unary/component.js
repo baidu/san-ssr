@@ -1,7 +1,7 @@
-var san = require('san');
+const san = require('san')
 
-var MyComponent = san.defineComponent({
+const MyComponent = san.defineComponent({
     template: '<div><u>{{-num1+-num2}}</u></div>'
-});
+})
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

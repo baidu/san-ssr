@@ -1,25 +1,23 @@
 
-var san = require('san');
+const san = require('san')
 
-
-
-var Folder = san.defineComponent({
+const Folder = san.defineComponent({
     template: '<div><h3 on-click="toggle"><slot name="title"/></h3><slot s-if="!hidden"/></div>',
     toggle: function () {
-        var hidden = this.data.get('hidden');
-        this.data.set('hidden', !hidden);
+        const hidden = this.data.get('hidden')
+        this.data.set('hidden', !hidden)
     }
-});
+})
 
-var MyComponent = san.defineComponent({
+const MyComponent = san.defineComponent({
     components: {
       'x-folder': Folder
     },
 
-    template: ''
-        + '<div>'
-          + '<x-folder hidden="{{folderHidden}}" s-ref="folder"><b slot="title">{{name}}</b><p>{{desc}}</p></x-folder>'
-        + '</div>'
-});
+    template: '' +
+        '<div>' +
+          '<x-folder hidden="{{folderHidden}}" s-ref="folder"><b slot="title">{{name}}</b><p>{{desc}}</p></x-folder>' +
+        '</div>'
+})
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

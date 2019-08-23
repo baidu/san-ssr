@@ -1,11 +1,9 @@
 
-var san = require('san');
+const san = require('san')
 
-
-var entityStr = '&#39;&#x00021;&emsp;&ensp;&thinsp;&copy;&lt;p&gt;&reg;&lt;/p&gt;&reg;&zwnj;&zwj;&lt;&nbsp;&gt;&quot;';
-var MyComponent = san.defineComponent({
+const entityStr = '&#39;&#x00021;&emsp;&ensp;&thinsp;&copy;&lt;p&gt;&reg;&lt;/p&gt;&reg;&zwnj;&zwj;&lt;&nbsp;&gt;&quot;'
+const MyComponent = san.defineComponent({
     template: '<u>' + entityStr + '</u>'
-});
+})
 
-exports = module.exports = MyComponent;
-
+exports = module.exports = MyComponent

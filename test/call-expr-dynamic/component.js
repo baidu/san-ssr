@@ -1,16 +1,16 @@
-var san = require('san');
-var MyComponent = san.defineComponent({
+const san = require('san')
+const MyComponent = san.defineComponent({
     template: '<u>result {{op[isUp ? "plus" : "minus"](num1, num2)}}</u>',
 
     op: {
         plus: function (a, b) {
-            return a + b;
+            return a + b
         },
 
         minus: function (a, b) {
-            return a - b;
+            return a - b
         }
     }
-});
+})
 
-exports = module.exports = MyComponent;
+exports = module.exports = MyComponent

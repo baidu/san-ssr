@@ -7,8 +7,10 @@
     "test": "test"
   },
   "scripts": {
+    "lint": "eslint src test",
     "build": "exit 0",
     "test": "npm run integration && npm run e2e",
+    "coverage": "istanbul cover jasmine test/integration.spec.js",
     "integration": "jasmine test/integration.spec.js",
     "e2e": "node ./test/build-e2e.js && npx karma start ./test/karma.conf.js --single-run"
   },
@@ -23,6 +25,13 @@
   },
   "homepage": "https://github.com/harttle/san-ssr-php#readme",
   "devDependencies": {
+    "eslint": "^5.12.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.15.0",
+    "eslint-plugin-jasmine": "^2.10.1",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-standard": "^4.0.0",
     "jasmine-core": "^2.99.0",
     "karma": "^4.0.1",
     "karma-chrome-launcher": "^2.0.0",
@@ -30,9 +39,9 @@
     "karma-jasmine": "^2.0.1",
     "karma-remap-istanbul": "^0.6.0",
     "karma-sourcemap-loader": "^0.3.7",
+    "san": "^3.7.8",
     "wdio-jasmine-framework": "^0.3.0",
     "wdio-sauce-service": "^0.4.14",
-    "wdio-spec-reporter": "^0.1.0",
-    "san": "^3.7.8"
+    "wdio-spec-reporter": "^0.1.0"
   }
 }

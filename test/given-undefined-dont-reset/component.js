@@ -1,16 +1,16 @@
 
-var san = require('san');
+const san = require('san')
 
-var U = san.defineComponent({
+const U = san.defineComponent({
     template: '<u>{{foo}}</u>',
     initData: function () {
         return {
             foo: 'foo'
-        };
+        }
     }
-});
+})
 
-var MyComponent = san.defineComponent({
+const MyComponent = san.defineComponent({
     template: '<div><my-u s-ref="uc" foo="{{formData.foo}}" /></div>',
     components: {
         'my-u': U
@@ -18,12 +18,11 @@ var MyComponent = san.defineComponent({
     initData: function () {
         return {
             formData: {}
-        };
+        }
     },
     getFooValue: function () {
-        return this.ref('uc').data.get('foo');
+        return this.ref('uc').data.get('foo')
     }
-});
+})
 
-exports = module.exports = MyComponent;
-
+exports = module.exports = MyComponent

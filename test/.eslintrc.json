@@ -16,5 +16,8 @@
     "entityStr": "false",
     "LI": "false",
     "myComponent": "false"
+  },
+  "rules": {
+    "no-unused-vars": "off"
   }
 }

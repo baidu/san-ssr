@@ -1,3 +1,4 @@
+/* eslint no-unused-vars: "off" */
 const $version = '3.7.7'
 
 const componentRenderers = {}
@@ -102,7 +103,7 @@ function _xclassFilter (outer, inner) {
     return inner
 }
 
- function _xstyleFilter (outer, inner) {
+function _xstyleFilter (outer, inner) {
     outer = outer && defaultStyleFilter(outer)
     if (outer) {
         if (inner) {

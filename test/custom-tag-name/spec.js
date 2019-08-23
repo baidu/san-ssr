@@ -13,7 +13,7 @@ it('custom tag name', function () {
     expect(el.getElementsByTagName('x-p').length).toBe(1)
 
     if (!ie || ie > 8) {
-        // [inject] init
+    // [inject] init
 
         expect(el.getElementsByTagName('x-p')[0].innerHTML).toContain('hello san')
 

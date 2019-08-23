@@ -2,7 +2,7 @@
 const san = require('san')
 
 const MyComponent = san.defineComponent({
-  template: '<form>' +
+    template: '<form>' +
       '<fieldset s-for="cate in cates">' +
         '<label s-for="item in forms[cate]">{{item}}</label>' +
       '</fieldset>' +

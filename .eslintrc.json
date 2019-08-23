@@ -14,9 +14,8 @@
   "rules": {
     "no-var": 2,
     "prefer-const": 2,
-    "no-unused-vars": "off",
     "no-labels": "off",
-    "indent": "off",
+    "indent": ["error", 4],
     "import/export": "off"
   }
 }

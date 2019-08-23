@@ -9,7 +9,7 @@ const Table = san.defineComponent({
         '      <li s-for="col in columns"><slot name="col-{{col.name}}" var-row="row" var-col="col">{{row[col.name]}}</slot></li>' +
         '    </ul>' +
         '</div>'
-  })
+})
 
 const MyComponent = san.defineComponent({
     components: {

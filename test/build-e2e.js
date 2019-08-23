@@ -52,7 +52,7 @@ function buildFile (filePath) {
     }
 
     files.forEach(filename => {
-        // absolute path
+    // absolute path
         const abFilePath = path.join(filePath, filename)
         const stats = fs.statSync(abFilePath)
         const isFile = stats.isFile()
@@ -61,35 +61,35 @@ function buildFile (filePath) {
         // if it's a file, init data
         if (isFile) {
             switch (filename) {
-                case 'component.js':
-                    componentClass = require(abFilePath)
-                    componentSource = fs.readFileSync(path.resolve(abFilePath), 'UTF-8')
-                        .split('\n')
-                        .map(line => {
-                            if (/(\.|\s)exports\s*=/.test(line) ||
+            case 'component.js':
+                componentClass = require(abFilePath)
+                componentSource = fs.readFileSync(path.resolve(abFilePath), 'UTF-8')
+                    .split('\n')
+                    .map(line => {
+                        if (/(\.|\s)exports\s*=/.test(line) ||
                                 /san\s*=\s*require\(/.test(line)
-                            ) {
-                                return ''
-                            }
+                        ) {
+                            return ''
+                        }
 
-                            return line
-                        })
-                        .join('\n')
-                    sourceFile = filename
-                    break
+                        return line
+                    })
+                    .join('\n')
+                sourceFile = filename
+                break
 
-                case 'spec.js':
-                    specTpl = fs.readFileSync(path.resolve(abFilePath), 'UTF-8')
-                    break
+            case 'spec.js':
+                specTpl = fs.readFileSync(path.resolve(abFilePath), 'UTF-8')
+                break
 
-                case 'data.json':
-                    compontentData = require(abFilePath)
-                    componentDataLiteral = fs.readFileSync(abFilePath, 'UTF-8')
-                    break
+            case 'data.json':
+                compontentData = require(abFilePath)
+                componentDataLiteral = fs.readFileSync(abFilePath, 'UTF-8')
+                break
 
-                case 'result.html':
-                    result = fs.readFileSync(path.resolve(abFilePath), 'UTF-8').replace('\n', '')
-                    break
+            case 'result.html':
+                result = fs.readFileSync(path.resolve(abFilePath), 'UTF-8').replace('\n', '')
+                break
             }
         }
 

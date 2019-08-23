@@ -11,7 +11,7 @@ const Folder = san.defineComponent({
 
 const MyComponent = san.defineComponent({
     components: {
-      'x-folder': Folder
+        'x-folder': Folder
     },
 
     template: '' +

@@ -8,8 +8,9 @@
   },
   "scripts": {
     "build": "exit 0",
-    "integration": "jasmine test ssr.spec.js",
-    "e2e": "node ./test/build-test.js && npx karma start ./test/karma.conf.js --single-run"
+    "test": "npm run e2e",
+    "integration": "jasmine test/integration.spec.js",
+    "e2e": "node ./test/build-e2e.js && npx karma start ./test/karma.conf.js --single-run"
   },
   "repository": {
     "type": "git",

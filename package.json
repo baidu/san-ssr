@@ -8,8 +8,7 @@
   },
   "scripts": {
     "build": "exit 0",
-    "pretest": "node ./test/build-test.js",
-    "test": "npx karma start ./test/karma.conf.js --single-run"
+    "test:e2e": "node ./test/build-test.js && npx karma start ./test/karma.conf.js --single-run"
   },
   "repository": {
     "type": "git",

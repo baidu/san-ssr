@@ -14,7 +14,6 @@ let specTpls = '';
 
 // generate html
 function genContent({ componentClass, componentSource, compontentData, componentDataLiteral, specTpl, dirName, result}) {
-    let renderer = san.compileToRenderer(componentClass);
     let id = dirName;
     let noDataOutput = /-ndo$/.test(dirName);
 
@@ -25,9 +24,10 @@ function genContent({ componentClass, componentSource, compontentData, component
         });
     }
 
-    let injectHtml = result ? result : renderer(compontentData, noDataOutput);
-
-    html += `<div id="${id}">${injectHtml}</div>\n\n`;
+    // let renderer = san.compileToRenderer(componentClass);
+    // let injectHtml = renderer(compontentData, noDataOutput);
+    // fs.writeFileSync(path.resolve(__dirname, dirName, 'result.html'), injectHtml);
+    html += `<div id="${id}">${result}</div>\n\n`;
 
     let preCode = `
         ${componentSource}

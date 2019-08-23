@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "exit 0",
-    "test": "npm run e2e",
+    "test": "npm run integration && npm run e2e",
     "integration": "jasmine test/integration.spec.js",
     "e2e": "node ./test/build-e2e.js && npx karma start ./test/karma.conf.js --single-run"
   },

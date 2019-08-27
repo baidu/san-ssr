@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-const san = require('san')
 const fs = require('fs')
-const path = require('path')
+const { join, resolve } = require('path')
+const testRoot = resolve(__dirname, '../test')
 
 let html = ''
 let specTpls = ''
@@ -19,9 +19,6 @@ function genContent ({ componentClass, componentSource, compontentData, componen
         })
     }
 
-    // let renderer = san.compileToRenderer(componentClass);
-    // let injectHtml = renderer(compontentData, noDataOutput);
-    // fs.writeFileSync(path.resolve(__dirname, dirName, 'result.html'), injectHtml);
     html += `<div id="${id}">${result}</div>\n\n`
 
     let preCode = `
@@ -55,7 +52,7 @@ function buildFile (caseDir) {
 
     files.forEach(filename => {
     // absolute path
-        const abFilePath = path.join(caseDir, filename)
+        const abFilePath = join(caseDir, filename)
         const stats = fs.statSync(abFilePath)
         const isFile = stats.isFile()
         const isDir = stats.isDirectory()
@@ -65,7 +62,7 @@ function buildFile (caseDir) {
             switch (filename) {
             case 'component.js':
                 componentClass = require(abFilePath)
-                componentSource = fs.readFileSync(path.resolve(abFilePath), 'UTF-8')
+                componentSource = fs.readFileSync(abFilePath, 'UTF-8')
                     .split('\n')
                     .map(line => {
                         if (/(\.|\s)exports\s*=/.test(line) ||
@@ -81,7 +78,7 @@ function buildFile (caseDir) {
                 break
 
             case 'spec.js':
-                specTpl = fs.readFileSync(path.resolve(abFilePath), 'UTF-8')
+                specTpl = fs.readFileSync(abFilePath, 'UTF-8')
                 break
 
             case 'data.json':
@@ -90,7 +87,7 @@ function buildFile (caseDir) {
                 break
 
             case 'result.html':
-                result = fs.readFileSync(path.resolve(abFilePath), 'UTF-8').replace('\n', '')
+                result = fs.readFileSync(abFilePath, 'UTF-8').replace('\n', '')
                 break
             }
         }
@@ -120,15 +117,15 @@ function buildFile (caseDir) {
 };
 
 function writeIn ({ html, specTpls }) {
-    const karmaHtml = fs.readFileSync(path.resolve(__dirname, '../karma-context.html.tpl'), 'UTF-8')
+    const karmaHtml = fs.readFileSync(join(testRoot, 'karma-context.html.tpl'), 'UTF-8')
     fs.writeFileSync(
-        path.resolve(__dirname, '../karma-context.html'),
+        join(testRoot, 'karma-context.html'),
         karmaHtml.replace('##ssr-elements##', html),
         'UTF-8'
     )
 
     fs.writeFileSync(
-        path.resolve(__dirname, '../e2e.spec.js'),
+        join(testRoot, 'e2e.spec.js'),
         specTpls,
         'UTF-8'
     )
@@ -137,7 +134,7 @@ function writeIn ({ html, specTpls }) {
 console.log()
 console.log('----- Build SSR Specs -----')
 
-buildFile(path.resolve(__dirname, '../cases'))
+buildFile(resolve(testRoot, 'cases'))
 // write into file
 writeIn({ html, specTpls })
 

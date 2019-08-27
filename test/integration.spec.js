@@ -1,6 +1,7 @@
 const { readFileSync, readdirSync } = require('fs')
 const san = require('../src/ssr')
 const { resolve, join } = require('path')
+const { read } = require('../src/data')
 const caseRoot = resolve(__dirname, 'cases')
 const files = readdirSync(caseRoot)
 
@@ -9,25 +10,20 @@ for (const dir of files) {
     const expected = readFileSync(join(caseDir, 'result.html'), 'utf8')
     const component = join(caseDir, 'component.js')
     const data = join(caseDir, 'data.json')
+    const noDataOutput = /-ndo$/.test(caseDir)
 
     // if (dir === 'load-success')
     it(dir, function () {
-        expect(render(component, data)).toBe(expected)
+        expect(render(component, noDataOutput, data)).toBe(expected)
     })
 }
 
-function render (component, data) {
+function render (component, noDataOutput, datafile) {
     const ComponentClass = require(component)
-    const rDate = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/
 
     const renderer = san.compileToRenderer(ComponentClass)
-    const componentData = JSON.parse(readFileSync(data, 'utf8'), (k, v) => {
-        if (rDate.test(v)) {
-            return new Date(v)
-        }
-        return v
-    })
+    const componentData = read(datafile)
 
-    const html = renderer(componentData)
+    const html = renderer(componentData, noDataOutput)
     return html
 }

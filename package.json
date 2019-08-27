@@ -9,7 +9,8 @@
   "scripts": {
     "lint": "eslint src test",
     "build": "exit 0",
-    "test": "npm run integration && npm run e2e",
+    "unit": "./vendor/bin/phpunit --bootstrap vendor/autoload.php test/unit/*.php",
+    "test": "npm run unit && npm run integration && npm run e2e",
     "render": "./bin/render.js",
     "coverage": "istanbul cover jasmine test/integration.spec.js",
     "integration": "jasmine test/integration.spec.js",

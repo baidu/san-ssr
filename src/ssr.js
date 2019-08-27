@@ -6857,7 +6857,7 @@ CompileSourceBuffer.prototype.joinRaw = function (code) {
 */
 CompileSourceBuffer.prototype.addRendererStart = function () {
     this.addRaw('function (data, noDataOutput) {')
-    this.addRaw(fs.readFileSync(path.resolve(__dirname, 'precode.js')))
+    this.addRaw(fs.readFileSync(path.resolve(__dirname, 'san.js')))
 }
 
 /**

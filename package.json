@@ -12,7 +12,7 @@
     "test": "npm run integration && npm run e2e",
     "coverage": "istanbul cover jasmine test/integration.spec.js",
     "integration": "jasmine test/integration.spec.js",
-    "e2e": "node ./test/build-e2e.js && npx karma start ./test/karma.conf.js --single-run"
+    "e2e": "./test/bin/build-e2e.js && npx karma start ./test/karma.conf.js --single-run"
   },
   "repository": {
     "type": "git",

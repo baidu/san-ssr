@@ -1,15 +1,14 @@
-const fs = require('fs')
+const { readFileSync, readdirSync } = require('fs')
 const san = require('../src/ssr')
-const path = require('path')
-const files = fs.readdirSync(__dirname)
+const { resolve, join } = require('path')
+const caseRoot = resolve(__dirname, 'cases')
+const files = readdirSync(caseRoot)
 
 for (const dir of files) {
-    if (dir === 'lib') continue
-    if (!fs.statSync(path.join(__dirname, dir)).isDirectory()) continue
-
-    const expected = fs.readFileSync(path.join(__dirname, dir, 'result.html'), 'utf8')
-    const component = path.join(__dirname, dir, 'component.js')
-    const data = path.join(__dirname, dir, 'data.json')
+    const caseDir = resolve(caseRoot, dir)
+    const expected = readFileSync(join(caseDir, 'result.html'), 'utf8')
+    const component = join(caseDir, 'component.js')
+    const data = join(caseDir, 'data.json')
 
     // if (dir === 'load-success')
     it(dir, function () {
@@ -19,10 +18,11 @@ for (const dir of files) {
 
 function render (component, data) {
     const ComponentClass = require(component)
+    const rDate = /\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/
 
     const renderer = san.compileToRenderer(ComponentClass)
-    const componentData = JSON.parse(fs.readFileSync(data, 'utf8'), (k, v) => {
-        if (/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.\d{3}Z/.test(v)) {
+    const componentData = JSON.parse(readFileSync(data, 'utf8'), (k, v) => {
+        if (rDate.test(v)) {
             return new Date(v)
         }
         return v

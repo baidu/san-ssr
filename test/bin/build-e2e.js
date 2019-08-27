@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const san = require('san')
 const fs = require('fs')
 const path = require('path')
@@ -37,8 +39,8 @@ function genContent ({ componentClass, componentSource, compontentData, componen
     specTpls += specTpl
 };
 
-function buildFile (filePath) {
-    const files = fs.readdirSync(filePath)
+function buildFile (caseDir) {
+    const files = fs.readdirSync(caseDir)
     let componentClass
     let componentSource
     let specTpl
@@ -53,7 +55,7 @@ function buildFile (filePath) {
 
     files.forEach(filename => {
     // absolute path
-        const abFilePath = path.join(filePath, filename)
+        const abFilePath = path.join(caseDir, filename)
         const stats = fs.statSync(abFilePath)
         const isFile = stats.isFile()
         const isDir = stats.isDirectory()
@@ -100,7 +102,7 @@ function buildFile (filePath) {
         }
     })
 
-    const match = filePath.match(/[/\\]([a-zA-Z0-9_,$-]*)$/)
+    const match = caseDir.match(/[/\\]([a-zA-Z0-9_,$-]*)$/)
     // dirName is the identity of each component
     const dirName = match[1]
     // generate html when it has source file
@@ -118,15 +120,15 @@ function buildFile (filePath) {
 };
 
 function writeIn ({ html, specTpls }) {
-    const karmaHtml = fs.readFileSync(path.resolve(__dirname, 'karma-context.html.tpl'), 'UTF-8')
+    const karmaHtml = fs.readFileSync(path.resolve(__dirname, '../karma-context.html.tpl'), 'UTF-8')
     fs.writeFileSync(
-        path.resolve(__dirname, 'karma-context.html'),
+        path.resolve(__dirname, '../karma-context.html'),
         karmaHtml.replace('##ssr-elements##', html),
         'UTF-8'
     )
 
     fs.writeFileSync(
-        path.resolve(__dirname, 'e2e.spec.js'),
+        path.resolve(__dirname, '../e2e.spec.js'),
         specTpls,
         'UTF-8'
     )
@@ -135,7 +137,7 @@ function writeIn ({ html, specTpls }) {
 console.log()
 console.log('----- Build SSR Specs -----')
 
-buildFile(path.resolve(__dirname, './'))
+buildFile(path.resolve(__dirname, '../cases'))
 // write into file
 writeIn({ html, specTpls })
 

@@ -1,29 +1,28 @@
-const { readFileSync, readdirSync } = require('fs')
-const san = require('../src/php-ssr')
+const { existsSync, readFileSync, readdirSync } = require('fs')
 const { resolve, join } = require('path')
-const { read } = require('../src/data')
+const { render } = require('../src/render')
 const caseRoot = resolve(__dirname, 'cases')
 const files = readdirSync(caseRoot)
+const notExist = []
 
 for (const dir of files) {
     const caseDir = resolve(caseRoot, dir)
-    const expected = readFileSync(join(caseDir, 'result.html'), 'utf8')
-    const component = join(caseDir, 'component.js')
-    const data = join(caseDir, 'data.json')
-    const noDataOutput = /-ndo$/.test(caseDir)
+    const htmlPath = join(caseDir, 'result.html')
+    const phpPath = join(caseDir, 'ssr.php')
+    const expected = readFileSync(htmlPath, 'utf8')
 
-    // if (dir === 'load-success')
-    it(dir, function () {
-        expect(render(component, noDataOutput, data)).toBe(expected)
+    // if (dir !== 'load-success') continue
+
+    it('js: ' + dir, function () {
+        expect(render(dir, 'js')).toBe(expected)
+    })
+    if (!existsSync(phpPath)) {
+        notExist.push(dir)
+        continue
+    }
+    it('php: ' + dir, function () {
+        expect(render(dir, 'php')).toBe(expected)
     })
 }
 
-function render (component, noDataOutput, datafile) {
-    const ComponentClass = require(component)
-
-    const renderer = san.compileToRenderer(ComponentClass)
-    const componentData = read(datafile)
-
-    const html = renderer(componentData, noDataOutput)
-    return html
-}
+console.log(`${notExist.length} cases ssr.php not found: ${notExist.join(',')}`)

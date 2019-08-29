@@ -7,7 +7,7 @@ $caseDir = "test/cases/" . $caseName;
 include($caseDir . '/ssr.php');
 
 $dataStr = file_get_contents($caseDir . "/data.json");
-$data = json_decode($dataStr, true);
+$data = json_decode($dataStr);
 $noDataOutput = preg_match('/-ndo$/', $caseName);
 
 echo $render($data, $noDataOutput);

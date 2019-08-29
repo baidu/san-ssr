@@ -34,22 +34,16 @@ const compileExprSource = {
         let code = '$componentCtx["data"]'
         if (!accessorExpr) return code
 
-        let key = '""'
         each(accessorExpr.paths, function (path, idx) {
-            if (idx === accessorExpr.paths.length - 1) {
-                key = getKey(path)
-            } else {
-                code += `[${getKey(path)}]`
+            if (path.type === 4) {
+                code += `->{${compileExprSource.dataAccess(path)}}`
+            } else if (typeof path.value === 'string') {
+                code += `->{"${path.value}"}`
+            } else if (typeof path.value === 'number') {
+                code += `[${path.value}]`
             }
         })
-        return `(isset(${code}[${key}]) ? ${code}[${key}] : null)`
-
-        function getKey (path) {
-            if (path.type === 4) return compileExprSource.dataAccess(path)
-            if (typeof path.value === 'string') return `"${path.value}"`
-            if (typeof path.value === 'number') return path.value
-            return '""'
-        }
+        return `(isset(${code}) ? ${code} : null)`
     },
 
     /**
@@ -6086,7 +6080,7 @@ function genSSRId () {
 const stringifier = {
     obj: function (source) {
         let prefixComma
-        let result = '['
+        let result = '(object)['
 
         for (const key in source) {
             if (!source.hasOwnProperty(key) || typeof source[key] === 'undefined') {
@@ -6593,8 +6587,8 @@ const aNodeCompiler = {
 
         // for array
         sourceBuffer.addRaw(`foreach ($${listName} as $${indexName} => $value) {`)
-        sourceBuffer.addRaw(`$componentCtx["data"]["${indexName}"] = $${indexName};`)
-        sourceBuffer.addRaw(`$componentCtx["data"]["${itemName}"] = $value;`)
+        sourceBuffer.addRaw(`$componentCtx["data"]->${indexName} = $${indexName};`)
+        sourceBuffer.addRaw(`$componentCtx["data"]->${itemName} = $value;`)
         sourceBuffer.addRaw(
             aNodeCompiler.compile(
                 forElementANode,
@@ -6660,7 +6654,7 @@ const aNodeCompiler = {
 
             each(aNode.vars, function (varItem) {
                 sourceBuffer.addRaw(
-                    '$slotCtx["data"]["' + varItem.name + '"] = ' +
+                    '$slotCtx["data"]->' + varItem.name + ' = ' +
                 compileExprSource.expr(varItem.expr) +
                 ';'
                 )
@@ -6699,7 +6693,7 @@ const aNodeCompiler = {
      * @param {Function} extra.ComponentClass 对应组件类
      */
     compileComponent: function (aNode, sourceBuffer, owner, extra) {
-        let dataLiteral = '[]'
+        let dataLiteral = '(object)[]'
 
         sourceBuffer.addRaw('$sourceSlots = [];')
         if (aNode.children) {
@@ -6752,7 +6746,7 @@ const aNodeCompiler = {
             givenData.push(`${key} => ${val}`)
         })
 
-        dataLiteral = '[' + givenData.join(',\n') + ']'
+        dataLiteral = '(object)[' + givenData.join(',\n') + ']'
         if (aNode.directives.bind) {
             dataLiteral = 'extend(' +
             compileExprSource.expr(aNode.directives.bind.value) +
@@ -6840,7 +6834,7 @@ function compileComponentSource (sourceBuffer, ComponentClass, contextId) {
         sourceBuffer.addRaw('if ($data) {')
         Object.keys(defaultData).forEach(function (key) {
             const val = stringifier.any(defaultData[key])
-            sourceBuffer.addRaw(`$componentCtx["data"]["${key}"] = isset($componentCtx["data"]["${key}"]) ? $componentCtx["data"]["${key}"] : ${val};`)
+            sourceBuffer.addRaw(`$componentCtx["data"]->${key} = isset($componentCtx["data"]->${key}) ? $componentCtx["data"]->${key} : ${val};`)
         })
         sourceBuffer.addRaw('}')
 

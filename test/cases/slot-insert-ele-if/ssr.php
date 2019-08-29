@@ -17,7 +17,7 @@ $html = "";
 $componentCtx = [
 "proto" => $_id2Proto,
 "sourceSlots" => $sourceSlots,
-"data" => $data ? $data : [],
+"data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
 "slotRenderers" => []
 ];
@@ -28,21 +28,21 @@ foreach ($computedNames as $i => $computedName) {
   $data[$computedName] = $componentCtx["proto"]["computed"][$computedName]($componentCtx);
 }
 $html .= "<div";
-if ((array_key_exists("class", $componentCtx["data"]) ? $componentCtx["data"]["class"] : null)) {
-$html .= San::attrFilter('class', San::escapeHTML(San::_classFilter((array_key_exists("class", $componentCtx["data"]) ? $componentCtx["data"]["class"] : null))));
+if ((isset($componentCtx["data"]->{"class"}) ? $componentCtx["data"]->{"class"} : null)) {
+$html .= San::attrFilter('class', San::escapeHTML(San::_classFilter((isset($componentCtx["data"]->{"class"}) ? $componentCtx["data"]->{"class"} : null))));
 }
-if ((array_key_exists("style", $componentCtx["data"]) ? $componentCtx["data"]["style"] : null)) {
-$html .= San::attrFilter('style', San::escapeHTML(San::_styleFilter((array_key_exists("style", $componentCtx["data"]) ? $componentCtx["data"]["style"] : null))));
+if ((isset($componentCtx["data"]->{"style"}) ? $componentCtx["data"]->{"style"} : null)) {
+$html .= San::attrFilter('style', San::escapeHTML(San::_styleFilter((isset($componentCtx["data"]->{"style"}) ? $componentCtx["data"]->{"style"} : null))));
 }
-if ((array_key_exists("id", $componentCtx["data"]) ? $componentCtx["data"]["id"] : null)) {
-$html .= San::attrFilter('id', San::escapeHTML((array_key_exists("id", $componentCtx["data"]) ? $componentCtx["data"]["id"] : null)));
+if ((isset($componentCtx["data"]->{"id"}) ? $componentCtx["data"]->{"id"} : null)) {
+$html .= San::attrFilter('id', San::escapeHTML((isset($componentCtx["data"]->{"id"}) ? $componentCtx["data"]->{"id"} : null)));
 }
 $html .= ">";
 if (!$noDataOutput) {
-$html .= "<!--s-data:" . json_encode($componentCtx["data"]) . "-->";
+$html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
 $html .= "<h1>";
-if (!array_key_exists("_id3", $componentCtx["slotRenderers"])) $componentCtx["slotRenderers"]["_id3"] = function () use ($componentCtx, &$html){
+if (!isset($componentCtx["slotRenderers"]["_id3"])) $componentCtx["slotRenderers"]["_id3"] = function () use (&$componentCtx, &$html){
 $defaultSlotRender = function ($componentCtx) {
   $html = "";
   return $html;
@@ -52,7 +52,7 @@ $ctxSourceSlots = $componentCtx["sourceSlots"];
 $mySourceSlots = [];
 $slotName = "title";
 foreach ($ctxSourceSlots as $i => $slot) {
-  if ($slot[1] == $slotName) {
+  if (count($slot) > 1 && $slot[1] == $slotName) {
     array_push($mySourceSlots, $slot[0]);
     $isInserted = true;
   }
@@ -65,7 +65,7 @@ foreach ($mySourceSlots as $renderIndex => $slot) {
 };
 call_user_func($componentCtx["slotRenderers"]["_id3"]);
 $html .= "</h1>";
-if (!array_key_exists("_id4", $componentCtx["slotRenderers"])) $componentCtx["slotRenderers"]["_id4"] = function () use ($componentCtx, &$html){
+if (!isset($componentCtx["slotRenderers"]["_id4"])) $componentCtx["slotRenderers"]["_id4"] = function () use (&$componentCtx, &$html){
 $defaultSlotRender = function ($componentCtx) {
   $html = "";
   return $html;
@@ -75,7 +75,7 @@ $ctxSourceSlots = $componentCtx["sourceSlots"];
 $mySourceSlots = [];
 $slotName = "content";
 foreach ($ctxSourceSlots as $i => $slot) {
-  if ($slot[1] == $slotName) {
+  if (count($slot) > 1 && $slot[1] == $slotName) {
     array_push($mySourceSlots, $slot[0]);
     $isInserted = true;
   }
@@ -107,7 +107,7 @@ $html = "";
 $componentCtx = [
 "proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
-"data" => $data ? $data : [],
+"data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
 "slotRenderers" => []
 ];
@@ -118,51 +118,51 @@ foreach ($computedNames as $i => $computedName) {
   $data[$computedName] = $componentCtx["proto"]["computed"][$computedName]($componentCtx);
 }
 $html .= "<div";
-if ((array_key_exists("class", $componentCtx["data"]) ? $componentCtx["data"]["class"] : null)) {
-$html .= San::attrFilter('class', San::escapeHTML(San::_classFilter((array_key_exists("class", $componentCtx["data"]) ? $componentCtx["data"]["class"] : null))));
+if ((isset($componentCtx["data"]->{"class"}) ? $componentCtx["data"]->{"class"} : null)) {
+$html .= San::attrFilter('class', San::escapeHTML(San::_classFilter((isset($componentCtx["data"]->{"class"}) ? $componentCtx["data"]->{"class"} : null))));
 }
-if ((array_key_exists("style", $componentCtx["data"]) ? $componentCtx["data"]["style"] : null)) {
-$html .= San::attrFilter('style', San::escapeHTML(San::_styleFilter((array_key_exists("style", $componentCtx["data"]) ? $componentCtx["data"]["style"] : null))));
+if ((isset($componentCtx["data"]->{"style"}) ? $componentCtx["data"]->{"style"} : null)) {
+$html .= San::attrFilter('style', San::escapeHTML(San::_styleFilter((isset($componentCtx["data"]->{"style"}) ? $componentCtx["data"]->{"style"} : null))));
 }
-if ((array_key_exists("id", $componentCtx["data"]) ? $componentCtx["data"]["id"] : null)) {
-$html .= San::attrFilter('id', San::escapeHTML((array_key_exists("id", $componentCtx["data"]) ? $componentCtx["data"]["id"] : null)));
+if ((isset($componentCtx["data"]->{"id"}) ? $componentCtx["data"]->{"id"} : null)) {
+$html .= San::attrFilter('id', San::escapeHTML((isset($componentCtx["data"]->{"id"}) ? $componentCtx["data"]->{"id"} : null)));
 }
 $html .= ">";
 if (!$noDataOutput) {
-$html .= "<!--s-data:" . json_encode($componentCtx["data"]) . "-->";
+$html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
 $sourceSlots = [];
 array_push($sourceSlots, [function ($componentCtx) {
   $html = "";
 $html .= "<b>";
-$html .= San::escapeHTML((array_key_exists("name", $componentCtx["data"]) ? $componentCtx["data"]["name"] : null));
+$html .= San::escapeHTML((isset($componentCtx["data"]->{"name"}) ? $componentCtx["data"]->{"name"} : null));
 $html .= "</b>";
 
   return $html;
 }, "title"]);
 array_push($sourceSlots, [function ($componentCtx) {
   $html = "";
-if ((array_key_exists("num", $componentCtx["data"]) ? $componentCtx["data"]["num"] : null)>10000) {
+if ((isset($componentCtx["data"]->{"num"}) ? $componentCtx["data"]->{"num"} : null)>10000) {
 $html .= "<h2>biiig</h2><p>";
-$html .= San::escapeHTML((array_key_exists("num", $componentCtx["data"]) ? $componentCtx["data"]["num"] : null));
+$html .= San::escapeHTML((isset($componentCtx["data"]->{"num"}) ? $componentCtx["data"]->{"num"} : null));
 $html .= "</p>";
 
 }
-else if ((array_key_exists("num", $componentCtx["data"]) ? $componentCtx["data"]["num"] : null)>1000) {
+else if ((isset($componentCtx["data"]->{"num"}) ? $componentCtx["data"]->{"num"} : null)>1000) {
 $html .= "<h3>biig</h3><p>";
-$html .= San::escapeHTML((array_key_exists("num", $componentCtx["data"]) ? $componentCtx["data"]["num"] : null));
+$html .= San::escapeHTML((isset($componentCtx["data"]->{"num"}) ? $componentCtx["data"]->{"num"} : null));
 $html .= "</p>";
 
 }
-else if ((array_key_exists("num", $componentCtx["data"]) ? $componentCtx["data"]["num"] : null)>100) {
+else if ((isset($componentCtx["data"]->{"num"}) ? $componentCtx["data"]->{"num"} : null)>100) {
 $html .= "<h4>big</h4><p>";
-$html .= San::escapeHTML((array_key_exists("num", $componentCtx["data"]) ? $componentCtx["data"]["num"] : null));
+$html .= San::escapeHTML((isset($componentCtx["data"]->{"num"}) ? $componentCtx["data"]->{"num"} : null));
 $html .= "</p>";
 
 }
 else {
 $html .= "<h5>small</h5><p>";
-$html .= San::escapeHTML((array_key_exists("num", $componentCtx["data"]) ? $componentCtx["data"]["num"] : null));
+$html .= San::escapeHTML((isset($componentCtx["data"]->{"num"}) ? $componentCtx["data"]->{"num"} : null));
 $html .= "</p>";
 
 }
@@ -170,7 +170,7 @@ $html .= "</p>";
   return $html;
 }, "content"]);
 $html .= call_user_func("_id2", 
-["hidden" => (array_key_exists("folderHidden", $componentCtx["data"]) ? $componentCtx["data"]["folderHidden"] : null)], true, $componentCtx, "x-folder", $sourceSlots);
+(object)["hidden" => (isset($componentCtx["data"]->{"folderHidden"}) ? $componentCtx["data"]->{"folderHidden"} : null)], true, $componentCtx, "x-folder", $sourceSlots);
 $sourceSlots = null;
 $html .= "</div>";
 return $html;

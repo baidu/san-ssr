@@ -17,30 +17,30 @@ $html = "";
 $componentCtx = [
 "proto" => $_id2Proto,
 "sourceSlots" => $sourceSlots,
-"data" => $data ? $data : ["repeat" => [1,2]],
+"data" => $data ? $data : (object)["repeat" => [1,2]],
 "owner" => $parentCtx,
 "slotRenderers" => []
 ];
 if ($data) {
-$componentCtx["data"]["repeat"] = isset($componentCtx["data"]["repeat"]) ? $componentCtx["data"]["repeat"] : [1,2];
+$componentCtx["data"]->repeat = isset($componentCtx["data"]->repeat) ? $componentCtx["data"]->repeat : [1,2];
 }
 $computedNames = $componentCtx["proto"]["computedNames"];
 foreach ($computedNames as $i => $computedName) {
   $data[$computedName] = $componentCtx["proto"]["computed"][$computedName]($componentCtx);
 }
 $html .= "<div";
-if ((isset($componentCtx["data"]["class"]) ? $componentCtx["data"]["class"] : null)) {
-$html .= San::attrFilter('class', San::escapeHTML(San::_classFilter((isset($componentCtx["data"]["class"]) ? $componentCtx["data"]["class"] : null))));
+if ((isset($componentCtx["data"]->{"class"}) ? $componentCtx["data"]->{"class"} : null)) {
+$html .= San::attrFilter('class', San::escapeHTML(San::_classFilter((isset($componentCtx["data"]->{"class"}) ? $componentCtx["data"]->{"class"} : null))));
 }
-if ((isset($componentCtx["data"]["style"]) ? $componentCtx["data"]["style"] : null)) {
-$html .= San::attrFilter('style', San::escapeHTML(San::_styleFilter((isset($componentCtx["data"]["style"]) ? $componentCtx["data"]["style"] : null))));
+if ((isset($componentCtx["data"]->{"style"}) ? $componentCtx["data"]->{"style"} : null)) {
+$html .= San::attrFilter('style', San::escapeHTML(San::_styleFilter((isset($componentCtx["data"]->{"style"}) ? $componentCtx["data"]->{"style"} : null))));
 }
-if ((isset($componentCtx["data"]["id"]) ? $componentCtx["data"]["id"] : null)) {
-$html .= San::attrFilter('id', San::escapeHTML((isset($componentCtx["data"]["id"]) ? $componentCtx["data"]["id"] : null)));
+if ((isset($componentCtx["data"]->{"id"}) ? $componentCtx["data"]->{"id"} : null)) {
+$html .= San::attrFilter('id', San::escapeHTML((isset($componentCtx["data"]->{"id"}) ? $componentCtx["data"]->{"id"} : null)));
 }
 $html .= ">";
 if (!$noDataOutput) {
-$html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_UNICODE) . "-->";
+$html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
 $html .= "<h3>";
 if (!isset($componentCtx["slotRenderers"]["_id3"])) $componentCtx["slotRenderers"]["_id3"] = function () use (&$componentCtx, &$html){
@@ -66,12 +66,12 @@ foreach ($mySourceSlots as $renderIndex => $slot) {
 };
 call_user_func($componentCtx["slotRenderers"]["_id3"]);
 $html .= "</h3>";
-if (!(isset($componentCtx["data"]["hidden"]) ? $componentCtx["data"]["hidden"] : null)) {
-$_id5 = (isset($componentCtx["data"]["repeat"]) ? $componentCtx["data"]["repeat"] : null);
+if (!(isset($componentCtx["data"]->{"hidden"}) ? $componentCtx["data"]->{"hidden"} : null)) {
+$_id5 = (isset($componentCtx["data"]->{"repeat"}) ? $componentCtx["data"]->{"repeat"} : null);
 if (is_array($_id5)) {
 foreach ($_id5 as $_id4 => $value) {
-$componentCtx["data"]["_id4"] = $_id4;
-$componentCtx["data"]["i"] = $value;
+$componentCtx["data"]->_id4 = $_id4;
+$componentCtx["data"]->i = $value;
 if (!isset($componentCtx["slotRenderers"]["_id6"])) $componentCtx["slotRenderers"]["_id6"] = function () use (&$componentCtx, &$html){
 $defaultSlotRender = function ($componentCtx) {
   $html = "";
@@ -116,7 +116,7 @@ $html = "";
 $componentCtx = [
 "proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
-"data" => $data ? $data : [],
+"data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
 "slotRenderers" => []
 ];
@@ -127,37 +127,37 @@ foreach ($computedNames as $i => $computedName) {
   $data[$computedName] = $componentCtx["proto"]["computed"][$computedName]($componentCtx);
 }
 $html .= "<div";
-if ((isset($componentCtx["data"]["class"]) ? $componentCtx["data"]["class"] : null)) {
-$html .= San::attrFilter('class', San::escapeHTML(San::_classFilter((isset($componentCtx["data"]["class"]) ? $componentCtx["data"]["class"] : null))));
+if ((isset($componentCtx["data"]->{"class"}) ? $componentCtx["data"]->{"class"} : null)) {
+$html .= San::attrFilter('class', San::escapeHTML(San::_classFilter((isset($componentCtx["data"]->{"class"}) ? $componentCtx["data"]->{"class"} : null))));
 }
-if ((isset($componentCtx["data"]["style"]) ? $componentCtx["data"]["style"] : null)) {
-$html .= San::attrFilter('style', San::escapeHTML(San::_styleFilter((isset($componentCtx["data"]["style"]) ? $componentCtx["data"]["style"] : null))));
+if ((isset($componentCtx["data"]->{"style"}) ? $componentCtx["data"]->{"style"} : null)) {
+$html .= San::attrFilter('style', San::escapeHTML(San::_styleFilter((isset($componentCtx["data"]->{"style"}) ? $componentCtx["data"]->{"style"} : null))));
 }
-if ((isset($componentCtx["data"]["id"]) ? $componentCtx["data"]["id"] : null)) {
-$html .= San::attrFilter('id', San::escapeHTML((isset($componentCtx["data"]["id"]) ? $componentCtx["data"]["id"] : null)));
+if ((isset($componentCtx["data"]->{"id"}) ? $componentCtx["data"]->{"id"} : null)) {
+$html .= San::attrFilter('id', San::escapeHTML((isset($componentCtx["data"]->{"id"}) ? $componentCtx["data"]->{"id"} : null)));
 }
 $html .= ">";
 if (!$noDataOutput) {
-$html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_UNICODE) . "-->";
+$html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
 $sourceSlots = [];
 array_push($sourceSlots, [function ($componentCtx) {
   $html = "";
 $html .= "<p>";
-$html .= San::escapeHTML((isset($componentCtx["data"]["desc"]) ? $componentCtx["data"]["desc"] : null));
+$html .= San::escapeHTML((isset($componentCtx["data"]->{"desc"}) ? $componentCtx["data"]->{"desc"} : null));
 $html .= "</p>";
   return $html;
 }]);
 array_push($sourceSlots, [function ($componentCtx) {
   $html = "";
 $html .= "<b>";
-$html .= San::escapeHTML((isset($componentCtx["data"]["name"]) ? $componentCtx["data"]["name"] : null));
+$html .= San::escapeHTML((isset($componentCtx["data"]->{"name"}) ? $componentCtx["data"]->{"name"} : null));
 $html .= "</b>";
 
   return $html;
 }, "title"]);
 $html .= call_user_func("_id2", 
-["hidden" => (isset($componentCtx["data"]["folderHidden"]) ? $componentCtx["data"]["folderHidden"] : null)], true, $componentCtx, "x-folder", $sourceSlots);
+(object)["hidden" => (isset($componentCtx["data"]->{"folderHidden"}) ? $componentCtx["data"]->{"folderHidden"} : null)], true, $componentCtx, "x-folder", $sourceSlots);
 $sourceSlots = null;
 $html .= "</div>";
 return $html;

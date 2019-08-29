@@ -121,7 +121,7 @@ final class San
 
     public static function defaultStyleFilter($source)
     {
-        if (is_array($source)) {
+        if (is_array($source) || is_object($source)) {
             $result = '';
             foreach ($source as $key => $val) {
                 $result .= $key . ':' . $val . ';';

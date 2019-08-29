@@ -16,7 +16,7 @@ $html = "";
 $componentCtx = [
 "proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
-"data" => $data ? $data : [],
+"data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
 "slotRenderers" => []
 ];
@@ -27,25 +27,25 @@ foreach ($computedNames as $i => $computedName) {
   $data[$computedName] = $componentCtx["proto"]["computed"][$computedName]($componentCtx);
 }
 $html .= "<a";
-if ((array_key_exists("class", $componentCtx["data"]) ? $componentCtx["data"]["class"] : null)) {
-$html .= San::attrFilter('class', San::escapeHTML(San::_classFilter((array_key_exists("class", $componentCtx["data"]) ? $componentCtx["data"]["class"] : null))));
+if ((isset($componentCtx["data"]->{"class"}) ? $componentCtx["data"]->{"class"} : null)) {
+$html .= San::attrFilter('class', San::escapeHTML(San::_classFilter((isset($componentCtx["data"]->{"class"}) ? $componentCtx["data"]->{"class"} : null))));
 }
-if ((array_key_exists("style", $componentCtx["data"]) ? $componentCtx["data"]["style"] : null)) {
-$html .= San::attrFilter('style', San::escapeHTML(San::_styleFilter((array_key_exists("style", $componentCtx["data"]) ? $componentCtx["data"]["style"] : null))));
+if ((isset($componentCtx["data"]->{"style"}) ? $componentCtx["data"]->{"style"} : null)) {
+$html .= San::attrFilter('style', San::escapeHTML(San::_styleFilter((isset($componentCtx["data"]->{"style"}) ? $componentCtx["data"]->{"style"} : null))));
 }
-if ((array_key_exists("id", $componentCtx["data"]) ? $componentCtx["data"]["id"] : null)) {
-$html .= San::attrFilter('id', San::escapeHTML((array_key_exists("id", $componentCtx["data"]) ? $componentCtx["data"]["id"] : null)));
+if ((isset($componentCtx["data"]->{"id"}) ? $componentCtx["data"]->{"id"} : null)) {
+$html .= San::attrFilter('id', San::escapeHTML((isset($componentCtx["data"]->{"id"}) ? $componentCtx["data"]->{"id"} : null)));
 }
 $html .= ">";
 if (!$noDataOutput) {
-$html .= "<!--s-data:" . json_encode($componentCtx["data"]) . "-->";
+$html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
 $html .= "<span";
-if ((array_key_exists("email", $componentCtx["data"]) ? $componentCtx["data"]["email"] : null)) {
-$html .= San::attrFilter('title', San::escapeHTML((array_key_exists("email", $componentCtx["data"]) ? $componentCtx["data"]["email"] : null)));
+if ((isset($componentCtx["data"]->{"email"}) ? $componentCtx["data"]->{"email"} : null)) {
+$html .= San::attrFilter('title', San::escapeHTML((isset($componentCtx["data"]->{"email"}) ? $componentCtx["data"]->{"email"} : null)));
 }
 $html .= ">";
-$html .= San::escapeHTML((array_key_exists("name", $componentCtx["data"]) ? $componentCtx["data"]["name"] : null));
+$html .= San::escapeHTML((isset($componentCtx["data"]->{"name"}) ? $componentCtx["data"]->{"name"} : null));
 $html .= "</span></a>";
 return $html;
 };

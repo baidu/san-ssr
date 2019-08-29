@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const { writeFileSync, readdirSync } = require('fs')
-const san = require('../src/ssr')
+const san = require('../src/js-ssr')
 const { resolve, join } = require('path')
 const caseRoot = resolve(__dirname, '../test/cases')
 const { read } = require('../src/data')

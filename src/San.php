@@ -1,7 +1,7 @@
 <?php
 final class San
 {
-    public const componentRenderers = [];
+    public static $componentRenderers = [];
     private const HTML_ENTITY = [
         '&' => '&amp;',
         '<' => '&lt;',

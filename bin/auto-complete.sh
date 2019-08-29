@@ -6,11 +6,13 @@
 #
 # 2. Run `source ./bin/auto-complete.sh`
 # 
-# 3. Input `./bin/render.js` and press <Tab>
+# 3. Input `./bin/test.js` and press <Tab>
 
-compdef _render render.js
+compdef _test test.js
+compdef _test render.js
+compdef _test render.php
 
-function _render {
+function _test {
     local line
 
     _arguments -C \

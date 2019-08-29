@@ -1,7 +1,428 @@
+const { each, contains, empty, extend, bind, inherits } = require('./utils')
 const fs = require('fs')
 const path = require('path')
-const { each, contains, empty, extend, bind, inherits } = require('./utils')
-const { compileExprSource } = require('./compile-expr-source')
+
+/**
+* 编译源码的 helper 方法集合对象
+*/
+const compileExprSource = {
+
+    /**
+     * 字符串字面化
+     *
+     * @param {string} source 需要字面化的字符串
+     * @return {string} 字符串字面化结果
+     */
+    stringLiteralize: function (source) {
+        return '"' +
+        source
+            .replace(/\x5C/g, '\\\\')
+            .replace(/"/g, '\\"')
+            .replace(/\x0A/g, '\\n')    // eslint-disable-line
+            .replace(/\x09/g, '\\t')    // eslint-disable-line
+            .replace(/\x0D/g, '\\r') +    // eslint-disable-line
+        // .replace( /\x08/g, '\\b' )
+        // .replace( /\x0C/g, '\\f' )
+        '"'
+    },
+
+    /**
+     * 生成数据访问表达式代码
+     *
+     * @param {Object?} accessorExpr accessor表达式对象
+     * @return {string}
+     */
+    dataAccess: function (accessorExpr) {
+        let code = 'componentCtx.data'
+        if (accessorExpr) {
+            each(accessorExpr.paths, function (path) {
+                if (path.type === 4) {
+                    code += '[' + compileExprSource.dataAccess(path) + ']'
+                    return
+                }
+
+                switch (typeof path.value) {
+                case 'string':
+                    code += '.' + path.value
+                    break
+
+                case 'number':
+                    code += '[' + path.value + ']'
+                    break
+                }
+            })
+        }
+
+        return code
+    },
+
+    /**
+     * 生成调用表达式代码
+     *
+     * @param {Object?} callExpr 调用表达式对象
+     * @return {string}
+     */
+    callExpr: function (callExpr) {
+        const paths = callExpr.name.paths
+        let code = 'componentCtx.proto.' + paths[0].value
+
+        for (let i = 1; i < paths.length; i++) {
+            const path = paths[i]
+
+            switch (path.type) {
+            case 1:
+                code += '.' + path.value
+                break
+
+            case 2:
+                code += '[' + path.value + ']'
+                break
+
+            default:
+                code += '[' + compileExprSource.expr(path) + ']'
+            }
+        }
+
+        code += '('
+        each(callExpr.args, function (arg, index) {
+            code += (index > 0 ? ', ' : '') + compileExprSource.expr(arg)
+        })
+        code += ')'
+
+        return code
+    },
+
+    /**
+     * 生成插值代码
+     *
+     * @param {Object} interpExpr 插值表达式对象
+     * @return {string}
+     */
+    interp: function (interpExpr) {
+        let code = compileExprSource.expr(interpExpr.expr)
+
+        each(interpExpr.filters, function (filter) {
+            const filterName = filter.name.paths[0].value
+
+            switch (filterName) {
+            case '_style':
+            case '_class':
+                code = filterName + 'Filter(' + code + ')'
+                break
+
+            case '_xstyle':
+            case '_xclass':
+                code = filterName + 'Filter(' + code + ', ' + compileExprSource.expr(filter.args[0]) + ')'
+                break
+
+            case 'url':
+                code = 'encodeURIComponent(' + code + ')'
+                break
+
+            default:
+                code = 'callFilter(componentCtx, "' + filterName + '", [' + code
+                each(filter.args, function (arg) {
+                    code += ', ' + compileExprSource.expr(arg)
+                })
+                code += '])'
+            }
+        })
+
+        if (!interpExpr.original) {
+            return 'escapeHTML(' + code + ')'
+        }
+
+        return code
+    },
+
+    /**
+     * 生成文本片段代码
+     *
+     * @param {Object} textExpr 文本片段表达式对象
+     * @return {string}
+     */
+    text: function (textExpr) {
+        if (textExpr.segs.length === 0) {
+            return '""'
+        }
+
+        let code = ''
+
+        each(textExpr.segs, function (seg) {
+            const segCode = compileExprSource.expr(seg)
+            code += code ? ' + ' + segCode : segCode
+        })
+
+        return code
+    },
+
+    /**
+     * 生成数组字面量代码
+     *
+     * @param {Object} arrayExpr 数组字面量表达式对象
+     * @return {string}
+     */
+    array: function (arrayExpr) {
+        const code = []
+
+        each(arrayExpr.items, function (item) {
+            code.push((item.spread ? '...' : '') + compileExprSource.expr(item.expr))
+        })
+
+        return '[\n' + code.join(',\n') + '\n]'
+    },
+
+    /**
+     * 生成对象字面量代码
+     *
+     * @param {Object} objExpr 对象字面量表达式对象
+     * @return {string}
+     */
+    object: function (objExpr) {
+        const code = []
+
+        each(objExpr.items, function (item) {
+            if (item.spread) {
+                code.push('...' + compileExprSource.expr(item.expr))
+            } else {
+                code.push(compileExprSource.expr(item.name) + ':' + compileExprSource.expr(item.expr))
+            }
+        })
+
+        return '{\n' + code.join(',\n') + '\n}'
+    },
+
+    /**
+     * 二元表达式操作符映射表
+     *
+     * @type {Object}
+     */
+    binaryOp: {
+    /* eslint-disable */
+    43: '+',
+    45: '-',
+    42: '*',
+    47: '/',
+    60: '<',
+    62: '>',
+    76: '&&',
+    94: '!=',
+    121: '<=',
+    122: '==',
+    123: '>=',
+    155: '!==',
+    183: '===',
+    248: '||'
+    /* eslint-enable */
+    },
+
+    /**
+     * 生成表达式代码
+     *
+     * @param {Object} expr 表达式对象
+     * @return {string}
+     */
+    expr: function (expr) {
+        if (expr.parenthesized) {
+            return '(' + compileExprSource._expr(expr) + ')'
+        }
+
+        return compileExprSource._expr(expr)
+    },
+
+    /**
+     * 根据表达式类型进行生成代码函数的中转分发
+     *
+     * @param {Object} expr 表达式对象
+     * @return {string}
+     */
+    _expr: function (expr) {
+        switch (expr.type) {
+        case 9:
+            switch (expr.operator) {
+            case 33:
+                return '!' + compileExprSource.expr(expr.expr)
+            case 45:
+                return '-' + compileExprSource.expr(expr.expr)
+            }
+            return ''
+
+        case 8:
+            return compileExprSource.expr(expr.segs[0]) +
+                compileExprSource.binaryOp[expr.operator] +
+                compileExprSource.expr(expr.segs[1])
+
+        case 10:
+            return compileExprSource.expr(expr.segs[0]) +
+                '?' + compileExprSource.expr(expr.segs[1]) +
+                ':' + compileExprSource.expr(expr.segs[2])
+
+        case 1:
+            return compileExprSource.stringLiteralize(expr.literal || expr.value)
+
+        case 2:
+            return expr.value
+
+        case 3:
+            return expr.value ? 'true' : 'false'
+
+        case 4:
+            return compileExprSource.dataAccess(expr)
+
+        case 5:
+            return compileExprSource.interp(expr)
+
+        case 7:
+            return compileExprSource.text(expr)
+
+        case 12:
+            return compileExprSource.array(expr)
+
+        case 11:
+            return compileExprSource.object(expr)
+
+        case 6:
+            return compileExprSource.callExpr(expr)
+
+        case 13:
+            return 'null'
+        }
+    }
+}
+
+/**
+* 编译源码的中间buffer类
+*
+* @class
+*/
+class CompileSourceBuffer {
+    constructor (target) {
+        this.segs = []
+        this.target = target
+    }
+    /**
+    * 添加原始代码，将原封不动输出
+    *
+    * @param {string} code 原始代码
+    */
+    addRaw (code) {
+        this.segs.push({
+            type: 'RAW',
+            code: code
+        })
+    }
+
+    /**
+    * 添加被拼接为html的原始代码
+    *
+    * @param {string} code 原始代码
+    */
+    joinRaw (code) {
+        this.segs.push({
+            type: 'JOIN_RAW',
+            code: code
+        })
+    }
+
+    /**
+    * 添加renderer方法的起始源码
+    */
+    addRendererStart () {
+        this.addRaw('function (data, noDataOutput) {')
+        this.addRaw(fs.readFileSync(path.resolve(__dirname, 'san.js')))
+    }
+
+    /**
+    * 添加renderer方法的结束源码
+    */
+    addRendererEnd () {
+        this.addRaw('}')
+    }
+
+    /**
+    * 添加被拼接为html的静态字符串
+    *
+    * @param {string} str 被拼接的字符串
+    */
+    joinString (str) {
+        this.segs.push({
+            str: str,
+            type: 'JOIN_STRING'
+        })
+    }
+
+    /**
+    * 添加被拼接为html的数据访问
+    *
+    * @param {Object?} accessor 数据访问表达式对象
+    */
+    joinDataStringify () {
+        this.segs.push({
+            type: 'JOIN_DATA_STRINGIFY'
+        })
+    }
+
+    /**
+    * 添加被拼接为html的表达式
+    *
+    * @param {Object} expr 表达式对象
+    */
+    joinExpr (expr) {
+        this.segs.push({
+            expr: expr,
+            type: 'JOIN_EXPR'
+        })
+    }
+
+    /**
+    * 生成编译后代码
+    *
+    * @return {string}
+    */
+    toCode () {
+        const code = []
+        let temp = ''
+
+        function genStrLiteral () {
+            if (temp) {
+                code.push('html += ' + compileExprSource.stringLiteralize(temp) + ';')
+            }
+
+            temp = ''
+        }
+
+        each(this.segs, function (seg) {
+            if (seg.type === 'JOIN_STRING') {
+                temp += seg.str
+                return
+            }
+
+            genStrLiteral()
+            switch (seg.type) {
+            case 'JOIN_DATA_STRINGIFY':
+                code.push('html += "<!--s-data:" + JSON.stringify(' +
+                compileExprSource.dataAccess() + ') + "-->";')
+                break
+
+            case 'JOIN_EXPR':
+                code.push('html += ' + compileExprSource.expr(seg.expr) + ';')
+                break
+
+            case 'JOIN_RAW':
+                code.push('html += ' + seg.code + ';')
+                break
+
+            case 'RAW':
+                code.push(seg.code)
+                break
+            }
+        })
+
+        genStrLiteral()
+
+        return code.join('\n')
+    }
+}
 
 /**
 * 获取唯一id
@@ -9,50 +430,6 @@ const { compileExprSource } = require('./compile-expr-source')
 * @type {number} 唯一id
 */
 let guid = 1
-
-/**
-* DOM 事件挂载
-*
-* @inner
-* @param {HTMLElement} el DOM元素
-* @param {string} eventName 事件名
-* @param {Function} listener 监听函数
-* @param {boolean} capture 是否是捕获阶段
-*/
-function on (el, eventName, listener, capture) {
-// #[begin] allua
-/* istanbul ignore else */
-    if (el.addEventListener) {
-    // #[end]
-        el.addEventListener(eventName, listener, capture)
-    // #[begin] allua
-    } else {
-        el.attachEvent('on' + eventName, listener)
-    }
-// #[end]
-}
-
-/**
-* DOM 事件卸载
-*
-* @inner
-* @param {HTMLElement} el DOM元素
-* @param {string} eventName 事件名
-* @param {Function} listener 监听函数
-* @param {boolean} capture 是否是捕获阶段
-*/
-function un (el, eventName, listener, capture) {
-// #[begin] allua
-/* istanbul ignore else */
-    if (el.addEventListener) {
-    // #[end]
-        el.removeEventListener(eventName, listener, capture)
-    // #[begin] allua
-    } else {
-        el.detachEvent('on' + eventName, listener)
-    }
-// #[end]
-}
 
 /**
 * 将字符串逗号切分返回对象
@@ -3124,197 +3501,9 @@ function Element (aNode, parent, scope, owner, reverseWalker) {
 
 Element.prototype.nodeType = 4
 
-/**
-* 将元素attach到页面
-*
-* @param {HTMLElement} parentEl 要添加到的父元素
-* @param {HTMLElement＝} beforeEl 要添加到哪个元素之前
-*/
-Element.prototype.attach = function (parentEl, beforeEl) {
-    if (!this.lifeCycle.attached) {
-        if (!this.el) {
-            const sourceNode = this.aNode.hotspot.sourceNode
-            let props = this.aNode.props
-
-            if (sourceNode) {
-                this.el = sourceNode.cloneNode(false)
-                props = this.aNode.hotspot.dynamicProps
-            } else {
-                this.el = createEl(this.tagName)
-            }
-
-            if (this._sbindData) {
-                for (const key in this._sbindData) {
-                    if (this._sbindData.hasOwnProperty(key)) {
-                        getPropHandler(this.tagName, key)(
-                            this.el,
-                            this._sbindData[key],
-                            key,
-                            this
-                        )
-                    }
-                }
-            }
-
-            for (let i = 0, l = props.length; i < l; i++) {
-                const prop = props[i]
-                const propName = prop.name
-                const value = evalExpr(prop.expr, this.scope, this.owner)
-
-                if (value || !baseProps[propName]) {
-                    prop.handler(this.el, value, propName, this, prop)
-                }
-            }
-
-            this.lifeCycle = LifeCycle.created
-        }
-        insertBefore(this.el, parentEl, beforeEl)
-
-        if (!this._contentReady) {
-            const htmlDirective = this.aNode.directives.html
-
-            if (htmlDirective) {
-                // #[begin] error
-                warnSetHTML(this.el)
-                // #[end]
-
-                this.el.innerHTML = evalExpr(htmlDirective.value, this.scope, this.owner)
-            } else {
-                for (let i = 0, l = this.aNode.children.length; i < l; i++) {
-                    const childANode = this.aNode.children[i]
-                    const child = childANode.Clazz
-                        ? new childANode.Clazz(childANode, this, this.scope, this.owner)
-                        : createNode(childANode, this, this.scope, this.owner)
-                    this.children.push(child)
-                    child.attach(this.el)
-                }
-            }
-
-            this._contentReady = 1
-        }
-
-        this._attached()
-
-        this.lifeCycle = LifeCycle.attached
-    }
-}
-
 Element.prototype.detach = elementOwnDetach
 Element.prototype.dispose = elementOwnDispose
 Element.prototype._onEl = elementOwnOnEl
-Element.prototype._leave = function () {
-    if (this.leaveDispose) {
-        if (!this.lifeCycle.disposed) {
-            let len = this.children.length
-            while (len--) {
-                this.children[len].dispose(1, 1)
-            }
-
-            len = this._elFns.length
-            while (len--) {
-                const fn = this._elFns[len]
-                un(this.el, fn[0], fn[1], fn[2])
-            }
-            this._elFns = null
-
-            // #[begin] allua
-            /* istanbul ignore if */
-            if (this._inputTimer) {
-                clearInterval(this._inputTimer)
-                this._inputTimer = null
-            }
-            // #[end]
-
-            // 如果没有parent，说明是一个root component，一定要从dom树中remove
-            if (!this.disposeNoDetach || !this.parent) {
-                removeEl(this.el)
-            }
-
-            this.lifeCycle = LifeCycle.detached
-
-            this.el = null
-            this.owner = null
-            this.scope = null
-            this.children = null
-            this.lifeCycle = LifeCycle.disposed
-
-            if (this._ondisposed) {
-                this._ondisposed()
-            }
-        }
-    }
-}
-
-/**
-* 视图更新
-*
-* @param {Array} changes 数据变化信息
-*/
-Element.prototype._update = function (changes) {
-    const dataHotspot = this.aNode.hotspot.data
-    if (dataHotspot && changesIsInDataRef(changes, dataHotspot)) {
-    // update s-bind
-        const me = this
-        nodeSBindUpdate(
-            this,
-            this.aNode.directives.bind,
-            changes,
-            function (name, value) {
-                if (name in me.aNode.hotspot.props) {
-                    return
-                }
-
-                getPropHandler(me.tagName, name)(me.el, value, name, me)
-            }
-        )
-
-        // update prop
-        const dynamicProps = this.aNode.hotspot.dynamicProps
-        for (let i = 0, l = dynamicProps.length; i < l; i++) {
-            const prop = dynamicProps[i]
-            const propName = prop.name
-
-            for (let j = 0, changeLen = changes.length; j < changeLen; j++) {
-                const change = changes[j]
-
-                if (!isDataChangeByElement(change, this, propName) &&
-                (
-                    changeExprCompare(change.expr, prop.expr, this.scope) ||
-                    (prop.hintExpr && changeExprCompare(change.expr, prop.hintExpr, this.scope))
-                )
-                ) {
-                    prop.handler(this.el, evalExpr(prop.expr, this.scope, this.owner), propName, this, prop)
-                    break
-                }
-            }
-        }
-
-        // update content
-        const htmlDirective = this.aNode.directives.html
-        if (htmlDirective) {
-            let len = changes.length
-            while (len--) {
-                if (changeExprCompare(changes[len].expr, htmlDirective.value, this.scope)) {
-                    // #[begin] error
-                    warnSetHTML(this.el)
-                    // #[end]
-
-                    this.el.innerHTML = evalExpr(htmlDirective.value, this.scope, this.owner)
-                    break
-                }
-            }
-        } else {
-            for (let i = 0, l = this.children.length; i < l; i++) {
-                this.children[i]._update(changes)
-            }
-        }
-    }
-}
-
-/**
-* 执行完成attached状态的行为
-*/
-Element.prototype._attached = elementOwnAttached
 
 /**
 * 创建节点对应的 stump comment 主元素
@@ -3368,82 +3557,10 @@ function nodeOwnSimpleDispose (noDetach) {
 * @param {Object} loader 组件加载器
 */
 function AsyncComponent (options, loader) {
-    this.options = options
-    this.loader = loader
-    this.id = guid++
-    this.children = []
-
-    // #[begin] reverse
-    const reverseWalker = options.reverseWalker
-    if (reverseWalker) {
-        const PlaceholderComponent = this.loader.placeholder
-        if (PlaceholderComponent) {
-            this.children[0] = new PlaceholderComponent(options)
-        }
-
-        this._create()
-        insertBefore(this.el, reverseWalker.target, reverseWalker.current)
-
-        const me = this
-        this.loader.start(function (ComponentClass) {
-            me.onload(ComponentClass)
-        })
-    }
-    options.reverseWalker = null
-// #[end]
 }
 
 AsyncComponent.prototype._create = nodeOwnCreateStump
 AsyncComponent.prototype.dispose = nodeOwnSimpleDispose
-
-/**
-* attach到页面
-*
-* @param {HTMLElement} parentEl 要添加到的父元素
-* @param {HTMLElement＝} beforeEl 要添加到哪个元素之前
-*/
-AsyncComponent.prototype.attach = function (parentEl, beforeEl) {
-    const PlaceholderComponent = this.loader.placeholder
-    if (PlaceholderComponent) {
-        const component = new PlaceholderComponent(this.options)
-        this.children[0] = component
-        component.attach(parentEl, beforeEl)
-    }
-
-    this._create()
-    insertBefore(this.el, parentEl, beforeEl)
-
-    const me = this
-    this.loader.start(function (ComponentClass) {
-        me.onload(ComponentClass)
-    })
-}
-
-/**
-* loader加载完成，渲染组件
-*
-* @param {Function=} ComponentClass 组件类
-*/
-AsyncComponent.prototype.onload = function (ComponentClass) {
-    if (this.el && ComponentClass) {
-        const component = new ComponentClass(this.options)
-        component.attach(this.el.parentNode, this.el)
-
-        const parentChildren = this.options.parent.children
-        if (this.parentIndex == null || parentChildren[this.parentIndex] !== this) {
-            each(parentChildren, function (child, index) {
-                // instanceof AsyncComponent
-                if (child.onload && child.attach && child._create) {
-                    child.parentIndex = index
-                }
-            })
-        }
-
-        parentChildren[this.parentIndex] = component
-    }
-
-    this.dispose()
-}
 
 // #[begin] reverse
 /**
@@ -3790,107 +3907,6 @@ function xPropOutput (element, bindInfo, data) {
 }
 
 /**
-* 完成元素 attached 后的行为
-*
-* @param {Object} element 元素节点
-*/
-function elementOwnAttached () {
-    if (this.el.nodeType === 1) {
-        const isComponent = this.nodeType === 5
-        const data = isComponent ? this.data : this.scope
-
-        /* eslint-disable no-redeclare */
-
-        // 处理自身变化时双向绑定的逻辑
-        const xProps = this.aNode.hotspot.xProps
-        for (let i = 0, l = xProps.length; i < l; i++) {
-            const xProp = xProps[i]
-
-            switch (xProp.name) {
-            case 'value':
-                switch (this.tagName) {
-                case 'input':
-                case 'textarea':
-                    if (isBrowser && window.CompositionEvent) {
-                        this._onEl('change', inputOnCompositionEnd)
-                        this._onEl('compositionstart', inputOnCompositionStart)
-                        this._onEl('compositionend', inputOnCompositionEnd)
-                    }
-
-                    // #[begin] allua
-                    /* istanbul ignore else */
-                    if ('oninput' in this.el) {
-                        // #[end]
-                        this._onEl('input', getInputXPropOutputer(this, xProp, data))
-                        // #[begin] allua
-                    } else {
-                        this._onEl('focusin', getInputFocusXPropHandler(this, xProp, data))
-                        this._onEl('focusout', getInputBlurXPropHandler(this))
-                    }
-                    // #[end]
-
-                    break
-
-                case 'select':
-                    this._onEl('change', getXPropOutputer(this, xProp, data))
-                    break
-                }
-                break
-
-            case 'checked':
-                switch (this.tagName) {
-                case 'input':
-                    switch (this.el.type) {
-                    case 'checkbox':
-                    case 'radio':
-                        this._onEl('click', getXPropOutputer(this, xProp, data))
-                    }
-                }
-                break
-            }
-        }
-
-        const owner = isComponent ? this : this.owner
-        for (let i = 0, l = this.aNode.events.length; i < l; i++) {
-            const eventBind = this.aNode.events[i]
-
-            // #[begin] error
-            warnEventListenMethod(eventBind, owner)
-            // #[end]
-
-            this._onEl(
-                eventBind.name,
-                getEventListener(eventBind, owner, data, eventBind.modifier),
-                eventBind.modifier.capture
-            )
-        }
-
-        if (isComponent) {
-            for (let i = 0, l = this.nativeEvents.length; i < l; i++) {
-                const eventBind = this.nativeEvents[i]
-
-                // #[begin] error
-                warnEventListenMethod(eventBind, this.owner)
-                // #[end]
-
-                this._onEl(
-                    eventBind.name,
-                    getEventListener(eventBind, this.owner, this.scope),
-                    eventBind.modifier.capture
-                )
-            }
-        }
-    }
-
-    if (this.el.nodeType === 1) {
-        const transition = elementGetTransition(this)
-        if (transition && transition.enter) {
-            transition.enter(this.el, empty)
-        }
-    }
-}
-
-/**
 * 初始化节点的 s-bind 数据
 *
 * @param {Object} node 节点对象
@@ -4076,231 +4092,7 @@ emitDevtool.start = function (main) {
 * @class
 * @param {Object} options 初始化参数
 */
-function Component(options) { // eslint-disable-line
-
-    // #[begin] error
-    for (const key in Component.prototype) {
-        if (this[key] !== Component.prototype[key]) {
-            /* eslint-disable max-len */
-            warn('`' + key + '` is a reserved key of san components. Overriding this property may cause unknown exceptions.')
-            /* eslint-enable max-len */
-        }
-    }
-    // #[end]
-
-    options = options || {}
-
-    this.lifeCycle = LifeCycle.start
-    this.children = []
-    this._elFns = []
-    this.listeners = {}
-    this.slotChildren = []
-    this.implicitChildren = []
-
-    const clazz = this.constructor
-
-    this.filters = this.filters || clazz.filters || {}
-    this.computed = this.computed || clazz.computed || {}
-    this.messages = this.messages || clazz.messages || {}
-
-    if (options.transition) {
-        this.transition = options.transition
-    }
-
-    this.subTag = options.subTag
-
-    // compile
-    compileComponent(clazz)
-
-    const protoANode = clazz.prototype.aNode
-    preheatANode(protoANode)
-
-    this.tagName = protoANode.tagName
-    this.source = typeof options.source === 'string'
-        ? parseTemplate(options.source).children[0]
-        : options.source
-    preheatANode(this.source)
-
-    this.sourceSlotNameProps = []
-    this.sourceSlots = {
-        named: {}
-    }
-
-    this.owner = options.owner
-    this.scope = options.scope
-    this.el = options.el
-
-    const parent = options.parent
-    if (parent) {
-        this.parent = parent
-        this.parentComponent = parent.nodeType === 5
-            ? parent
-            : parent && parent.parentComponent
-    } else if (this.owner) {
-        this.parentComponent = this.owner
-        this.scope = this.owner.data
-    }
-
-    this.id = guid++
-
-    // #[begin] reverse
-    if (this.el) {
-        let firstCommentNode = this.el.firstChild
-        if (firstCommentNode && firstCommentNode.nodeType === 3) {
-            firstCommentNode = firstCommentNode.nextSibling
-        }
-
-        if (firstCommentNode && firstCommentNode.nodeType === 8) {
-            const stumpMatch = firstCommentNode.data.match(/^\s*s-data:([\s\S]+)?$/)
-            if (stumpMatch) {
-                const stumpText = stumpMatch[1]
-
-                // fill component data
-            options.data = (new Function('return ' +    // eslint-disable-line
-                stumpText
-                    .replace(/^[\s\n]*/, '')
-                    .replace(
-                        /"(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})\.\d+Z"/g,
-                        function (match, y, mon, d, h, m, s) {
-                            return 'new Date(' + (+y) + ',' + (+mon) + ',' + (+d) +
-                                ',' + (+h) + ',' + (+m) + ',' + (+s) + ')'
-                        }
-                    )
-                ))()
-
-                if (firstCommentNode.previousSibling) {
-                    removeEl(firstCommentNode.previousSibling)
-                }
-                removeEl(firstCommentNode)
-            }
-        }
-    }
-    // #[end]
-
-    // native事件数组
-    this.nativeEvents = []
-
-    if (this.source) {
-    // 组件运行时传入的结构，做slot解析
-        this._initSourceSlots(1)
-
-        for (let i = 0, l = this.source.events.length; i < l; i++) {
-            const eventBind = this.source.events[i]
-            // 保存当前实例的native事件，下面创建aNode时候做合并
-            if (eventBind.modifier.native) {
-                this.nativeEvents.push(eventBind)
-            } else {
-                // #[begin] error
-                warnEventListenMethod(eventBind, options.owner)
-                // #[end]
-
-                this.on(
-                    eventBind.name,
-                    getEventListener(eventBind, options.owner, this.scope, 1),
-                    eventBind
-                )
-            }
-        }
-
-        this.tagName = this.tagName || this.source.tagName
-        this.binds = camelComponentBinds(this.source.props)
-
-        // init s-bind data
-        nodeSBindInit(this, this.source.directives.bind)
-    }
-
-    this._toPhase('compiled')
-
-    // init data
-    this.data = new Data(
-        extend(
-            (typeof this.initData === 'function' && this.initData()) || {},
-            options.data || this._sbindData
-        )
-    )
-
-    this.tagName = this.tagName || 'div'
-
-    // #[begin] allua
-    // ie8- 不支持innerHTML输出自定义标签
-    /* istanbul ignore if */
-    if (ieOldThan9 && this.tagName.indexOf('-') > 0) {
-        this.tagName = 'div'
-    }
-    // #[end]
-
-    if (this.binds) {
-        for (let i = 0, l = this.binds.length; i < l; i++) {
-            const bindInfo = this.binds[i]
-            postProp(bindInfo)
-
-            if (this.scope) {
-                const value = evalExpr(bindInfo.expr, this.scope, this.owner)
-                if (typeof value !== 'undefined') {
-                    // See: https://github.com/ecomfe/san/issues/191
-                    this.data.set(bindInfo.name, value)
-                }
-            }
-        }
-    }
-
-    // #[begin] error
-    // 在初始化 + 数据绑定后，开始数据校验
-    // NOTE: 只在开发版本中进行属性校验
-    const dataTypes = this.dataTypes || clazz.dataTypes
-    if (dataTypes) {
-        const dataTypeChecker = createDataTypesChecker(
-            dataTypes,
-            this.subTag || this.name || clazz.name
-        )
-        this.data.setTypeChecker(dataTypeChecker)
-        this.data.checkDataTypes()
-    }
-    // #[end]
-
-    this.computedDeps = {}
-    for (const expr in this.computed) {
-        if (this.computed.hasOwnProperty(expr) && !this.computedDeps[expr]) {
-            this._calcComputed(expr)
-        }
-    }
-
-    this.dataChanger = bind(this._dataChanger, this)
-    this.data.listen(this.dataChanger)
-
-    this._toPhase('inited')
-
-    // #[begin] reverse
-    if (this.el) {
-        reverseElementChildren(this, this.data, this)
-        this._toPhase('created')
-        this._attached()
-        this._toPhase('attached')
-    } else {
-        const walker = options.reverseWalker
-        if (walker) {
-            const ifDirective = this.aNode.directives['if'] // eslint-disable-line dot-notation
-
-            if (!ifDirective || evalExpr(ifDirective.value, this.data, this)) {
-                const currentNode = walker.current
-                if (currentNode && currentNode.nodeType === 1) {
-                    this.el = currentNode
-                    walker.goNext()
-                }
-
-                reverseElementChildren(this, this.data, this)
-            } else {
-                this.el = document.createComment(this.id)
-                insertBefore(this.el, walker.target, walker.current)
-            }
-
-            this._toPhase('created')
-            this._attached()
-            this._toPhase('attached')
-        }
-    }
-// #[end]
-}
+function Component () {}
 
 /**
 * 初始化创建组件外部传入的插槽对象
@@ -4565,154 +4357,6 @@ Component.prototype.ref = function (name) {
     return refTarget
 }
 
-/**
-* 视图更新函数
-*
-* @param {Array?} changes 数据变化信息
-*/
-Component.prototype._update = function (changes) {
-    if (this.lifeCycle.disposed) {
-        return
-    }
-
-    const me = this
-
-    let needReloadForSlot = false
-    this._notifyNeedReload = function () {
-        needReloadForSlot = true
-    }
-
-    if (changes) {
-        this.source && nodeSBindUpdate(
-            this,
-            this.source.directives.bind,
-            changes,
-            function (name, value) {
-                if (name in me.source.hotspot.props) {
-                    return
-                }
-
-                me.data.set(name, value, {
-                    target: {
-                        node: me.owner
-                    }
-                })
-            }
-        )
-
-        each(changes, function (change) {
-            const changeExpr = change.expr
-
-            each(me.binds, function (bindItem) {
-                let relation
-                let setExpr = bindItem.name
-                let updateExpr = bindItem.expr
-
-                if (!isDataChangeByElement(change, me, setExpr) &&
-                (relation = changeExprCompare(changeExpr, updateExpr, me.scope))
-                ) {
-                    if (relation > 2) {
-                        setExpr = createAccessor(
-                            [
-                                {
-                                    type: 1,
-                                    value: setExpr
-                                }
-                            ].concat(changeExpr.paths.slice(updateExpr.paths.length))
-                        )
-                        updateExpr = changeExpr
-                    }
-
-                    if (relation >= 2 && change.type === 2) {
-                        me.data.splice(setExpr, [change.index, change.deleteCount].concat(change.insertions), {
-                            target: {
-                                node: me.owner
-                            }
-                        })
-                    } else {
-                        me.data.set(setExpr, evalExpr(updateExpr, me.scope, me.owner), {
-                            target: {
-                                node: me.owner
-                            }
-                        })
-                    }
-                }
-            })
-
-            each(me.sourceSlotNameProps, function (bindItem) {
-                needReloadForSlot = needReloadForSlot || changeExprCompare(changeExpr, bindItem.expr, me.scope)
-                return !needReloadForSlot
-            })
-        })
-
-        if (needReloadForSlot) {
-            this._initSourceSlots()
-            this._repaintChildren()
-        } else {
-            let slotChildrenLen = this.slotChildren.length
-            while (slotChildrenLen--) {
-                const slotChild = this.slotChildren[slotChildrenLen]
-
-                if (slotChild.lifeCycle.disposed) {
-                    this.slotChildren.splice(slotChildrenLen, 1)
-                } else if (slotChild.isInserted) {
-                    slotChild._update(changes, 1)
-                }
-            }
-        }
-    }
-
-    const dataChanges = this._dataChanges
-    if (dataChanges) {
-        this._dataChanges = null
-
-        const ifDirective = this.aNode.directives['if'] // eslint-disable-line dot-notation
-        const expectNodeType = (!ifDirective || evalExpr(ifDirective.value, this.data, this)) ? 1 : 8
-
-        if (this.el.nodeType === expectNodeType) {
-            if (expectNodeType === 1) {
-                const dynamicProps = this.aNode.hotspot.dynamicProps
-                for (let i = 0; i < dynamicProps.length; i++) {
-                    const prop = dynamicProps[i]
-
-                    for (let j = 0; j < dataChanges.length; j++) {
-                        const change = dataChanges[j]
-                        if (changeExprCompare(change.expr, prop.expr, this.data) ||
-                        (prop.hintExpr && changeExprCompare(change.expr, prop.hintExpr, this.data))
-                        ) {
-                            prop.handler(this.el, evalExpr(prop.expr, this.data, this), prop.name, this, prop)
-                            break
-                        }
-                    }
-                }
-
-                for (let i = 0; i < this.children.length; i++) {
-                    this.children[i]._update(dataChanges)
-                }
-
-                if (needReloadForSlot) {
-                    this._initSourceSlots()
-                    this._repaintChildren()
-                }
-            }
-        } else {
-            this._repaint(expectNodeType)
-        }
-
-        for (let i = 0; i < this.implicitChildren.length; i++) {
-            this.implicitChildren[i]._update(dataChanges)
-        }
-
-        this._toPhase('updated')
-
-        if (this.owner && this._updateBindxOwner(dataChanges)) {
-            this.owner._update()
-        }
-    }
-
-    this._notifyNeedReload = null
-}
-
 Component.prototype._updateBindxOwner = function (dataChanges) {
     const me = this
     let xbindUped
@@ -4884,99 +4528,6 @@ Component.prototype._attach = function (parentEl, beforeEl) {
     }
 
     this._toPhase('attached')
-}
-
-/**
-* 重新刷新组件视图
-*/
-Component.prototype._repaint = function () {
-    elementDisposeChildren(this.children, 1, 1)
-    this.children = []
-    this.slotChildren = []
-
-    this._contentReady = 0
-
-    let len = this._elFns.length
-    while (len--) {
-        const fn = this._elFns[len]
-        un(this.el, fn[0], fn[1], fn[2])
-    }
-    this._elFns = []
-
-    const beforeEl = this.el
-    this.el = null
-    this._attach(beforeEl.parentNode, beforeEl)
-
-    removeEl(beforeEl)
-}
-
-Component.prototype.detach = elementOwnDetach
-Component.prototype.dispose = elementOwnDispose
-Component.prototype._onEl = elementOwnOnEl
-Component.prototype._attached = elementOwnAttached
-Component.prototype._leave = function () {
-    if (this.leaveDispose) {
-        if (!this.lifeCycle.disposed) {
-            this.data.unlisten()
-            this.dataChanger = null
-            this._dataChanges = null
-
-            let len = this.implicitChildren.length
-            while (len--) {
-                this.implicitChildren[len].dispose(0, 1)
-            }
-
-            this.implicitChildren = null
-
-            this.source = null
-            this.sourceSlots = null
-            this.sourceSlotNameProps = null
-
-            // 这里不用挨个调用 dispose 了，因为 children 释放链会调用的
-            this.slotChildren = null
-
-            len = this.children.length
-            while (len--) {
-                this.children[len].dispose(1, 1)
-            }
-
-            len = this._elFns.length
-            while (len--) {
-                const fn = this._elFns[len]
-                un(this.el, fn[0], fn[1], fn[2])
-            }
-            this._elFns = null
-
-            // #[begin] allua
-            /* istanbul ignore if */
-            if (this._inputTimer) {
-                clearInterval(this._inputTimer)
-                this._inputTimer = null
-            }
-            // #[end]
-
-            // 如果没有parent，说明是一个root component，一定要从dom树中remove
-            if (!this.disposeNoDetach || !this.parent) {
-                removeEl(this.el)
-            }
-
-            this._toPhase('detached')
-
-            this.el = null
-            this.owner = null
-            this.scope = null
-            this.children = null
-
-            this._toPhase('disposed')
-
-            if (this._ondisposed) {
-                this._ondisposed()
-            }
-        }
-    } else if (this.lifeCycle.attached) {
-        removeEl(this.el)
-        this._toPhase('detached')
-    }
 }
 
 /**
@@ -6819,139 +6370,6 @@ function camelComponentBinds (binds) {
 }
 
 // #[begin] ssr
-/**
-* 编译源码的中间buffer类
-*
-* @class
-*/
-function CompileSourceBuffer () {
-    this.segs = []
-}
-
-/**
-* 添加原始代码，将原封不动输出
-*
-* @param {string} code 原始代码
-*/
-CompileSourceBuffer.prototype.addRaw = function (code) {
-    this.segs.push({
-        type: 'RAW',
-        code: code
-    })
-}
-
-/**
-* 添加被拼接为html的原始代码
-*
-* @param {string} code 原始代码
-*/
-CompileSourceBuffer.prototype.joinRaw = function (code) {
-    this.segs.push({
-        type: 'JOIN_RAW',
-        code: code
-    })
-}
-
-/**
-* 添加renderer方法的起始源码
-*/
-CompileSourceBuffer.prototype.addRendererStart = function () {
-    this.addRaw('function (data, noDataOutput) {')
-    this.addRaw(fs.readFileSync(path.resolve(__dirname, 'san.js')))
-}
-
-/**
-* 添加renderer方法的结束源码
-*/
-CompileSourceBuffer.prototype.addRendererEnd = function () {
-    this.addRaw('}')
-}
-
-/**
-* 添加被拼接为html的静态字符串
-*
-* @param {string} str 被拼接的字符串
-*/
-CompileSourceBuffer.prototype.joinString = function (str) {
-    this.segs.push({
-        str: str,
-        type: 'JOIN_STRING'
-    })
-}
-
-/**
-* 添加被拼接为html的数据访问
-*
-* @param {Object?} accessor 数据访问表达式对象
-*/
-CompileSourceBuffer.prototype.joinDataStringify = function () {
-    this.segs.push({
-        type: 'JOIN_DATA_STRINGIFY'
-    })
-}
-
-/**
-* 添加被拼接为html的表达式
-*
-* @param {Object} expr 表达式对象
-*/
-CompileSourceBuffer.prototype.joinExpr = function (expr) {
-    this.segs.push({
-        expr: expr,
-        type: 'JOIN_EXPR'
-    })
-}
-
-/**
-* 生成编译后代码
-*
-* @return {string}
-*/
-CompileSourceBuffer.prototype.toCode = function () {
-    const code = []
-    let temp = ''
-
-    function genStrLiteral () {
-        if (temp) {
-            code.push('html += ' + compileExprSource.stringLiteralize(temp) + ';')
-        }
-
-        temp = ''
-    }
-
-    each(this.segs, function (seg) {
-        if (seg.type === 'JOIN_STRING') {
-            temp += seg.str
-            return
-        }
-
-        genStrLiteral()
-        switch (seg.type) {
-        case 'JOIN_DATA_STRINGIFY':
-            code.push('html += "<!--s-data:" + JSON.stringify(' +
-                compileExprSource.dataAccess() + ') + "-->";')
-            break
-
-        case 'JOIN_EXPR':
-            code.push('html += ' + compileExprSource.expr(seg.expr) + ';')
-            break
-
-        case 'JOIN_RAW':
-            code.push('html += ' + seg.code + ';')
-            break
-
-        case 'RAW':
-            code.push(seg.code)
-            break
-        }
-    })
-
-    genStrLiteral()
-
-    return code.join('\n')
-}
-
-// #[begin] ssr
 
 let ssrIndex = 0
 function genSSRId () {
@@ -7069,12 +6487,12 @@ const elementSourceCompiler = {
     /* eslint-disable max-params */
 
     /**
- * 编译元素标签头
- *
- * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
- * @param {ANode} aNode 抽象节点
- * @param {string=} tagNameVariable 组件标签为外部动态传入时的标签变量名
- */
+     * 编译元素标签头
+     *
+     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {ANode} aNode 抽象节点
+     * @param {string=} tagNameVariable 组件标签为外部动态传入时的标签变量名
+     */
     tagStart: function (sourceBuffer, aNode, tagNameVariable) {
         const props = aNode.props
         const bindDirective = aNode.directives.bind
@@ -7257,12 +6675,12 @@ const elementSourceCompiler = {
     /* eslint-enable max-params */
 
     /**
- * 编译元素闭合
- *
- * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
- * @param {ANode} aNode 抽象节点
- * @param {string=} tagNameVariable 组件标签为外部动态传入时的标签变量名
- */
+     * 编译元素闭合
+     *
+     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {ANode} aNode 抽象节点
+     * @param {string=} tagNameVariable 组件标签为外部动态传入时的标签变量名
+     */
     tagEnd: function (sourceBuffer, aNode, tagNameVariable) {
         const tagName = aNode.tagName
 
@@ -7286,14 +6704,14 @@ const elementSourceCompiler = {
     },
 
     /**
- * 编译元素内容
- *
- * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
- * @param {ANode} aNode 元素的抽象节点信息
- * @param {Component} owner 所属组件实例环境
- */
+     * 编译元素内容
+     *
+     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {ANode} aNode 元素的抽象节点信息
+     * @param {Component} owner 所属组件实例环境
+     */
     inner: function (sourceBuffer, aNode, owner) {
-    // inner content
+        // inner content
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodeProp(aNode, 'value')
             if (valueProp) {
@@ -7327,13 +6745,13 @@ const elementSourceCompiler = {
 const aNodeCompiler = {
 
     /**
- * 编译节点
- *
- * @param {ANode} aNode 抽象节点
- * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
- * @param {Component} owner 所属组件实例环境
- * @param {Object} extra 编译所需的一些额外信息
- */
+     * 编译节点
+     *
+     * @param {ANode} aNode 抽象节点
+     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {Component} owner 所属组件实例环境
+     * @param {Object} extra 编译所需的一些额外信息
+     */
     compile: function (aNode, sourceBuffer, owner, extra) {
         extra = extra || {}
         let compileMethod = 'compileElement'
@@ -7367,11 +6785,11 @@ const aNodeCompiler = {
     },
 
     /**
- * 编译文本节点
- *
- * @param {ANode} aNode 节点对象
- * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
- */
+     * 编译文本节点
+     *
+     * @param {ANode} aNode 节点对象
+     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     */
     compileText: function (aNode, sourceBuffer) {
         if (aNode.textExpr.original) {
             sourceBuffer.joinString(serializeStump('text'))
@@ -7389,25 +6807,25 @@ const aNodeCompiler = {
     },
 
     /**
- * 编译template节点
- *
- * @param {ANode} aNode 节点对象
- * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
- * @param {Component} owner 所属组件实例环境
- */
+     * 编译template节点
+     *
+     * @param {ANode} aNode 节点对象
+     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {Component} owner 所属组件实例环境
+     */
     compileTemplate: function (aNode, sourceBuffer, owner) {
         elementSourceCompiler.inner(sourceBuffer, aNode, owner)
     },
 
     /**
- * 编译 if 节点
- *
- * @param {ANode} aNode 节点对象
- * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
- * @param {Component} owner 所属组件实例环境
- */
+     * 编译 if 节点
+     *
+     * @param {ANode} aNode 节点对象
+     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {Component} owner 所属组件实例环境
+     */
     compileIf: function (aNode, sourceBuffer, owner) {
-    // output main if
+        // output main if
         const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
         sourceBuffer.addRaw('if (' + compileExprSource.expr(ifDirective.value) + ') {')
         sourceBuffer.addRaw(
@@ -7440,12 +6858,12 @@ const aNodeCompiler = {
     },
 
     /**
- * 编译 for 节点
- *
- * @param {ANode} aNode 节点对象
- * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
- * @param {Component} owner 所属组件实例环境
- */
+     * 编译 for 节点
+     *
+     * @param {ANode} aNode 节点对象
+     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {Component} owner 所属组件实例环境
+     */
     compileFor: function (aNode, sourceBuffer, owner) {
         const forElementANode = {
             children: aNode.children,
@@ -7503,12 +6921,12 @@ const aNodeCompiler = {
     },
 
     /**
- * 编译 slot 节点
- *
- * @param {ANode} aNode 节点对象
- * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
- * @param {Component} owner 所属组件实例环境
- */
+     * 编译 slot 节点
+     *
+     * @param {ANode} aNode 节点对象
+     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {Component} owner 所属组件实例环境
+     */
     compileSlot: function (aNode, sourceBuffer, owner) {
         const rendererId = genSSRId()
 
@@ -7572,13 +6990,13 @@ const aNodeCompiler = {
     },
 
     /**
- * 编译普通节点
- *
- * @param {ANode} aNode 节点对象
- * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
- * @param {Component} owner 所属组件实例环境
- * @param {Object} extra 编译所需的一些额外信息
- */
+     * 编译普通节点
+     *
+     * @param {ANode} aNode 节点对象
+     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {Component} owner 所属组件实例环境
+     * @param {Object} extra 编译所需的一些额外信息
+     */
     compileElement: function (aNode, sourceBuffer, owner) {
         elementSourceCompiler.tagStart(sourceBuffer, aNode)
         elementSourceCompiler.inner(sourceBuffer, aNode, owner)
@@ -7586,14 +7004,14 @@ const aNodeCompiler = {
     },
 
     /**
- * 编译组件节点
- *
- * @param {ANode} aNode 节点对象
- * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
- * @param {Component} owner 所属组件实例环境
- * @param {Object} extra 编译所需的一些额外信息
- * @param {Function} extra.ComponentClass 对应组件类
- */
+     * 编译组件节点
+     *
+     * @param {ANode} aNode 节点对象
+     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {Component} owner 所属组件实例环境
+     * @param {Object} extra 编译所需的一些额外信息
+     * @param {Function} extra.ComponentClass 对应组件类
+     */
     compileComponent: function (aNode, sourceBuffer, owner, extra) {
         let dataLiteral = '{}'
 
@@ -7667,14 +7085,14 @@ const aNodeCompiler = {
     },
 
     /**
- * 编译组件加载器节点
- *
- * @param {ANode} aNode 节点对象
- * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
- * @param {Component} owner 所属组件实例环境
- * @param {Object} extra 编译所需的一些额外信息
- * @param {Function} extra.ComponentClass 对应类
- */
+     * 编译组件加载器节点
+     *
+     * @param {ANode} aNode 节点对象
+     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {Component} owner 所属组件实例环境
+     * @param {Object} extra 编译所需的一些额外信息
+     * @param {Function} extra.ComponentClass 对应类
+     */
     compileComponentLoader: function (aNode, sourceBuffer, owner, extra) {
         const LoadingComponent = extra.ComponentClass.placeholder
         if (typeof LoadingComponent === 'function') {
@@ -7933,8 +7351,8 @@ function genComponentProtoCode (component) {
 * @param {Function} ComponentClass 组件类
 * @return {string}
 */
-function compileJSSource (ComponentClass) {
-    const sourceBuffer = new CompileSourceBuffer()
+function compileToSource (ComponentClass, target = 'js') {
+    const sourceBuffer = new CompileSourceBuffer(target)
     const contextId = genSSRId()
 
     sourceBuffer.addRendererStart()
@@ -7944,6 +7362,7 @@ function compileJSSource (ComponentClass) {
 
     return sourceBuffer.toCode()
 }
+
 // #[end]
 
 /* eslint-disable no-unused-vars */
@@ -7959,7 +7378,7 @@ const san = {
         let renderer = null
 
         if (!renderer) {
-            const code = compileJSSource(ComponentClass)
+            const code = compileToSource(ComponentClass)
             renderer = (new Function('return ' + code))()   // eslint-disable-line
             ComponentClass.__ssrRenderer = renderer
         }
@@ -7973,7 +7392,7 @@ const san = {
      * @param {Function} ComponentClass 组件类
      * @return {string}
      */
-    compileToSource: compileJSSource,
+    compileToSource: compileToSource,
 
     /**
      * 编译组件类。预解析template和components

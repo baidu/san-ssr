@@ -8,7 +8,7 @@ let html = ''
 let specTpls = ''
 
 // generate html
-function genContent ({ componentClass, componentSource, compontentData, componentDataLiteral, specTpl, dirName, result }) {
+function genContent ({ componentSource, componentDataLiteral, specTpl, dirName, result }) {
     const id = dirName
     const noDataOutput = /-ndo$/.test(dirName)
 
@@ -38,10 +38,8 @@ function genContent ({ componentClass, componentSource, compontentData, componen
 
 function buildFile (caseDir) {
     const files = fs.readdirSync(caseDir)
-    let componentClass
     let componentSource
     let specTpl
-    let compontentData
     let componentDataLiteral
     let result
     let sourceFile = ''
@@ -61,7 +59,6 @@ function buildFile (caseDir) {
         if (isFile) {
             switch (filename) {
             case 'component.js':
-                componentClass = require(abFilePath)
                 componentSource = fs.readFileSync(abFilePath, 'UTF-8')
                     .split('\n')
                     .map(line => {
@@ -82,7 +79,6 @@ function buildFile (caseDir) {
                 break
 
             case 'data.json':
-                compontentData = require(abFilePath)
                 componentDataLiteral = fs.readFileSync(abFilePath, 'UTF-8')
                 break
 
@@ -105,9 +101,7 @@ function buildFile (caseDir) {
     // generate html when it has source file
     if (sourceFile) {
         genContent({
-            componentClass,
             componentSource,
-            compontentData,
             componentDataLiteral,
             specTpl,
             dirName,

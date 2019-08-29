@@ -1,5 +1,5 @@
 const { readFileSync, readdirSync } = require('fs')
-const san = require('../src/ssr')
+const san = require('../src/php-ssr')
 const { resolve, join } = require('path')
 const { read } = require('../src/data')
 const caseRoot = resolve(__dirname, 'cases')

@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id318 = componentRenderers._id318|| _id318;
-var _id318Proto = {
+componentRenderers._id2 = componentRenderers._id2|| _id2;
+var _id2Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "span"
 };
-function _id318(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id2(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id318Proto,
+proto: _id2Proto,
 sourceSlots: sourceSlots,
 data: data || {"title":"title","text":"text"},
 owner: parentCtx,
@@ -206,8 +206,8 @@ html += escapeHTML(componentCtx.data.text);
 html += "</span>";
 return html;
 };
-componentRenderers._id317 = componentRenderers._id317|| _id317;
-var _id317Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -219,10 +219,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id317(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id317Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {"jokeName":"airike","school":"none"},
 owner: parentCtx,
@@ -253,7 +253,7 @@ html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
 html += "<h5>";
 var $sourceSlots = [];
-html += componentRenderers._id318(
+html += componentRenderers._id2(
 {"text":componentCtx.data.jokeName,
 "class":escapeHTML(_classFilter(componentCtx.data.labelClass)) + " my-label"}, true, componentCtx, "ui-label", $sourceSlots);
 $sourceSlots = null;
@@ -272,5 +272,5 @@ html += escapeHTML(componentCtx.data.company);
 html += "</u></p></div>";
 return html;
 };
-return componentRenderers._id317(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

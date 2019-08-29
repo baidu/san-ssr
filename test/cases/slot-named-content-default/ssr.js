@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id281 = componentRenderers._id281|| _id281;
-var _id281Proto = {
+componentRenderers._id2 = componentRenderers._id2|| _id2;
+var _id2Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id281(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id2(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id281Proto,
+proto: _id2Proto,
 sourceSlots: sourceSlots,
 data: data || {"title":"5","text":"five"},
 owner: parentCtx,
@@ -202,7 +202,7 @@ if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
 html += "<div class=\"head\">";
-componentCtx.slotRenderers._id282 = componentCtx.slotRenderers._id282 || function () {
+componentCtx.slotRenderers._id3 = componentCtx.slotRenderers._id3 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
 html += "<h3";
@@ -231,9 +231,9 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id282();
+componentCtx.slotRenderers._id3();
 html += "</div><div>";
-componentCtx.slotRenderers._id283 = componentCtx.slotRenderers._id283 || function () {
+componentCtx.slotRenderers._id4 = componentCtx.slotRenderers._id4 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
 html += "<p";
@@ -259,12 +259,12 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id283();
+componentCtx.slotRenderers._id4();
 html += "</div></div>";
 return html;
 };
-componentRenderers._id280 = componentRenderers._id280|| _id280;
-var _id280Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -276,10 +276,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id280(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id280Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -307,12 +307,12 @@ if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
 var $sourceSlots = [];
-html += componentRenderers._id281(
+html += componentRenderers._id2(
 {"title":componentCtx.data.tTitle,
 "text":componentCtx.data.tText}, true, componentCtx, "ui-tab", $sourceSlots);
 $sourceSlots = null;
 html += "</div>";
 return html;
 };
-return componentRenderers._id280(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

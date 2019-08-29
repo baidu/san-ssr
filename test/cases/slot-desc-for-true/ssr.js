@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id257 = componentRenderers._id257|| _id257;
-var _id257Proto = {
+componentRenderers._id2 = componentRenderers._id2|| _id2;
+var _id2Proto = {
 toggle: function () {
         const hidden = this.data.get('hidden')
         this.data.set('hidden', !hidden)
@@ -173,10 +173,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id257(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id2(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id257Proto,
+proto: _id2Proto,
 sourceSlots: sourceSlots,
 data: data || {"repeat":[1,2]},
 owner: parentCtx,
@@ -205,7 +205,7 @@ if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
 html += "<h3>";
-componentCtx.slotRenderers._id258 = componentCtx.slotRenderers._id258 || function () {
+componentCtx.slotRenderers._id3 = componentCtx.slotRenderers._id3 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
   return html;
@@ -226,15 +226,15 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id258();
+componentCtx.slotRenderers._id3();
 html += "</h3>";
 if (!componentCtx.data.hidden) {
-var _id260 = componentCtx.data.repeat;
-if (_id260 instanceof Array) {
-for (var _id259 = 0; _id259 < _id260.length; _id259++) {
-componentCtx.data._id259=_id259;
-componentCtx.data.i= _id260[_id259];
-componentCtx.slotRenderers._id261 = componentCtx.slotRenderers._id261 || function () {
+var _id5 = componentCtx.data.repeat;
+if (_id5 instanceof Array) {
+for (var _id4 = 0; _id4 < _id5.length; _id4++) {
+componentCtx.data._id4=_id4;
+componentCtx.data.i= _id5[_id4];
+componentCtx.slotRenderers._id6 = componentCtx.slotRenderers._id6 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
   return html;
@@ -252,15 +252,15 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id261();
+componentCtx.slotRenderers._id6();
 
 }
-} else if (typeof _id260 === "object") {
-for (var _id259 in _id260) {
-if (_id260[_id259] != null) {
-componentCtx.data._id259=_id259;
-componentCtx.data.i= _id260[_id259];
-componentCtx.slotRenderers._id262 = componentCtx.slotRenderers._id262 || function () {
+} else if (typeof _id5 === "object") {
+for (var _id4 in _id5) {
+if (_id5[_id4] != null) {
+componentCtx.data._id4=_id4;
+componentCtx.data.i= _id5[_id4];
+componentCtx.slotRenderers._id7 = componentCtx.slotRenderers._id7 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
   return html;
@@ -278,7 +278,7 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id262();
+componentCtx.slotRenderers._id7();
 
 }
 }
@@ -288,8 +288,8 @@ componentCtx.slotRenderers._id262();
 html += "</div>";
 return html;
 };
-componentRenderers._id256 = componentRenderers._id256|| _id256;
-var _id256Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -301,10 +301,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id256(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id256Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -347,11 +347,11 @@ html += "</b>";
 
   return html;
 }, "title"]);
-html += componentRenderers._id257(
+html += componentRenderers._id2(
 {"hidden":componentCtx.data.folderHidden}, true, componentCtx, "x-folder", $sourceSlots);
 $sourceSlots = null;
 html += "</div>";
 return html;
 };
-return componentRenderers._id256(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

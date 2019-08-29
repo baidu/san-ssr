@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id270 = componentRenderers._id270|| _id270;
-var _id270Proto = {
+componentRenderers._id2 = componentRenderers._id2|| _id2;
+var _id2Proto = {
 toggle: function () {
         const hidden = this.data.get('hidden')
         this.data.set('hidden', !hidden)
@@ -173,10 +173,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id270(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id2(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id270Proto,
+proto: _id2Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -204,7 +204,7 @@ if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
 html += "<h3>";
-componentCtx.slotRenderers._id271 = componentCtx.slotRenderers._id271 || function () {
+componentCtx.slotRenderers._id3 = componentCtx.slotRenderers._id3 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
   return html;
@@ -225,9 +225,9 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id271();
+componentCtx.slotRenderers._id3();
 html += "</h3>";
-componentCtx.slotRenderers._id272 = componentCtx.slotRenderers._id272 || function () {
+componentCtx.slotRenderers._id4 = componentCtx.slotRenderers._id4 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
   return html;
@@ -248,12 +248,12 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id272();
+componentCtx.slotRenderers._id4();
 html += "</div>";
 return html;
 };
-componentRenderers._id269 = componentRenderers._id269|| _id269;
-var _id269Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -265,10 +265,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id269(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id269Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -306,11 +306,11 @@ html += "</b>";
 }, "title"]);
 $sourceSlots.push([function (componentCtx) {
   var html = "";
-var _id273 = componentCtx.data.persons;
-if (_id273 instanceof Array) {
-for (var i = 0; i < _id273.length; i++) {
+var _id5 = componentCtx.data.persons;
+if (_id5 instanceof Array) {
+for (var i = 0; i < _id5.length; i++) {
 componentCtx.data.i=i;
-componentCtx.data.p= _id273[i];
+componentCtx.data.p= _id5[i];
 html += "  <h4>";
 html += escapeHTML(componentCtx.data.p.name);
 html += "</h4><p>";
@@ -318,11 +318,11 @@ html += escapeHTML(componentCtx.data.p.email);
 html += "</p>  ";
 
 }
-} else if (typeof _id273 === "object") {
-for (var i in _id273) {
-if (_id273[i] != null) {
+} else if (typeof _id5 === "object") {
+for (var i in _id5) {
+if (_id5[i] != null) {
 componentCtx.data.i=i;
-componentCtx.data.p= _id273[i];
+componentCtx.data.p= _id5[i];
 html += "  <h4>";
 html += escapeHTML(componentCtx.data.p.name);
 html += "</h4><p>";
@@ -335,11 +335,11 @@ html += "</p>  ";
 
   return html;
 }, "content"]);
-html += componentRenderers._id270(
+html += componentRenderers._id2(
 {"hidden":componentCtx.data.folderHidden}, true, componentCtx, "x-folder", $sourceSlots);
 $sourceSlots = null;
 html += "</div>";
 return html;
 };
-return componentRenderers._id269(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

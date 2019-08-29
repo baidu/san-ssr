@@ -42,7 +42,7 @@ const compileExprSource = {
                 code += `[${getKey(path)}]`
             }
         })
-        return `(array_key_exists(${key}, ${code}) ? ${code}[${key}] : null)`
+        return `(isset(${code}[${key}]) ? ${code}[${key}] : null)`
 
         function getKey (path) {
             if (path.type === 4) return compileExprSource.dataAccess(path)
@@ -401,7 +401,7 @@ class CompileSourceBuffer {
             switch (seg.type) {
             case 'JOIN_DATA_STRINGIFY':
                 code.push('$html .= "<!--s-data:" . json_encode(' +
-                compileExprSource.dataAccess() + ') . "-->";')
+                compileExprSource.dataAccess() + ', JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";')
                 break
 
             case 'JOIN_EXPR':
@@ -631,47 +631,6 @@ if (ie === 9) {
 * @type {Object}
 */
 const autoCloseTags = splitStr2Obj('area,base,br,col,embed,hr,img,input,keygen,param,source,track,wbr')
-
-/**
-* 创建数据检测函数
-*
-* @param  {Object} dataTypes     数据格式
-* @param  {string} componentName 组件名
-* @return {Function}
-*/
-function createDataTypesChecker (dataTypes, componentName) {
-    /**
-     * 校验 data 是否满足 data types 的格式
-     *
-     * @param  {*} data 数据
-     */
-    return function (data) {
-        for (const dataTypeName in dataTypes) {
-            /* istanbul ignore else  */
-            if (dataTypes.hasOwnProperty(dataTypeName)) {
-                const dataTypeChecker = dataTypes[dataTypeName]
-
-                if (typeof dataTypeChecker !== 'function') {
-                    throw new Error('[SAN ERROR] ' +
-                        componentName + ':' + dataTypeName + ' is invalid; ' +
-                        'it must be a function, usually from san.DataTypes'
-                    )
-                }
-
-                dataTypeChecker(
-                    data,
-                    dataTypeName,
-                    componentName,
-                    dataTypeName
-                )
-            }
-        }
-    }
-}
-
-// #[end]
-
-// module.exports = createDataTypesChecker;
 
 /**
 * 字符串源码读取类，用于模板字符串解析过程
@@ -6098,258 +6057,6 @@ TemplateNode.prototype._update = function (changes) {
 }
 
 /**
-* ANode预热，分析的数据引用等信息
-*
-* @param {Object} aNode 要预热的ANode
-*/
-function preheatANode (aNode) {
-    const stack = []
-
-    function recordHotspotData (expr, notContentData) {
-        const refs = analyseExprDataHotspot(expr)
-
-        if (refs.length) {
-            for (let i = 0, len = stack.length; i < len; i++) {
-                if (!notContentData || i !== len - 1) {
-                    let data = stack[i].hotspot.data
-                    if (!data) {
-                        data = stack[i].hotspot.data = {}
-                    }
-
-                    each(refs, function (ref) {
-                        data[ref] = 1
-                    })
-                }
-            }
-        }
-    }
-
-    function analyseANodeHotspot (aNode) {
-        if (!aNode.hotspot) {
-            stack.push(aNode)
-
-            if (aNode.textExpr) {
-                aNode.hotspot = {}
-                aNode.Clazz = TextNode
-                recordHotspotData(aNode.textExpr)
-            } else {
-                let sourceNode
-                if (isBrowser && aNode.tagName &&
-                aNode.tagName.indexOf('-') < 0 &&
-                !/^(template|slot|select|input|option|button|video|audio|canvas|img|embed|object|iframe)$/i.test(aNode.tagName)
-                ) {
-                    sourceNode = createEl(aNode.tagName)
-                }
-
-                aNode.hotspot = {
-                    dynamicProps: [],
-                    xProps: [],
-                    props: {},
-                    sourceNode: sourceNode
-                }
-
-                // === analyse hotspot data: start
-                each(aNode.vars, function (varItem) {
-                    recordHotspotData(varItem.expr)
-                })
-
-                each(aNode.props, function (prop) {
-                    recordHotspotData(prop.expr)
-                })
-
-                for (const key in aNode.directives) {
-                    /* istanbul ignore else  */
-                    if (aNode.directives.hasOwnProperty(key)) {
-                        const directive = aNode.directives[key]
-                        recordHotspotData(
-                            directive.value,
-                            !/^(html|bind)$/.test(key)
-                        )
-
-                        // init trackBy getKey function
-                        if (key === 'for') {
-                            const trackBy = directive.trackBy
-                            if (trackBy &&
-                            trackBy.type === 4 &&
-                            trackBy.paths[0].value === directive.item
-                            ) {
-                            aNode.hotspot.getForKey = new Function( // eslint-disable-line
-                                    directive.item,
-                                    'return ' + trackBy.raw
-                                )
-                            }
-                        }
-                    }
-                }
-
-                each(aNode.elses, function (child) {
-                    analyseANodeHotspot(child)
-                })
-
-                each(aNode.children, function (child) {
-                    analyseANodeHotspot(child)
-                })
-                // === analyse hotspot data: end
-
-                // === analyse hotspot props: start
-                each(aNode.props, function (prop, index) {
-                    aNode.hotspot.props[prop.name] = index
-                    prop.handler = getPropHandler(aNode.tagName, prop.name)
-
-                    if (prop.name === 'id') {
-                        prop.id = true
-                        aNode.hotspot.idProp = prop
-                        aNode.hotspot.dynamicProps.push(prop)
-                    } else if (prop.expr.value != null) {
-                        if (sourceNode) {
-                            prop.handler(sourceNode, prop.expr.value, prop.name, aNode)
-                        }
-                    } else {
-                        if (prop.x) {
-                            aNode.hotspot.xProps.push(prop)
-                        }
-                        aNode.hotspot.dynamicProps.push(prop)
-                    }
-                })
-
-                // ie 下，如果 option 没有 value 属性，select.value = xx 操作不会选中 option
-                // 所以没有设置 value 时，默认把 option 的内容作为 value
-                if (aNode.tagName === 'option' &&
-                !getANodeProp(aNode, 'value') &&
-                aNode.children[0]
-                ) {
-                    const valueProp = {
-                        name: 'value',
-                        expr: aNode.children[0].textExpr,
-                        handler: getPropHandler(aNode.tagName, 'value')
-                    }
-                    aNode.props.push(valueProp)
-                    aNode.hotspot.dynamicProps.push(valueProp)
-                    aNode.hotspot.props.value = aNode.props.length - 1
-                }
-
-                if (aNode.directives['if']) { // eslint-disable-line dot-notation
-                    aNode.ifRinsed = {
-                        children: aNode.children,
-                        props: aNode.props,
-                        events: aNode.events,
-                        tagName: aNode.tagName,
-                        vars: aNode.vars,
-                        hotspot: aNode.hotspot,
-                        directives: extend({}, aNode.directives)
-                    }
-                    aNode.Clazz = IfNode
-                    aNode = aNode.ifRinsed
-                    aNode.directives['if'] = null // eslint-disable-line dot-notation
-                }
-
-                if (aNode.directives['for']) { // eslint-disable-line dot-notation
-                    aNode.forRinsed = {
-                        children: aNode.children,
-                        props: aNode.props,
-                        events: aNode.events,
-                        tagName: aNode.tagName,
-                        vars: aNode.vars,
-                        hotspot: aNode.hotspot,
-                        directives: extend({}, aNode.directives)
-                    }
-                    aNode.Clazz = ForNode
-                    aNode.forRinsed.directives['for'] = null // eslint-disable-line dot-notation
-                    aNode = aNode.forRinsed
-                }
-
-                switch (aNode.tagName) {
-                case 'slot':
-                    aNode.Clazz = SlotNode
-                    break
-
-                case 'template':
-                    aNode.Clazz = TemplateNode
-                }
-                // === analyse hotspot props: end
-            }
-
-            stack.pop()
-        }
-    }
-
-    if (aNode) {
-        analyseANodeHotspot(aNode)
-    }
-}
-
-/**
-* 分析表达式的数据引用
-*
-* @param {Object} expr 要分析的表达式
-* @return {Array}
-*/
-function analyseExprDataHotspot (expr, accessorMeanDynamic) {
-    let refs = []
-    let isDynamic
-
-    function analyseExprs (exprs, accessorMeanDynamic) {
-        for (let i = 0, l = exprs.length; i < l; i++) {
-            refs = refs.concat(analyseExprDataHotspot(exprs[i], accessorMeanDynamic))
-            isDynamic = isDynamic || exprs[i].dynamic
-        }
-    }
-
-    switch (expr.type) {
-    case 4:
-        isDynamic = accessorMeanDynamic
-
-        const paths = expr.paths
-        refs.push(paths[0].value)
-
-        if (paths.length > 1) {
-            refs.push(paths[0].value + '.' + (paths[1].value || '*'))
-        }
-
-        analyseExprs(paths.slice(1), 1)
-        break
-
-    case 9:
-        refs = analyseExprDataHotspot(expr.expr, accessorMeanDynamic)
-        isDynamic = expr.expr.dynamic
-        break
-
-    case 7:
-    case 8:
-    case 10:
-        analyseExprs(expr.segs, accessorMeanDynamic)
-        break
-
-    case 5:
-        refs = analyseExprDataHotspot(expr.expr)
-        isDynamic = expr.expr.dynamic
-
-        each(expr.filters, function (filter) {
-            analyseExprs(filter.name.paths)
-            analyseExprs(filter.args)
-        })
-
-        break
-
-    case 6:
-        analyseExprs(expr.name.paths)
-        analyseExprs(expr.args)
-        break
-
-    case 12:
-    case 11:
-        for (let i = 0; i < expr.items.length; i++) {
-            refs = refs.concat(analyseExprDataHotspot(expr.items[i].expr))
-            isDynamic = isDynamic || expr.items[i].expr.dynamic
-        }
-        break
-    }
-
-    isDynamic && (expr.dynamic = true)
-    return refs
-}
-
-/**
 * 将 binds 的 name 从 kebabcase 转换成 camelcase
 *
 * @param {Array} binds binds集合
@@ -6641,8 +6348,7 @@ const elementSourceCompiler = {
 
         if (bindDirective) {
             sourceBuffer.addRaw(
-                '(function ($bindObj) {for (var $key in $bindObj) {' +
-            'var $value = $bindObj[$key];'
+                '(function ($bindObj) {foreach ($bindObj as $key => $value) {'
             )
 
             if (tagName === 'textarea') {
@@ -6882,33 +6588,13 @@ const aNodeCompiler = {
         const indexName = forDirective.index || genSSRId()
         const listName = genSSRId()
 
-        sourceBuffer.addRaw('var ' + listName + ' = ' + compileExprSource.expr(forDirective.value) + ';')
-        sourceBuffer.addRaw('if (' + listName + ' instanceof Array) {')
+        sourceBuffer.addRaw('$' + listName + ' = ' + compileExprSource.expr(forDirective.value) + ';')
+        sourceBuffer.addRaw('if (is_array($' + listName + ')) {')
 
         // for array
-        sourceBuffer.addRaw('for (' +
-        '$' + indexName + ' = 0; ' +
-        indexName + ' < ' + listName + '.length; ' +
-        indexName + '++) {'
-        )
-        sourceBuffer.addRaw(`$componentCtx["data"]["${indexName}"] = ${indexName};`)
-        sourceBuffer.addRaw(`$componentCtx["data"]["${itemName}"] = ${listName}[$${indexName}];`)
-        sourceBuffer.addRaw(
-            aNodeCompiler.compile(
-                forElementANode,
-                sourceBuffer,
-                owner
-            )
-        )
-        sourceBuffer.addRaw('}')
-
-        sourceBuffer.addRaw('} else if (typeof ' + listName + ' === "object") {')
-
-        // for object
-        sourceBuffer.addRaw(`foreach ($${listName} as $${indexName}) {`)
-        sourceBuffer.addRaw(`if (array_key_exists(${indexName}, $${listName})) {`)
+        sourceBuffer.addRaw(`foreach ($${listName} as $${indexName} => $value) {`)
         sourceBuffer.addRaw(`$componentCtx["data"]["${indexName}"] = $${indexName};`)
-        sourceBuffer.addRaw(`$componentCtx["data"]["${itemName}"] = $${listName}[$${indexName}];`)
+        sourceBuffer.addRaw(`$componentCtx["data"]["${itemName}"] = $value;`)
         sourceBuffer.addRaw(
             aNodeCompiler.compile(
                 forElementANode,
@@ -6917,8 +6603,6 @@ const aNodeCompiler = {
             )
         )
         sourceBuffer.addRaw('}')
-        sourceBuffer.addRaw('}')
-
         sourceBuffer.addRaw('}')
     },
 
@@ -6932,16 +6616,16 @@ const aNodeCompiler = {
     compileSlot: function (aNode, sourceBuffer, owner) {
         const rendererId = genSSRId()
 
-        sourceBuffer.addRaw(`$componentCtx["slotRenderers"]["${rendererId}"]` +
-        ` = array_key_exists("${rendererId}", $componentCtx["slotRenderers"]) ? $componentCtx["slotRenderers"]["${rendererId}"] : function () {`)
+        sourceBuffer.addRaw(`if (!isset($componentCtx["slotRenderers"]["${rendererId}"])) ` +
+        `$componentCtx["slotRenderers"]["${rendererId}"] = function () use (&$componentCtx, &$html){`)
 
-        sourceBuffer.addRaw('function defaultSlotRender($componentCtx) {')
+        sourceBuffer.addRaw('$defaultSlotRender = function ($componentCtx) {')
         sourceBuffer.addRaw('  $html = "";')
         each(aNode.children, function (aNodeChild) {
             sourceBuffer.addRaw(aNodeCompiler.compile(aNodeChild, sourceBuffer, owner))
         })
         sourceBuffer.addRaw('  return $html;')
-        sourceBuffer.addRaw('}')
+        sourceBuffer.addRaw('};')
 
         sourceBuffer.addRaw('$isInserted = false;')
         sourceBuffer.addRaw('$ctxSourceSlots = $componentCtx["sourceSlots"];')
@@ -6952,23 +6636,23 @@ const aNodeCompiler = {
             sourceBuffer.addRaw('$slotName = ' + compileExprSource.expr(nameProp.expr) + ';')
 
             sourceBuffer.addRaw('foreach ($ctxSourceSlots as $i => $slot) {')
-            sourceBuffer.addRaw('  if ($slot[1] == $slotName) {')
+            sourceBuffer.addRaw('  if (count($slot) > 1 && $slot[1] == $slotName) {')
             sourceBuffer.addRaw('    array_push($mySourceSlots, $slot[0]);')
             sourceBuffer.addRaw('    $isInserted = true;')
             sourceBuffer.addRaw('  }')
             sourceBuffer.addRaw('}')
         } else {
-            sourceBuffer.addRaw('if (count($ctxSourceSlots) > 0 && array_key_exists(1, $ctxSourceSlots[0])) {')
+            sourceBuffer.addRaw('if (count($ctxSourceSlots) > 0 && !isset($ctxSourceSlots[0][1])) {')
             sourceBuffer.addRaw('  array_push($mySourceSlots, $ctxSourceSlots[0][0]);')
             sourceBuffer.addRaw('  $isInserted = true;')
             sourceBuffer.addRaw('}')
         }
 
         sourceBuffer.addRaw('if (!$isInserted) { array_push($mySourceSlots, $defaultSlotRender); }')
-        sourceBuffer.addRaw('$slotCtx = $isInserted ? componentCtx["owner"] : componentCtx;')
+        sourceBuffer.addRaw('$slotCtx = $isInserted ? $componentCtx["owner"] : $componentCtx;')
 
         if (aNode.vars || aNode.directives.bind) {
-        sourceBuffer.addRaw('$slotCtx = ["data" => extend([], $slotCtx["data"]), "proto" => $slotCtx["proto"], "owner" => $slotCtx["owner"]];'); // eslint-disable-line
+        sourceBuffer.addRaw('$slotCtx = ["data" => $slotCtx["data"], "proto" => $slotCtx["proto"], "owner" => $slotCtx["owner"]];'); // eslint-disable-line
 
             if (aNode.directives.bind) {
             sourceBuffer.addRaw('extend($slotCtx["data"], ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
@@ -6976,7 +6660,7 @@ const aNodeCompiler = {
 
             each(aNode.vars, function (varItem) {
                 sourceBuffer.addRaw(
-                    '$slotCtx.data["' + varItem.name + '"] = ' +
+                    '$slotCtx["data"]["' + varItem.name + '"] = ' +
                 compileExprSource.expr(varItem.expr) +
                 ';'
                 )
@@ -6984,11 +6668,11 @@ const aNodeCompiler = {
         }
 
         sourceBuffer.addRaw('foreach ($mySourceSlots as $renderIndex => $slot) {')
-        sourceBuffer.addRaw('  $html += $slot($slotCtx);')
+        sourceBuffer.addRaw('  $html .= $slot($slotCtx);')
         sourceBuffer.addRaw('}')
 
         sourceBuffer.addRaw('};')
-        sourceBuffer.addRaw(`call_user_func(componentCtx["slotRenderers"]["${rendererId}"]);`)
+        sourceBuffer.addRaw(`call_user_func($componentCtx["slotRenderers"]["${rendererId}"]);`)
     },
 
     /**
@@ -7039,23 +6723,23 @@ const aNodeCompiler = {
             })
 
             if (defaultSourceSlots.length) {
-                sourceBuffer.addRaw('$sourceSlots.push([function (componentCtx) {')
-                sourceBuffer.addRaw('  var html = "";')
+                sourceBuffer.addRaw('array_push($sourceSlots, [function ($componentCtx) {')
+                sourceBuffer.addRaw('  $html = "";')
                 defaultSourceSlots.forEach(function (child) {
                     aNodeCompiler.compile(child, sourceBuffer, owner)
                 })
-                sourceBuffer.addRaw('  return html;')
+                sourceBuffer.addRaw('  return $html;')
                 sourceBuffer.addRaw('}]);')
             }
 
             for (const key in sourceSlotCodes) {
                 const sourceSlotCode = sourceSlotCodes[key]
-                sourceBuffer.addRaw('$sourceSlots.push([function (componentCtx) {')
-                sourceBuffer.addRaw('  var html = "";')
+                sourceBuffer.addRaw('array_push($sourceSlots, [function ($componentCtx) {')
+                sourceBuffer.addRaw('  $html = "";')
                 sourceBuffer.addRaw(sourceSlotCode.children.forEach(function (child) {
                     aNodeCompiler.compile(child, sourceBuffer, owner)
                 }))
-                sourceBuffer.addRaw('  return html;')
+                sourceBuffer.addRaw('  return $html;')
                 sourceBuffer.addRaw('}, ' + compileExprSource.expr(sourceSlotCode.prop.expr) + ']);')
             }
         }
@@ -7143,7 +6827,7 @@ function compileComponentSource (sourceBuffer, ComponentClass, contextId) {
             )
         }
 
-        // sourceBuffer.addRaw(`if (!array_key_exists("${cid}", San::$componentRenderers)) San::$componentRenderers["${cid}"] = $${cid};`)
+        // sourceBuffer.addRaw(`if (!isset(San::$componentRenderers["${cid}")) San::$componentRenderers["${cid}"] = $${cid};`)
 
         sourceBuffer.addRaw(`function ${cid}($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {`)
         sourceBuffer.addRaw(`$${cid}Proto = ${genComponentProtoCode(component)}`)
@@ -7156,7 +6840,7 @@ function compileComponentSource (sourceBuffer, ComponentClass, contextId) {
         sourceBuffer.addRaw('if ($data) {')
         Object.keys(defaultData).forEach(function (key) {
             const val = stringifier.any(defaultData[key])
-            sourceBuffer.addRaw(`$componentCtx["data"]["${key}"] = array_key_exists("${key}", $componentCtx["data"]) ? $componentCtx["data"]["${key}"] : ${val};`)
+            sourceBuffer.addRaw(`$componentCtx["data"]["${key}"] = isset($componentCtx["data"]["${key}"]) ? $componentCtx["data"]["${key}"] : ${val};`)
         })
         sourceBuffer.addRaw('}')
 
@@ -7243,17 +6927,19 @@ function genComponentProtoCode (component) {
         switch (typeof protoMember) {
         case 'function':
             // TODO function serialization
-            code.push(`${protoMemberKey} => ${protoMember.toString()},`)
+            // code.push(`"${protoMemberKey}" => ${protoMember.toString()},`)
+            code.push(`"${protoMemberKey}" => function(){},`)
             break
 
         case 'object':
-            code.push(protoMemberKey + ' => ')
+            code.push(`"${protoMemberKey}" => `)
 
             if (protoMember instanceof Array) {
                 code.push('[')
                 protoMember.forEach(function (item) {
                     // TODO function serialization
-                    code.push(typeof item === 'function' ? item.toString() : '' + ',')
+                    // code.push(typeof item === 'function' ? item.toString() : '' + ',')
+                    code.push(typeof item === 'function' ? 'function(){}' : '' + ',')
                 })
                 code.push(']')
             } else {
@@ -7262,7 +6948,8 @@ function genComponentProtoCode (component) {
                     const item = protoMember[itemKey]
                     // TODO function serialization
                     if (typeof item === 'function') {
-                        code.push(itemKey + ':' + item.toString() + ',')
+                        code.push(`"${itemKey}" => function(){},`)
+                        // code.push(`"${itemKey}" => ${item.toString()},`)
                     }
                 })
                 code.push(']')
@@ -7305,7 +6992,7 @@ function genComponentProtoCode (component) {
 
                 computedCode.push(key + ': ' +
                 computed.toString()
-                    .replace(/^\s*function\s*\(/, 'function (componentCtx')
+                    .replace(/^\s*function\s*\(/, 'function ($componentCtx')
                     .replace(
                         /this.data.get\(([^)]+)\)/g,
                         function (match, exprLiteral) {

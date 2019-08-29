@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id286 = componentRenderers._id286|| _id286;
-var _id286Proto = {
+componentRenderers._id2 = componentRenderers._id2|| _id2;
+var _id2Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id286(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id2(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id286Proto,
+proto: _id2Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -200,21 +200,21 @@ if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
 html += "    ";
-var _id288 = componentCtx.data.columns;
-if (_id288 instanceof Array) {
-for (var _id287 = 0; _id287 < _id288.length; _id287++) {
-componentCtx.data._id287=_id287;
-componentCtx.data.col= _id288[_id287];
+var _id4 = componentCtx.data.columns;
+if (_id4 instanceof Array) {
+for (var _id3 = 0; _id3 < _id4.length; _id3++) {
+componentCtx.data._id3=_id3;
+componentCtx.data.col= _id4[_id3];
 html += "<h3>";
 html += escapeHTML(componentCtx.data.col.label);
 html += "</h3>";
 
 }
-} else if (typeof _id288 === "object") {
-for (var _id287 in _id288) {
-if (_id288[_id287] != null) {
-componentCtx.data._id287=_id287;
-componentCtx.data.col= _id288[_id287];
+} else if (typeof _id4 === "object") {
+for (var _id3 in _id4) {
+if (_id4[_id3] != null) {
+componentCtx.data._id3=_id3;
+componentCtx.data.col= _id4[_id3];
 html += "<h3>";
 html += escapeHTML(componentCtx.data.col.label);
 html += "</h3>";
@@ -223,19 +223,19 @@ html += "</h3>";
 }
 }
 html += "    ";
-var _id290 = componentCtx.data.datasource;
-if (_id290 instanceof Array) {
-for (var _id289 = 0; _id289 < _id290.length; _id289++) {
-componentCtx.data._id289=_id289;
-componentCtx.data.row= _id290[_id289];
+var _id6 = componentCtx.data.datasource;
+if (_id6 instanceof Array) {
+for (var _id5 = 0; _id5 < _id6.length; _id5++) {
+componentCtx.data._id5=_id5;
+componentCtx.data.row= _id6[_id5];
 html += "<ul>      ";
-var _id292 = componentCtx.data.columns;
-if (_id292 instanceof Array) {
-for (var _id291 = 0; _id291 < _id292.length; _id291++) {
-componentCtx.data._id291=_id291;
-componentCtx.data.col= _id292[_id291];
+var _id8 = componentCtx.data.columns;
+if (_id8 instanceof Array) {
+for (var _id7 = 0; _id7 < _id8.length; _id7++) {
+componentCtx.data._id7=_id7;
+componentCtx.data.col= _id8[_id7];
 html += "<li>";
-componentCtx.slotRenderers._id293 = componentCtx.slotRenderers._id293 || function () {
+componentCtx.slotRenderers._id9 = componentCtx.slotRenderers._id9 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
 html += escapeHTML(componentCtx.data.row[componentCtx.data.col.name]);
@@ -261,17 +261,17 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id293();
+componentCtx.slotRenderers._id9();
 html += "</li>";
 
 }
-} else if (typeof _id292 === "object") {
-for (var _id291 in _id292) {
-if (_id292[_id291] != null) {
-componentCtx.data._id291=_id291;
-componentCtx.data.col= _id292[_id291];
+} else if (typeof _id8 === "object") {
+for (var _id7 in _id8) {
+if (_id8[_id7] != null) {
+componentCtx.data._id7=_id7;
+componentCtx.data.col= _id8[_id7];
 html += "<li>";
-componentCtx.slotRenderers._id294 = componentCtx.slotRenderers._id294 || function () {
+componentCtx.slotRenderers._id10 = componentCtx.slotRenderers._id10 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
 html += escapeHTML(componentCtx.data.row[componentCtx.data.col.name]);
@@ -297,7 +297,7 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id294();
+componentCtx.slotRenderers._id10();
 html += "</li>";
 
 }
@@ -306,19 +306,19 @@ html += "</li>";
 html += "    </ul>";
 
 }
-} else if (typeof _id290 === "object") {
-for (var _id289 in _id290) {
-if (_id290[_id289] != null) {
-componentCtx.data._id289=_id289;
-componentCtx.data.row= _id290[_id289];
+} else if (typeof _id6 === "object") {
+for (var _id5 in _id6) {
+if (_id6[_id5] != null) {
+componentCtx.data._id5=_id5;
+componentCtx.data.row= _id6[_id5];
 html += "<ul>      ";
-var _id296 = componentCtx.data.columns;
-if (_id296 instanceof Array) {
-for (var _id295 = 0; _id295 < _id296.length; _id295++) {
-componentCtx.data._id295=_id295;
-componentCtx.data.col= _id296[_id295];
+var _id12 = componentCtx.data.columns;
+if (_id12 instanceof Array) {
+for (var _id11 = 0; _id11 < _id12.length; _id11++) {
+componentCtx.data._id11=_id11;
+componentCtx.data.col= _id12[_id11];
 html += "<li>";
-componentCtx.slotRenderers._id297 = componentCtx.slotRenderers._id297 || function () {
+componentCtx.slotRenderers._id13 = componentCtx.slotRenderers._id13 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
 html += escapeHTML(componentCtx.data.row[componentCtx.data.col.name]);
@@ -344,17 +344,17 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id297();
+componentCtx.slotRenderers._id13();
 html += "</li>";
 
 }
-} else if (typeof _id296 === "object") {
-for (var _id295 in _id296) {
-if (_id296[_id295] != null) {
-componentCtx.data._id295=_id295;
-componentCtx.data.col= _id296[_id295];
+} else if (typeof _id12 === "object") {
+for (var _id11 in _id12) {
+if (_id12[_id11] != null) {
+componentCtx.data._id11=_id11;
+componentCtx.data.col= _id12[_id11];
 html += "<li>";
-componentCtx.slotRenderers._id298 = componentCtx.slotRenderers._id298 || function () {
+componentCtx.slotRenderers._id14 = componentCtx.slotRenderers._id14 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
 html += escapeHTML(componentCtx.data.row[componentCtx.data.col.name]);
@@ -380,7 +380,7 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id298();
+componentCtx.slotRenderers._id14();
 html += "</li>";
 
 }
@@ -394,8 +394,8 @@ html += "    </ul>";
 html += "</div>";
 return html;
 };
-componentRenderers._id285 = componentRenderers._id285|| _id285;
-var _id285Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -407,10 +407,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id285(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id285Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -437,11 +437,11 @@ html += ">";
 if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
-var _id300 = componentCtx.data.deps;
-if (_id300 instanceof Array) {
-for (var _id299 = 0; _id299 < _id300.length; _id299++) {
-componentCtx.data._id299=_id299;
-componentCtx.data.dep= _id300[_id299];
+var _id16 = componentCtx.data.deps;
+if (_id16 instanceof Array) {
+for (var _id15 = 0; _id15 < _id16.length; _id15++) {
+componentCtx.data._id15=_id15;
+componentCtx.data.dep= _id16[_id15];
 var $sourceSlots = [];
 $sourceSlots.push([function (componentCtx) {
   var html = "";
@@ -451,17 +451,17 @@ html += "</b>";
 
   return html;
 }, "col-" + escapeHTML(componentCtx.data.dep.strong)]);
-html += componentRenderers._id286(
+html += componentRenderers._id2(
 {"columns":componentCtx.data.dep.columns,
 "datasource":componentCtx.data.dep.members}, true, componentCtx, "x-table", $sourceSlots);
 $sourceSlots = null;
 
 }
-} else if (typeof _id300 === "object") {
-for (var _id299 in _id300) {
-if (_id300[_id299] != null) {
-componentCtx.data._id299=_id299;
-componentCtx.data.dep= _id300[_id299];
+} else if (typeof _id16 === "object") {
+for (var _id15 in _id16) {
+if (_id16[_id15] != null) {
+componentCtx.data._id15=_id15;
+componentCtx.data.dep= _id16[_id15];
 var $sourceSlots = [];
 $sourceSlots.push([function (componentCtx) {
   var html = "";
@@ -471,7 +471,7 @@ html += "</b>";
 
   return html;
 }, "col-" + escapeHTML(componentCtx.data.dep.strong)]);
-html += componentRenderers._id286(
+html += componentRenderers._id2(
 {"columns":componentCtx.data.dep.columns,
 "datasource":componentCtx.data.dep.members}, true, componentCtx, "x-table", $sourceSlots);
 $sourceSlots = null;
@@ -482,5 +482,5 @@ $sourceSlots = null;
 html += "</div>";
 return html;
 };
-return componentRenderers._id285(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id82 = componentRenderers._id82|| _id82;
-var _id82Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 year: function (date) {
             return date.getFullYear()
@@ -171,10 +171,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id82(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id82Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {"date":new Date(431366400000)},
 owner: parentCtx,
@@ -211,5 +211,5 @@ html += escapeHTML(callFilter(componentCtx, "year", [componentCtx.data.date]));
 html += "</b></div>";
 return html;
 };
-return componentRenderers._id82(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

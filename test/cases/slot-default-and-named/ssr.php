@@ -1,0 +1,165 @@
+<?php $render = function ($data, $noDataOutput) {
+function _id223($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id223Proto = [
+"filters" => [
+
+],
+"computed" => [
+
+],
+"computedNames" => [
+
+],
+"tagName" => "div"
+];
+$html = "";
+$componentCtx = [
+"proto" => $_id223Proto,
+"sourceSlots" => $sourceSlots,
+"data" => $data ? $data : (object)[],
+"owner" => $parentCtx,
+"slotRenderers" => []
+];
+if ($data) {
+}
+$computedNames = $componentCtx["proto"]["computedNames"];
+foreach ($computedNames as $i => $computedName) {
+  $data[$computedName] = $componentCtx["proto"]["computed"][$computedName]($componentCtx);
+}
+$html .= "<div";
+if ((isset($componentCtx["data"]->{"class"}) ? $componentCtx["data"]->{"class"} : null)) {
+$html .= San::attrFilter('class', San::escapeHTML(San::_classFilter((isset($componentCtx["data"]->{"class"}) ? $componentCtx["data"]->{"class"} : null))));
+}
+if ((isset($componentCtx["data"]->{"style"}) ? $componentCtx["data"]->{"style"} : null)) {
+$html .= San::attrFilter('style', San::escapeHTML(San::_styleFilter((isset($componentCtx["data"]->{"style"}) ? $componentCtx["data"]->{"style"} : null))));
+}
+if ((isset($componentCtx["data"]->{"id"}) ? $componentCtx["data"]->{"id"} : null)) {
+$html .= San::attrFilter('id', San::escapeHTML((isset($componentCtx["data"]->{"id"}) ? $componentCtx["data"]->{"id"} : null)));
+}
+$html .= ">";
+if (!$noDataOutput) {
+$html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
+}
+$html .= "<div class=\"head\">";
+if (!isset($componentCtx["slotRenderers"]["_id224"])) $componentCtx["slotRenderers"]["_id224"] = function () use (&$componentCtx, &$html){
+$defaultSlotRender = function ($componentCtx) {
+  $html = "";
+  return $html;
+};
+$isInserted = false;
+$ctxSourceSlots = $componentCtx["sourceSlots"];
+$mySourceSlots = [];
+$slotName = "title";
+foreach ($ctxSourceSlots as $i => $slot) {
+  if (count($slot) > 1 && $slot[1] == $slotName) {
+    array_push($mySourceSlots, $slot[0]);
+    $isInserted = true;
+  }
+}
+if (!$isInserted) { array_push($mySourceSlots, $defaultSlotRender); }
+$slotCtx = $isInserted ? $componentCtx["owner"] : $componentCtx;
+foreach ($mySourceSlots as $renderIndex => $slot) {
+  $html .= $slot($slotCtx);
+}
+};
+call_user_func($componentCtx["slotRenderers"]["_id224"]);
+$html .= "</div><div>";
+if (!isset($componentCtx["slotRenderers"]["_id225"])) $componentCtx["slotRenderers"]["_id225"] = function () use (&$componentCtx, &$html){
+$defaultSlotRender = function ($componentCtx) {
+  $html = "";
+  return $html;
+};
+$isInserted = false;
+$ctxSourceSlots = $componentCtx["sourceSlots"];
+$mySourceSlots = [];
+if (count($ctxSourceSlots) > 0 && !isset($ctxSourceSlots[0][1])) {
+  array_push($mySourceSlots, $ctxSourceSlots[0][0]);
+  $isInserted = true;
+}
+if (!$isInserted) { array_push($mySourceSlots, $defaultSlotRender); }
+$slotCtx = $isInserted ? $componentCtx["owner"] : $componentCtx;
+foreach ($mySourceSlots as $renderIndex => $slot) {
+  $html .= $slot($slotCtx);
+}
+};
+call_user_func($componentCtx["slotRenderers"]["_id225"]);
+$html .= "</div><u";
+if ((isset($componentCtx["data"]->{"text"}) ? $componentCtx["data"]->{"text"} : null)) {
+$html .= San::attrFilter('title', San::escapeHTML((isset($componentCtx["data"]->{"text"}) ? $componentCtx["data"]->{"text"} : null)));
+}
+$html .= "></u></div>";
+return $html;
+};
+function _id222($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id222Proto = [
+"filters" => [
+
+],
+"computed" => [
+
+],
+"computedNames" => [
+
+],
+"tagName" => "div"
+];
+$html = "";
+$componentCtx = [
+"proto" => $_id222Proto,
+"sourceSlots" => $sourceSlots,
+"data" => $data ? $data : (object)[],
+"owner" => $parentCtx,
+"slotRenderers" => []
+];
+if ($data) {
+}
+$computedNames = $componentCtx["proto"]["computedNames"];
+foreach ($computedNames as $i => $computedName) {
+  $data[$computedName] = $componentCtx["proto"]["computed"][$computedName]($componentCtx);
+}
+$html .= "<div";
+if ((isset($componentCtx["data"]->{"class"}) ? $componentCtx["data"]->{"class"} : null)) {
+$html .= San::attrFilter('class', San::escapeHTML(San::_classFilter((isset($componentCtx["data"]->{"class"}) ? $componentCtx["data"]->{"class"} : null))));
+}
+if ((isset($componentCtx["data"]->{"style"}) ? $componentCtx["data"]->{"style"} : null)) {
+$html .= San::attrFilter('style', San::escapeHTML(San::_styleFilter((isset($componentCtx["data"]->{"style"}) ? $componentCtx["data"]->{"style"} : null))));
+}
+if ((isset($componentCtx["data"]->{"id"}) ? $componentCtx["data"]->{"id"} : null)) {
+$html .= San::attrFilter('id', San::escapeHTML((isset($componentCtx["data"]->{"id"}) ? $componentCtx["data"]->{"id"} : null)));
+}
+$html .= ">";
+if (!$noDataOutput) {
+$html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
+}
+$sourceSlots = [];
+array_push($sourceSlots, [function ($componentCtx) {
+  $html = "";
+$html .= "<p";
+if ((isset($componentCtx["data"]->{"text"}) ? $componentCtx["data"]->{"text"} : null)) {
+$html .= San::attrFilter('title', San::escapeHTML((isset($componentCtx["data"]->{"text"}) ? $componentCtx["data"]->{"text"} : null)));
+}
+$html .= ">";
+$html .= San::escapeHTML((isset($componentCtx["data"]->{"text"}) ? $componentCtx["data"]->{"text"} : null));
+$html .= "</p>";
+  return $html;
+}]);
+array_push($sourceSlots, [function ($componentCtx) {
+  $html = "";
+$html .= "<h3";
+if ((isset($componentCtx["data"]->{"title"}) ? $componentCtx["data"]->{"title"} : null)) {
+$html .= San::attrFilter('title', San::escapeHTML((isset($componentCtx["data"]->{"title"}) ? $componentCtx["data"]->{"title"} : null)));
+}
+$html .= ">";
+$html .= San::escapeHTML((isset($componentCtx["data"]->{"title"}) ? $componentCtx["data"]->{"title"} : null));
+$html .= "</h3>";
+
+  return $html;
+}, "title"]);
+$html .= call_user_func("_id223", 
+(object)["text" => (isset($componentCtx["data"]->{"tabText"}) ? $componentCtx["data"]->{"tabText"} : null)], true, $componentCtx, "ui-tab", $sourceSlots);
+$sourceSlots = null;
+$html .= "</div>";
+return $html;
+};
+return call_user_func("_id222", $data, $noDataOutput);
+}; ?>

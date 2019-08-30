@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id16 = componentRenderers._id16|| _id16;
-var _id16Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 enhance: function (num, times) {
         return num * this.square(times)
     },
@@ -182,10 +182,10 @@ computedNames: [
 ],
 tagName: "u"
 };
-function _id16(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id16Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -216,5 +216,5 @@ html += "result " + escapeHTML(10+(componentCtx.data.base!==0?componentCtx.proto
 html += "</u>";
 return html;
 };
-return componentRenderers._id16(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

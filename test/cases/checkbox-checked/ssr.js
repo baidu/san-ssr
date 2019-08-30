@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id22 = componentRenderers._id22|| _id22;
-var _id22Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id22(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id22Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -199,11 +199,11 @@ html += ">";
 if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
-var _id24 = componentCtx.data.list;
-if (_id24 instanceof Array) {
-for (var _id23 = 0; _id23 < _id24.length; _id23++) {
-componentCtx.data._id23=_id23;
-componentCtx.data.item= _id24[_id23];
+var _id3 = componentCtx.data.list;
+if (_id3 instanceof Array) {
+for (var _id2 = 0; _id2 < _id3.length; _id2++) {
+componentCtx.data._id2=_id2;
+componentCtx.data.item= _id3[_id2];
 html += "<input type=\"checkbox\"";
 if (componentCtx.data.item) {
 html += attrFilter("value", escapeHTML(componentCtx.data.item));
@@ -214,11 +214,11 @@ html += " checked";
 html += ">";
 
 }
-} else if (typeof _id24 === "object") {
-for (var _id23 in _id24) {
-if (_id24[_id23] != null) {
-componentCtx.data._id23=_id23;
-componentCtx.data.item= _id24[_id23];
+} else if (typeof _id3 === "object") {
+for (var _id2 in _id3) {
+if (_id3[_id2] != null) {
+componentCtx.data._id2=_id2;
+componentCtx.data.item= _id3[_id2];
 html += "<input type=\"checkbox\"";
 if (componentCtx.data.item) {
 html += attrFilter("value", escapeHTML(componentCtx.data.item));
@@ -234,5 +234,5 @@ html += ">";
 html += "</div>";
 return html;
 };
-return componentRenderers._id22(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

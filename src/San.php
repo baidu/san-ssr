@@ -10,11 +10,38 @@ final class San
         "'" => '&#39;'
     ];
 
-    public static function extend(&$target, $source)
+    public static function objSpread($arr, $needSpread) {
+        $obj = (object)[];
+        foreach ($arr as $idx => $val) {
+            if ($needSpread[$idx]) {
+                foreach ($val as $subkey => $subvar) {
+                    $obj->{$subkey} = $subvar;
+                }
+            } else {
+                $obj->{$val[0]} = $val[1];
+            }
+        }
+        return $obj;
+    }
+
+    public static function spread($arr, $needSpread) {
+        $ret = [];
+        foreach ($arr as $idx => $val) {
+            if ($needSpread[$idx]) {
+                foreach ($val as $subvar) array_push($ret, $subvar);
+            } else {
+                array_push($ret, $val);
+            }
+        }
+        return $ret;
+    }
+
+    public static function extend($target, $source)
     {
+        if (!$target) $target = (object)[];
         if ($source) {
             foreach ($source as $key => $val) {
-                $target[$key] = $val;
+                $target->{$key} = $val;
             }
         }
         return $target;
@@ -49,6 +76,9 @@ final class San
         }
         if (is_string($source)) {
             return htmlspecialchars($source, ENT_QUOTES);
+        }
+        if (is_bool($source)) {
+            return $source ? 'true' : 'false';
         }
         return strval($source);
     }
@@ -96,7 +126,7 @@ final class San
 
     public static function attrFilter($name, $value)
     {
-        if ($value) {
+        if (isset($value)) {
             return " " . $name . '="' . $value . '"';
         }
         return '';
@@ -104,15 +134,19 @@ final class San
 
     public static function boolAttrFilter($name, $value)
     {
-        if ($value && $value != 'false' && $value != '0') {
-            return ' ' . $name;
+        return San::boolAttrTruthy($value) ? ' ' . $name : '';
+    }
+
+    private static function boolAttrTruthy($value) {
+        if (is_string($value)) {
+            return $value != '' && $value != 'false' && $value != '0';
         }
-        return '';
+        return (boolean)$value;
     }
 
     public static function callFilter($ctx, $name, $args)
     {
-        $filter = $ctx["proto"]["filters"][name];
+        $filter = $ctx["proto"]["filters"][$name];
         // TODO this is
         if (is_callable($filter)) {
             return call_user_func_array($filter, $args);

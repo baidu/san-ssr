@@ -1,4 +1,5 @@
 const { each, contains, empty, extend, bind, inherits } = require('./utils')
+const { fn2php } = require('./fn2php')
 
 /**
 * 编译源码的 helper 方法集合对象
@@ -110,7 +111,7 @@ const compileExprSource = {
                 break
 
             default:
-                code = 'callFilter($componentCtx, "' + filterName + '", [' + code
+                code = 'San::callFilter($componentCtx, "' + filterName + '", [' + code
                 each(filter.args, function (arg) {
                     code += ', ' + compileExprSource.expr(arg)
                 })
@@ -153,13 +154,15 @@ const compileExprSource = {
      * @return {string}
      */
     array: function (arrayExpr) {
-        const code = []
+        const items = []
+        const spread = []
 
-        each(arrayExpr.items, function (item) {
-            code.push((item.spread ? '...' : '') + compileExprSource.expr(item.expr))
+        each(arrayExpr.items, function (item, idx) {
+            items.push(compileExprSource.expr(item.expr))
+            spread.push(item.spread ? 1 : 0)
         })
 
-        return '[\n' + code.join(',\n') + '\n]'
+        return `San::spread([${items.join(', ')}], ${JSON.stringify(spread)})`
     },
 
     /**
@@ -169,19 +172,21 @@ const compileExprSource = {
      * @return {string}
      */
     object: function (objExpr) {
-        const code = []
+        const items = []
+        const spread = []
 
         each(objExpr.items, function (item) {
             if (item.spread) {
-                code.push('...' + compileExprSource.expr(item.expr))
+                spread.push(1)
+                items.push(compileExprSource.expr(item.expr))
             } else {
+                spread.push(0)
                 const key = compileExprSource.expr(item.name)
                 const val = compileExprSource.expr(item.expr)
-                code.push(`${key} => ${val}`)
+                items.push(`[${key}, ${val}]`)
             }
         })
-
-        return '[\n' + code.join(',\n') + '\n]'
+        return `San::objSpread([${items.join(',')}], ${JSON.stringify(spread)})`
     },
 
     /**
@@ -606,18 +611,6 @@ function trigger (el, eventName) {
     event.initEvent(eventName, true, true)
     el.dispatchEvent(event)
 }
-
-// #[begin] allua
-/* istanbul ignore if */
-if (ie === 9) {
-    on(document, 'selectionchange', function () {
-        const el = document.activeElement
-        if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
-            trigger(el, 'input')
-        }
-    })
-}
-// #[end]
 
 /**
 * 自闭合标签列表
@@ -3738,127 +3731,6 @@ function warn (message) {
 }
 // #[end]
 
-// #[begin] error
-/**
-* 事件绑定不存在的 warning
-*
-* @param {Object} eventBind 事件绑定对象
-* @param {Component} owner 所属的组件对象
-*/
-function warnEventListenMethod (eventBind, owner) {
-    let valid = true
-    let method = owner
-    each(eventBind.expr.name.paths, function (path) {
-        method = method[path.value]
-        valid = !!method
-        return valid
-    })
-
-    if (!valid) {
-        const paths = []
-        each(eventBind.expr.name.paths, function (path) {
-            paths.push(path.value)
-        })
-
-        warn(eventBind.name + ' listen fail,"' + paths.join('.') + '" not exist')
-    }
-}
-// #[end]
-
-/**
-* 双绑输入框CompositionEnd事件监听函数
-*
-* @inner
-*/
-function inputOnCompositionEnd () {
-    if (!this.composing) {
-        return
-    }
-
-    this.composing = 0
-    trigger(this, 'input')
-}
-
-/**
-* 双绑输入框CompositionStart事件监听函数
-*
-* @inner
-*/
-function inputOnCompositionStart () {
-    this.composing = 1
-}
-
-function getXPropOutputer (element, xProp, data) {
-    return function () {
-        xPropOutput(element, xProp, data)
-    }
-}
-
-function getInputXPropOutputer (element, xProp, data) {
-    return function () {
-        if (!this.composing) {
-            xPropOutput(element, xProp, data)
-        }
-    }
-}
-
-// #[begin] allua
-/* istanbul ignore next */
-function getInputFocusXPropHandler (element, xProp, data) {
-    return function () {
-        element._inputTimer = setInterval(function () {
-            xPropOutput(element, xProp, data)
-        }, 16)
-    }
-}
-
-/* istanbul ignore next */
-function getInputBlurXPropHandler (element) {
-    return function () {
-        clearInterval(element._inputTimer)
-        element._inputTimer = null
-    }
-}
-// #[end]
-
-function xPropOutput (element, bindInfo, data) {
-/* istanbul ignore if */
-    if (!element.lifeCycle.created) {
-        return
-    }
-
-    const el = element.el
-
-    if (element.tagName === 'input' && bindInfo.name === 'checked') {
-        const bindValue = getANodeProp(element.aNode, 'value')
-        const bindType = getANodeProp(element.aNode, 'type')
-
-        if (bindValue && bindType) {
-            switch (el.type.toLowerCase()) {
-            case 'checkbox':
-                data[el.checked ? 'push' : 'remove'](bindInfo.expr, el.value)
-                return
-
-            case 'radio':
-                el.checked && data.set(bindInfo.expr, el.value, {
-                    target: {
-                        node: element,
-                        prop: bindInfo.name
-                    }
-                })
-                return
-            }
-        }
-    }
-
-    data.set(bindInfo.expr, el[bindInfo.name], {
-        target: {
-            node: element,
-            prop: bindInfo.name
-        }
-    })
-}
-
 /**
 * 初始化节点的 s-bind 数据
 *
@@ -6205,7 +6077,7 @@ const elementSourceCompiler = {
             sourceBuffer.joinString('<' + tagName)
         } else if (tagNameVariable) {
             sourceBuffer.joinString('<')
-            sourceBuffer.joinRaw(tagNameVariable + ' || "div"')
+            sourceBuffer.joinRaw(`$${tagNameVariable} ? $${tagNameVariable} : "div"`)
         } else {
             sourceBuffer.joinString('<div')
         }
@@ -6232,8 +6104,8 @@ const elementSourceCompiler = {
 
                 case 'select':
                     sourceBuffer.addRaw('$selectValue = ' +
-                        compileExprSource.expr(prop.expr) +
-                        ' || "";'
+                        compileExprSource.expr(prop.expr) + '?' +
+                        compileExprSource.expr(prop.expr) + ': "";'
                     )
                     return
 
@@ -6243,7 +6115,7 @@ const elementSourceCompiler = {
                         ';'
                     )
                     // value
-                    sourceBuffer.addRaw('if ($optionValue != null) {')
+                    sourceBuffer.addRaw('if (isset($optionValue)) {')
                     sourceBuffer.joinRaw('" value=\\"" . $optionValue . "\\""')
                     sourceBuffer.addRaw('}')
 
@@ -6277,7 +6149,7 @@ const elementSourceCompiler = {
                     if (valueProp) {
                         switch (propsIndex.type.raw) {
                         case 'checkbox':
-                            sourceBuffer.addRaw('if (contains(' +
+                            sourceBuffer.addRaw('if (San::contains(' +
                                     compileExprSource.expr(prop.expr) +
                                     ', ' +
                                     valueCode +
@@ -6342,7 +6214,7 @@ const elementSourceCompiler = {
 
         if (bindDirective) {
             sourceBuffer.addRaw(
-                '(function ($bindObj) {foreach ($bindObj as $key => $value) {'
+                '(function ($bindObj) use (&$html){foreach ($bindObj as $key => $value) {'
             )
 
             if (tagName === 'textarea') {
@@ -6358,10 +6230,10 @@ const elementSourceCompiler = {
             'case "disabled":\n' +
             'case "multiple":\n' +
             'case "multiple":\n' +
-            '$html += San::boolAttrFilter($key, San::escapeHTML($value));\n' +
+            '$html .= San::boolAttrFilter($key, San::escapeHTML($value));\n' +
             'break;\n' +
             'default:\n' +
-            '$html += San::attrFilter($key, San::escapeHTML($value));' +
+            '$html .= San::attrFilter($key, San::escapeHTML($value));' +
             '}'
             )
 
@@ -6400,7 +6272,7 @@ const elementSourceCompiler = {
             }
         } else {
             sourceBuffer.joinString('</')
-            sourceBuffer.joinRaw(tagNameVariable + ' || "div"')
+            sourceBuffer.joinRaw(`$${tagNameVariable} ? $${tagNameVariable} : "div"`)
             sourceBuffer.joinString('>')
         }
     },
@@ -6583,7 +6455,7 @@ const aNodeCompiler = {
         const listName = genSSRId()
 
         sourceBuffer.addRaw('$' + listName + ' = ' + compileExprSource.expr(forDirective.value) + ';')
-        sourceBuffer.addRaw('if (is_array($' + listName + ')) {')
+        sourceBuffer.addRaw(`if (is_array($${listName}) || is_object($${listName})) {`)
 
         // for array
         sourceBuffer.addRaw(`foreach ($${listName} as $${indexName} => $value) {`)
@@ -6649,7 +6521,7 @@ const aNodeCompiler = {
         sourceBuffer.addRaw('$slotCtx = ["data" => $slotCtx["data"], "proto" => $slotCtx["proto"], "owner" => $slotCtx["owner"]];'); // eslint-disable-line
 
             if (aNode.directives.bind) {
-            sourceBuffer.addRaw('extend($slotCtx["data"], ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
+            sourceBuffer.addRaw('San::extend($slotCtx["data"], ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
             }
 
             each(aNode.vars, function (varItem) {
@@ -6748,7 +6620,7 @@ const aNodeCompiler = {
 
         dataLiteral = '(object)[' + givenData.join(',\n') + ']'
         if (aNode.directives.bind) {
-            dataLiteral = 'extend(' +
+            dataLiteral = 'San::extend(' +
             compileExprSource.expr(aNode.directives.bind.value) +
             ', ' +
             dataLiteral +
@@ -6961,7 +6833,8 @@ function genComponentProtoCode (component) {
             const filter = component.filters[key]
 
             if (typeof filter === 'function') {
-                filterCode.push(key + ' => ' + filter.toString())
+                const php = fn2php(filter)
+                filterCode.push(`"${key}" => ${php}`)
             }
         }
     }
@@ -6984,7 +6857,7 @@ function genComponentProtoCode (component) {
                     computedNamesCode.push('"' + key + '"')
                 }
 
-                computedCode.push(key + ': ' +
+                computedCode.push(`"${key}" => ` +
                 computed.toString()
                     .replace(/^\s*function\s*\(/, 'function ($componentCtx')
                     .replace(

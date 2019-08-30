@@ -3,7 +3,7 @@ const { resolve, join } = require('path')
 const { render } = require('../src/render')
 const caseRoot = resolve(__dirname, 'cases')
 const files = readdirSync(caseRoot)
-const notExist = []
+const compile = require('../src/compile')
 
 for (const dir of files) {
     const caseDir = resolve(caseRoot, dir)
@@ -16,13 +16,9 @@ for (const dir of files) {
     it('js: ' + dir, function () {
         expect(render(dir, 'js')).toBe(expected)
     })
-    if (!existsSync(phpPath)) {
-        notExist.push(dir)
-        continue
-    }
+
     it('php: ' + dir, function () {
+        compile.php(dir)
         expect(render(dir, 'php')).toBe(expected)
     })
 }
-
-console.log(`${notExist.length} cases ssr.php not found: ${notExist.join(',')}`)

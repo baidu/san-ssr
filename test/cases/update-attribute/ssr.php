@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id1Proto = [
+function _id14($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id14Proto = [
 "filters" => [
 
 ],
@@ -14,7 +14,7 @@ $_id1Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id1Proto,
+"proto" => $_id14Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -49,5 +49,5 @@ $html .= San::escapeHTML((isset($componentCtx["data"]->{"name"}) ? $componentCtx
 $html .= "</span></a>";
 return $html;
 };
-return call_user_func("_id1", $data, $noDataOutput);
+return call_user_func("_id14", $data, $noDataOutput);
 }; ?>

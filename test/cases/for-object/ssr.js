@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id109 = componentRenderers._id109|| _id109;
-var _id109Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "ul"
 };
-function _id109(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id109Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -199,11 +199,11 @@ html += ">";
 if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
-var _id110 = componentCtx.data.persons;
-if (_id110 instanceof Array) {
-for (var i = 0; i < _id110.length; i++) {
+var _id2 = componentCtx.data.persons;
+if (_id2 instanceof Array) {
+for (var i = 0; i < _id2.length; i++) {
 componentCtx.data.i=i;
-componentCtx.data.p= _id110[i];
+componentCtx.data.p= _id2[i];
 html += "<li";
 if (componentCtx.data.p) {
 html += attrFilter("title", escapeHTML(componentCtx.data.p));
@@ -213,11 +213,11 @@ html += escapeHTML(componentCtx.data.i) + "-" + escapeHTML(componentCtx.data.p);
 html += "</li>";
 
 }
-} else if (typeof _id110 === "object") {
-for (var i in _id110) {
-if (_id110[i] != null) {
+} else if (typeof _id2 === "object") {
+for (var i in _id2) {
+if (_id2[i] != null) {
 componentCtx.data.i=i;
-componentCtx.data.p= _id110[i];
+componentCtx.data.p= _id2[i];
 html += "<li";
 if (componentCtx.data.p) {
 html += attrFilter("title", escapeHTML(componentCtx.data.p));
@@ -232,5 +232,5 @@ html += "</li>";
 html += "</ul>";
 return html;
 };
-return componentRenderers._id109(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id2($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id2Proto = [
+function _id120($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id120Proto = [
 "filters" => [
 
 ],
@@ -14,7 +14,7 @@ $_id2Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id2Proto,
+"proto" => $_id120Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)["title" => "title","text" => "text"],
 "owner" => $parentCtx,
@@ -47,8 +47,8 @@ $html .= San::escapeHTML((isset($componentCtx["data"]->{"text"}) ? $componentCtx
 $html .= "</span>";
 return $html;
 };
-function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id1Proto = [
+function _id119($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id119Proto = [
 "filters" => [
 
 ],
@@ -62,7 +62,7 @@ $_id1Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id1Proto,
+"proto" => $_id119Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)["jokeName" => "airike","school" => "none"],
 "owner" => $parentCtx,
@@ -92,7 +92,7 @@ $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASH
 }
 $html .= "<h5>";
 $sourceSlots = [];
-$html .= call_user_func("_id2", 
+$html .= call_user_func("_id120", 
 (object)["text" => (isset($componentCtx["data"]->{"jokeName"}) ? $componentCtx["data"]->{"jokeName"} : null),
 "class" => San::escapeHTML(San::_classFilter((isset($componentCtx["data"]->{"labelClass"}) ? $componentCtx["data"]->{"labelClass"} : null))) . " my-label"], true, $componentCtx, "ui-label", $sourceSlots);
 $sourceSlots = null;
@@ -111,5 +111,5 @@ $html .= San::escapeHTML((isset($componentCtx["data"]->{"company"}) ? $component
 $html .= "</u></p></div>";
 return $html;
 };
-return call_user_func("_id1", $data, $noDataOutput);
+return call_user_func("_id119", $data, $noDataOutput);
 }; ?>

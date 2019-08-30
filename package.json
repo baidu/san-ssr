@@ -47,6 +47,8 @@
     "wdio-spec-reporter": "^0.1.0"
   },
   "dependencies": {
-    "chalk": "^2.4.2"
+    "chalk": "^2.4.2",
+    "ts2php": "^0.12.1",
+    "typescript": "^3.4.5"
   }
 }

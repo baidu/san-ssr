@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id63($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id63Proto = [
+function _id2($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id2Proto = [
 "filters" => [
 
 ],
@@ -14,7 +14,7 @@ $_id63Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id63Proto,
+"proto" => $_id2Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -40,7 +40,7 @@ $html .= ">";
 if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
-if (!isset($componentCtx["slotRenderers"]["_id64"])) $componentCtx["slotRenderers"]["_id64"] = function () use (&$componentCtx, &$html){
+if (!isset($componentCtx["slotRenderers"]["_id3"])) $componentCtx["slotRenderers"]["_id3"] = function () use (&$componentCtx, &$html){
 $defaultSlotRender = function ($componentCtx) {
   $html = "";
 $html .= "<p>";
@@ -69,12 +69,12 @@ foreach ($mySourceSlots as $renderIndex => $slot) {
   $html .= $slot($slotCtx);
 }
 };
-call_user_func($componentCtx["slotRenderers"]["_id64"]);
+call_user_func($componentCtx["slotRenderers"]["_id3"]);
 $html .= "</div>";
 return $html;
 };
-function _id62($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id62Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "filters" => [
 
 ],
@@ -88,7 +88,7 @@ $_id62Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id62Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -129,11 +129,11 @@ $html .= "</a>";
 
   return $html;
 }, "test"]);
-$html .= call_user_func("_id63", 
+$html .= call_user_func("_id2", 
 (object)["data" => (isset($componentCtx["data"]->{"man"}) ? $componentCtx["data"]->{"man"} : null)], true, $componentCtx, "x-man", $sourceSlots);
 $sourceSlots = null;
 $html .= "</div>";
 return $html;
 };
-return call_user_func("_id62", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

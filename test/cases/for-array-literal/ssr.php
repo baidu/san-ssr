@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id4($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id4Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "filters" => [
 
 ],
@@ -14,7 +14,7 @@ $_id4Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id4Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -40,10 +40,10 @@ $html .= ">";
 if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
-$_id6 = San::spread([1, 2, (isset($componentCtx["data"]->{"three"}) ? $componentCtx["data"]->{"three"} : null), (isset($componentCtx["data"]->{"other"}) ? $componentCtx["data"]->{"other"} : null)], [0,0,0,1]);
-if (is_array($_id6) || is_object($_id6)) {
-foreach ($_id6 as $_id5 => $value) {
-$componentCtx["data"]->_id5 = $_id5;
+$_id3 = San::spread([1, 2, (isset($componentCtx["data"]->{"three"}) ? $componentCtx["data"]->{"three"} : null), (isset($componentCtx["data"]->{"other"}) ? $componentCtx["data"]->{"other"} : null)], [0,0,0,1]);
+if (is_array($_id3) || is_object($_id3)) {
+foreach ($_id3 as $_id2 => $value) {
+$componentCtx["data"]->_id2 = $_id2;
 $componentCtx["data"]->item = $value;
 $html .= "<li>";
 $html .= San::escapeHTML((isset($componentCtx["data"]->{"item"}) ? $componentCtx["data"]->{"item"} : null));
@@ -54,5 +54,5 @@ $html .= "</li>";
 $html .= "</ul>";
 return $html;
 };
-return call_user_func("_id4", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

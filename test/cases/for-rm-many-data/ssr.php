@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id122($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id122Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "filters" => [
 
 ],
@@ -14,7 +14,7 @@ $_id122Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id122Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -41,9 +41,9 @@ if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
 $html .= "<li>name - email</li>";
-$_id123 = (isset($componentCtx["data"]->{"persons"}) ? $componentCtx["data"]->{"persons"} : null);
-if (is_array($_id123) || is_object($_id123)) {
-foreach ($_id123 as $i => $value) {
+$_id2 = (isset($componentCtx["data"]->{"persons"}) ? $componentCtx["data"]->{"persons"} : null);
+if (is_array($_id2) || is_object($_id2)) {
+foreach ($_id2 as $i => $value) {
 $componentCtx["data"]->i = $i;
 $componentCtx["data"]->p = $value;
 $html .= "<li";
@@ -59,5 +59,5 @@ $html .= "</li>";
 $html .= "<li>name - email</li></ul>";
 return $html;
 };
-return call_user_func("_id122", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

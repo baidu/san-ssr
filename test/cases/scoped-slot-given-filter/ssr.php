@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id95($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id95Proto = [
+function _id2($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id2Proto = [
 "filters" => [
 "upper" => function ($source) {
     return $source["charAt"](0)["toUpperCase"]() + \Ts2Php_Helper::arraySlice($source, 1);
@@ -16,7 +16,7 @@ $_id95Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id95Proto,
+"proto" => $_id2Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -42,7 +42,7 @@ $html .= ">";
 if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
-if (!isset($componentCtx["slotRenderers"]["_id96"])) $componentCtx["slotRenderers"]["_id96"] = function () use (&$componentCtx, &$html){
+if (!isset($componentCtx["slotRenderers"]["_id3"])) $componentCtx["slotRenderers"]["_id3"] = function () use (&$componentCtx, &$html){
 $defaultSlotRender = function ($componentCtx) {
   $html = "";
 $html .= "<p>";
@@ -71,12 +71,12 @@ foreach ($mySourceSlots as $renderIndex => $slot) {
   $html .= $slot($slotCtx);
 }
 };
-call_user_func($componentCtx["slotRenderers"]["_id96"]);
+call_user_func($componentCtx["slotRenderers"]["_id3"]);
 $html .= "</div>";
 return $html;
 };
-function _id94($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id94Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "filters" => [
 "upper" => function ($source) {
     return $source["toUpperCase"]();
@@ -92,7 +92,7 @@ $_id94Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id94Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -131,11 +131,11 @@ $html .= "</u>";
 
   return $html;
 }, "test"]);
-$html .= call_user_func("_id95", 
+$html .= call_user_func("_id2", 
 (object)["data" => (isset($componentCtx["data"]->{"man"}) ? $componentCtx["data"]->{"man"} : null)], true, $componentCtx, "x-man", $sourceSlots);
 $sourceSlots = null;
 $html .= "</div>";
 return $html;
 };
-return call_user_func("_id94", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

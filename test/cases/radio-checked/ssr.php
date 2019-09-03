@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id26($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id26Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "filters" => [
 
 ],
@@ -14,7 +14,7 @@ $_id26Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id26Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -40,10 +40,10 @@ $html .= ">";
 if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
-$_id28 = (isset($componentCtx["data"]->{"list"}) ? $componentCtx["data"]->{"list"} : null);
-if (is_array($_id28) || is_object($_id28)) {
-foreach ($_id28 as $_id27 => $value) {
-$componentCtx["data"]->_id27 = $_id27;
+$_id3 = (isset($componentCtx["data"]->{"list"}) ? $componentCtx["data"]->{"list"} : null);
+if (is_array($_id3) || is_object($_id3)) {
+foreach ($_id3 as $_id2 => $value) {
+$componentCtx["data"]->_id2 = $_id2;
 $componentCtx["data"]->item = $value;
 $html .= "<input type=\"radio\"";
 if ((isset($componentCtx["data"]->{"item"}) ? $componentCtx["data"]->{"item"} : null)) {
@@ -59,5 +59,5 @@ $html .= ">";
 $html .= "</div>";
 return $html;
 };
-return call_user_func("_id26", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

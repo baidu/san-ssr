@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id86($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id86Proto = [
+function _id2($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id2Proto = [
 "filters" => [
 
 ],
@@ -14,7 +14,7 @@ $_id86Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id86Proto,
+"proto" => $_id2Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -47,8 +47,8 @@ $html .= "<u></u>";
 $html .= "</a>";
 return $html;
 };
-function _id85($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id85Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "filters" => [
 
 ],
@@ -62,7 +62,7 @@ $_id85Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id85Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -89,11 +89,11 @@ if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
 $sourceSlots = [];
-$html .= call_user_func("_id86", 
+$html .= call_user_func("_id2", 
 (object)["hasu" => true], true, $componentCtx, "ui-label", $sourceSlots);
 $sourceSlots = null;
 $html .= "</div>";
 return $html;
 };
-return call_user_func("_id85", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

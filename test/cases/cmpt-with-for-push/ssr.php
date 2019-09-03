@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id53($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id53Proto = [
+function _id2($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id2Proto = [
 "filters" => [
 
 ],
@@ -14,7 +14,7 @@ $_id53Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id53Proto,
+"proto" => $_id2Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -49,8 +49,8 @@ $html .= San::escapeHTML((isset($componentCtx["data"]->{"text"}) ? $componentCtx
 $html .= "</span></a>";
 return $html;
 };
-function _id52($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id52Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "filters" => [
 
 ],
@@ -64,7 +64,7 @@ $_id52Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id52Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -90,13 +90,13 @@ $html .= ">";
 if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
-$_id55 = (isset($componentCtx["data"]->{"list"}) ? $componentCtx["data"]->{"list"} : null);
-if (is_array($_id55) || is_object($_id55)) {
-foreach ($_id55 as $_id54 => $value) {
-$componentCtx["data"]->_id54 = $_id54;
+$_id4 = (isset($componentCtx["data"]->{"list"}) ? $componentCtx["data"]->{"list"} : null);
+if (is_array($_id4) || is_object($_id4)) {
+foreach ($_id4 as $_id3 => $value) {
+$componentCtx["data"]->_id3 = $_id3;
 $componentCtx["data"]->item = $value;
 $sourceSlots = [];
-$html .= call_user_func("_id53", 
+$html .= call_user_func("_id2", 
 (object)["title" => (isset($componentCtx["data"]->{"item"}->{"title"}) ? $componentCtx["data"]->{"item"}->{"title"} : null),
 "text" => (isset($componentCtx["data"]->{"item"}->{"text"}) ? $componentCtx["data"]->{"item"}->{"text"} : null)], true, $componentCtx, "ui-label", $sourceSlots);
 $sourceSlots = null;
@@ -106,5 +106,5 @@ $sourceSlots = null;
 $html .= "</div>";
 return $html;
 };
-return call_user_func("_id52", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

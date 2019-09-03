@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id211($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id211Proto = [
+function _id2($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id2Proto = [
 "filters" => [
 
 ],
@@ -14,7 +14,7 @@ $_id211Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id211Proto,
+"proto" => $_id2Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -40,7 +40,7 @@ $html .= ">";
 if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
-if (!isset($componentCtx["slotRenderers"]["_id212"])) $componentCtx["slotRenderers"]["_id212"] = function () use (&$componentCtx, &$html){
+if (!isset($componentCtx["slotRenderers"]["_id3"])) $componentCtx["slotRenderers"]["_id3"] = function () use (&$componentCtx, &$html){
 $defaultSlotRender = function ($componentCtx) {
   $html = "";
   return $html;
@@ -58,12 +58,12 @@ foreach ($mySourceSlots as $renderIndex => $slot) {
   $html .= $slot($slotCtx);
 }
 };
-call_user_func($componentCtx["slotRenderers"]["_id212"]);
+call_user_func($componentCtx["slotRenderers"]["_id3"]);
 $html .= "</div>";
 return $html;
 };
-function _id213($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id213Proto = [
+function _id4($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id4Proto = [
 "toggle" => function(){},
 "filters" => [
 
@@ -78,7 +78,7 @@ $_id213Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id213Proto,
+"proto" => $_id4Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -105,7 +105,7 @@ if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
 $html .= "<h3>";
-if (!isset($componentCtx["slotRenderers"]["_id214"])) $componentCtx["slotRenderers"]["_id214"] = function () use (&$componentCtx, &$html){
+if (!isset($componentCtx["slotRenderers"]["_id5"])) $componentCtx["slotRenderers"]["_id5"] = function () use (&$componentCtx, &$html){
 $defaultSlotRender = function ($componentCtx) {
   $html = "";
   return $html;
@@ -126,10 +126,10 @@ foreach ($mySourceSlots as $renderIndex => $slot) {
   $html .= $slot($slotCtx);
 }
 };
-call_user_func($componentCtx["slotRenderers"]["_id214"]);
+call_user_func($componentCtx["slotRenderers"]["_id5"]);
 $html .= "</h3>";
 if (!(isset($componentCtx["data"]->{"hidden"}) ? $componentCtx["data"]->{"hidden"} : null)) {
-if (!isset($componentCtx["slotRenderers"]["_id215"])) $componentCtx["slotRenderers"]["_id215"] = function () use (&$componentCtx, &$html){
+if (!isset($componentCtx["slotRenderers"]["_id6"])) $componentCtx["slotRenderers"]["_id6"] = function () use (&$componentCtx, &$html){
 $defaultSlotRender = function ($componentCtx) {
   $html = "";
   return $html;
@@ -147,14 +147,14 @@ foreach ($mySourceSlots as $renderIndex => $slot) {
   $html .= $slot($slotCtx);
 }
 };
-call_user_func($componentCtx["slotRenderers"]["_id215"]);
+call_user_func($componentCtx["slotRenderers"]["_id6"]);
 
 }
 $html .= "</div>";
 return $html;
 };
-function _id216($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id216Proto = [
+function _id7($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id7Proto = [
 "filters" => [
 
 ],
@@ -168,7 +168,7 @@ $_id216Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id216Proto,
+"proto" => $_id7Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -195,7 +195,7 @@ if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
 $html .= "<a>";
-if (!isset($componentCtx["slotRenderers"]["_id217"])) $componentCtx["slotRenderers"]["_id217"] = function () use (&$componentCtx, &$html){
+if (!isset($componentCtx["slotRenderers"]["_id8"])) $componentCtx["slotRenderers"]["_id8"] = function () use (&$componentCtx, &$html){
 $defaultSlotRender = function ($componentCtx) {
   $html = "";
   return $html;
@@ -213,12 +213,12 @@ foreach ($mySourceSlots as $renderIndex => $slot) {
   $html .= $slot($slotCtx);
 }
 };
-call_user_func($componentCtx["slotRenderers"]["_id217"]);
+call_user_func($componentCtx["slotRenderers"]["_id8"]);
 $html .= "</a></div>";
 return $html;
 };
-function _id210($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id210Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "filters" => [
 
 ],
@@ -232,7 +232,7 @@ $_id210Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id210Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -273,12 +273,12 @@ array_push($sourceSlots, [function ($componentCtx) {
 $html .= San::escapeHTML((isset($componentCtx["data"]->{"closeText"}) ? $componentCtx["data"]->{"closeText"} : null));
   return $html;
 }]);
-$html .= call_user_func("_id216", 
+$html .= call_user_func("_id7", 
 (object)[], true, $componentCtx, "x-button", $sourceSlots);
 $sourceSlots = null;
   return $html;
 }]);
-$html .= call_user_func("_id211", 
+$html .= call_user_func("_id2", 
 (object)[], true, $componentCtx, "x-panel", $sourceSlots);
 $sourceSlots = null;
   return $html;
@@ -291,11 +291,11 @@ $html .= "</b>";
 
   return $html;
 }, "title"]);
-$html .= call_user_func("_id213", 
+$html .= call_user_func("_id4", 
 (object)["hidden" => (isset($componentCtx["data"]->{"folderHidden"}) ? $componentCtx["data"]->{"folderHidden"} : null)], true, $componentCtx, "x-folder", $sourceSlots);
 $sourceSlots = null;
 $html .= "</div>";
 return $html;
 };
-return call_user_func("_id210", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

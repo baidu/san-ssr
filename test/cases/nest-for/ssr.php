@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id264($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id264Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "filters" => [
 
 ],
@@ -14,7 +14,7 @@ $_id264Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id264Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -40,16 +40,16 @@ $html .= ">";
 if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
-$_id266 = (isset($componentCtx["data"]->{"cates"}) ? $componentCtx["data"]->{"cates"} : null);
-if (is_array($_id266) || is_object($_id266)) {
-foreach ($_id266 as $_id265 => $value) {
-$componentCtx["data"]->_id265 = $_id265;
+$_id3 = (isset($componentCtx["data"]->{"cates"}) ? $componentCtx["data"]->{"cates"} : null);
+if (is_array($_id3) || is_object($_id3)) {
+foreach ($_id3 as $_id2 => $value) {
+$componentCtx["data"]->_id2 = $_id2;
 $componentCtx["data"]->cate = $value;
 $html .= "<fieldset>";
-$_id268 = (isset($componentCtx["data"]->{"forms"}->{(isset($componentCtx["data"]->{"cate"}) ? $componentCtx["data"]->{"cate"} : null)}) ? $componentCtx["data"]->{"forms"}->{(isset($componentCtx["data"]->{"cate"}) ? $componentCtx["data"]->{"cate"} : null)} : null);
-if (is_array($_id268) || is_object($_id268)) {
-foreach ($_id268 as $_id267 => $value) {
-$componentCtx["data"]->_id267 = $_id267;
+$_id5 = (isset($componentCtx["data"]->{"forms"}->{(isset($componentCtx["data"]->{"cate"}) ? $componentCtx["data"]->{"cate"} : null)}) ? $componentCtx["data"]->{"forms"}->{(isset($componentCtx["data"]->{"cate"}) ? $componentCtx["data"]->{"cate"} : null)} : null);
+if (is_array($_id5) || is_object($_id5)) {
+foreach ($_id5 as $_id4 => $value) {
+$componentCtx["data"]->_id4 = $_id4;
 $componentCtx["data"]->item = $value;
 $html .= "<label>";
 $html .= San::escapeHTML((isset($componentCtx["data"]->{"item"}) ? $componentCtx["data"]->{"item"} : null));
@@ -64,5 +64,5 @@ $html .= "</fieldset>";
 $html .= "</form>";
 return $html;
 };
-return call_user_func("_id264", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

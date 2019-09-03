@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id300($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id300Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "filters" => [
 
 ],
@@ -14,7 +14,7 @@ $_id300Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id300Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -49,10 +49,10 @@ $html .= San::escapeHTML((isset($componentCtx["data"]->{"online"}) ? $componentC
 $html .= "</b><select";
 $selectValue = (isset($componentCtx["data"]->{"online"}) ? $componentCtx["data"]->{"online"} : null)?(isset($componentCtx["data"]->{"online"}) ? $componentCtx["data"]->{"online"} : null): "";
 $html .= ">";
-$_id302 = (isset($componentCtx["data"]->{"persons"}) ? $componentCtx["data"]->{"persons"} : null);
-if (is_array($_id302) || is_object($_id302)) {
-foreach ($_id302 as $_id301 => $value) {
-$componentCtx["data"]->_id301 = $_id301;
+$_id3 = (isset($componentCtx["data"]->{"persons"}) ? $componentCtx["data"]->{"persons"} : null);
+if (is_array($_id3) || is_object($_id3)) {
+foreach ($_id3 as $_id2 => $value) {
+$componentCtx["data"]->_id2 = $_id2;
 $componentCtx["data"]->p = $value;
 $html .= "<option";
 $optionValue = San::escapeHTML((isset($componentCtx["data"]->{"p"}) ? $componentCtx["data"]->{"p"} : null));
@@ -84,5 +84,5 @@ $selectValue = null;
 $html .= "</div>";
 return $html;
 };
-return call_user_func("_id300", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

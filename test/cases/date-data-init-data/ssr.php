@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id103($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id103Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "filters" => [
 "year" => function ($date) {
     return $date["getFullYear"]();
@@ -16,7 +16,7 @@ $_id103Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id103Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)["date" => new Date(431366400000)],
 "owner" => $parentCtx,
@@ -52,5 +52,5 @@ $html .= San::escapeHTML(San::callFilter($componentCtx, "year", [(isset($compone
 $html .= "</b></div>";
 return $html;
 };
-return call_user_func("_id103", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

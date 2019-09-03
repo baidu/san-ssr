@@ -6906,6 +6906,8 @@ function genComponentProtoCode (component) {
 * @return {string}
 */
 function compileToSource (ComponentClass, target = 'js') {
+    guid = 1
+    ssrIndex = 0
     const sourceBuffer = new CompileSourceBuffer(target)
     const contextId = genSSRId()
 

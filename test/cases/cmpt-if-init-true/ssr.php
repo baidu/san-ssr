@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id277($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id277Proto = [
+function _id2($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id2Proto = [
 "filters" => [
 
 ],
@@ -14,7 +14,7 @@ $_id277Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id277Proto,
+"proto" => $_id2Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -49,8 +49,8 @@ $html .= San::escapeHTML((isset($componentCtx["data"]->{"text"}) ? $componentCtx
 $html .= "</span></a>";
 return $html;
 };
-function _id276($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id276Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "filters" => [
 
 ],
@@ -64,7 +64,7 @@ $_id276Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id276Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -93,7 +93,7 @@ $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASH
 $html .= "<h5>";
 if ((isset($componentCtx["data"]->{"cond"}) ? $componentCtx["data"]->{"cond"} : null)) {
 $sourceSlots = [];
-$html .= call_user_func("_id277", 
+$html .= call_user_func("_id2", 
 (object)["title" => (isset($componentCtx["data"]->{"name"}) ? $componentCtx["data"]->{"name"} : null),
 "text" => (isset($componentCtx["data"]->{"jokeName"}) ? $componentCtx["data"]->{"jokeName"} : null)], true, $componentCtx, "ui-label", $sourceSlots);
 $sourceSlots = null;
@@ -106,5 +106,5 @@ $html .= San::escapeHTML((isset($componentCtx["data"]->{"company"}) ? $component
 $html .= "</u></p></div>";
 return $html;
 };
-return call_user_func("_id276", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

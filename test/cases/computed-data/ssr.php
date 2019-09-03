@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id241($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id241Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "filters" => [
 
 ],
@@ -16,7 +16,7 @@ $_id241Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id241Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)["realTitle" => "realundefined"],
 "owner" => $parentCtx,
@@ -52,5 +52,5 @@ $html .= San::escapeHTML((isset($componentCtx["data"]->{"realTitle"}) ? $compone
 $html .= "</b></div>";
 return $html;
 };
-return call_user_func("_id241", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

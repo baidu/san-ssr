@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id128($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id128Proto = [
+function _id2($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id2Proto = [
 "filters" => [
 
 ],
@@ -14,7 +14,7 @@ $_id128Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id128Proto,
+"proto" => $_id2Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -40,10 +40,10 @@ $html .= ">";
 if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
-$_id130 = (isset($componentCtx["data"]->{"list"}) ? $componentCtx["data"]->{"list"} : null);
-if (is_array($_id130) || is_object($_id130)) {
-foreach ($_id130 as $_id129 => $value) {
-$componentCtx["data"]->_id129 = $_id129;
+$_id4 = (isset($componentCtx["data"]->{"list"}) ? $componentCtx["data"]->{"list"} : null);
+if (is_array($_id4) || is_object($_id4)) {
+foreach ($_id4 as $_id3 => $value) {
+$componentCtx["data"]->_id3 = $_id3;
 $componentCtx["data"]->item = $value;
 $html .= "<li>";
 $html .= San::escapeHTML((isset($componentCtx["data"]->{"item"}) ? $componentCtx["data"]->{"item"} : null));
@@ -54,8 +54,8 @@ $html .= "</li>";
 $html .= "</ul>";
 return $html;
 };
-function _id127($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id127Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "filters" => [
 
 ],
@@ -69,7 +69,7 @@ $_id127Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id127Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -96,11 +96,11 @@ if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
 $sourceSlots = [];
-$html .= call_user_func("_id128", 
+$html .= call_user_func("_id2", 
 (object)["list" => San::spread([1, true, (isset($componentCtx["data"]->{"ext"}) ? $componentCtx["data"]->{"ext"} : null), "erik", (isset($componentCtx["data"]->{"ext2"}) ? $componentCtx["data"]->{"ext2"} : null)], [0,0,1,0,1])], true, $componentCtx, "x-l", $sourceSlots);
 $sourceSlots = null;
 $html .= "</div>";
 return $html;
 };
-return call_user_func("_id127", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id271($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id271Proto = [
+function _id2($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id2Proto = [
 "filters" => [
 
 ],
@@ -14,7 +14,7 @@ $_id271Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id271Proto,
+"proto" => $_id2Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -40,7 +40,7 @@ $html .= ">";
 if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
-if (!isset($componentCtx["slotRenderers"]["_id272"])) $componentCtx["slotRenderers"]["_id272"] = function () use (&$componentCtx, &$html){
+if (!isset($componentCtx["slotRenderers"]["_id3"])) $componentCtx["slotRenderers"]["_id3"] = function () use (&$componentCtx, &$html){
 $defaultSlotRender = function ($componentCtx) {
   $html = "";
   return $html;
@@ -58,12 +58,12 @@ foreach ($mySourceSlots as $renderIndex => $slot) {
   $html .= $slot($slotCtx);
 }
 };
-call_user_func($componentCtx["slotRenderers"]["_id272"]);
+call_user_func($componentCtx["slotRenderers"]["_id3"]);
 $html .= "</li>";
 return $html;
 };
-function _id270($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id270Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "filters" => [
 
 ],
@@ -77,7 +77,7 @@ $_id270Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id270Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -103,10 +103,10 @@ $html .= ">";
 if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
-$_id274 = (isset($componentCtx["data"]->{"list"}) ? $componentCtx["data"]->{"list"} : null);
-if (is_array($_id274) || is_object($_id274)) {
-foreach ($_id274 as $_id273 => $value) {
-$componentCtx["data"]->_id273 = $_id273;
+$_id5 = (isset($componentCtx["data"]->{"list"}) ? $componentCtx["data"]->{"list"} : null);
+if (is_array($_id5) || is_object($_id5)) {
+foreach ($_id5 as $_id4 => $value) {
+$componentCtx["data"]->_id4 = $_id4;
 $componentCtx["data"]->item = $value;
 $sourceSlots = [];
 array_push($sourceSlots, [function ($componentCtx) {
@@ -114,7 +114,7 @@ array_push($sourceSlots, [function ($componentCtx) {
 $html .= "Hello " . San::escapeHTML((isset($componentCtx["data"]->{"item"}) ? $componentCtx["data"]->{"item"} : null));
   return $html;
 }]);
-$html .= call_user_func("_id271", 
+$html .= call_user_func("_id2", 
 (object)[], true, $componentCtx, "x-li", $sourceSlots);
 $sourceSlots = null;
 
@@ -123,5 +123,5 @@ $sourceSlots = null;
 $html .= "</ul>";
 return $html;
 };
-return call_user_func("_id270", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

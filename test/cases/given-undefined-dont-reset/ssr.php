@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id162($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id162Proto = [
+function _id2($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id2Proto = [
 "filters" => [
 
 ],
@@ -14,7 +14,7 @@ $_id162Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id162Proto,
+"proto" => $_id2Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)["foo" => "foo"],
 "owner" => $parentCtx,
@@ -45,8 +45,8 @@ $html .= San::escapeHTML((isset($componentCtx["data"]->{"foo"}) ? $componentCtx[
 $html .= "</u>";
 return $html;
 };
-function _id161($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id161Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "getFooValue" => function(){},
 "filters" => [
 
@@ -61,7 +61,7 @@ $_id161Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id161Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)["formData" => (object)[]],
 "owner" => $parentCtx,
@@ -89,11 +89,11 @@ if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
 $sourceSlots = [];
-$html .= call_user_func("_id162", 
+$html .= call_user_func("_id2", 
 (object)["foo" => (isset($componentCtx["data"]->{"formData"}->{"foo"}) ? $componentCtx["data"]->{"formData"}->{"foo"} : null)], true, $componentCtx, "my-u", $sourceSlots);
 $sourceSlots = null;
 $html .= "</div>";
 return $html;
 };
-return call_user_func("_id161", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

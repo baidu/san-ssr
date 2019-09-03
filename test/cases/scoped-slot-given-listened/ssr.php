@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id297($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id297Proto = [
+function _id2($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id2Proto = [
 "emailClick" => function(){},
 "filters" => [
 
@@ -15,7 +15,7 @@ $_id297Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id297Proto,
+"proto" => $_id2Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -41,7 +41,7 @@ $html .= ">";
 if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
-if (!isset($componentCtx["slotRenderers"]["_id298"])) $componentCtx["slotRenderers"]["_id298"] = function () use (&$componentCtx, &$html){
+if (!isset($componentCtx["slotRenderers"]["_id3"])) $componentCtx["slotRenderers"]["_id3"] = function () use (&$componentCtx, &$html){
 $defaultSlotRender = function ($componentCtx) {
   $html = "";
 $html .= "<p>";
@@ -70,12 +70,12 @@ foreach ($mySourceSlots as $renderIndex => $slot) {
   $html .= $slot($slotCtx);
 }
 };
-call_user_func($componentCtx["slotRenderers"]["_id298"]);
+call_user_func($componentCtx["slotRenderers"]["_id3"]);
 $html .= "</div>";
 return $html;
 };
-function _id296($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id296Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "emailClick" => function(){},
 "filters" => [
 
@@ -90,7 +90,7 @@ $_id296Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id296Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -129,11 +129,11 @@ $html .= "</u>";
 
   return $html;
 }, "test"]);
-$html .= call_user_func("_id297", 
+$html .= call_user_func("_id2", 
 (object)["data" => (isset($componentCtx["data"]->{"man"}) ? $componentCtx["data"]->{"man"} : null)], true, $componentCtx, "x-man", $sourceSlots);
 $sourceSlots = null;
 $html .= "</div>";
 return $html;
 };
-return call_user_func("_id296", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

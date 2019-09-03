@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id178($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id178Proto = [
+function _id3($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id3Proto = [
 "filters" => [
 
 ],
@@ -14,7 +14,7 @@ $_id178Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id178Proto,
+"proto" => $_id3Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -40,10 +40,10 @@ $html .= ">";
 if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
-$_id180 = (isset($componentCtx["data"]->{"list"}) ? $componentCtx["data"]->{"list"} : null);
-if (is_array($_id180) || is_object($_id180)) {
-foreach ($_id180 as $_id179 => $value) {
-$componentCtx["data"]->_id179 = $_id179;
+$_id5 = (isset($componentCtx["data"]->{"list"}) ? $componentCtx["data"]->{"list"} : null);
+if (is_array($_id5) || is_object($_id5)) {
+foreach ($_id5 as $_id4 => $value) {
+$componentCtx["data"]->_id4 = $_id4;
 $componentCtx["data"]->item = $value;
 $html .= "<li";
 if ((isset($componentCtx["data"]->{"item"}) ? $componentCtx["data"]->{"item"} : null)) {
@@ -58,8 +58,8 @@ $html .= "</li>";
 $html .= "</ul>";
 return $html;
 };
-function _id177($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id177Proto = [
+function _id2($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id2Proto = [
 "filters" => [
 
 ],
@@ -73,7 +73,7 @@ $_id177Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id177Proto,
+"proto" => $_id2Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -99,10 +99,10 @@ $html .= ">";
 if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
-$_id182 = (isset($componentCtx["data"]->{"list"}) ? $componentCtx["data"]->{"list"} : null);
-if (is_array($_id182) || is_object($_id182)) {
-foreach ($_id182 as $_id181 => $value) {
-$componentCtx["data"]->_id181 = $_id181;
+$_id7 = (isset($componentCtx["data"]->{"list"}) ? $componentCtx["data"]->{"list"} : null);
+if (is_array($_id7) || is_object($_id7)) {
+foreach ($_id7 as $_id6 => $value) {
+$componentCtx["data"]->_id6 = $_id6;
 $componentCtx["data"]->item = $value;
 $html .= "<dl><dt";
 if ((isset($componentCtx["data"]->{"item"}->{"name"}) ? $componentCtx["data"]->{"item"}->{"name"} : null)) {
@@ -112,7 +112,7 @@ $html .= ">";
 $html .= San::escapeHTML((isset($componentCtx["data"]->{"item"}->{"name"}) ? $componentCtx["data"]->{"item"}->{"name"} : null));
 $html .= "</dt><dd>";
 $sourceSlots = [];
-$html .= call_user_func("_id178", 
+$html .= call_user_func("_id3", 
 (object)["list" => (isset($componentCtx["data"]->{"item"}->{"tels"}) ? $componentCtx["data"]->{"item"}->{"tels"} : null)], true, $componentCtx, "ui-tel", $sourceSlots);
 $sourceSlots = null;
 $html .= "</dd></dl>";
@@ -122,8 +122,8 @@ $html .= "</dd></dl>";
 $html .= "</div>";
 return $html;
 };
-function _id176($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id176Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "filters" => [
 
 ],
@@ -137,7 +137,7 @@ $_id176Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id176Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -165,7 +165,7 @@ $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASH
 }
 if ((isset($componentCtx["data"]->{"cond"}) ? $componentCtx["data"]->{"cond"} : null)) {
 $sourceSlots = [];
-$html .= call_user_func("_id177", 
+$html .= call_user_func("_id2", 
 (object)["list" => (isset($componentCtx["data"]->{"persons"}) ? $componentCtx["data"]->{"persons"} : null)], true, $componentCtx, "ui-person", $sourceSlots);
 $sourceSlots = null;
 
@@ -173,5 +173,5 @@ $sourceSlots = null;
 $html .= "</div>";
 return $html;
 };
-return call_user_func("_id176", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

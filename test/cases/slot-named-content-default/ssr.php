@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id99($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id99Proto = [
+function _id2($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id2Proto = [
 "filters" => [
 
 ],
@@ -14,7 +14,7 @@ $_id99Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id99Proto,
+"proto" => $_id2Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)["title" => "5","text" => "five"],
 "owner" => $parentCtx,
@@ -43,7 +43,7 @@ if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
 $html .= "<div class=\"head\">";
-if (!isset($componentCtx["slotRenderers"]["_id100"])) $componentCtx["slotRenderers"]["_id100"] = function () use (&$componentCtx, &$html){
+if (!isset($componentCtx["slotRenderers"]["_id3"])) $componentCtx["slotRenderers"]["_id3"] = function () use (&$componentCtx, &$html){
 $defaultSlotRender = function ($componentCtx) {
   $html = "";
 $html .= "<h3";
@@ -72,9 +72,9 @@ foreach ($mySourceSlots as $renderIndex => $slot) {
   $html .= $slot($slotCtx);
 }
 };
-call_user_func($componentCtx["slotRenderers"]["_id100"]);
+call_user_func($componentCtx["slotRenderers"]["_id3"]);
 $html .= "</div><div>";
-if (!isset($componentCtx["slotRenderers"]["_id101"])) $componentCtx["slotRenderers"]["_id101"] = function () use (&$componentCtx, &$html){
+if (!isset($componentCtx["slotRenderers"]["_id4"])) $componentCtx["slotRenderers"]["_id4"] = function () use (&$componentCtx, &$html){
 $defaultSlotRender = function ($componentCtx) {
   $html = "";
 $html .= "<p";
@@ -100,12 +100,12 @@ foreach ($mySourceSlots as $renderIndex => $slot) {
   $html .= $slot($slotCtx);
 }
 };
-call_user_func($componentCtx["slotRenderers"]["_id101"]);
+call_user_func($componentCtx["slotRenderers"]["_id4"]);
 $html .= "</div></div>";
 return $html;
 };
-function _id98($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id98Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "filters" => [
 
 ],
@@ -119,7 +119,7 @@ $_id98Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id98Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -146,12 +146,12 @@ if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
 $sourceSlots = [];
-$html .= call_user_func("_id99", 
+$html .= call_user_func("_id2", 
 (object)["title" => (isset($componentCtx["data"]->{"tTitle"}) ? $componentCtx["data"]->{"tTitle"} : null),
 "text" => (isset($componentCtx["data"]->{"tText"}) ? $componentCtx["data"]->{"tText"} : null)], true, $componentCtx, "ui-tab", $sourceSlots);
 $sourceSlots = null;
 $html .= "</div>";
 return $html;
 };
-return call_user_func("_id98", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

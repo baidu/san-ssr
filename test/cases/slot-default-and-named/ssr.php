@@ -1,6 +1,6 @@
 <?php $render = function ($data, $noDataOutput) {
-function _id223($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id223Proto = [
+function _id2($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id2Proto = [
 "filters" => [
 
 ],
@@ -14,7 +14,7 @@ $_id223Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id223Proto,
+"proto" => $_id2Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -41,7 +41,7 @@ if (!$noDataOutput) {
 $html .= "<!--s-data:" . json_encode($componentCtx["data"], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";
 }
 $html .= "<div class=\"head\">";
-if (!isset($componentCtx["slotRenderers"]["_id224"])) $componentCtx["slotRenderers"]["_id224"] = function () use (&$componentCtx, &$html){
+if (!isset($componentCtx["slotRenderers"]["_id3"])) $componentCtx["slotRenderers"]["_id3"] = function () use (&$componentCtx, &$html){
 $defaultSlotRender = function ($componentCtx) {
   $html = "";
   return $html;
@@ -62,9 +62,9 @@ foreach ($mySourceSlots as $renderIndex => $slot) {
   $html .= $slot($slotCtx);
 }
 };
-call_user_func($componentCtx["slotRenderers"]["_id224"]);
+call_user_func($componentCtx["slotRenderers"]["_id3"]);
 $html .= "</div><div>";
-if (!isset($componentCtx["slotRenderers"]["_id225"])) $componentCtx["slotRenderers"]["_id225"] = function () use (&$componentCtx, &$html){
+if (!isset($componentCtx["slotRenderers"]["_id4"])) $componentCtx["slotRenderers"]["_id4"] = function () use (&$componentCtx, &$html){
 $defaultSlotRender = function ($componentCtx) {
   $html = "";
   return $html;
@@ -82,7 +82,7 @@ foreach ($mySourceSlots as $renderIndex => $slot) {
   $html .= $slot($slotCtx);
 }
 };
-call_user_func($componentCtx["slotRenderers"]["_id225"]);
+call_user_func($componentCtx["slotRenderers"]["_id4"]);
 $html .= "</div><u";
 if ((isset($componentCtx["data"]->{"text"}) ? $componentCtx["data"]->{"text"} : null)) {
 $html .= San::attrFilter('title', San::escapeHTML((isset($componentCtx["data"]->{"text"}) ? $componentCtx["data"]->{"text"} : null)));
@@ -90,8 +90,8 @@ $html .= San::attrFilter('title', San::escapeHTML((isset($componentCtx["data"]->
 $html .= "></u></div>";
 return $html;
 };
-function _id222($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
-$_id222Proto = [
+function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
+$_id1Proto = [
 "filters" => [
 
 ],
@@ -105,7 +105,7 @@ $_id222Proto = [
 ];
 $html = "";
 $componentCtx = [
-"proto" => $_id222Proto,
+"proto" => $_id1Proto,
 "sourceSlots" => $sourceSlots,
 "data" => $data ? $data : (object)[],
 "owner" => $parentCtx,
@@ -155,11 +155,11 @@ $html .= "</h3>";
 
   return $html;
 }, "title"]);
-$html .= call_user_func("_id223", 
+$html .= call_user_func("_id2", 
 (object)["text" => (isset($componentCtx["data"]->{"tabText"}) ? $componentCtx["data"]->{"tabText"} : null)], true, $componentCtx, "ui-tab", $sourceSlots);
 $sourceSlots = null;
 $html .= "</div>";
 return $html;
 };
-return call_user_func("_id222", $data, $noDataOutput);
+return call_user_func("_id1", $data, $noDataOutput);
 }; ?>

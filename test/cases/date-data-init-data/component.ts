@@ -2,7 +2,7 @@
 const san = require('san')
 const MyComponent = san.defineComponent({
     filters: {
-        year: function (date) {
+        year: function (date: Date) {
             return date.getFullYear()
         }
     },

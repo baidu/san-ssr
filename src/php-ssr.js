@@ -600,19 +600,6 @@ const ieOldThan9 = ie && /* istanbul ignore next */ ie < 9
 // #[end]
 
 /**
-* 触发元素事件
-*
-* @inner
-* @param {HTMLElement} el DOM元素
-* @param {string} eventName 事件名
-*/
-function trigger (el, eventName) {
-    const event = document.createEvent('HTMLEvents')
-    event.initEvent(eventName, true, true)
-    el.dispatchEvent(event)
-}
-
-/**
 * 自闭合标签列表
 *
 * @type {Object}
@@ -3233,44 +3220,6 @@ Data.prototype.remove = function (expr, value, option) {
 }
 
 /**
-* 获取声明式事件的监听函数
-*
-* @param {Object} eventBind 绑定信息对象
-* @param {Component} owner 所属组件环境
-* @param {Data} data 数据环境
-* @param {boolean} isComponentEvent 是否组件自定义事件
-* @return {Function}
-*/
-function getEventListener (eventBind, owner, data, isComponentEvent) {
-    const args = eventBind.expr.args
-
-    return function (e) {
-        e = isComponentEvent ? e : e || window.event
-
-        const method = findMethod(owner, eventBind.expr.name, data)
-        if (typeof method === 'function') {
-            method.apply(
-                owner,
-                args.length ? evalArgs(args, new Data({ $event: e }, data), owner) : []
-            )
-        }
-
-        if (eventBind.modifier.prevent) {
-            e.preventDefault && e.preventDefault()
-            return false
-        }
-
-        if (eventBind.modifier.stop) {
-            if (e.stopPropagation) {
-                e.stopPropagation()
-            } else {
-                e.cancelBubble = true
-            }
-        }
-    }
-}
-
-/**
 * 判断变更数组是否影响到数据引用摘要
 *
 * @param {Array} changes 变更数组
@@ -3703,7 +3652,6 @@ function elementOwnDispose (noDetach, noTransition) {
 function elementOwnOnEl (name, listener, capture) {
     capture = !!capture
     this._elFns.push([name, listener, capture])
-    on(this.el, name, listener, capture)
 }
 
 const isBrowser = typeof window !== 'undefined'

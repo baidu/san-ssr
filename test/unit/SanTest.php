@@ -7,11 +7,11 @@ final class SanTest extends TestCase
 {
     public function testExtend(): void
     {
-        $target = ["foo" => "FOO", "bar" => "BAR"];
-        $source = ["bar" => "bar", "coo" => "COO"];
+        $target = (object)["foo" => "FOO", "bar" => "BAR"];
+        $source = (object)["bar" => "bar", "coo" => "COO"];
         San::extend($target, $source);
 
-        $this->assertEquals([
+        $this->assertEquals((object)[
             "foo" => "FOO",
             "bar" => "bar",
             "coo" => "COO"

@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "outDir": "dist",
+    "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "downlevelIteration": true,
+    "strict": false,
+    "suppressImplicitAnyIndexErrors": true
+  },
+  "all": true,
+  "exclude": [ "node_modules", "dist" ]
+}

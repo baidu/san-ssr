@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id18 = componentRenderers._id18|| _id18;
-var _id18Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 op:
 {
 plus:function (a, b) {
@@ -179,10 +179,10 @@ computedNames: [
 ],
 tagName: "u"
 };
-function _id18(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id18Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -213,5 +213,5 @@ html += "result " + escapeHTML(componentCtx.proto.op[componentCtx.data.isUp?"plu
 html += "</u>";
 return html;
 };
-return componentRenderers._id18(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

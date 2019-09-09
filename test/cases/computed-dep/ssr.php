@@ -5,16 +5,10 @@ $_id1Proto = [
 
 ],
 "computed" => [
-"less" => function ($componentCtx) {
-            return (isset($componentCtx["data"]->{"normal"}) ? $componentCtx["data"]->{"normal"} : null) - 1
-        },"normal" => function ($componentCtx) {
-            return (isset($componentCtx["data"]->{"num"}) ? $componentCtx["data"]->{"num"} : null)
-        },"more" => function ($componentCtx) {
-            return (isset($componentCtx["data"]->{"normal"}) ? $componentCtx["data"]->{"normal"} : null) + 1
-        }
+
 ],
 "computedNames" => [
-"normal","less","more"
+"less","normal","more"
 ],
 "tagName" => "div"
 ];

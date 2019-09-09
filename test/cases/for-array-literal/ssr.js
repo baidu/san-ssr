@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id105 = componentRenderers._id105|| _id105;
-var _id105Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "ul"
 };
-function _id105(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id105Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -199,26 +199,26 @@ html += ">";
 if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
-var _id107 = [
+var _id3 = [
 1,
 2,
 componentCtx.data.three,
 ...componentCtx.data.other
 ];
-if (_id107 instanceof Array) {
-for (var _id106 = 0; _id106 < _id107.length; _id106++) {
-componentCtx.data._id106=_id106;
-componentCtx.data.item= _id107[_id106];
+if (_id3 instanceof Array) {
+for (var _id2 = 0; _id2 < _id3.length; _id2++) {
+componentCtx.data._id2=_id2;
+componentCtx.data.item= _id3[_id2];
 html += "<li>";
 html += escapeHTML(componentCtx.data.item);
 html += "</li>";
 
 }
-} else if (typeof _id107 === "object") {
-for (var _id106 in _id107) {
-if (_id107[_id106] != null) {
-componentCtx.data._id106=_id106;
-componentCtx.data.item= _id107[_id106];
+} else if (typeof _id3 === "object") {
+for (var _id2 in _id3) {
+if (_id3[_id2] != null) {
+componentCtx.data._id2=_id2;
+componentCtx.data.item= _id3[_id2];
 html += "<li>";
 html += escapeHTML(componentCtx.data.item);
 html += "</li>";
@@ -229,5 +229,5 @@ html += "</li>";
 html += "</ul>";
 return html;
 };
-return componentRenderers._id105(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

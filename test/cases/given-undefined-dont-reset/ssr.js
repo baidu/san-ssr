@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id132 = componentRenderers._id132|| _id132;
-var _id132Proto = {
+componentRenderers._id2 = componentRenderers._id2|| _id2;
+var _id2Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "u"
 };
-function _id132(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id2(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id132Proto,
+proto: _id2Proto,
 sourceSlots: sourceSlots,
 data: data || {"foo":"foo"},
 owner: parentCtx,
@@ -204,8 +204,8 @@ html += escapeHTML(componentCtx.data.foo);
 html += "</u>";
 return html;
 };
-componentRenderers._id131 = componentRenderers._id131|| _id131;
-var _id131Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 getFooValue: function () {
         return this.ref('uc').data.get('foo')
     },
@@ -220,10 +220,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id131(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id131Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {"formData":{}},
 owner: parentCtx,
@@ -252,11 +252,11 @@ if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
 var $sourceSlots = [];
-html += componentRenderers._id132(
+html += componentRenderers._id2(
 {"foo":componentCtx.data.formData.foo}, true, componentCtx, "my-u", $sourceSlots);
 $sourceSlots = null;
 html += "</div>";
 return html;
 };
-return componentRenderers._id131(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

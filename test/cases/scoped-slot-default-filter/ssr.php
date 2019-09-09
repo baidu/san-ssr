@@ -2,9 +2,7 @@
 function _id2($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
 $_id2Proto = [
 "filters" => [
-"upper" => function ($source) {
-    return $source["charAt"](0)["toUpperCase"]() + \Ts2Php_Helper::arraySlice($source, 1);
-}
+
 ],
 "computed" => [
 
@@ -75,9 +73,7 @@ return $html;
 function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
 $_id1Proto = [
 "filters" => [
-"upper" => function ($source) {
-    return $source["toUpperCase"]();
-}
+
 ],
 "computed" => [
 

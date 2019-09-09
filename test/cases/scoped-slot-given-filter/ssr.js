@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id232 = componentRenderers._id232|| _id232;
-var _id232Proto = {
+componentRenderers._id2 = componentRenderers._id2|| _id2;
+var _id2Proto = {
 filters: {
 upper: function (source) {
             return source.charAt(0).toUpperCase() + source.slice(1)
@@ -171,10 +171,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id232(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id2(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id232Proto,
+proto: _id2Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -201,7 +201,7 @@ html += ">";
 if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
-componentCtx.slotRenderers._id233 = componentCtx.slotRenderers._id233 || function () {
+componentCtx.slotRenderers._id3 = componentCtx.slotRenderers._id3 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
 html += "<p>";
@@ -230,12 +230,12 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id233();
+componentCtx.slotRenderers._id3();
 html += "</div>";
 return html;
 };
-componentRenderers._id231 = componentRenderers._id231|| _id231;
-var _id231Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 upper: function (source) {
             return source.toUpperCase()
@@ -249,10 +249,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id231(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id231Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -292,11 +292,11 @@ html += "</u>";
 
   return html;
 }, "test"]);
-html += componentRenderers._id232(
+html += componentRenderers._id2(
 {"data":componentCtx.data.man}, true, componentCtx, "x-man", $sourceSlots);
 $sourceSlots = null;
 html += "</div>";
 return html;
 };
-return componentRenderers._id231(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

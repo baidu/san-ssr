@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id243 = componentRenderers._id243|| _id243;
-var _id243Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id243(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id243Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -208,11 +208,11 @@ html += escapeHTML(componentCtx.data.online);
 html += "</b><select";
 $selectValue = componentCtx.data.online || "";
 html += ">";
-var _id245 = componentCtx.data.persons;
-if (_id245 instanceof Array) {
-for (var _id244 = 0; _id244 < _id245.length; _id244++) {
-componentCtx.data._id244=_id244;
-componentCtx.data.p= _id245[_id244];
+var _id3 = componentCtx.data.persons;
+if (_id3 instanceof Array) {
+for (var _id2 = 0; _id2 < _id3.length; _id2++) {
+componentCtx.data._id2=_id2;
+componentCtx.data.p= _id3[_id2];
 html += "<option";
 $optionValue = escapeHTML(componentCtx.data.p);
 if ($optionValue != null) {
@@ -227,11 +227,11 @@ html += "</option>";
 $optionValue = null;
 
 }
-} else if (typeof _id245 === "object") {
-for (var _id244 in _id245) {
-if (_id245[_id244] != null) {
-componentCtx.data._id244=_id244;
-componentCtx.data.p= _id245[_id244];
+} else if (typeof _id3 === "object") {
+for (var _id2 in _id3) {
+if (_id3[_id2] != null) {
+componentCtx.data._id2=_id2;
+componentCtx.data.p= _id3[_id2];
 html += "<option";
 $optionValue = escapeHTML(componentCtx.data.p);
 if ($optionValue != null) {
@@ -263,5 +263,5 @@ $selectValue = null;
 html += "</div>";
 return html;
 };
-return componentRenderers._id243(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

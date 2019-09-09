@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id211 = componentRenderers._id211|| _id211;
-var _id211Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id211(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id211Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -199,11 +199,11 @@ html += ">";
 if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
-var _id213 = componentCtx.data.list;
-if (_id213 instanceof Array) {
-for (var _id212 = 0; _id212 < _id213.length; _id212++) {
-componentCtx.data._id212=_id212;
-componentCtx.data.item= _id213[_id212];
+var _id3 = componentCtx.data.list;
+if (_id3 instanceof Array) {
+for (var _id2 = 0; _id2 < _id3.length; _id2++) {
+componentCtx.data._id2=_id2;
+componentCtx.data.item= _id3[_id2];
 html += "<input type=\"radio\"";
 if (componentCtx.data.item) {
 html += attrFilter("value", escapeHTML(componentCtx.data.item));
@@ -214,11 +214,11 @@ html += " checked";
 html += ">";
 
 }
-} else if (typeof _id213 === "object") {
-for (var _id212 in _id213) {
-if (_id213[_id212] != null) {
-componentCtx.data._id212=_id212;
-componentCtx.data.item= _id213[_id212];
+} else if (typeof _id3 === "object") {
+for (var _id2 in _id3) {
+if (_id3[_id2] != null) {
+componentCtx.data._id2=_id2;
+componentCtx.data.item= _id3[_id2];
 html += "<input type=\"radio\"";
 if (componentCtx.data.item) {
 html += attrFilter("value", escapeHTML(componentCtx.data.item));
@@ -234,5 +234,5 @@ html += ">";
 html += "</div>";
 return html;
 };
-return componentRenderers._id211(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

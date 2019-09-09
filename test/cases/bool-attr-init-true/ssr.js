@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id12 = componentRenderers._id12|| _id12;
-var _id12Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id12(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id12Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -204,5 +204,5 @@ html += boolAttrFilter("disabled", escapeHTML(componentCtx.data.distate));
 html += ">button</button></div>";
 return html;
 };
-return componentRenderers._id12(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

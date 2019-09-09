@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id33 = componentRenderers._id33|| _id33;
-var _id33Proto = {
+componentRenderers._id2 = componentRenderers._id2|| _id2;
+var _id2Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "a"
 };
-function _id33(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id2(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id33Proto,
+proto: _id2Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -199,7 +199,7 @@ html += ">";
 if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
-componentCtx.slotRenderers._id34 = componentCtx.slotRenderers._id34 || function () {
+componentCtx.slotRenderers._id3 = componentCtx.slotRenderers._id3 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
   return html;
@@ -217,12 +217,12 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id34();
+componentCtx.slotRenderers._id3();
 html += "</a>";
 return html;
 };
-componentRenderers._id35 = componentRenderers._id35|| _id35;
-var _id35Proto = {
+componentRenderers._id4 = componentRenderers._id4|| _id4;
+var _id4Proto = {
 filters: {
 
 },
@@ -234,10 +234,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id35(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id4(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id35Proto,
+proto: _id4Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -271,8 +271,8 @@ html += attrFilter("value", escapeHTML(componentCtx.data.value));
 html += "><button>search</button></div>";
 return html;
 };
-componentRenderers._id32 = componentRenderers._id32|| _id32;
-var _id32Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -284,10 +284,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id32(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id32Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -325,16 +325,16 @@ var $sourceSlots = [];
 $sourceSlots.push([function (componentCtx) {
   var html = "";
 var $sourceSlots = [];
-html += componentRenderers._id35(
+html += componentRenderers._id4(
 {"value":componentCtx.data.searchValue}, true, componentCtx, "x-search", $sourceSlots);
 $sourceSlots = null;
   return html;
 }]);
-html += componentRenderers._id33(
+html += componentRenderers._id2(
 {}, true, componentCtx, "x-panel", $sourceSlots);
 $sourceSlots = null;
 html += "</div>";
 return html;
 };
-return componentRenderers._id32(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

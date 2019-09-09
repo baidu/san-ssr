@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id20 = componentRenderers._id20|| _id20;
-var _id20Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 isWorking: function (time) {
         if (time < 9 || time > 18) {
             return false
@@ -176,10 +176,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id20(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id20Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -217,5 +217,5 @@ html += "<b>rest</b>";
 html += "</div>";
 return html;
 };
-return componentRenderers._id20(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

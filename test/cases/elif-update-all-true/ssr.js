@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id99 = componentRenderers._id99|| _id99;
-var _id99Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id99(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id99Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -210,5 +210,5 @@ html += "<span title=\"leeight\">leeight</span>";
 html += "</div>";
 return html;
 };
-return componentRenderers._id99(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

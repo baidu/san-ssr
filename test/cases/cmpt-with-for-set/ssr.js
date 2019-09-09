@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id60 = componentRenderers._id60|| _id60;
-var _id60Proto = {
+componentRenderers._id2 = componentRenderers._id2|| _id2;
+var _id2Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "a"
 };
-function _id60(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id2(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id60Proto,
+proto: _id2Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -208,8 +208,8 @@ html += escapeHTML(componentCtx.data.text);
 html += "</span></a>";
 return html;
 };
-componentRenderers._id59 = componentRenderers._id59|| _id59;
-var _id59Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -221,10 +221,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id59(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id59Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -251,25 +251,25 @@ html += ">";
 if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
-var _id62 = componentCtx.data.list;
-if (_id62 instanceof Array) {
-for (var _id61 = 0; _id61 < _id62.length; _id61++) {
-componentCtx.data._id61=_id61;
-componentCtx.data.item= _id62[_id61];
+var _id4 = componentCtx.data.list;
+if (_id4 instanceof Array) {
+for (var _id3 = 0; _id3 < _id4.length; _id3++) {
+componentCtx.data._id3=_id3;
+componentCtx.data.item= _id4[_id3];
 var $sourceSlots = [];
-html += componentRenderers._id60(
+html += componentRenderers._id2(
 {"title":componentCtx.data.item.title,
 "text":componentCtx.data.item.text}, true, componentCtx, "ui-label", $sourceSlots);
 $sourceSlots = null;
 
 }
-} else if (typeof _id62 === "object") {
-for (var _id61 in _id62) {
-if (_id62[_id61] != null) {
-componentCtx.data._id61=_id61;
-componentCtx.data.item= _id62[_id61];
+} else if (typeof _id4 === "object") {
+for (var _id3 in _id4) {
+if (_id4[_id3] != null) {
+componentCtx.data._id3=_id3;
+componentCtx.data.item= _id4[_id3];
 var $sourceSlots = [];
-html += componentRenderers._id60(
+html += componentRenderers._id2(
 {"title":componentCtx.data.item.title,
 "text":componentCtx.data.item.text}, true, componentCtx, "ui-label", $sourceSlots);
 $sourceSlots = null;
@@ -280,5 +280,5 @@ $sourceSlots = null;
 html += "</div>";
 return html;
 };
-return componentRenderers._id59(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

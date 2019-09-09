@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id140 = componentRenderers._id140|| _id140;
-var _id140Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id140(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id140Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -199,11 +199,11 @@ html += ">";
 if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
-var _id141 = componentCtx.data.persons;
-if (_id141 instanceof Array) {
-for (var i = 0; i < _id141.length; i++) {
+var _id2 = componentCtx.data.persons;
+if (_id2 instanceof Array) {
+for (var i = 0; i < _id2.length; i++) {
 componentCtx.data.i=i;
-componentCtx.data.p= _id141[i];
+componentCtx.data.p= _id2[i];
 html += "  <h4>";
 html += escapeHTML(componentCtx.data.p.name);
 html += "</h4><p>";
@@ -211,11 +211,11 @@ html += escapeHTML(componentCtx.data.p.email);
 html += "</p>";
 
 }
-} else if (typeof _id141 === "object") {
-for (var i in _id141) {
-if (_id141[i] != null) {
+} else if (typeof _id2 === "object") {
+for (var i in _id2) {
+if (_id2[i] != null) {
 componentCtx.data.i=i;
-componentCtx.data.p= _id141[i];
+componentCtx.data.p= _id2[i];
 html += "  <h4>";
 html += escapeHTML(componentCtx.data.p.name);
 html += "</h4><p>";
@@ -228,5 +228,5 @@ html += "</p>";
 html += "  </div>";
 return html;
 };
-return componentRenderers._id140(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

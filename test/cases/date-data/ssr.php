@@ -2,9 +2,7 @@
 function _id1($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {
 $_id1Proto = [
 "filters" => [
-"year" => function ($date) {
-    return $date["getFullYear"]();
-}
+
 ],
 "computed" => [
 

@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id186 = componentRenderers._id186|| _id186;
-var _id186Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "form"
 };
-function _id186(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id186Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -199,27 +199,27 @@ html += ">";
 if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
-var _id188 = componentCtx.data.cates;
-if (_id188 instanceof Array) {
-for (var _id187 = 0; _id187 < _id188.length; _id187++) {
-componentCtx.data._id187=_id187;
-componentCtx.data.cate= _id188[_id187];
+var _id3 = componentCtx.data.cates;
+if (_id3 instanceof Array) {
+for (var _id2 = 0; _id2 < _id3.length; _id2++) {
+componentCtx.data._id2=_id2;
+componentCtx.data.cate= _id3[_id2];
 html += "<fieldset>";
-var _id190 = componentCtx.data.forms[componentCtx.data.cate];
-if (_id190 instanceof Array) {
-for (var _id189 = 0; _id189 < _id190.length; _id189++) {
-componentCtx.data._id189=_id189;
-componentCtx.data.item= _id190[_id189];
+var _id5 = componentCtx.data.forms[componentCtx.data.cate];
+if (_id5 instanceof Array) {
+for (var _id4 = 0; _id4 < _id5.length; _id4++) {
+componentCtx.data._id4=_id4;
+componentCtx.data.item= _id5[_id4];
 html += "<label>";
 html += escapeHTML(componentCtx.data.item);
 html += "</label>";
 
 }
-} else if (typeof _id190 === "object") {
-for (var _id189 in _id190) {
-if (_id190[_id189] != null) {
-componentCtx.data._id189=_id189;
-componentCtx.data.item= _id190[_id189];
+} else if (typeof _id5 === "object") {
+for (var _id4 in _id5) {
+if (_id5[_id4] != null) {
+componentCtx.data._id4=_id4;
+componentCtx.data.item= _id5[_id4];
 html += "<label>";
 html += escapeHTML(componentCtx.data.item);
 html += "</label>";
@@ -230,27 +230,27 @@ html += "</label>";
 html += "</fieldset>";
 
 }
-} else if (typeof _id188 === "object") {
-for (var _id187 in _id188) {
-if (_id188[_id187] != null) {
-componentCtx.data._id187=_id187;
-componentCtx.data.cate= _id188[_id187];
+} else if (typeof _id3 === "object") {
+for (var _id2 in _id3) {
+if (_id3[_id2] != null) {
+componentCtx.data._id2=_id2;
+componentCtx.data.cate= _id3[_id2];
 html += "<fieldset>";
-var _id192 = componentCtx.data.forms[componentCtx.data.cate];
-if (_id192 instanceof Array) {
-for (var _id191 = 0; _id191 < _id192.length; _id191++) {
-componentCtx.data._id191=_id191;
-componentCtx.data.item= _id192[_id191];
+var _id7 = componentCtx.data.forms[componentCtx.data.cate];
+if (_id7 instanceof Array) {
+for (var _id6 = 0; _id6 < _id7.length; _id6++) {
+componentCtx.data._id6=_id6;
+componentCtx.data.item= _id7[_id6];
 html += "<label>";
 html += escapeHTML(componentCtx.data.item);
 html += "</label>";
 
 }
-} else if (typeof _id192 === "object") {
-for (var _id191 in _id192) {
-if (_id192[_id191] != null) {
-componentCtx.data._id191=_id191;
-componentCtx.data.item= _id192[_id191];
+} else if (typeof _id7 === "object") {
+for (var _id6 in _id7) {
+if (_id7[_id6] != null) {
+componentCtx.data._id6=_id6;
+componentCtx.data.item= _id7[_id6];
 html += "<label>";
 html += escapeHTML(componentCtx.data.item);
 html += "</label>";
@@ -266,5 +266,5 @@ html += "</fieldset>";
 html += "</form>";
 return html;
 };
-return componentRenderers._id186(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

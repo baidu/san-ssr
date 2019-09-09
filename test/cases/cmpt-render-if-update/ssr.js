@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id48 = componentRenderers._id48|| _id48;
-var _id48Proto = {
+componentRenderers._id3 = componentRenderers._id3|| _id3;
+var _id3Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "ul"
 };
-function _id48(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id3(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id48Proto,
+proto: _id3Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -199,11 +199,11 @@ html += ">";
 if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
-var _id50 = componentCtx.data.list;
-if (_id50 instanceof Array) {
-for (var _id49 = 0; _id49 < _id50.length; _id49++) {
-componentCtx.data._id49=_id49;
-componentCtx.data.item= _id50[_id49];
+var _id5 = componentCtx.data.list;
+if (_id5 instanceof Array) {
+for (var _id4 = 0; _id4 < _id5.length; _id4++) {
+componentCtx.data._id4=_id4;
+componentCtx.data.item= _id5[_id4];
 html += "<li";
 if (componentCtx.data.item) {
 html += attrFilter("title", escapeHTML(componentCtx.data.item));
@@ -213,11 +213,11 @@ html += escapeHTML(componentCtx.data.item);
 html += "</li>";
 
 }
-} else if (typeof _id50 === "object") {
-for (var _id49 in _id50) {
-if (_id50[_id49] != null) {
-componentCtx.data._id49=_id49;
-componentCtx.data.item= _id50[_id49];
+} else if (typeof _id5 === "object") {
+for (var _id4 in _id5) {
+if (_id5[_id4] != null) {
+componentCtx.data._id4=_id4;
+componentCtx.data.item= _id5[_id4];
 html += "<li";
 if (componentCtx.data.item) {
 html += attrFilter("title", escapeHTML(componentCtx.data.item));
@@ -232,8 +232,8 @@ html += "</li>";
 html += "</ul>";
 return html;
 };
-componentRenderers._id47 = componentRenderers._id47|| _id47;
-var _id47Proto = {
+componentRenderers._id2 = componentRenderers._id2|| _id2;
+var _id2Proto = {
 filters: {
 
 },
@@ -245,10 +245,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id47(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id2(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id47Proto,
+proto: _id2Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -275,11 +275,11 @@ html += ">";
 if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
-var _id52 = componentCtx.data.list;
-if (_id52 instanceof Array) {
-for (var _id51 = 0; _id51 < _id52.length; _id51++) {
-componentCtx.data._id51=_id51;
-componentCtx.data.item= _id52[_id51];
+var _id7 = componentCtx.data.list;
+if (_id7 instanceof Array) {
+for (var _id6 = 0; _id6 < _id7.length; _id6++) {
+componentCtx.data._id6=_id6;
+componentCtx.data.item= _id7[_id6];
 html += "<dl><dt";
 if (componentCtx.data.item.name) {
 html += attrFilter("title", escapeHTML(componentCtx.data.item.name));
@@ -288,17 +288,17 @@ html += ">";
 html += escapeHTML(componentCtx.data.item.name);
 html += "</dt><dd>";
 var $sourceSlots = [];
-html += componentRenderers._id48(
+html += componentRenderers._id3(
 {"list":componentCtx.data.item.tels}, true, componentCtx, "ui-tel", $sourceSlots);
 $sourceSlots = null;
 html += "</dd></dl>";
 
 }
-} else if (typeof _id52 === "object") {
-for (var _id51 in _id52) {
-if (_id52[_id51] != null) {
-componentCtx.data._id51=_id51;
-componentCtx.data.item= _id52[_id51];
+} else if (typeof _id7 === "object") {
+for (var _id6 in _id7) {
+if (_id7[_id6] != null) {
+componentCtx.data._id6=_id6;
+componentCtx.data.item= _id7[_id6];
 html += "<dl><dt";
 if (componentCtx.data.item.name) {
 html += attrFilter("title", escapeHTML(componentCtx.data.item.name));
@@ -307,7 +307,7 @@ html += ">";
 html += escapeHTML(componentCtx.data.item.name);
 html += "</dt><dd>";
 var $sourceSlots = [];
-html += componentRenderers._id48(
+html += componentRenderers._id3(
 {"list":componentCtx.data.item.tels}, true, componentCtx, "ui-tel", $sourceSlots);
 $sourceSlots = null;
 html += "</dd></dl>";
@@ -318,8 +318,8 @@ html += "</dd></dl>";
 html += "</div>";
 return html;
 };
-componentRenderers._id46 = componentRenderers._id46|| _id46;
-var _id46Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -331,10 +331,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id46(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id46Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -363,7 +363,7 @@ html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
 if (componentCtx.data.cond) {
 var $sourceSlots = [];
-html += componentRenderers._id47(
+html += componentRenderers._id2(
 {"list":componentCtx.data.persons}, true, componentCtx, "ui-person", $sourceSlots);
 $sourceSlots = null;
 
@@ -371,5 +371,5 @@ $sourceSlots = null;
 html += "</div>";
 return html;
 };
-return componentRenderers._id46(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

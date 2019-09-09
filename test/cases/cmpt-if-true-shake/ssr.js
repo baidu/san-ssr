@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id44 = componentRenderers._id44|| _id44;
-var _id44Proto = {
+componentRenderers._id2 = componentRenderers._id2|| _id2;
+var _id2Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "a"
 };
-function _id44(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id2(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id44Proto,
+proto: _id2Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -208,8 +208,8 @@ html += escapeHTML(componentCtx.data.text);
 html += "</span></a>";
 return html;
 };
-componentRenderers._id43 = componentRenderers._id43|| _id43;
-var _id43Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -221,10 +221,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id43(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id43Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -254,7 +254,7 @@ html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 html += "<h5>";
 if (componentCtx.data.cond) {
 var $sourceSlots = [];
-html += componentRenderers._id44(
+html += componentRenderers._id2(
 {"title":componentCtx.data.name,
 "text":componentCtx.data.jokeName}, true, componentCtx, "ui-label", $sourceSlots);
 $sourceSlots = null;
@@ -267,5 +267,5 @@ html += escapeHTML(componentCtx.data.company);
 html += "</u></p></div>";
 return html;
 };
-return componentRenderers._id43(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

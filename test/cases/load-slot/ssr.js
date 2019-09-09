@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id169 = componentRenderers._id169|| _id169;
-var _id169Proto = {
+componentRenderers._id2 = componentRenderers._id2|| _id2;
+var _id2Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "a"
 };
-function _id169(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id2(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id169Proto,
+proto: _id2Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -199,7 +199,7 @@ html += ">";
 if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
-componentCtx.slotRenderers._id170 = componentCtx.slotRenderers._id170 || function () {
+componentCtx.slotRenderers._id3 = componentCtx.slotRenderers._id3 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
   return html;
@@ -217,12 +217,12 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id170();
+componentCtx.slotRenderers._id3();
 html += "</a>";
 return html;
 };
-componentRenderers._id171 = componentRenderers._id171|| _id171;
-var _id171Proto = {
+componentRenderers._id4 = componentRenderers._id4|| _id4;
+var _id4Proto = {
 filters: {
 
 },
@@ -234,10 +234,10 @@ computedNames: [
 ],
 tagName: "b"
 };
-function _id171(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id4(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id171Proto,
+proto: _id4Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -264,7 +264,7 @@ html += ">";
 if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
-componentCtx.slotRenderers._id172 = componentCtx.slotRenderers._id172 || function () {
+componentCtx.slotRenderers._id5 = componentCtx.slotRenderers._id5 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
   return html;
@@ -282,12 +282,12 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id172();
+componentCtx.slotRenderers._id5();
 html += "</b>";
 return html;
 };
-componentRenderers._id168 = componentRenderers._id168|| _id168;
-var _id168Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -299,10 +299,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id168(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id168Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -338,16 +338,16 @@ $sourceSlots.push([function (componentCtx) {
 html += "Hello " + escapeHTML(componentCtx.data.text);
   return html;
 }]);
-html += componentRenderers._id171(
+html += componentRenderers._id4(
 {}, true, componentCtx, "x-label", $sourceSlots);
 $sourceSlots = null;
   return html;
 }]);
-html += componentRenderers._id169(
+html += componentRenderers._id2(
 {}, true, componentCtx, "x-panel", $sourceSlots);
 $sourceSlots = null;
 html += "</div>";
 return html;
 };
-return componentRenderers._id168(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

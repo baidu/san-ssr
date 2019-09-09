@@ -5,23 +5,7 @@ $_id1Proto = [
 
 ],
 "computed" => [
-"forms" => function ($componentCtx) {
-            const cates = (isset($componentCtx["data"]->{"cates"}) ? $componentCtx["data"]->{"cates"} : null)
-            const formLen = (isset($componentCtx["data"]->{"formLen"}) ? $componentCtx["data"]->{"formLen"} : null)
 
-            const result = {}
-            if (cates instanceof Array) {
-                let start = 1
-                for (let i = 0; i < cates.length; i++) {
-                    result[cates[i]] = []
-                    for (let j = 0; j < formLen; j++) {
-                        result[cates[i]].push(start++)
-                    }
-                }
-            }
-
-            return result
-        }
 ],
 "computedNames" => [
 "forms"

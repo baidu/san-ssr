@@ -156,8 +156,8 @@ function defaultStyleFilter (source) {
     return source
 }
 
-componentRenderers._id85 = componentRenderers._id85|| _id85;
-var _id85Proto = {
+componentRenderers._id2 = componentRenderers._id2|| _id2;
+var _id2Proto = {
 filters: {
 
 },
@@ -169,10 +169,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id85(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id2(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id85Proto,
+proto: _id2Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -199,7 +199,7 @@ html += ">";
 if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
-componentCtx.slotRenderers._id86 = componentCtx.slotRenderers._id86 || function () {
+componentCtx.slotRenderers._id3 = componentCtx.slotRenderers._id3 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
   return html;
@@ -217,12 +217,12 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id86();
+componentCtx.slotRenderers._id3();
 html += "</div>";
 return html;
 };
-componentRenderers._id87 = componentRenderers._id87|| _id87;
-var _id87Proto = {
+componentRenderers._id4 = componentRenderers._id4|| _id4;
+var _id4Proto = {
 toggle: function () {
         const hidden = this.data.get('hidden')
         this.data.set('hidden', !hidden)
@@ -238,10 +238,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id87(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id4(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id87Proto,
+proto: _id4Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -269,7 +269,7 @@ if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
 html += "<h3>";
-componentCtx.slotRenderers._id88 = componentCtx.slotRenderers._id88 || function () {
+componentCtx.slotRenderers._id5 = componentCtx.slotRenderers._id5 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
   return html;
@@ -290,10 +290,10 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id88();
+componentCtx.slotRenderers._id5();
 html += "</h3>";
 if (!componentCtx.data.hidden) {
-componentCtx.slotRenderers._id89 = componentCtx.slotRenderers._id89 || function () {
+componentCtx.slotRenderers._id6 = componentCtx.slotRenderers._id6 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
   return html;
@@ -311,14 +311,14 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id89();
+componentCtx.slotRenderers._id6();
 
 }
 html += "</div>";
 return html;
 };
-componentRenderers._id90 = componentRenderers._id90|| _id90;
-var _id90Proto = {
+componentRenderers._id7 = componentRenderers._id7|| _id7;
+var _id7Proto = {
 filters: {
 
 },
@@ -330,10 +330,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id90(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id7(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id90Proto,
+proto: _id7Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -361,7 +361,7 @@ if (!noDataOutput) {
 html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";
 }
 html += "<a>";
-componentCtx.slotRenderers._id91 = componentCtx.slotRenderers._id91 || function () {
+componentCtx.slotRenderers._id8 = componentCtx.slotRenderers._id8 || function () {
 function $defaultSlotRender(componentCtx) {
   var html = "";
   return html;
@@ -379,12 +379,12 @@ for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++)
   html += $mySourceSlots[$renderIndex]($slotCtx);
 }
 };
-componentCtx.slotRenderers._id91();
+componentCtx.slotRenderers._id8();
 html += "</a></div>";
 return html;
 };
-componentRenderers._id84 = componentRenderers._id84|| _id84;
-var _id84Proto = {
+componentRenderers._id1 = componentRenderers._id1|| _id1;
+var _id1Proto = {
 filters: {
 
 },
@@ -396,10 +396,10 @@ computedNames: [
 ],
 tagName: "div"
 };
-function _id84(data, noDataOutput, parentCtx, tagName, sourceSlots) {
+function _id1(data, noDataOutput, parentCtx, tagName, sourceSlots) {
 var html = "";
 var componentCtx = {
-proto: _id84Proto,
+proto: _id1Proto,
 sourceSlots: sourceSlots,
 data: data || {},
 owner: parentCtx,
@@ -441,12 +441,12 @@ $sourceSlots.push([function (componentCtx) {
 html += escapeHTML(componentCtx.data.closeText);
   return html;
 }]);
-html += componentRenderers._id90(
+html += componentRenderers._id7(
 {}, true, componentCtx, "x-button", $sourceSlots);
 $sourceSlots = null;
   return html;
 }]);
-html += componentRenderers._id85(
+html += componentRenderers._id2(
 {}, true, componentCtx, "x-panel", $sourceSlots);
 $sourceSlots = null;
   return html;
@@ -459,11 +459,11 @@ html += "</b>";
 
   return html;
 }, "title"]);
-html += componentRenderers._id87(
+html += componentRenderers._id4(
 {"hidden":componentCtx.data.folderHidden}, true, componentCtx, "x-folder", $sourceSlots);
 $sourceSlots = null;
 html += "</div>";
 return html;
 };
-return componentRenderers._id84(data, noDataOutput)
+return componentRenderers._id1(data, noDataOutput)
 }

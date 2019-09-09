@@ -5,9 +5,7 @@ $_id1Proto = [
 
 ],
 "computed" => [
-"realTitle" => function ($componentCtx) {
-            return 'real' + (isset($componentCtx["data"]->{"title"}) ? $componentCtx["data"]->{"title"} : null)
-        }
+
 ],
 "computedNames" => [
 "realTitle"

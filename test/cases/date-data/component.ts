@@ -1,12 +1,12 @@
-import { defineComponent } from 'san'
+import { Component } from 'san'
 
-export const MyComponent = defineComponent({
-    filters: {
+export default class extends Component {
+    static filters = {
         year: function (date: Date) {
             return date.getFullYear()
         }
-    },
-    template: '<div>' +
+    }
+    static template = '<div>' +
         '<b title="{{date|year}}">{{date|year}}</b>' +
         '</div>'
-})
+}

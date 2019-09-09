@@ -1,3 +1,4 @@
+require('ts-node').register()
 const { readFileSync, writeFileSync, existsSync } = require('fs')
 const compileToJSSource = require('../src/js-ssr').compileToSource
 const compileToPHPSource = require('../src/php-ssr').compileToSource
@@ -13,26 +14,29 @@ const san = {
 
 function compile (caseName) {
     const caseDir = join(caseRoot, caseName)
-    const compPath = join(caseDir, 'component.ts')
-    const compJSPath = join(caseDir, 'component.js')
-    const component = readFileSync(compJSPath, 'utf8')
     const namespace = getNamespace(caseName)
 
-    if (existsSync(compPath)) {
-        const compPHPPath = join(caseDir, 'component.php')
-        const php = ts2php(compPath, san, namespace)
-        writeFileSync(compPHPPath, php)
-    }
-
-    const fn = compileToJSSource(requireFromString(component))
+    const fn = compileToJSSource(requireComponent(caseDir))
     writeFileSync(join(caseDir, 'ssr.js'), `module.exports = ${fn}`)
 
-    const php = compileToPHPSource(requireFromString(component))
+    const php = compileToPHPSource(requireComponent(caseDir))
     writeFileSync(join(caseDir, 'ssr.php'), `<?php $render = ${php}; ?>`)
 }
 
 function getNamespace (caseName) {
     return 'san\\component\\' + camelCase(caseName)
+}
+
+function requireComponent (caseDir) {
+    const ts = join(caseDir, 'component.ts')
+    const js = join(caseDir, 'component.js')
+
+    if (existsSync(ts)) {
+        delete require.cache[require.resolve(ts)]
+        return require(ts).default
+    }
+    delete require.cache[require.resolve(js)]
+    return require(js)
 }
 
 module.exports = { compile }

@@ -53,6 +53,7 @@
   "dependencies": {
     "camelcase": "^5.3.1",
     "chalk": "^2.4.2",
+    "ts-node": "^8.3.0",
     "ts2php": "^0.12.1",
     "typescript": "^3.4.5"
   }

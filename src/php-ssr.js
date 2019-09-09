@@ -1,4 +1,6 @@
 const { each, contains, empty, extend, bind, inherits } = require('./utils')
+const { readFileSync } = require('fs')
+const { resolve } = require('path')
 
 /**
 * 编译源码的 helper 方法集合对象
@@ -97,12 +99,12 @@ const compileExprSource = {
             switch (filterName) {
             case '_style':
             case '_class':
-                code = 'San::' + filterName + 'Filter(' + code + ')'
+                code = '_::' + filterName + 'Filter(' + code + ')'
                 break
 
             case '_xstyle':
             case '_xclass':
-                code = 'San::' + filterName + 'Filter(' + code + ', ' + compileExprSource.expr(filter.args[0]) + ')'
+                code = '_::' + filterName + 'Filter(' + code + ', ' + compileExprSource.expr(filter.args[0]) + ')'
                 break
 
             case 'url':
@@ -110,7 +112,7 @@ const compileExprSource = {
                 break
 
             default:
-                code = 'San::callFilter($componentCtx, "' + filterName + '", [' + code
+                code = '_::callFilter($componentCtx, "' + filterName + '", [' + code
                 each(filter.args, function (arg) {
                     code += ', ' + compileExprSource.expr(arg)
                 })
@@ -119,7 +121,7 @@ const compileExprSource = {
         })
 
         if (!interpExpr.original) {
-            return 'San::escapeHTML(' + code + ')'
+            return '_::escapeHTML(' + code + ')'
         }
 
         return code
@@ -161,7 +163,7 @@ const compileExprSource = {
             spread.push(item.spread ? 1 : 0)
         })
 
-        return `San::spread([${items.join(', ')}], ${JSON.stringify(spread)})`
+        return `_::spread([${items.join(', ')}], ${JSON.stringify(spread)})`
     },
 
     /**
@@ -185,7 +187,7 @@ const compileExprSource = {
                 items.push(`[${key}, ${val}]`)
             }
         })
-        return `San::objSpread([${items.join(',')}], ${JSON.stringify(spread)})`
+        return `_::objSpread([${items.join(',')}], ${JSON.stringify(spread)})`
     },
 
     /**
@@ -324,9 +326,12 @@ class CompileSourceBuffer {
     */
     addRendererStart () {
         this.addRaw('function ($data, $noDataOutput) {')
-        // const precodePath = path.resolve(__dirname, 'San.php')
-        // const precode = fs.readFileSync(precodePath, 'utf8')
-        // this.addRaw(precode.replace(/^<\?php\s*/, ''))
+
+        const utilContent = readFileSync(
+            resolve(__dirname, 'runtime/underscore.php'),
+            'utf8'
+        ).replace(/^<\?php\s*/, '')
+        this.addRaw(utilContent)
     }
 
     /**
@@ -6080,7 +6085,7 @@ const elementSourceCompiler = {
                 if (prop.raw == null) {
                     sourceBuffer.joinString(' ' + prop.name)
                 } else {
-                    sourceBuffer.joinRaw('San::boolAttrFilter(\'' + prop.name + '\', ' +
+                    sourceBuffer.joinRaw('_::boolAttrFilter(\'' + prop.name + '\', ' +
                         compileExprSource.expr(prop.expr) +
                         ')'
                     )
@@ -6095,7 +6100,7 @@ const elementSourceCompiler = {
                     if (valueProp) {
                         switch (propsIndex.type.raw) {
                         case 'checkbox':
-                            sourceBuffer.addRaw('if (San::contains(' +
+                            sourceBuffer.addRaw('if (_::contains(' +
                                     compileExprSource.expr(prop.expr) +
                                     ', ' +
                                     valueCode +
@@ -6143,8 +6148,8 @@ const elementSourceCompiler = {
                     sourceBuffer.addRaw('if (' + compileExprSource.expr(preCondExpr) + ') {')
                 }
 
-                sourceBuffer.joinRaw('San::attrFilter(\'' + prop.name + '\', ' +
-                    (prop.x ? 'San::escapeHTML(' : '') +
+                sourceBuffer.joinRaw('_::attrFilter(\'' + prop.name + '\', ' +
+                    (prop.x ? '_::escapeHTML(' : '') +
                     compileExprSource.expr(prop.expr) +
                     (prop.x ? ')' : '') +
                     ')'
@@ -6176,10 +6181,10 @@ const elementSourceCompiler = {
             'case "disabled":\n' +
             'case "multiple":\n' +
             'case "multiple":\n' +
-            '$html .= San::boolAttrFilter($key, San::escapeHTML($value));\n' +
+            '$html .= _::boolAttrFilter($key, _::escapeHTML($value));\n' +
             'break;\n' +
             'default:\n' +
-            '$html .= San::attrFilter($key, San::escapeHTML($value));' +
+            '$html .= _::attrFilter($key, _::escapeHTML($value));' +
             '}'
             )
 
@@ -6235,7 +6240,7 @@ const elementSourceCompiler = {
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodeProp(aNode, 'value')
             if (valueProp) {
-                sourceBuffer.joinRaw('San::escapeHTML(' +
+                sourceBuffer.joinRaw('_::escapeHTML(' +
                 compileExprSource.expr(valueProp.expr) +
                 ')'
                 )
@@ -6467,7 +6472,7 @@ const aNodeCompiler = {
         sourceBuffer.addRaw('$slotCtx = ["data" => $slotCtx["data"], "proto" => $slotCtx["proto"], "owner" => $slotCtx["owner"]];'); // eslint-disable-line
 
             if (aNode.directives.bind) {
-            sourceBuffer.addRaw('San::extend($slotCtx["data"], ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
+            sourceBuffer.addRaw('_::extend($slotCtx["data"], ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
             }
 
             each(aNode.vars, function (varItem) {
@@ -6566,7 +6571,7 @@ const aNodeCompiler = {
 
         dataLiteral = '(object)[' + givenData.join(',\n') + ']'
         if (aNode.directives.bind) {
-            dataLiteral = 'San::extend(' +
+            dataLiteral = '_::extend(' +
             compileExprSource.expr(aNode.directives.bind.value) +
             ', ' +
             dataLiteral +
@@ -6639,7 +6644,7 @@ function compileComponentSource (sourceBuffer, ComponentClass, contextId) {
             )
         }
 
-        // sourceBuffer.addRaw(`if (!isset(San::$componentRenderers["${cid}")) San::$componentRenderers["${cid}"] = $${cid};`)
+        // sourceBuffer.addRaw(`if (!isset(_::$componentRenderers["${cid}")) _::$componentRenderers["${cid}"] = $${cid};`)
 
         sourceBuffer.addRaw(`function ${cid}($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {`)
         sourceBuffer.addRaw(`$${cid}Proto = ${genComponentProtoCode(component)}`)

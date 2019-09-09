@@ -4,7 +4,7 @@ const { compile } = require('../test/compile')
 const chalk = require('chalk')
 const { readFileSync } = require('fs')
 const { resolve } = require('path')
-const { render } = require('../src/render')
+const { render } = require('../test/render')
 
 const caseName = process.argv[2]
 const htmlPath = resolve(__dirname, '../test/cases', caseName, 'result.html')

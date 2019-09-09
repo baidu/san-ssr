@@ -4,7 +4,7 @@ const { writeFileSync, readdirSync } = require('fs')
 const san = require('../src/js-ssr')
 const { resolve, join } = require('path')
 const caseRoot = resolve(__dirname, '../test/cases')
-const { read } = require('../src/data')
+const { read } = require('../test/data')
 
 for (const dir of readdirSync(caseRoot)) {
     const caseDir = join(caseRoot, dir)

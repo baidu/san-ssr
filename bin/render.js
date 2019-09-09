@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const { resolve, join } = require('path')
-const { read } = require('../src/data')
+const { read } = require('../test/data')
 
 const caseName = process.argv[2]
 const caseRoot = resolve(__dirname, '../test/cases')

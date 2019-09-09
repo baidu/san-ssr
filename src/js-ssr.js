@@ -329,7 +329,7 @@ class CompileSourceBuffer {
     */
     addRendererStart () {
         this.addRaw('function (data, noDataOutput) {')
-        this.addRaw(fs.readFileSync(path.resolve(__dirname, 'san.js')))
+        this.addRaw(fs.readFileSync(path.resolve(__dirname, 'runtime/underscore.js')))
     }
 
     /**

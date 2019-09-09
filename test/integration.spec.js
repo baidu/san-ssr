@@ -1,6 +1,6 @@
 const { existsSync, readFileSync, readdirSync } = require('fs')
 const { resolve, join } = require('path')
-const { render } = require('../src/render')
+const { render } = require('./render')
 const caseRoot = resolve(__dirname, 'cases')
 const files = readdirSync(caseRoot)
 const { compile } = require('../test/compile')

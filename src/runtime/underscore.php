@@ -1,5 +1,5 @@
 <?php
-final class San
+final class _
 {
     public static $componentRenderers = [];
     private const HTML_ENTITY = [
@@ -66,7 +66,7 @@ final class San
 
     public static function htmlFilterReplacer($c)
     {
-        return San::HTML_ENTITY[$c];
+        return _::HTML_ENTITY[$c];
     }
 
     public static function escapeHTML($source)
@@ -93,7 +93,7 @@ final class San
 
     public static function _styleFilter($source)
     {
-        return San::defaultStyleFilter($source);
+        return _::defaultStyleFilter($source);
     }
 
     public static function _xclassFilter($outer, $inner)
@@ -113,7 +113,7 @@ final class San
     public static function _xstyleFilter($outer, $inner)
     {
         if ($outer) {
-            $outer = San::defaultStyleFilter($outer);
+            $outer = _::defaultStyleFilter($outer);
         }
         if ($outer) {
             if ($inner) {
@@ -134,7 +134,7 @@ final class San
 
     public static function boolAttrFilter($name, $value)
     {
-        return San::boolAttrTruthy($value) ? ' ' . $name : '';
+        return _::boolAttrTruthy($value) ? ' ' . $name : '';
     }
 
     private static function boolAttrTruthy($value) {

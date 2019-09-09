@@ -6,7 +6,6 @@ const camelCase = require('camelcase')
 const { resolve, join } = require('path')
 const caseRoot = resolve(__dirname, '../test/cases')
 const { ts2php } = require('../src/transpilers/ts2php')
-const { requireFromString } = require('../src/loaders/require-from-string')
 const san = {
     path: 'dirname(__FILE__) . "/../../../src/runtime/san.php"',
     namespace: '\\san\\runtime\\'

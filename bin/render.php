@@ -1,7 +1,5 @@
 #!/usr/bin/env php
 <?php
-include('src/San.php');
-
 $caseName = $argv[1];
 $caseDir = "test/cases/" . $caseName;
 include($caseDir . '/ssr.php');

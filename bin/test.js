@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const compile = require('../src/compile')
+const { compile } = require('../test/compile')
 const chalk = require('chalk')
 const { readFileSync } = require('fs')
 const { resolve } = require('path')
@@ -10,8 +10,7 @@ const caseName = process.argv[2]
 const htmlPath = resolve(__dirname, '../test/cases', caseName, 'result.html')
 const expected = readFileSync(htmlPath, 'utf8')
 
-compile.js(caseName)
-compile.php(caseName)
+compile(caseName)
 
 console.log(chalk.green('[EXPECTED]'))
 console.log(expected)

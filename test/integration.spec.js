@@ -3,7 +3,7 @@ const { resolve, join } = require('path')
 const { render } = require('../src/render')
 const caseRoot = resolve(__dirname, 'cases')
 const files = readdirSync(caseRoot)
-const compile = require('../src/compile')
+const { compile } = require('../test/compile')
 
 for (const dir of files) {
     const caseDir = resolve(caseRoot, dir)
@@ -12,13 +12,13 @@ for (const dir of files) {
     const expected = readFileSync(htmlPath, 'utf8')
 
     // if (dir !== 'load-success') continue
+    compile(dir)
 
     it('js: ' + dir, function () {
         expect(render(dir, 'js')).toBe(expected)
     })
 
     it('php: ' + dir, function () {
-        compile.php(dir)
         expect(render(dir, 'php')).toBe(expected)
     })
 }

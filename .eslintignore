@@ -2,5 +2,6 @@ node_modules
 dist
 coverage
 test/e2e.spec.js
+test/cases/*/component.js
 ssr.php
 ssr.js

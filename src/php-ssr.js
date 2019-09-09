@@ -1,5 +1,4 @@
 const { each, contains, empty, extend, bind, inherits } = require('./utils')
-const { fn2php } = require('./fn2php')
 
 /**
 * 编译源码的 helper 方法集合对象
@@ -293,9 +292,8 @@ const compileExprSource = {
 * @class
 */
 class CompileSourceBuffer {
-    constructor (target) {
+    constructor () {
         this.segs = []
-        this.target = target
     }
     /**
     * 添加原始代码，将原封不动输出
@@ -4347,7 +4345,7 @@ function compileComponent (ComponentClass) {
         proto.components = ComponentClass.components || proto.components || {}
         const components = proto.components
 
-    for (var key in components) { // eslint-disable-line
+        for (var key in components) { // eslint-disable-line
             const componentClass = components[key]
 
             if (typeof componentClass === 'object' && !(isComponentLoader(componentClass))) {
@@ -6720,6 +6718,11 @@ function genComponentContextCode (component, componentIdInContext) {
     return code.join('\n')
 }
 
+function genProtoMember () {
+    // 兼容新版 php 检查参数个数
+    return 'function(){}'
+}
+
 /**
 * 生成组件 proto 对象构建的代码
 *
@@ -6742,7 +6745,7 @@ function genComponentProtoCode (component) {
         case 'function':
             // TODO function serialization
             // code.push(`"${protoMemberKey}" => ${protoMember.toString()},`)
-            code.push(`"${protoMemberKey}" => function(){},`)
+            code.push(`"${protoMemberKey}" => ${genProtoMember()},`)
             break
 
         case 'object':
@@ -6774,67 +6777,17 @@ function genComponentProtoCode (component) {
     })
 
     // filters
-    code.push('"filters" => [')
-    const filterCode = []
-    for (const key in component.filters) {
-        if (component.filters.hasOwnProperty(key)) {
-            const filter = component.filters[key]
-
-            if (typeof filter === 'function') {
-                const php = fn2php(filter)
-                filterCode.push(`"${key}" => ${php}`)
-            }
-        }
-    }
-    code.push(filterCode.join(','))
-    code.push('],')
+    code.push(`"filters" => [\n\n],`)
+    // code.push(`"filters" => ${genProtoMember()},`)
 
     /* eslint-disable no-redeclare */
     // computed obj
-    code.push('"computed" => [')
-    const computedCode = []
-    const computedNamesCode = []
-    const computedNamesIndex = {}
-    for (const key in component.computed) {
-        if (component.computed.hasOwnProperty(key)) {
-            const computed = component.computed[key]
-
-            if (typeof computed === 'function') {
-                if (!computedNamesIndex[key]) {
-                    computedNamesIndex[key] = 1
-                    computedNamesCode.push('"' + key + '"')
-                }
-
-                computedCode.push(`"${key}" => ` +
-                computed.toString()
-                    .replace(/^\s*function\s*\(/, 'function ($componentCtx')
-                    .replace(
-                        /this.data.get\(([^)]+)\)/g,
-                        function (match, exprLiteral) {
-                            const exprStr = (new Function('return ' + exprLiteral))()   // eslint-disable-line
-                            const expr = parseExpr(exprStr)
-
-                            const ident = expr.paths[0].value
-                            if (component.computed.hasOwnProperty(ident) &&
-                                !computedNamesIndex[ident]
-                            ) {
-                                computedNamesIndex[ident] = 1
-                                computedNamesCode.unshift('"' + ident + '"')
-                            }
-
-                            return compileExprSource.expr(expr)
-                        }
-                    )
-                )
-            }
-        }
-    }
-    code.push(computedCode.join(','))
-    code.push('],')
+    code.push(`"computed" => [\n\n],`)
+    // code.push(`"computed" => ${genProtoMember()},`)
 
     // computed names
     code.push('"computedNames" => [')
-    code.push(computedNamesCode.join(','))
+    code.push(Object.keys(component.computed).map(x => `"${x}"`).join(','))
     code.push('],')
     /* eslint-enable no-redeclare */
 
@@ -6853,10 +6806,10 @@ function genComponentProtoCode (component) {
 * @param {Function} ComponentClass 组件类
 * @return {string}
 */
-function compileToSource (ComponentClass, target = 'js') {
+function compileToSource (ComponentClass) {
     guid = 1
     ssrIndex = 0
-    const sourceBuffer = new CompileSourceBuffer(target)
+    const sourceBuffer = new CompileSourceBuffer()
     const contextId = genSSRId()
 
     sourceBuffer.addRendererStart()

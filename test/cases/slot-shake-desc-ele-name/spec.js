@@ -2,6 +2,7 @@ it('dynamic slot name description and dynamic name in given slot element', funct
     // [inject] init
 
     const bs = wrap.getElementsByTagName('b')
+
     expect(bs.length).toBe(4)
     expect(bs[0].innerHTML).toBe('Justineo')
     expect(bs[1].innerHTML).toBe('errorrik')
@@ -9,6 +10,7 @@ it('dynamic slot name description and dynamic name in given slot element', funct
     expect(bs[3].innerHTML).toBe('leeight@gmail.com')
 
     const lis = wrap.getElementsByTagName('li')
+
     expect(lis.length).toBe(8)
     expect(lis[1].innerHTML).toContain('justineo@gmail.com')
     expect(lis[3].innerHTML).toContain('errorrik@gmail.com')
@@ -21,6 +23,7 @@ it('dynamic slot name description and dynamic name in given slot element', funct
 
     myComponent.nextTick(function () {
         const bs = wrap.getElementsByTagName('b')
+
         expect(bs.length).toBe(4)
         expect(bs[0].innerHTML).toContain('justineo@gmail.com')
         expect(bs[0].getAttribute('slot') == null).toBeTruthy()
@@ -29,6 +32,7 @@ it('dynamic slot name description and dynamic name in given slot element', funct
         expect(bs[3].innerHTML).toContain('areyou@gmail.com')
 
         const lis = wrap.getElementsByTagName('li')
+
         expect(lis.length).toBe(8)
         expect(lis[0].innerHTML).toContain('Justineo')
         expect(lis[2].innerHTML).toContain('otakustay')
@@ -42,6 +46,7 @@ it('dynamic slot name description and dynamic name in given slot element', funct
 
         myComponent.nextTick(function () {
             const bs = wrap.getElementsByTagName('b')
+
             expect(bs.length).toBe(4)
             expect(bs[0].innerHTML).toBe('justineo@gmail.com')
             expect(bs[0].getAttribute('slot') == null).toBeTruthy()
@@ -50,6 +55,7 @@ it('dynamic slot name description and dynamic name in given slot element', funct
             expect(bs[3].innerHTML).toBe('areyou@gmail.com')
 
             const lis = wrap.getElementsByTagName('li')
+
             expect(lis.length).toBe(8)
             expect(lis[0].innerHTML).toContain('Justineo')
             expect(lis[3].innerHTML).toContain('otakustay')
@@ -60,6 +66,7 @@ it('dynamic slot name description and dynamic name in given slot element', funct
 
             myComponent.nextTick(function () {
                 const bs = wrap.getElementsByTagName('b')
+
                 expect(bs.length).toBe(4)
                 expect(bs[0].innerHTML).toBe('justineo@gmail.com')
                 expect(bs[0].getAttribute('slot') == null).toBeTruthy()

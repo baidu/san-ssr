@@ -15,6 +15,7 @@ it("slot insert element 'template' apply for", function (done) {
     expect(wrap.getElementsByTagName('b')[0].innerHTML).toBe('San')
 
     const contentSlot = myComponent.ref('folder').slot('content')
+
     expect(contentSlot.length).toBe(1)
     expect(contentSlot[0].children[0].children.length).toBe(2)
     expect(contentSlot[0].children[0].nodeType).toBe(san.NodeType.FOR)
@@ -23,6 +24,7 @@ it("slot insert element 'template' apply for", function (done) {
     san.nextTick(function () {
         const h4s = wrap.getElementsByTagName('h4')
         const ps = wrap.getElementsByTagName('p')
+
         expect(h4s.length).toBe(1)
         expect(ps.length).toBe(1)
 
@@ -30,6 +32,7 @@ it("slot insert element 'template' apply for", function (done) {
         expect(ps[0].innerHTML).toBe('otakustay@gmail.com')
 
         const contentSlot = myComponent.ref('folder').slot('content')
+
         expect(contentSlot.length).toBe(1)
         expect(contentSlot[0].children[0].children.length).toBe(1)
         expect(contentSlot[0].children[0].nodeType).toBe(san.NodeType.FOR)
@@ -37,6 +40,7 @@ it("slot insert element 'template' apply for", function (done) {
         myComponent.data.unshift('persons', { name: 'errorrik', email: 'errorrik@gmail.com' })
         san.nextTick(function () {
             const contentSlot = myComponent.ref('folder').slot('content')
+
             expect(contentSlot.length).toBe(1)
             expect(contentSlot[0].children[0].children.length).toBe(2)
             expect(contentSlot[0].children[0].nodeType).toBe(san.NodeType.FOR)

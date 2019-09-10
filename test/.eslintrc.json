@@ -1,5 +1,5 @@
 {
-  "extends": ["standard"],
+  "extends": ["plugin:jasmine/recommended"],
   "env": {
     "jasmine": true,
     "es6": true,
@@ -26,6 +26,7 @@
     "triggerEvent": true
   },
   "rules": {
+    "jasmine/prefer-jasmine-matcher": "off",
     "no-var": 2,
     "prefer-const": 2,
     "no-labels": "off",

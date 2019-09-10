@@ -4,11 +4,13 @@ it('s-bind', function (done) {
     const h3 = wrap.getElementsByTagName('h3')[0]
     const h4 = wrap.getElementsByTagName('h4')[0]
     const p = wrap.getElementsByTagName('p')[0]
+
     expect(h3.innerHTML).toContain('Hey')
     expect(h4.innerHTML).toContain('San')
     expect(p.innerHTML).toContain('framework')
 
     const a = wrap.getElementsByTagName('a')[0]
+
     expect(a.title).toBe('link')
     expect(a.target).toBe('_blank')
     expect(a.href).toContain('baidu')

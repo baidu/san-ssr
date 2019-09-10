@@ -4,12 +4,14 @@ it('set update for, init with many data', function (done) {
     myComponent.data.set('persons[0]', { name: 'erik', email: 'erik168@163.com' })
 
     const lis = wrap.getElementsByTagName('li')
+
     expect(lis.length).toBe(4)
     expect(lis[1].getAttribute('title')).toBe('errorrik')
     expect(lis[1].innerHTML.indexOf('errorrik - errorrik@gmail.com')).toBe(0)
 
     san.nextTick(function () {
         const lis = wrap.getElementsByTagName('li')
+
         expect(lis.length).toBe(4)
         expect(lis[1].getAttribute('title')).toBe('erik')
         expect(lis[1].innerHTML.indexOf('erik - erik168@163.com')).toBe(0)

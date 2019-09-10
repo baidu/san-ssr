@@ -1,13 +1,11 @@
 {
   "extends": ["standard"],
   "env": {
-    "jasmine": true,
     "es6": true,
     "browser": true,
     "node": true
   },
   "plugins": [
-    "jasmine",
     "standard",
     "promise"
   ],

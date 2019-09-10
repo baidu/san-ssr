@@ -2,6 +2,7 @@ it('array literal with spread', function (done) {
     // [inject] init
 
     const lis = wrap.getElementsByTagName('li')
+
     expect(lis.length).toBe(3)
 
     expect(lis[0].innerHTML).toBe('1')
@@ -11,6 +12,7 @@ it('array literal with spread', function (done) {
     myComponent.data.set('ext2', [5, 6])
     san.nextTick(function () {
         const lis = wrap.getElementsByTagName('li')
+
         expect(lis.length).toBe(7)
 
         expect(lis[0].innerHTML).toBe('1')

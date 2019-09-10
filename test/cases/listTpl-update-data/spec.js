@@ -3,6 +3,7 @@ it('render list with template, init false, update soon', function (done) {
 
     const h4s = wrap.getElementsByTagName('h4')
     const ps = wrap.getElementsByTagName('p')
+
     expect(h4s.length).toBe(0)
     expect(ps.length).toBe(0)
     myComponent.data.set('cond', true)
@@ -10,6 +11,7 @@ it('render list with template, init false, update soon', function (done) {
     san.nextTick(function () {
         const h4s = wrap.getElementsByTagName('h4')
         const ps = wrap.getElementsByTagName('p')
+
         expect(h4s.length).toBe(2)
         expect(ps.length).toBe(2)
         expect(h4s[0].innerHTML).toBe('errorrik')
@@ -22,6 +24,7 @@ it('render list with template, init false, update soon', function (done) {
         san.nextTick(function () {
             const h4s = wrap.getElementsByTagName('h4')
             const ps = wrap.getElementsByTagName('p')
+
             expect(h4s.length).toBe(3)
             expect(ps.length).toBe(3)
             expect(h4s[0].innerHTML).toBe('otakustay')

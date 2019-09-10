@@ -13,6 +13,7 @@ it('component with san-if, init with false', function (done) {
 
     san.nextTick(function () {
         const span = wrap.getElementsByTagName('span')[0]
+
         expect(span.innerHTML.indexOf('2b')).toBe(0)
         expect(span.title).toBe('erik')
         expect(myComponent.data.get('jokeName')).toBe('2b')

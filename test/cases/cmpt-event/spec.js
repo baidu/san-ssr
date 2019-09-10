@@ -2,6 +2,7 @@ it('component event', function (done) {
     // [inject] init
 
     const span = wrap.getElementsByTagName('span')[0]
+
     expect(myComponent.data.get('title')).toBe('1')
     expect(span.title).toBe('1')
 

@@ -9,6 +9,7 @@ it('update attribute', function (done) {
 
     san.nextTick(function () {
         const span = wrap.getElementsByTagName('span')[0]
+
         expect(span.title).toBe('erik168@163.com')
 
         myComponent.dispose()

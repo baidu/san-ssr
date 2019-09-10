@@ -4,12 +4,14 @@ it('component with san-for, then push', function (done) {
     myComponent.data.push('list', { title: '3', text: 'three' })
 
     const spans = wrap.getElementsByTagName('span')
+
     expect(spans.length).toBe(2)
     expect(spans[0].title).toBe('1')
     expect(spans[1].title).toBe('2')
 
     san.nextTick(function () {
         const spans = wrap.getElementsByTagName('span')
+
         expect(spans.length).toBe(3)
         expect(spans[0].title).toBe('1')
         expect(spans[1].title).toBe('2')

@@ -16,6 +16,7 @@ it('render list with template, template has no sibling, pop and unshift soon', f
     san.nextTick(function () {
         const h4s = wrap.getElementsByTagName('h4')
         const ps = wrap.getElementsByTagName('p')
+
         expect(h4s.length).toBe(1)
         expect(ps.length).toBe(1)
 

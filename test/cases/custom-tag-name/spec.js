@@ -10,6 +10,7 @@ it('custom tag name', function () {
     const ie = ieVersionMatch ? ieVersionMatch[1] - 0 : 0
 
     const el = document.getElementById('custom-tag-name')
+
     expect(el.getElementsByTagName('x-p').length).toBe(1)
 
     if (!ie || ie > 8) {

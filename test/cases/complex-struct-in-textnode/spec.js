@@ -3,6 +3,7 @@ it('complex structure in textnode', function (done) {
 
     const a = wrap.getElementsByTagName('a')[0]
     const b = wrap.getElementsByTagName('b')[0]
+
     expect(a.innerHTML.toLowerCase()).toContain('hello er<u>erik</u>ik!')
     expect(b.innerHTML).toBe('bbb')
 

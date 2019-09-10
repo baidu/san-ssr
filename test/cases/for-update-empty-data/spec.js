@@ -2,6 +2,7 @@ it('update for, init with empty data', function (done) {
     // [inject] init
 
     const lis = wrap.getElementsByTagName('li')
+
     expect(lis.length).toBe(2)
 
     myComponent.data.push('persons',
@@ -10,6 +11,7 @@ it('update for, init with empty data', function (done) {
 
     san.nextTick(function () {
         const lis = wrap.getElementsByTagName('li')
+
         expect(lis.length).toBe(3)
         expect(lis[1].getAttribute('title')).toBe('otakustay')
         expect(lis[1].innerHTML.indexOf('otakustay - otakustay@gmail.com')).toBe(0)

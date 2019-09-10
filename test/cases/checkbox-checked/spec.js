@@ -2,6 +2,7 @@ it('checkbox checked', function (done) {
     // [inject] init
 
     const inputs = wrap.getElementsByTagName('input')
+
     expect(inputs[0].checked).toBeFalsy()
     expect(inputs[1].checked).toBeTruthy()
     expect(inputs[2].checked).toBeTruthy()
@@ -10,6 +11,7 @@ it('checkbox checked', function (done) {
 
     san.nextTick(function () {
         const inputs = wrap.getElementsByTagName('input')
+
         expect(inputs[0].checked).toBeTruthy()
         expect(inputs[1].checked).toBeFalsy()
         expect(inputs[2].checked).toBeFalsy()

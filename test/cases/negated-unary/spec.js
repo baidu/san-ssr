@@ -2,6 +2,7 @@ it('negated-unary expr', function (done) {
     // [inject] init
 
     const u = wrap.getElementsByTagName('u')[0]
+
     expect(u.innerHTML).toBe('1')
 
     myComponent.data.set('num1', 14)

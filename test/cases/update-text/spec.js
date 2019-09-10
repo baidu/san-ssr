@@ -8,6 +8,7 @@ it('update text', function (done) {
 
     san.nextTick(function () {
         const span = wrap.getElementsByTagName('span')[0]
+
         expect(span.innerHTML.indexOf('erik')).toBe(0)
         expect(span.title.indexOf('erik168@163.com')).toBe(0)
 

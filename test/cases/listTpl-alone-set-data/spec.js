@@ -15,6 +15,7 @@ it('render list with template, template has no sibling, no data, set soon', func
     san.nextTick(function () {
         const h4s = wrap.getElementsByTagName('h4')
         const ps = wrap.getElementsByTagName('p')
+
         expect(h4s.length).toBe(2)
         expect(ps.length).toBe(2)
 

@@ -4,6 +4,7 @@ it('default and named slot', function (done) {
     const u = wrap.getElementsByTagName('u')[0]
     const p = wrap.getElementsByTagName('p')[0]
     const h3 = wrap.getElementsByTagName('h3')[0]
+
     expect(u.title).toBe('tab')
     expect(p.title).toBe('one')
     expect(h3.title).toBe('1')

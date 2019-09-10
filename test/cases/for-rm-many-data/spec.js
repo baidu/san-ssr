@@ -4,12 +4,14 @@ it('remove update for, init with many data', function (done) {
     myComponent.data.removeAt('persons', 0)
 
     const lis = wrap.getElementsByTagName('li')
+
     expect(lis.length).toBe(4)
     expect(lis[1].getAttribute('title')).toBe('errorrik')
     expect(lis[1].innerHTML.indexOf('errorrik - errorrik@gmail.com')).toBe(0)
 
     san.nextTick(function () {
         const lis = wrap.getElementsByTagName('li')
+
         expect(lis.length).toBe(3)
         expect(lis[1].getAttribute('title')).toBe('otakustay')
         expect(lis[1].innerHTML.indexOf('otakustay - otakustay@gmail.com')).toBe(0)

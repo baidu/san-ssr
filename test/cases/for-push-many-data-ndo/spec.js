@@ -2,6 +2,7 @@ it('push update for, init with many data, no ouput data in html', function (done
     // [inject] init
 
     const lis = wrap.getElementsByTagName('li')
+
     expect(lis.length).toBe(4)
     expect(lis[1].getAttribute('title')).toBe('errorrik')
     expect(lis[1].innerHTML.indexOf('errorrik - errorrik@gmail.com')).toBe(0)
@@ -12,6 +13,7 @@ it('push update for, init with many data, no ouput data in html', function (done
 
     san.nextTick(function () {
         const lis = wrap.getElementsByTagName('li')
+
         expect(lis.length).toBe(5)
         expect(lis[3].getAttribute('title')).toBe('otakustay')
         expect(lis[3].innerHTML.indexOf('otakustay - otakustay@gmail.com')).toBe(0)

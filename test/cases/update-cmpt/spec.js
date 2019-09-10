@@ -7,11 +7,13 @@ it('update component', function (done) {
     myComponent.data.set('jokeName', '2b')
 
     const span = wrap.getElementsByTagName('span')[0]
+
     expect(span.innerHTML.indexOf('airike')).toBe(0)
     expect(span.title).toBe('errorrik')
 
     san.nextTick(function () {
         const span = wrap.getElementsByTagName('span')[0]
+
         expect(span.innerHTML.indexOf('2b')).toBe(0)
         expect(span.title).toBe('erik')
         expect(myComponent.data.get('jokeName')).toBe('2b')

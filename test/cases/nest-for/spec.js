@@ -2,6 +2,7 @@ it('nest for', function (done) {
     // [inject] init
 
     const labels = wrap.getElementsByTagName('label')
+
     expect(labels.length).toBe(6)
     expect(labels[5].innerHTML).toBe('6')
     expect(labels[3].innerHTML).toBe('4')
@@ -9,6 +10,7 @@ it('nest for', function (done) {
     myComponent.data.set('forms.bar', [8, 9])
     san.nextTick(function () {
         const labels = wrap.getElementsByTagName('label')
+
         expect(labels.length).toBe(5)
         expect(labels[4].innerHTML).toBe('9')
         expect(labels[3].innerHTML).toBe('8')

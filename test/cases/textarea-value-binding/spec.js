@@ -3,6 +3,7 @@ it('two way binding textarea value', function (done) {
 
     const span = wrap.getElementsByTagName('span')[0]
     const input = wrap.getElementsByTagName('textarea')[0]
+
     expect(span.title).toBe('errorrik')
     expect(input.value).toBe('errorrik')
 

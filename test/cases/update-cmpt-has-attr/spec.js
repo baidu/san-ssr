@@ -5,11 +5,13 @@ it('update component, main element has attribute', function (done) {
     myComponent.data.set('jokeName', '2bbbbbbb')
 
     const span = wrap.getElementsByTagName('span')[0]
+
     expect(span.innerHTML.indexOf('airike') >= 0).toBeTruthy()
     expect(span.title).toBe('airike')
 
     san.nextTick(function () {
         const span = wrap.getElementsByTagName('span')[0]
+
         expect(span.innerHTML.indexOf('2bbbbbbb') >= 0).toBeTruthy()
         expect(span.title).toBe('2bbbbbbb')
 

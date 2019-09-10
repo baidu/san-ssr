@@ -2,6 +2,7 @@ it('nest for with computed', function (done) {
     // [inject] init
 
     const labels = wrap.getElementsByTagName('label')
+
     expect(labels.length).toBe(6)
     expect(labels[5].innerHTML).toBe('6')
     expect(labels[3].innerHTML).toBe('4')
@@ -10,6 +11,7 @@ it('nest for with computed', function (done) {
 
     san.nextTick(function () {
         const labels = wrap.getElementsByTagName('label')
+
         expect(labels.length).toBe(8)
         expect(labels[3].innerHTML).toBe('4')
         expect(labels[4].innerHTML).toBe('5')

@@ -2,6 +2,7 @@ it('component fill slot', function (done) {
     // [inject] init
 
     const input = wrap.getElementsByTagName('input')[0]
+
     expect(input.value).toBe('er')
     expect(wrap.getElementsByTagName('b')[0].title).toBe('er')
 
@@ -9,6 +10,7 @@ it('component fill slot', function (done) {
 
     san.nextTick(function () {
         const input = wrap.getElementsByTagName('input')[0]
+
         expect(input.value).toBe('san')
         expect(wrap.getElementsByTagName('b')[0].title).toBe('san')
 

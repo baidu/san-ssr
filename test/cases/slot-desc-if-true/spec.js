@@ -6,6 +6,7 @@ it('slot description apply if, init true', function (done) {
     expect(wrap.getElementsByTagName('b')[0].innerHTML).toBe('San')
 
     const contentSlots = myComponent.ref('folder').slot()
+
     expect(contentSlots.length).toBe(1)
 
     myComponent.data.set('folderHidden', true)
@@ -14,6 +15,7 @@ it('slot description apply if, init true', function (done) {
         expect(wrap.getElementsByTagName('b')[0].innerHTML).toBe('San')
 
         const contentSlots = myComponent.ref('folder').slot()
+
         expect(contentSlots.length).toBe(0)
         myComponent.dispose()
         document.body.removeChild(wrap)

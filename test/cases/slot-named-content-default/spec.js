@@ -3,6 +3,7 @@ it('default and named slot, content by default', function (done) {
 
     const p = wrap.getElementsByTagName('p')[0]
     const h3 = wrap.getElementsByTagName('h3')[0]
+
     expect(p.title).toBe('five')
     expect(h3.title).toBe('5')
 

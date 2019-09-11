@@ -1,23 +1,23 @@
-#!/usr/bin/env node
+#!/usr/bin/env ts-node
 
-const { compile } = require('../test/compile')
-const chalk = require('chalk')
-const { readFileSync } = require('fs')
-const { resolve } = require('path')
-const { render } = require('../test/render')
+import * as chalk from 'chalk'
+import { readFileSync } from 'fs'
+import { resolve } from 'path'
+import { renderByJS, renderByPHP, compilePHP, compileJS } from '../test/case'
 
 const caseName = process.argv[2]
 const htmlPath = resolve(__dirname, '../test/cases', caseName, 'result.html')
 const expected = readFileSync(htmlPath, 'utf8')
 
-compile(caseName)
+compileJS(caseName)
+compilePHP(caseName)
 
-console.log(chalk.green('[EXPECTED]'))
+console.log(chalk['green']('[EXPECTED]'))
 console.log(expected)
 console.log()
 
-check(`[SSR:  JS] ${caseName}`, render(caseName, 'js'))
-check(`[SSR: PHP] ${caseName}`, render(caseName, 'php'))
+check(`[SSR:  JS] ${caseName}`, renderByJS(caseName))
+check(`[SSR: PHP] ${caseName}`, renderByPHP(caseName))
 
 function check (title, html) {
     const color = html === expected ? 'green' : 'red'

@@ -1,21 +1,21 @@
 {
   "name": "san-ssr-php",
   "version": "1.0.0",
-  "description": "",
+  "description": "San server-side-render for PHP environment",
   "main": "index.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
     "lint": "eslint src test",
-    "build": "exit 0",
+    "build": "tsc && cp runtime/* dist/runtime",
     "unit-php": "./vendor/bin/phpunit --bootstrap vendor/autoload.php test/unit/*.spec.php",
-    "unit-js": "jasmine test/unit/*.spec.js",
-    "unit": "npm run unit-js && npm run unit-php",
-    "test": "npm run unit && npm run integration && npm run e2e",
+    "unit-ts": "jest test/unit",
+    "unit": "npm run unit-ts && npm run unit-php",
+    "integration": "jest test/integration.spec.ts",
+    "coverage": "jest --coverage",
+    "test": "jest && npm run e2e",
     "render": "./bin/render.js",
-    "coverage": "istanbul cover jasmine test/integration.spec.js",
-    "integration": "jasmine test/integration.spec.js",
     "e2e": "./bin/build-e2e.js && npx karma start ./test/karma.conf.js --single-run"
   },
   "repository": {
@@ -29,6 +29,9 @@
   },
   "homepage": "https://github.com/harttle/san-ssr-php#readme",
   "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "@typescript-eslint/eslint-plugin": "^2.0.0",
+    "@typescript-eslint/parser": "^2.0.0",
     "eslint": "^5.12.1",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.15.0",
@@ -37,15 +40,15 @@
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
     "jasmine-core": "^2.99.0",
+    "jest": "^24.9.0",
     "karma": "^4.0.1",
     "karma-chrome-launcher": "^2.0.0",
     "karma-coverage": "^1.1.2",
-    "@typescript-eslint/eslint-plugin": "^2.0.0",
-    "@typescript-eslint/parser": "^2.0.0",
     "karma-jasmine": "^2.0.1",
     "karma-remap-istanbul": "^0.6.0",
     "karma-sourcemap-loader": "^0.3.7",
     "san": "^3.7.8",
+    "ts-jest": "^24.0.2",
     "wdio-jasmine-framework": "^0.3.0",
     "wdio-sauce-service": "^0.4.14",
     "wdio-spec-reporter": "^0.1.0"
@@ -53,6 +56,7 @@
   "dependencies": {
     "camelcase": "^5.3.1",
     "chalk": "^2.4.2",
+    "ts-morph": "^4.0.0",
     "ts-node": "^8.3.0",
     "ts2php": "^0.12.1",
     "typescript": "^3.4.5"

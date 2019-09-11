@@ -1,5 +1,5 @@
 <?php
-include('src/runtime/underscore.php');
+include('runtime/underscore.php');
 
 use PHPUnit\Framework\TestCase;
 

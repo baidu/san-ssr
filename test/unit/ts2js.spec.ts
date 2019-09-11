@@ -1,4 +1,4 @@
-const { ts2js } = require('../../src/transpilers/ts2js')
+import { ts2js } from '../../src/transpilers/ts2js'
 
 describe('ts2js', function () {
     it('should compile types to nothing', function () {

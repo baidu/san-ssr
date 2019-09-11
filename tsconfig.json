@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "outDir": "dist",
+    "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "downlevelIteration": true,
+    "strict": false,
+    "suppressImplicitAnyIndexErrors": true
+  },
+  "include": [ "src", "test", "bin" ]
+}

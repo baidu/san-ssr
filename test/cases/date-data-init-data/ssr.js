@@ -160,8 +160,8 @@ componentRenderers._id1 = componentRenderers._id1|| _id1;
 var _id1Proto = {
 filters: {
 year: function (date) {
-            return date.getFullYear();
-        }
+        return date.getFullYear();
+    }
 },
 computed: {
 

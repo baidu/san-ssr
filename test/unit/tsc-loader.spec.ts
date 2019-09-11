@@ -1,4 +1,4 @@
-const { apply, restore } = require('../../src/loaders/tsc.js')
+import { apply, restore } from '../../src/loaders/tsc'
 
 describe('tsc loader', function () {
     const filename = require.resolve('../stub/obj.ts')
@@ -14,7 +14,7 @@ describe('tsc loader', function () {
         const fn = require('../stub/obj.ts')
 
         expect(fn.default.toString()).toEqual(
-            'function Foo() {\n    }'
+            'class Foo {\n}'
         )
     })
 })

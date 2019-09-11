@@ -5,7 +5,7 @@
 * @param {Array} array 数组源
 * @param {function(Any,number):boolean} iterator 遍历函数
 */
-function each (array, iterator) {
+export function each (array, iterator) {
     if (array && array.length > 0) {
         for (let i = 0, l = array.length; i < l; i++) {
             if (iterator(array[i], i) === false) {
@@ -22,7 +22,7 @@ function each (array, iterator) {
 * @param {*} value 包含的项
 * @return {boolean}
 */
-function contains (array, value) {
+export function contains (array, value) {
     let result = false
     each(array, function (item) {
         result = item === value
@@ -38,15 +38,13 @@ function contains (array, value) {
 * @param {Function} subClass 子类函数
 * @param {Function} superClass 父类函数
 */
-function inherits (subClass, superClass) {
-/* jshint -W054 */
+export function inherits (subClass, superClass) {
     const subClassProto = subClass.prototype
-const F = new Function()    // eslint-disable-line
+    const F = new Function() as {new(): typeof F}   // eslint-disable-line
     F.prototype = superClass.prototype
     subClass.prototype = new F()
     subClass.prototype.constructor = subClass
     extend(subClass.prototype, subClassProto)
-/* jshint +W054 */
 }
 
 /**
@@ -57,7 +55,7 @@ const F = new Function()    // eslint-disable-line
 * @param {...*} args 预设的初始参数
 * @return {Function}
 */
-function bind (func, thisArg) {
+export function bind (func, thisArg) {
     const nativeBind = Function.prototype.bind
     const slice = Array.prototype.slice
     // #[begin] allua
@@ -76,7 +74,7 @@ function bind (func, thisArg) {
 // #[end]
 }
 
-function empty () {}
+export function empty () {}
 
 /**
 * 对象属性拷贝
@@ -85,7 +83,7 @@ function empty () {}
 * @param {Object} source 源对象
 * @return {Object} 返回目标对象
 */
-function extend (target, source) {
+export function extend (target, source) {
     for (const key in source) {
     /* istanbul ignore else  */
         if (source.hasOwnProperty(key)) {
@@ -98,5 +96,3 @@ function extend (target, source) {
 
     return target
 }
-
-module.exports = { each, contains, empty, extend, bind, inherits }

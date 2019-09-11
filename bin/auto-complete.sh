@@ -6,10 +6,12 @@
 #
 # 2. Run `source ./bin/auto-complete.sh`
 # 
-# 3. Input `./bin/test.js` and press <Tab>
+# 3. Input `./bin/test.ts` and press <Tab>
 
-compdef _test test.js
-compdef _test render.js
+compdef _test test.ts
+compdef _test render.ts
+compdef _test compile-to-js.ts
+compdef _test compile-to-php.ts
 compdef _test render.php
 
 function _test {

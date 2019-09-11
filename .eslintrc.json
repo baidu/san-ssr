@@ -5,8 +5,10 @@
     "browser": true,
     "node": true
   },
+  "parser": "@typescript-eslint/parser",
   "plugins": [
     "standard",
+    "@typescript-eslint",
     "promise"
   ],
   "rules": {
@@ -14,6 +16,18 @@
     "prefer-const": 2,
     "no-labels": "off",
     "indent": ["error", 4],
+    "jasmine/prefer-jasmine-matcher": "off",
+    "no-var": 2,
+    "prefer-const": 2,
+    "no-labels": "off",
+    "@typescript-eslint/indent": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-object-literal-type-assertion": "off",
+    "@typescript-eslint/no-use-before-define": "off",
+    "@typescript-eslint/interface-name-prefix": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "no-unused-vars": "off",
     "import/export": "off"
   }
 }

@@ -3,12 +3,10 @@
 const originJsLoader = require.extensions['.ts']
 const tsNode = require('ts-node')
 
-function apply () {
+export function apply () {
     tsNode.register()
 }
 
-function restore () {
+export function restore () {
     require.extensions['.ts'] = originJsLoader
 }
-
-module.exports = { apply, restore }

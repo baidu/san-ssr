@@ -1,13 +1,16 @@
 module.exports = {
-    'roots': [
+    roots: [
         '<rootDir>/src',
         '<rootDir>/test'
     ],
-    'testMatch': [
+    testMatch: [
         '<rootDir>/test/unit/**.ts',
         '<rootDir>/test/integration.spec.ts'
     ],
-    'transform': {
-        '^.+\\.tsx?$': 'ts-jest'
+    globals: {
+        tsConfig: {
+            skipLibCheck: true,
+            skipDefaultLibCheck: true
+        }
     }
 }

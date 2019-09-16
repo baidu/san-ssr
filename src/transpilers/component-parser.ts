@@ -1,5 +1,6 @@
-import { getComponentClassIdentifier } from './ast-util'
-import { Project, ts, SourceFile } from 'ts-morph'
+import { getComponentClassIdentifier, isChildClassOf } from './ast-util'
+import { SanSourceFile } from './san-sourcefile'
+import { Project, SourceFile } from 'ts-morph'
 import { getDefaultConfigPath } from './tsconfig'
 
 export class ComponentParser {
@@ -23,37 +24,45 @@ export class ComponentParser {
         })
     }
 
-    parseComponent () {
-        const files = this.getComponentFiles()
-        for (const file of files.values()) {
-            const componentClassIdentifier = getComponentClassIdentifier(file)
-            if (!componentClassIdentifier) continue
-            this.markComponents(file, componentClassIdentifier)
+    parseComponent (): Map<string, SanSourceFile> {
+        const files = new Map()
+
+        for (const [path, file] of this.getComponentFiles()) {
+            files.set(path, this.parseSanSourceFile(file))
         }
         return files
     }
 
-    private getComponentFiles () {
+    private getComponentFiles (): Map<string, SourceFile> {
         return new Map([[
             this.componentFile,
             this.project.getSourceFile(this.componentFile)
         ]])
     }
 
-    private markComponents (sourceFile: SourceFile, componentClassIdentifier: string) {
+    private parseSanSourceFile (sourceFile: SourceFile) {
+        const componentClassIdentifier = getComponentClassIdentifier(sourceFile)
+        const sanSourceFile = new SanSourceFile(
+            sourceFile,
+            componentClassIdentifier
+        )
+
+        if (!componentClassIdentifier) return sanSourceFile
+
         for (const clazz of sourceFile.getClasses()) {
-            const extendClause = clazz.getHeritageClauseByKind(ts.SyntaxKind.ExtendsKeyword)
-            if (!extendClause) return
+            if (!isChildClassOf(clazz, componentClassIdentifier)) continue
 
-            const typeNode = extendClause.getTypeNodes().find(x => x.getText() === componentClassIdentifier)
-            if (!typeNode) return
-
-            clazz.addProperty({
+            const decl = clazz.addProperty({
                 isStatic: true,
                 name: this.idPropertyName,
                 type: 'number',
-                initializer: '' + (this.id++)
+                initializer: String(this.id)
             })
+
+            sanSourceFile.fakeProperties.push(decl)
+            sanSourceFile.componentClasses.set(this.id, clazz)
+            this.id++
         }
+        return sanSourceFile
     }
 }

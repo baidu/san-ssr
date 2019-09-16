@@ -1,5 +1,6 @@
 import { transpileModule } from 'typescript'
-import { Project, SourceFile } from 'ts-morph'
+import { Project } from 'ts-morph'
+import { SanSourceFile } from './san-sourcefile'
 import { getDefaultConfigPath } from './tsconfig'
 import { sep } from 'path'
 
@@ -19,7 +20,7 @@ export class Compiler {
         })
     }
 
-    compileAndRun (source: SourceFile) {
+    compileAndRun (source: SanSourceFile) {
         const js = this.compileToJS(source)
         const fn = new Function('module', 'exports', 'require', js) // eslint-disable-line
         const module = {
@@ -29,10 +30,10 @@ export class Compiler {
         return module.exports
     }
 
-    compileToJS (source: SourceFile) {
+    compileToJS (source: SanSourceFile) {
         const compilerOptions = this.tsconfig['compilerOptions']
         const { diagnostics, outputText } =
-            transpileModule(source.getFullText(), { compilerOptions })
+            transpileModule(source.sourceFile.getFullText(), { compilerOptions })
         if (diagnostics.length) {
             console.log(diagnostics)
             throw new Error('typescript compile error')

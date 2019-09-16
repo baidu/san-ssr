@@ -1,5 +1,7 @@
-import { Project, ts, SourceFile, TypeGuards, VariableDeclarationKind } from 'ts-morph'
-import { getComponentClassIdentifier } from './ast-util'
+import { Project, ts } from 'ts-morph'
+import { getSanImportDeclaration } from './ast-util'
+import { ComponentRegistry } from './component-registry'
+import { SanSourceFile } from './san-sourcefile'
 import { compile } from 'ts2php'
 import { getDefaultConfigPath } from './tsconfig'
 import { sep, extname } from 'path'
@@ -22,60 +24,38 @@ export class Compiler {
         })
     }
 
-    ns (file) {
-        return file
-            .slice(this.root.length, -extname(file).length)
-            .split(sep).join('\\')
-            .replace(/^\\/, '')
-            .replace(/\./g, '_')
+    compileToPHP (sourceFile: SanSourceFile) {
+        this.transform(sourceFile)
+        return this.doCompile(sourceFile)
     }
 
-    concat (files) {
+    compileComponent (files: Map<string, SanSourceFile>) {
+        const registry = new ComponentRegistry()
         let code = ''
-        for (const [file, content] of files) {
-            code += `namespace ${this.ns(file)} {\n`
-            code += content
-            code += `}`
+        for (const [path, sourceFile] of files) {
+            registry.registerComponents(sourceFile)
+            code += `namespace ${this.ns(path)} {\n`
+            code += `    ${this.compileToPHP(sourceFile)}\n`
+            code += '}\n'
         }
+        code += registry.genComponentRegistry(path => this.ns(path))
         return code
     }
 
-    compileComponent (componentFile) {
-        const result = new Map()
-        const queue = [componentFile]
-        while (queue.length) {
-            const filepath = queue.shift()
-            const { code, dependencies } = this.compileFile(filepath)
-            result.set(filepath, code)
-            dependencies.forEach(dep => queue.push(dep))
+    private transform (sourceFile: SanSourceFile) {
+        for (const clazz of sourceFile.componentClasses.values()) {
+            const extendClause = clazz.getHeritageClauseByKind(ts.SyntaxKind.ExtendsKeyword)
+            const typeNode = extendClause.getTypeNodes().find(x => x.getText() === sourceFile.componentClassIdentifier)
+
+            extendClause.removeExpression(typeNode)
         }
-        return this.concat(result)
+        sourceFile.fakeProperties.forEach(prop => prop.remove())
+        getSanImportDeclaration(sourceFile.origin).remove()
     }
 
-    compileFile (filePath) {
-        const file = this.project.getSourceFile(filePath)
-        const componentClassIdentifier = getComponentClassIdentifier(file)
-        normalizeComponentClass(file, componentClassIdentifier)
-
-        const code = this.compileToPHP(file.getFullText())
-        const dependencies = []
-        return { code, dependencies }
-
-        // const componentClassDefinition = getComponentClassDefinition(file)
-        // if (componentClassDefinition) {
-        // validateComponentClassDefinition(componentClassDefinition)
-        // removeComponentParent(componentClassDefinition)
-        // }
-
-        // const exportAssignment = file.getExportAssignment(d => !d.isExportEquals());
-        // if (!exportAssignment) {
-        // throw new Error('`export default` is missing!' + filePath)
-        // }
-    }
-
-    compileToPHP (source) {
+    private doCompile (sourceFile: SanSourceFile) {
         const { errors, phpCode } = compile('', {
-            source: source,
+            source: sourceFile.getFullText(),
             emitHeader: false,
             plugins: [],
             compilerOptions: this.tsconfig['compilerOptions']
@@ -86,22 +66,12 @@ export class Compiler {
         }
         return phpCode
     }
-}
 
-function normalizeComponentClass (sourceFile: SourceFile, componentClassIdentifier) {
-    for (const clazz of sourceFile.getClasses()) {
-        const extendClause = clazz.getHeritageClauseByKind(ts.SyntaxKind.ExtendsKeyword)
-        if (!extendClause) return
-
-        const typeNode = extendClause.getTypeNodes().find(x => x.getText() === componentClassIdentifier)
-        if (!typeNode) return
-
-        extendClause.removeExpression(typeNode)
-        clazz.rename('SanSSRPHPComponent')
+    private ns (file) {
+        return file
+            .slice(this.root.length, -extname(file).length)
+            .split(sep).join('\\')
+            .replace(/^\\/, '')
+            .replace(/\./g, '_')
     }
-}
-
-function getComponentClassDefinition (sourceFile) {
-    const classes = sourceFile.getClasses()
-    console.log(classes)
 }

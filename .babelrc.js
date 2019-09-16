@@ -3,4 +3,5 @@ module.exports = {
     '@babel/preset-env',
     '@babel/preset-typescript'
   ],
+  "plugins": ["transform-class-properties"]
 };

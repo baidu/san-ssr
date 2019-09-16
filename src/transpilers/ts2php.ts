@@ -1,4 +1,5 @@
 import { Project, ts, SourceFile, TypeGuards, VariableDeclarationKind } from 'ts-morph'
+import { getComponentClassIdentifier } from './ast-util'
 import { compile } from 'ts2php'
 import { getDefaultConfigPath } from './tsconfig'
 import { sep, extname } from 'path'
@@ -21,7 +22,7 @@ export class Compiler {
         })
     }
 
-    namespace (file) {
+    ns (file) {
         return file
             .slice(this.root.length, -extname(file).length)
             .split(sep).join('\\')
@@ -32,7 +33,7 @@ export class Compiler {
     concat (files) {
         let code = ''
         for (const [file, content] of files) {
-            code += `namespace ${this.namespace(file)} {\n`
+            code += `namespace ${this.ns(file)} {\n`
             code += content
             code += `}`
         }
@@ -53,7 +54,7 @@ export class Compiler {
 
     compileFile (filePath) {
         const file = this.project.getSourceFile(filePath)
-        const componentClassIdentifier = getAndRemoveComponentClassIdentifier(file)
+        const componentClassIdentifier = getComponentClassIdentifier(file)
         normalizeComponentClass(file, componentClassIdentifier)
 
         const code = this.compileToPHP(file.getFullText())
@@ -84,24 +85,6 @@ export class Compiler {
             throw new Error(error.msg || error['messageText'])
         }
         return phpCode
-    }
-}
-
-function getAndRemoveComponentClassIdentifier (sourceFile) {
-    const declaration = sourceFile.getImportDeclaration(
-        node => node.getModuleSpecifierValue() === 'san'
-    )
-    const namedImports = declaration.getNamedImports()
-    // const defaul = declaration.getNam
-    for (const namedImport of namedImports) {
-        const propertyName = namedImport.getText()
-        if (propertyName === 'Component') {
-            const identifier = namedImport.getText()
-
-            // declaration.
-
-            return identifier
-        }
     }
 }
 

@@ -8,11 +8,12 @@
   },
   "scripts": {
     "lint": "eslint src test",
-    "build": "tsc && cp runtime/* dist/runtime",
+    "build": "tsc",
+    "build-watch": "tsc",
     "unit-php": "./vendor/bin/phpunit --bootstrap vendor/autoload.php test/unit/*.spec.php",
     "unit-ts": "jest test/unit",
     "unit": "npm run unit-ts && npm run unit-php",
-    "integration": "jest test/integration.spec.ts",
+    "integration": "jest test/integration.spec.js",
     "coverage": "jest --coverage",
     "test": "jest && npm run e2e",
     "render": "./bin/render.js",
@@ -62,7 +63,8 @@
   "dependencies": {
     "camelcase": "^5.3.1",
     "chalk": "^2.4.2",
-    "ts-morph": "^4.0.0",
+    "snake-case": "^2.1.0",
+    "ts-morph": "^4.0.1",
     "ts-node": "^8.3.0",
     "ts2php": "^0.12.1",
     "typescript": "^3.4.5"

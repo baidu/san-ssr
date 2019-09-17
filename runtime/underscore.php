@@ -146,10 +146,11 @@ final class _
 
     public static function callFilter($ctx, $name, $args)
     {
-        $filter = $ctx["proto"]["filters"][$name];
-        // TODO this is
-        if (is_callable($filter)) {
-            return call_user_func_array($filter, $args);
+        $cid = $ctx["spsrId"];
+        $cls = \san\runtime\ComponentRegistry::get($cid);
+        $func = $cls::$filters[$name];
+        if (is_callable($func)) {
+            return call_user_func_array($func, $args);
         }
     }
 

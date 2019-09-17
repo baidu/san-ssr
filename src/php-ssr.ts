@@ -1,4 +1,4 @@
-import { each, contains, empty, extend, bind, inherits } from './utils'
+import { each, contains, empty, extend, bind, inherits } from './utils/underscore'
 const { readFileSync } = require('fs')
 const { resolve } = require('path')
 
@@ -36,7 +36,7 @@ const compileExprSource = {
         let code = '$componentCtx["data"]'
         if (!accessorExpr) return code
 
-        each(accessorExpr.paths, function (path, idx) {
+        each(accessorExpr.paths, function (path) {
             if (path.type === 4) {
                 code += `->{${compileExprSource.dataAccess(path)}}`
             } else if (typeof path.value === 'string') {
@@ -325,8 +325,8 @@ class CompileSourceBuffer {
     /**
     * 添加renderer方法的起始源码
     */
-    addRendererStart () {
-        this.addRaw('function ($data, $noDataOutput) {')
+    addRendererStart (funcName) {
+        this.addRaw(`function ${funcName}($data, $noDataOutput) {`)
 
         const utilContent = readFileSync(
             resolve(__dirname, '../runtime/underscore.php'),
@@ -6383,7 +6383,7 @@ const aNodeCompiler = {
         }
 
         const renderId = compileComponentSource(sourceBuffer, extra.ComponentClass, owner.ssrContextId)
-        sourceBuffer.addRaw(`$html .= call_user_func("${renderId}", `)
+        sourceBuffer.addRaw(`$html .= ${renderId}(`)
         sourceBuffer.addRaw(dataLiteral + ', true, $componentCtx, ' +
         stringifier.str(aNode.tagName) + ', $sourceSlots);')
         sourceBuffer.addRaw('$sourceSlots = null;')
@@ -6506,6 +6506,8 @@ function compileComponentSource (sourceBuffer, ComponentClass, contextId) {
 function genComponentContextCode (component, componentIdInContext) {
     const code = ['$componentCtx = [']
 
+    code.push(`"spsrId" => ${component.constructor.spsrId || 0},`)
+
     // proto
     code.push('"proto" => $' + componentIdInContext + 'Proto,')
 
@@ -6543,7 +6545,8 @@ function genComponentProtoCode (component) {
     const code = ['[']
 
     // members for call expr
-    const ComponentProto = component.constructor.prototype
+    const ComponentClass = component.constructor
+    const ComponentProto = ComponentClass.prototype
     Object.keys(ComponentProto).forEach(function (protoMemberKey) {
         const protoMember = ComponentProto[protoMemberKey]
         if (COMPONENT_RESERVED_MEMBERS[protoMemberKey] || !protoMember) {
@@ -6615,15 +6618,15 @@ function genComponentProtoCode (component) {
 * @param {Function} ComponentClass 组件类
 * @return {string}
 */
-export function compileToSource (ComponentClass) {
+export function compileToSource (ComponentClass, { funcName = '' } = {}) {
     guid = 1
     ssrIndex = 0
     const sourceBuffer = new CompileSourceBuffer()
     const contextId = genSSRId()
 
-    sourceBuffer.addRendererStart()
+    sourceBuffer.addRendererStart(funcName)
     const renderId = compileComponentSource(sourceBuffer, ComponentClass, contextId)
-    sourceBuffer.addRaw(`return call_user_func("${renderId}", $data, $noDataOutput);`)
+    sourceBuffer.addRaw(`return ${renderId}($data, $noDataOutput);`)
     sourceBuffer.addRendererEnd()
 
     return sourceBuffer.toCode()

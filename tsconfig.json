@@ -10,5 +10,5 @@
     "strict": false,
     "suppressImplicitAnyIndexErrors": true
   },
-  "include": [ "src", "test", "bin" ]
+  "include": [ "src" ]
 }

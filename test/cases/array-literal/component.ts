@@ -4,7 +4,7 @@ class List extends Component {
     static template = '<ul><li s-for="item in list">{{item}}</li></ul>'
 }
 
-export default class extends Component {
+export default class MyComponent extends Component {
     static components = {
         'x-l': List
     }

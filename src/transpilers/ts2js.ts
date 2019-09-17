@@ -33,7 +33,7 @@ export class Compiler {
     compileToJS (source: SanSourceFile) {
         const compilerOptions = this.tsconfig['compilerOptions']
         const { diagnostics, outputText } =
-            transpileModule(source.sourceFile.getFullText(), { compilerOptions })
+            transpileModule(source.getFullText(), { compilerOptions })
         if (diagnostics.length) {
             console.log(diagnostics)
             throw new Error('typescript compile error')

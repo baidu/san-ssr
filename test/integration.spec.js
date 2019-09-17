@@ -1,12 +1,12 @@
-import { readFileSync, readdirSync } from 'fs'
-import { resolve, join } from 'path'
-import { renderByJS, renderByPHP, compileAllPHP, compileAllJS } from './case'
+const { readFileSync, readdirSync } = require('fs')
+const { resolve, join } = require('path')
+const { renderByJS, renderByPHP, compileAllToPHP, compileAllToJS } = require('../dist/bin/case')
 
 const caseRoot = resolve(__dirname, 'cases')
 const files = readdirSync(caseRoot)
 
-compileAllJS()
-compileAllPHP()
+// compileAllToJS()
+compileAllToPHP()
 
 for (const caseName of files) {
     const caseDir = resolve(caseRoot, caseName)
@@ -14,11 +14,8 @@ for (const caseName of files) {
     const phpPath = join(caseDir, 'ssr.php')
     const expected = readFileSync(htmlPath, 'utf8')
 
-    it('js: ' + caseName, function () {
-        expect(renderByJS(caseName)).toBe(expected)
-    })
-
-    it('php: ' + caseName, function () {
+    it(caseName, function () {
+        // expect(renderByJS(caseName)).toBe(expected)
         expect(renderByPHP(caseName)).toBe(expected)
     })
 }

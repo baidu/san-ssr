@@ -6,7 +6,7 @@ export function getSanImportDeclaration (sourceFile: SourceFile) {
     )
 }
 
-export function getComponentClassIdentifier (sourceFile): string | undefined {
+export function getComponentClassIdentifier (sourceFile: SourceFile): string | undefined {
     const declaration = getSanImportDeclaration(sourceFile)
     if (!declaration) return
 

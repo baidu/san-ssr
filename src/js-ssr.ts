@@ -1,4 +1,4 @@
-import { each, contains, empty, extend, bind, inherits } from './utils'
+import { each, contains, empty, extend, bind, inherits } from './utils/underscore'
 import * as fs from 'fs'
 import * as path from 'path'
 

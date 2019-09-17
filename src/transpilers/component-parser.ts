@@ -3,6 +3,8 @@ import { SanSourceFile } from './san-sourcefile'
 import { Project, SourceFile } from 'ts-morph'
 import { getDefaultConfigPath } from './tsconfig'
 
+const reservedNames = ['List']
+
 export class ComponentParser {
     private componentFile: string
     private root: string
@@ -50,8 +52,20 @@ export class ComponentParser {
         if (!componentClassIdentifier) return sanSourceFile
 
         for (const clazz of sourceFile.getClasses()) {
+            const name = clazz.getName()
+            if (reservedNames.includes(name)) {
+                if (clazz.isExported()) {
+                    throw new Error(`${name} is a reserved keyword in PHP`)
+                }
+                clazz.rename(`SpsrClass${name}`)
+            }
+
             if (!isChildClassOf(clazz, componentClassIdentifier)) continue
 
+            if (!clazz.getName()) {
+                // clazz.rename('SpsrComponent')    // this throws
+                throw new Error('anonymous component class is not supported')
+            }
             const decl = clazz.addProperty({
                 isStatic: true,
                 name: this.idPropertyName,

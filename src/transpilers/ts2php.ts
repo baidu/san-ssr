@@ -1,4 +1,5 @@
-import { Project, ts } from 'ts-morph'
+import { Project, ts, SyntaxKind } from 'ts-morph'
+import camelCase from 'camelcase'
 import { getSanImportDeclaration } from './ast-util'
 import { ComponentRegistry } from './component-registry'
 import { SanSourceFile } from './san-sourcefile'
@@ -11,11 +12,14 @@ export class Compiler {
     private tsconfigPath: string
     private tsconfig: object
     private project: Project
+    private nsPrefix: string
 
-    constructor (
+    constructor ({
         tsconfigPath = getDefaultConfigPath(),
-        root = tsconfigPath.split(sep).slice(0, -1).join(sep)
-    ) {
+        root = tsconfigPath.split(sep).slice(0, -1).join(sep),
+        nsPrefix = ''
+    }) {
+        this.nsPrefix = nsPrefix
         this.root = root
         this.tsconfigPath = tsconfigPath
         this.tsconfig = require(tsconfigPath)
@@ -43,14 +47,30 @@ export class Compiler {
     }
 
     private transform (sourceFile: SanSourceFile) {
+        sourceFile.fakeProperties.forEach(prop => prop.remove())
+        getSanImportDeclaration(sourceFile.origin).remove()
+
         for (const clazz of sourceFile.componentClasses.values()) {
             const extendClause = clazz.getHeritageClauseByKind(ts.SyntaxKind.ExtendsKeyword)
             const typeNode = extendClause.getTypeNodes().find(x => x.getText() === sourceFile.componentClassIdentifier)
-
             extendClause.removeExpression(typeNode)
+
+            const comps = clazz.getStaticProperty('components')
+            if (comps) comps.remove()
+
+            for (const prop of clazz.getProperties()) {
+                // refactor static property initializers to separate statements
+                // since php doesn't support non trivial static initializers
+                // and ts2php cannot
+                if (prop.isStatic() && prop.hasInitializer()) {
+                    const initializer = prop.getInitializerIfKind(SyntaxKind.ObjectLiteralExpression)
+                    if (!initializer) continue
+                    const statement = clazz.getName() + '.' + prop.getName() + ' = ' + initializer.getFullText()
+                    sourceFile.origin.addStatements(statement)
+                    prop.removeInitializer()
+                }
+            }
         }
-        sourceFile.fakeProperties.forEach(prop => prop.remove())
-        getSanImportDeclaration(sourceFile.origin).remove()
     }
 
     private doCompile (sourceFile: SanSourceFile) {
@@ -68,10 +88,13 @@ export class Compiler {
     }
 
     private ns (file) {
-        return file
+        let str = file
             .slice(this.root.length, -extname(file).length)
-            .split(sep).join('\\')
+            .split(sep).map(camelCase).join('\\')
             .replace(/^\\/, '')
-            .replace(/\./g, '_')
+        if (this.nsPrefix) {
+            str = this.nsPrefix + str
+        }
+        return str
     }
 }

@@ -6641,7 +6641,7 @@ function genComponentProtoCode (component) {
 
                 computedCode.push(key + ': ' +
                 computed.toString()
-                    .replace(/^\s*function\s*\(/, 'function (componentCtx')
+                    .replace(/^\s*function\s*(\S+)?\(/, 'function $1 (componentCtx')
                     .replace(
                         /this.data.get\(([^)]+)\)/g,
                         function (match, exprLiteral) {

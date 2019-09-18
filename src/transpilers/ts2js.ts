@@ -22,6 +22,10 @@ export class Compiler {
 
     compileAndRun (source: SanSourceFile) {
         const js = this.compileToJS(source)
+        return this.run(js)
+    }
+
+    run (js: string) {
         const fn = new Function('module', 'exports', 'require', js) // eslint-disable-line
         const module = {
             exports: {}

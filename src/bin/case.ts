@@ -1,6 +1,6 @@
 import { exec } from './exec'
 import { ComponentParser } from '../transpilers/component-parser'
-import { readdirSync, writeFileSync, existsSync } from 'fs'
+import { readFileSync, readdirSync, writeFileSync, existsSync } from 'fs'
 import { resolve, join } from 'path'
 import { compileToSource as compileToJSSource } from '../js-ssr'
 import { compileToSource as compileToPHPSource } from '../php-ssr'
@@ -13,6 +13,7 @@ const tsconfigPath = resolve(__dirname, '../../test/tsconfig.json')
 const cases = readdirSync(caseRoot)
 
 export function compileToJS (caseName) {
+    // if (caseName !== 'nest-for-computed') return
     const caseDir = join(caseRoot, caseName)
     const ts = join(caseDir, 'component.ts')
     let componentClass
@@ -22,8 +23,8 @@ export function compileToJS (caseName) {
         const ccj = new ToJSCompiler(tsconfigPath)
         componentClass = ccj.compileAndRun(component.get(ts))['default']
     } else {
-        const js = join(caseDir, 'component.js')
-        componentClass = existsSync(ts) ? require(ts).default : require(js)
+        const js = resolve(caseDir, 'component.js')
+        componentClass = require(js)
     }
 
     const fn = compileToJSSource(componentClass)
@@ -37,6 +38,7 @@ export function compileAllToJS () {
 export function compileToPHP (caseName) {
     const caseDir = join(caseRoot, caseName)
     const ts = join(caseDir, 'component.ts')
+    const ccj = new ToJSCompiler(tsconfigPath)
     let componentClass
     let code = ''
 
@@ -46,12 +48,11 @@ export function compileToPHP (caseName) {
             nsPrefix: 'san\\components\\test\\'
         })
         const component = new ComponentParser(ts, tsconfigPath).parseComponent()
-        const ccj = new ToJSCompiler(tsconfigPath)
         componentClass = ccj.compileAndRun(component.get(ts))['default']
         code += ccp.compileComponent(component)
     } else {
-        const js = join(caseDir, 'component.js')
-        componentClass = require(js)
+        const js = resolve(caseDir, 'component.js')
+        componentClass = ccj.run(readFileSync(js, 'utf8'))
     }
 
     const renderCode = compileToPHPSource(

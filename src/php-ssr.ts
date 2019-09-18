@@ -6621,6 +6621,7 @@ function genComponentProtoCode (component) {
 export function compileToSource (ComponentClass, { funcName = '' } = {}) {
     guid = 1
     ssrIndex = 0
+
     const sourceBuffer = new CompileSourceBuffer()
     const contextId = genSSRId()
 

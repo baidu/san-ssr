@@ -15,8 +15,17 @@ const cases = readdirSync(caseRoot)
 export function compileToJS (caseName) {
     const caseDir = join(caseRoot, caseName)
     const ts = join(caseDir, 'component.ts')
-    const js = join(caseDir, 'component.js')
-    const componentClass = existsSync(ts) ? require(ts).default : require(js)
+    let componentClass
+
+    if (existsSync(ts)) {
+        const component = new ComponentParser(ts, tsconfigPath).parseComponent()
+        const ccj = new ToJSCompiler(tsconfigPath)
+        componentClass = ccj.compileAndRun(component.get(ts))['default']
+    } else {
+        const js = join(caseDir, 'component.js')
+        componentClass = existsSync(ts) ? require(ts).default : require(js)
+    }
+
     const fn = compileToJSSource(componentClass)
     writeFileSync(join(caseDir, 'ssr.js'), `module.exports = ${fn}`)
 }

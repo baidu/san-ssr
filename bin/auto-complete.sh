@@ -8,8 +8,7 @@
 # 
 # 3. Input `./bin/test.ts` and press <Tab>
 
-compdef _test test-php.ts
-compdef _test test-js.ts
+compdef _test debug.sh
 compdef _test render.ts
 compdef _test compile-to-js.ts
 compdef _test compile-to-php.ts

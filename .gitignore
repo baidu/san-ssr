@@ -5,3 +5,5 @@ npm-debug.log
 coverage
 vendor/
 dist/
+test/cases/*/ssr.js
+test/cases/*/ssr.php

@@ -16,6 +16,7 @@ const ccp = new ToPHPCompiler({
     tsconfigPath,
     nsPrefix: 'san\\components\\test\\'
 })
+const parser = new ComponentParser(tsconfigPath)
 
 export function compileToJS (caseName) {
     const caseDir = join(caseRoot, caseName)
@@ -23,8 +24,8 @@ export function compileToJS (caseName) {
     let componentClass
 
     if (existsSync(ts)) {
-        const component = new ComponentParser(ts, tsconfigPath).parseComponent()
-        componentClass = ccj.compileAndRun(component.get(ts))['default']
+        const component = parser.parseComponent(ts)
+        componentClass = ccj.compileAndRun(component.getComponentSourceFile())['default']
     } else {
         const js = resolve(caseDir, 'component.js')
         componentClass = require(js)
@@ -41,8 +42,8 @@ export function compileToPHP (caseName) {
     let code = ''
 
     if (existsSync(ts)) {
-        const component = new ComponentParser(ts, tsconfigPath).parseComponent()
-        componentClass = ccj.compileAndRun(component.get(ts))['default']
+        const component = parser.parseComponent(ts)
+        componentClass = ccj.compileAndRun(component.getComponentSourceFile())['default']
         code += ccp.compileComponent(component)
     } else {
         const js = resolve(caseDir, 'component.js')

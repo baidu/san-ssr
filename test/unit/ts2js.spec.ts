@@ -1,5 +1,5 @@
 import { Compiler } from '../../src/transpilers/ts2js'
-import { ComponentParser } from '../../src/transpilers/component-parser'
+import { ComponentParser } from '../../src/parser/component-parser'
 import { resolve } from 'path'
 
 describe('ts2js', function () {

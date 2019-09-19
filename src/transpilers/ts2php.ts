@@ -1,10 +1,11 @@
 import { Project, ts, SyntaxKind } from 'ts-morph'
+import { Component } from '../parser/component'
 import camelCase from 'camelcase'
-import { getSanImportDeclaration } from './ast-util'
+import { getSanImportDeclaration } from '../parser/ast-util'
 import { ComponentRegistry } from './component-registry'
-import { SanSourceFile } from './san-sourcefile'
+import { SanSourceFile } from '../parser/san-sourcefile'
 import { compile } from 'ts2php'
-import { getDefaultConfigPath } from './tsconfig'
+import { getDefaultConfigPath } from '../parser/tsconfig'
 import { sep, extname } from 'path'
 
 export class Compiler {
@@ -33,10 +34,10 @@ export class Compiler {
         return this.doCompile(sourceFile)
     }
 
-    compileComponent (files: Map<string, SanSourceFile>) {
+    compileComponent (component: Component) {
         const registry = new ComponentRegistry()
         let code = ''
-        for (const [path, sourceFile] of files) {
+        for (const [path, sourceFile] of component.getFiles()) {
             registry.registerComponents(sourceFile)
             code += `namespace ${this.ns(path)} {\n`
             code += `    ${this.compileToPHP(sourceFile)}\n`

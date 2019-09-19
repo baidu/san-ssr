@@ -1,7 +1,7 @@
 import { transpileModule } from 'typescript'
 import { Project } from 'ts-morph'
-import { SanSourceFile } from './san-sourcefile'
-import { getDefaultConfigPath } from './tsconfig'
+import { SanSourceFile } from '../parser/san-sourcefile'
+import { getDefaultConfigPath } from '../parser/tsconfig'
 import { sep } from 'path'
 
 export class Compiler {

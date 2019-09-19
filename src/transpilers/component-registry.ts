@@ -1,4 +1,4 @@
-import { SanSourceFile } from './san-sourcefile'
+import { SanSourceFile } from '../parser/san-sourcefile'
 
 type ComponentClassInfo = {
     name: string

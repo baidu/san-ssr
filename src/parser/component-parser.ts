@@ -2,11 +2,11 @@ import { getComponentClassIdentifier, isChildClassOf } from './ast-util'
 import { SanSourceFile } from './san-sourcefile'
 import { Project, SourceFile } from 'ts-morph'
 import { getDefaultConfigPath } from './tsconfig'
+import { Component } from './component'
 
 const reservedNames = ['List']
 
 export class ComponentParser {
-    private componentFile: string
     private root: string
     private tsconfigPath: string
     private project: Project
@@ -14,31 +14,28 @@ export class ComponentParser {
     private id: number = 0
 
     constructor (
-        componentFile: string,
         tsconfigPath = getDefaultConfigPath(),
         idPropertyName = 'spsrId'
     ) {
         this.idPropertyName = idPropertyName
-        this.componentFile = componentFile
         this.tsconfigPath = tsconfigPath
         this.project = new Project({
             tsConfigFilePath: tsconfigPath
         })
     }
 
-    parseComponent (): Map<string, SanSourceFile> {
-        const files = new Map()
-
-        for (const [path, file] of this.getComponentFiles()) {
-            files.set(path, this.parseSanSourceFile(file))
+    parseComponent (componentFile: string): Component {
+        const comp = new Component(componentFile)
+        for (const [path, file] of this.getComponentFiles(componentFile)) {
+            comp.addFile(path, this.parseSanSourceFile(file))
         }
-        return files
+        return comp
     }
 
-    private getComponentFiles (): Map<string, SourceFile> {
+    private getComponentFiles (componentFile): Map<string, SourceFile> {
         return new Map([[
-            this.componentFile,
-            this.project.getSourceFile(this.componentFile)
+            componentFile,
+            this.project.getSourceFile(componentFile)
         ]])
     }
 

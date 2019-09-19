@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "San server-side-render for PHP environment",
   "main": "index.js",
+  "types": "dist/index.d.ts",
   "directories": {
     "test": "test"
   },
@@ -64,6 +65,7 @@
   "dependencies": {
     "camelcase": "^5.3.1",
     "chalk": "^2.4.2",
+    "debug": "^4.1.1",
     "progress": "^2.0.3",
     "snake-case": "^2.1.0",
     "ts-morph": "^4.0.1",

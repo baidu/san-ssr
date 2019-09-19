@@ -1,4 +1,5 @@
 import { ComponentParser } from '../parser/component-parser'
+import { emitRuntimeInPHP } from '../emitters/runtime'
 import { readFileSync, readdirSync, writeFileSync, existsSync } from 'fs'
 import { resolve, join } from 'path'
 import { compileToSource as compileToJSSource } from '../js-ssr'
@@ -21,14 +22,14 @@ const parser = new ComponentParser(tsconfigPath)
 export function compileToJS (caseName) {
     const caseDir = join(caseRoot, caseName)
     const ts = join(caseDir, 'component.ts')
+    const js = resolve(caseDir, 'component.js')
     let componentClass
 
-    if (existsSync(ts)) {
+    if (existsSync(js)) {
+        componentClass = require(js)
+    } else {
         const component = parser.parseComponent(ts)
         componentClass = ccj.compileAndRun(component.getComponentSourceFile())['default']
-    } else {
-        const js = resolve(caseDir, 'component.js')
-        componentClass = require(js)
     }
 
     const fn = compileToJSSource(componentClass)
@@ -40,6 +41,8 @@ export function compileToPHP (caseName) {
     const ts = join(caseDir, 'component.ts')
     let componentClass
     let code = ''
+
+    code += emitRuntimeInPHP()
 
     if (existsSync(ts)) {
         const component = parser.parseComponent(ts)
@@ -57,6 +60,7 @@ export function compileToPHP (caseName) {
 
     code +=
         `namespace san\\renderer\\${camelCase(caseName)} {\n` +
+        `    use \\san\\runtime\\_;\n` +
         `    ${renderCode}` +
         `}\n`
     writeFileSync(join(caseDir, 'ssr.php'), `<?php ${code} ?>`)
@@ -84,4 +88,18 @@ export function compileAllToPHP () {
         compileToPHP(caseName)
         p.tick()
     }
+}
+
+export function parseHtml (str: string) {
+    const begin = str.indexOf('<!--s-data:')
+    let data = {}
+    let html = str
+    if (begin !== -1) {
+        const end = str.indexOf('-->', begin)
+        if (end !== -1) {
+            data = JSON.parse(str.slice(begin + 11, end))
+            html = str.slice(0, begin) + str.slice(end + 3)
+        }
+    }
+    return [data, html]
 }

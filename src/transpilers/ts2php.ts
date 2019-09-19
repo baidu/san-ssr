@@ -1,12 +1,15 @@
-import { Project, ts, SyntaxKind } from 'ts-morph'
+import { Project } from 'ts-morph'
 import { Component } from '../parser/component'
 import camelCase from 'camelcase'
-import { getSanImportDeclaration } from '../parser/ast-util'
+import { shimObjectLiteralInitiator } from '../parser/ast-util'
 import { ComponentRegistry } from './component-registry'
 import { SanSourceFile } from '../parser/san-sourcefile'
 import { compile } from 'ts2php'
 import { getDefaultConfigPath } from '../parser/tsconfig'
 import { sep, extname } from 'path'
+import debugFactory from 'debug'
+
+const debug = debugFactory('ast-util')
 
 export class Compiler {
     private root: string
@@ -40,6 +43,8 @@ export class Compiler {
         for (const [path, sourceFile] of component.getFiles()) {
             registry.registerComponents(sourceFile)
             code += `namespace ${this.ns(path)} {\n`
+            code += `    use \\san\\runtime\\_;\n`
+            code += `    use \\san\\runtime\\Component;\n`
             code += `    ${this.compileToPHP(sourceFile)}\n`
             code += '}\n'
         }
@@ -49,36 +54,42 @@ export class Compiler {
 
     private transform (sourceFile: SanSourceFile) {
         sourceFile.fakeProperties.forEach(prop => prop.remove())
-        getSanImportDeclaration(sourceFile.origin).remove()
 
         for (const clazz of sourceFile.componentClasses.values()) {
-            const extendClause = clazz.getHeritageClauseByKind(ts.SyntaxKind.ExtendsKeyword)
-            const typeNode = extendClause.getTypeNodes().find(x => x.getText() === sourceFile.componentClassIdentifier)
-            extendClause.removeExpression(typeNode)
-
             const comps = clazz.getStaticProperty('components')
             if (comps) comps.remove()
 
             for (const prop of clazz.getProperties()) {
-                // refactor static property initializers to separate statements
-                // since php doesn't support non trivial static initializers
-                // and ts2php cannot
-                if (prop.isStatic() && prop.hasInitializer()) {
-                    const initializer = prop.getInitializerIfKind(SyntaxKind.ObjectLiteralExpression)
-                    if (!initializer) continue
-                    const statement = clazz.getName() + '.' + prop.getName() + ' = ' + initializer.getFullText()
-                    sourceFile.origin.addStatements(statement)
-                    prop.removeInitializer()
+                const name = prop.getName()
+
+                if (name === 'filters' || name === 'computed') {
+                    if (!prop.isStatic()) prop.setIsStatic(true)
                 }
+                shimObjectLiteralInitiator(sourceFile.origin, clazz, prop)
             }
         }
     }
 
     private doCompile (sourceFile: SanSourceFile) {
-        const { errors, phpCode } = compile('', {
+        const { errors, phpCode } = compile(sourceFile.getFilePath(), {
             source: sourceFile.getFullText(),
             emitHeader: false,
             plugins: [],
+            modules: {
+                san: {
+                    name: 'san',
+                    required: true
+                },
+                // TODO make it configurable by test scripts
+                '../../..': {
+                    name: 'san-ssr-php',
+                    required: true
+                },
+                'san-ssr-php': {
+                    name: 'san-ssr-php',
+                    required: true
+                }
+            },
             compilerOptions: this.tsconfig['compilerOptions']
         })
         if (errors.length) {

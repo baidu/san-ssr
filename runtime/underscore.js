@@ -1,7 +1,18 @@
-/* eslint no-unused-vars: "off" */
+/* eslint @typescript-eslint/no-unused-vars: "off" */
 const $version = '3.7.7'
 
 const componentRenderers = {}
+
+function sortedStringify (obj) {
+    if (typeof obj !== 'object') {
+        return obj + ''
+    }
+    const props = []
+    for (const key of Object.keys(obj).sort()) {
+        props.push(`"${key}":${sortedStringify(obj[key])}`)
+    }
+    return `{${props.join(',')}}`
+}
 
 function extend (target, source) {
     if (source) {

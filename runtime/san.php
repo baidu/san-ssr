@@ -1,6 +1,24 @@
 <?php
-namespace san\runtime;
+class Data {
+    private $ctx;
+    private $data;
+    private $computedNames;
 
-function defineComponent($options) {
-    return $options;
+    public function __construct(&$ctx) {
+        $this->ctx = &$ctx;
+        $this->data = &$ctx["data"];
+        $this->computedNames = array_flip($ctx["computedNames"]);
+    }
+
+    public function get ($path) {
+        if (array_key_exists($path, $this->computedNames)) {
+            return _::callComputed($this->ctx, $path);
+        }
+        return $this->data->$path;
+    }
+}
+
+class Component {
+    public $data;
+    public function __construct () {}
 }

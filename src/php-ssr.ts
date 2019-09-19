@@ -1,6 +1,4 @@
 import { each, contains, empty, extend, bind, inherits } from './utils/underscore'
-const { readFileSync } = require('fs')
-const { resolve } = require('path')
 
 /**
 * 编译源码的 helper 方法集合对象
@@ -56,7 +54,7 @@ const compileExprSource = {
      */
     callExpr: function (callExpr) {
         const paths = callExpr.name.paths
-        let code = `$componentCtx["proto"]["${paths[0].value}"]`
+        let code = `$componentCtx["proto"]->${paths[0].value}`
 
         for (let i = 1; i < paths.length; i++) {
             const path = paths[i]
@@ -158,7 +156,7 @@ const compileExprSource = {
         const items = []
         const spread = []
 
-        each(arrayExpr.items, function (item, idx) {
+        each(arrayExpr.items, function (item) {
             items.push(compileExprSource.expr(item.expr))
             spread.push(item.spread ? 1 : 0)
         })
@@ -327,12 +325,6 @@ class CompileSourceBuffer {
     */
     addRendererStart (funcName) {
         this.addRaw(`function ${funcName}($data, $noDataOutput) {`)
-
-        const utilContent = readFileSync(
-            resolve(__dirname, '../runtime/underscore.php'),
-            'utf8'
-        ).replace(/^<\?php\s*/, '')
-        this.addRaw(utilContent)
     }
 
     /**
@@ -5782,9 +5774,9 @@ const stringifier = {
     }
 }
 
-const COMPONENT_RESERVED_MEMBERS = splitStr2Obj('aNode,computed,filters,components,' +
-'initData,template,attached,created,detached,disposed,compiled'
-)
+// const COMPONENT_RESERVED_MEMBERS = splitStr2Obj('aNode,computed,filters,components,' +
+// 'initData,template,attached,created,detached,disposed,compiled'
+// )
 
 /**
 * 生成序列化时起始桩的html
@@ -6273,7 +6265,7 @@ const aNodeCompiler = {
         sourceBuffer.addRaw('$slotCtx = $isInserted ? $componentCtx["owner"] : $componentCtx;')
 
         if (aNode.vars || aNode.directives.bind) {
-        sourceBuffer.addRaw('$slotCtx = ["data" => $slotCtx["data"], "proto" => $slotCtx["proto"], "owner" => $slotCtx["owner"]];'); // eslint-disable-line
+        sourceBuffer.addRaw('$slotCtx = ["spsrId" => $slotCtx["spsrId"], "data" => $slotCtx["data"], "proto" => $slotCtx["proto"], "owner" => $slotCtx["owner"]];'); // eslint-disable-line
 
             if (aNode.directives.bind) {
             sourceBuffer.addRaw('_::extend($slotCtx["data"], ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
@@ -6451,7 +6443,7 @@ function compileComponentSource (sourceBuffer, ComponentClass, contextId) {
         // sourceBuffer.addRaw(`if (!isset(_::$componentRenderers["${cid}")) _::$componentRenderers["${cid}"] = $${cid};`)
 
         sourceBuffer.addRaw(`function ${cid}($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {`)
-        sourceBuffer.addRaw(`$${cid}Proto = ${genComponentProtoCode(component)}`)
+        // sourceBuffer.addRaw(`$${cid}Proto = ${genComponentProtoCode(component)}`)
         sourceBuffer.addRaw('$html = "";')
 
         sourceBuffer.addRaw(genComponentContextCode(component, cid))
@@ -6466,9 +6458,8 @@ function compileComponentSource (sourceBuffer, ComponentClass, contextId) {
         sourceBuffer.addRaw('}')
 
         // calc computed
-        sourceBuffer.addRaw('$computedNames = $componentCtx["proto"]["computedNames"];')
-        sourceBuffer.addRaw('foreach ($computedNames as $i => $computedName) {')
-        sourceBuffer.addRaw('  $data[$computedName] = $componentCtx["proto"]["computed"][$computedName]($componentCtx);')
+        sourceBuffer.addRaw('foreach ($componentCtx["computedNames"] as $i => $computedName) {')
+        sourceBuffer.addRaw('  $data->$computedName = _::callComputed($componentCtx, $computedName);')
         sourceBuffer.addRaw('}')
 
         const ifDirective = component.aNode.directives['if'] // eslint-disable-line dot-notation
@@ -6506,10 +6497,14 @@ function compileComponentSource (sourceBuffer, ComponentClass, contextId) {
 function genComponentContextCode (component, componentIdInContext) {
     const code = ['$componentCtx = [']
 
+    code.push('"computedNames" => [')
+    code.push(Object.keys(component.computed).map(x => `"${x}"`).join(','))
+    code.push('],')
+
     code.push(`"spsrId" => ${component.constructor.spsrId || 0},`)
 
     // proto
-    code.push('"proto" => $' + componentIdInContext + 'Proto,')
+    // code.push('"proto" => $' + componentIdInContext + 'Proto,')
 
     // sourceSlots
     code.push('"sourceSlots" => $sourceSlots,')
@@ -6526,13 +6521,14 @@ function genComponentContextCode (component, componentIdInContext) {
 
     code.push('];')
 
+    code.push('$componentCtx["proto"] = ' + genComponentProtoCode())
+
     return code.join('\n')
 }
 
-function genProtoMember () {
-    // 兼容新版 php 检查参数个数
-    return 'function(){}'
-}
+// function genProtoMember () {
+// return 'function(){}'
+// }
 
 /**
 * 生成组件 proto 对象构建的代码
@@ -6541,8 +6537,10 @@ function genProtoMember () {
 * @param {Object} component 组件实例
 * @return {string}
 */
-function genComponentProtoCode (component) {
-    const code = ['[']
+function genComponentProtoCode () {
+    return `_::createComponent($componentCtx);`
+
+    /* const code = ['[']
 
     // members for call expr
     const ComponentClass = component.constructor
@@ -6592,7 +6590,6 @@ function genComponentProtoCode (component) {
     code.push(`"filters" => [\n\n],`)
     // code.push(`"filters" => ${genProtoMember()},`)
 
-    /* eslint-disable no-redeclare */
     // computed obj
     code.push(`"computed" => [\n\n],`)
     // code.push(`"computed" => ${genProtoMember()},`)
@@ -6601,13 +6598,13 @@ function genComponentProtoCode (component) {
     code.push('"computedNames" => [')
     code.push(Object.keys(component.computed).map(x => `"${x}"`).join(','))
     code.push('],')
-    /* eslint-enable no-redeclare */
 
     // tagName
     code.push('"tagName" => "' + component.tagName + '"')
     code.push('];')
 
     return code.join('\n')
+    */
 }
 
 /* eslint-enable guard-for-in */

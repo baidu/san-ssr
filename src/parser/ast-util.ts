@@ -1,4 +1,7 @@
-import { ClassDeclaration, ts, SourceFile } from 'ts-morph'
+import { TypeGuards, Expression, PropertyDeclaration, SyntaxKind, ClassDeclaration, ts, SourceFile } from 'ts-morph'
+import debugFactory from 'debug'
+
+const debug = debugFactory('ast-util')
 
 export function getSanImportDeclaration (sourceFile: SourceFile) {
     return sourceFile.getImportDeclaration(
@@ -27,4 +30,31 @@ export function isChildClassOf (clazz: ClassDeclaration, parentClass: string) {
     if (!typeNode) return false
 
     return true
+}
+
+function isObjectLiteralExpression (expr: Expression) {
+    if (TypeGuards.isObjectLiteralExpression(expr)) return true
+    if (TypeGuards.isAsExpression(expr) && TypeGuards.isObjectLiteralExpression(expr.getExpression())) return true
+    return false
+}
+
+export function shimObjectLiteralInitiator (sourceFile: SourceFile, clazz: ClassDeclaration, prop: PropertyDeclaration) {
+    debug('shimObjectLiteralInitiator', prop.getName())
+
+    const initializer = prop.getInitializer()
+    if (!initializer || !isObjectLiteralExpression(initializer)) return
+
+    if (prop.isStatic()) {
+        const statement = clazz.getName() + '.' + prop.getName() + ' = ' + initializer.getFullText()
+        sourceFile.addStatements(statement)
+    } else {
+        let statement = 'this.' + prop.getName() + ' = ' + initializer.getFullText()
+        if (!clazz.getConstructors().length) {
+            clazz.addConstructor()
+            statement = 'super()\n' + statement
+        }
+        const init = clazz.getConstructors()[0]
+        init.setBodyText(init.getBodyText() + '\n' + statement)
+    }
+    prop.removeInitializer()
 }

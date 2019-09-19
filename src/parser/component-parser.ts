@@ -3,7 +3,9 @@ import { SanSourceFile } from './san-sourcefile'
 import { Project, SourceFile } from 'ts-morph'
 import { getDefaultConfigPath } from './tsconfig'
 import { Component } from './component'
+import debugFactory from 'debug'
 
+const debug = debugFactory('ast-util')
 const reservedNames = ['List']
 
 export class ComponentParser {
@@ -57,6 +59,7 @@ export class ComponentParser {
                 clazz.rename(`SpsrClass${name}`)
             }
 
+            debug('got class', name, ', identifier', componentClassIdentifier)
             if (!isChildClassOf(clazz, componentClassIdentifier)) continue
 
             if (!clazz.getName()) {

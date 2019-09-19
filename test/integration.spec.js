@@ -1,5 +1,6 @@
 const { readFileSync, readdirSync } = require('fs')
 const { resolve, join } = require('path')
+const { parseHtml } = require('../dist/utils/case')
 const { renderByJS, compileAllToJS, renderByPHP, compileAllToPHP, compileToPHP, compileToJS } = require('../dist/bin/case')
 
 const caseRoot = resolve(__dirname, 'cases')
@@ -12,13 +13,19 @@ for (const caseName of files) {
 
     const caseDir = resolve(caseRoot, caseName)
     const htmlPath = join(caseDir, 'result.html')
-    const expected = readFileSync(htmlPath, 'utf8')
+    const [expectedData, expectedHtml] = parseHtml(readFileSync(htmlPath, 'utf8'))
 
     it('js:' + caseName, function () {
-        expect(renderByJS(caseName)).toBe(expected)
+        const [data, html] = parseHtml(renderByJS(caseName))
+
+        expect(data).toEqual(expectedData)
+        expect(html).toEqual(expectedHtml)
     })
 
     it('php:' + caseName, async function () {
-        expect(renderByPHP(caseName)).toBe(expected)
+        const [data, html] = parseHtml(renderByPHP(caseName))
+
+        expect(data).toEqual(expectedData)
+        expect(html).toEqual(expectedHtml)
     })
 }

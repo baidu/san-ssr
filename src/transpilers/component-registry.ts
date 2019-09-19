@@ -25,12 +25,6 @@ export class ComponentRegistry {
         }
         let code = ''
         code += `namespace san\\runtime {\n`
-        code += '    class ComponentRegistry {\n'
-        code += '        public static $comps;\n'
-        code += '        public static function get($cid){\n'
-        code += '            return ComponentRegistry::$comps[$cid];\n'
-        code += '        }\n'
-        code += '    }\n'
         code += `    ComponentRegistry::$comps = [${lines.join(',\n')}];\n`
         code += '}\n'
         return code

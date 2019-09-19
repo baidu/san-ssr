@@ -10,6 +10,20 @@ final class _
         "'" => '&#39;'
     ];
 
+    public static function sortedStringify($obj) {
+        if (!is_object($obj)) {
+            return json_encode($obj, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+        }
+
+        $keys = array_keys($obj);
+        sort($keys);
+        $lines = [];
+        foreach ($keys as $key) {
+            array_push($lines, '"' . $key . '":' . stringify($obj->$key));
+        }
+        return "{" . join(",", $lines) . "}";
+    }
+
     public static function objSpread($arr, $needSpread) {
         $obj = (object)[];
         foreach ($arr as $idx => $val) {
@@ -144,13 +158,39 @@ final class _
         return (boolean)$value;
     }
 
+    public static function getClassByCtx($ctx) {
+        $cid = $ctx["spsrId"];
+        return _::getClass($cid);
+    }
+
+    public static function getClass($cid) {
+        return \san\runtime\ComponentRegistry::get($cid);
+    }
+
     public static function callFilter($ctx, $name, $args)
     {
-        $cid = $ctx["spsrId"];
-        $cls = \san\runtime\ComponentRegistry::get($cid);
-        $func = $cls::$filters[$name];
+        $func = _::getClassByCtx($ctx)::$filters[$name];
         if (is_callable($func)) {
             return call_user_func_array($func, $args);
+        }
+    }
+
+    public static function createComponent (&$ctx) {
+        $cls = _::getClassByCtx($ctx);
+        if (!class_exists($cls)) {
+          $cls = "\\san\\runtime\\Component";
+        }
+        $obj = new $cls();
+        $obj->data = new Data($ctx);
+        return $obj;
+    }
+
+    public static function callComputed($ctx, $name)
+    {
+        $func = _::getClassByCtx($ctx)::$computed[$name];
+        if (is_callable($func)) {
+            $result = call_user_func($func->bindTo($ctx["proto"]));
+            return is_array($result) ? (object)$result : $result;
         }
     }
 

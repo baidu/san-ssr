@@ -6,4 +6,4 @@ if [ "$1" == "" ]; then
     exit 1
 fi
 
-ts-node ./dist/bin/debug.js $1
+node ./dist/bin/debug.js $1

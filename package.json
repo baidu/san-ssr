@@ -9,11 +9,11 @@
   "scripts": {
     "lint": "eslint src test",
     "build": "tsc",
-    "build-watch": "tsc",
+    "build-watch": "tsc --watch",
     "unit-php": "./vendor/bin/phpunit --bootstrap vendor/autoload.php test/unit/*.spec.php",
     "unit-ts": "jest test/unit",
     "unit": "npm run unit-ts && npm run unit-php",
-    "integration": "jest test/integration.spec.js",
+    "integration": "./bin/build-integration.js && jest test/integration.spec.js",
     "coverage": "jest --coverage",
     "test": "jest && npm run e2e",
     "render": "./bin/render.js",
@@ -33,6 +33,7 @@
     "@babel/core": "^7.6.0",
     "@babel/preset-env": "^7.6.0",
     "@babel/preset-typescript": "^7.6.0",
+    "@babel/runtime": "^7.6.0",
     "@jest/transform": "^24.9.0",
     "@types/jest": "^24.0.18",
     "@typescript-eslint/eslint-plugin": "^2.0.0",
@@ -63,9 +64,9 @@
   "dependencies": {
     "camelcase": "^5.3.1",
     "chalk": "^2.4.2",
+    "progress": "^2.0.3",
     "snake-case": "^2.1.0",
     "ts-morph": "^4.0.1",
-    "ts-node": "^8.3.0",
     "ts2php": "^0.12.1",
     "typescript": "^3.4.5"
   }

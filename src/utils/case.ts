@@ -1,4 +1,4 @@
-import { ComponentParser } from '../transpilers/component-parser'
+import { ComponentParser } from '../parser/component-parser'
 import { readFileSync, readdirSync, writeFileSync, existsSync } from 'fs'
 import { resolve, join } from 'path'
 import { compileToSource as compileToJSSource } from '../js-ssr'
@@ -18,14 +18,12 @@ const ccp = new ToPHPCompiler({
 })
 
 export function compileToJS (caseName) {
-    // if (caseName !== 'nest-for-computed') return
     const caseDir = join(caseRoot, caseName)
     const ts = join(caseDir, 'component.ts')
     let componentClass
 
     if (existsSync(ts)) {
         const component = new ComponentParser(ts, tsconfigPath).parseComponent()
-        const ccj = new ToJSCompiler(tsconfigPath)
         componentClass = ccj.compileAndRun(component.get(ts))['default']
     } else {
         const js = resolve(caseDir, 'component.js')

@@ -1,3 +1,8 @@
+/**
+ * JavaScript SSR 入口
+ *
+ * 来自 gihub.com/baidu/san 核心仓库，用来辅助 PHP SSR 的开发和测试。
+ */
 import { each, contains, empty, extend, bind, inherits } from './utils/underscore'
 import * as fs from 'fs'
 import * as path from 'path'
@@ -557,15 +562,6 @@ function nextTick (fn, thisArg) {
         setTimeout(nextHandler, 0)
     }
 }
-
-// #[begin] allua
-/**
-* 从userAgent中ie版本号的匹配信息
-*
-* @type {Array}
-*/
-const ieVersionMatch = typeof navigator !== 'undefined' &&
-navigator.userAgent.match(/msie\s*([0-9]+)/i)
 
 /**
 * 自闭合标签列表
@@ -3297,19 +3293,6 @@ function nodeOwnSimpleDispose (noDetach) {
     }
 }
 
-/**
-* 异步组件类
-*
-* @class
-* @param {Object} options 初始化参数
-* @param {Object} loader 组件加载器
-*/
-function AsyncComponent (options, loader) {
-}
-
-AsyncComponent.prototype._create = nodeOwnCreateStump
-AsyncComponent.prototype.dispose = nodeOwnSimpleDispose
-
 // #[begin] reverse
 /**
 * 通过组件反解创建节点
@@ -3340,14 +3323,7 @@ function createReverseNode (aNode, parent, scope, owner, reverseWalker) {
                 subTag: aNode.tagName,
                 reverseWalker: reverseWalker
             })
-            : new AsyncComponent({
-                source: aNode,
-                owner: owner,
-                scope: scope,
-                parent: parent,
-                subTag: aNode.tagName,
-                reverseWalker: reverseWalker
-            }, ComponentOrLoader)
+            : {}
     }
 
     return new Element(aNode, parent, scope, owner, reverseWalker)
@@ -3403,13 +3379,7 @@ function createNode (aNode, parent, scope, owner) {
                 parent: parent,
                 subTag: aNode.tagName
             })
-            : new AsyncComponent({
-                source: aNode,
-                owner: owner,
-                scope: scope,
-                parent: parent,
-                subTag: aNode.tagName
-            }, ComponentOrLoader)
+            : {}
     }
 
     aNode.Clazz = Element

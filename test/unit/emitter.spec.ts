@@ -19,10 +19,33 @@ describe('Emitter', function () {
         expect(emitter.fullText()).toEqual('\n')
     })
 
-    it('should write lines', function () {
-        emitter.writeLine('foobar')
+    describe('write line', function () {
+        it('should write line', function () {
+            emitter.writeLine('foobar')
 
-        expect(emitter.fullText()).toEqual('foobar\n')
+            expect(emitter.fullText()).toEqual('foobar\n')
+        })
+        it('should finish current line', function () {
+            emitter.write('foo')
+            emitter.writeLine('bar')
+
+            expect(emitter.fullText()).toEqual('foo\nbar\n')
+        })
+        it('should not add NL if exists', function () {
+            emitter.write('foo\n')
+            emitter.writeLine('bar')
+
+            expect(emitter.fullText()).toEqual('foo\nbar\n')
+        })
+    })
+
+    describe('write lines', function () {
+        it('should add indent to each line', function () {
+            emitter.indent()
+            emitter.writeLines('foo\nbar')
+
+            expect(emitter.fullText()).toEqual('    foo\n    bar\n')
+        })
     })
 
     describe('indent', function () {

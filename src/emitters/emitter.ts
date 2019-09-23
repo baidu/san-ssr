@@ -25,7 +25,7 @@ export class Emitter {
 
     public lastChar () {
         const buffer = this.buffer
-        return buffer[buffer.length]
+        return buffer[buffer.length - 1]
     }
 
     public finishLine () {

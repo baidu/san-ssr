@@ -11,6 +11,10 @@ export class SanSourceFile {
         this.componentClassIdentifier = componentClassIdentifier
     }
 
+    getClasses () {
+        return this.origin.getClasses()
+    }
+
     getFullText (): string {
         return this.origin.getFullText()
     }

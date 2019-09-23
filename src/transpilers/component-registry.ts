@@ -1,4 +1,5 @@
 import { SanSourceFile } from '../parser/san-sourcefile'
+import { PHPEmitter } from '../emitters/php-emitter'
 
 type ComponentClassInfo = {
     name: string
@@ -17,16 +18,22 @@ export class ComponentRegistry {
         }
     }
 
-    genComponentRegistry (ns: (file: string) => string) {
+    genComponentRegistry (ns: (file: string) => string, emitter: PHPEmitter) {
+        emitter.beginNamespace('san\\runtime')
+        emitter.writeLine(`ComponentRegistry::$comps = [`)
+        emitter.indent()
+
         const lines = []
         for (const [cid, { name, path }] of this.components) {
             const classReference = `\\${ns(path)}\\${name}`
             lines.push(`"${cid}" => "${classReference.replace(/\\/g, '\\\\')}"`)
         }
-        let code = ''
-        code += `namespace san\\runtime {\n`
-        code += `    ComponentRegistry::$comps = [${lines.join(',\n')}];\n`
-        code += '}\n'
-        return code
+        emitter.writeLines(lines.join(',\n'))
+
+        emitter.unindent()
+        emitter.writeLine('];')
+        emitter.endNamespace()
+
+        return emitter.fullText()
     }
 }

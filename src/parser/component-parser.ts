@@ -6,7 +6,6 @@ import { Component } from './component'
 import debugFactory from 'debug'
 
 const debug = debugFactory('ast-util')
-const reservedNames = ['List']
 
 export class ComponentParser {
     private root: string
@@ -49,23 +48,27 @@ export class ComponentParser {
         )
 
         if (!componentClassIdentifier) return sanSourceFile
+        debug('san identifier', componentClassIdentifier)
 
         for (const clazz of sourceFile.getClasses()) {
             const name = clazz.getName()
-            if (reservedNames.includes(name)) {
-                if (clazz.isExported()) {
-                    throw new Error(`${name} is a reserved keyword in PHP`)
-                }
-                clazz.rename(`SpsrClass${name}`)
-            }
+            debug('parsing class', name)
 
-            debug('got class', name, ', identifier', componentClassIdentifier)
             if (!isChildClassOf(clazz, componentClassIdentifier)) continue
 
             if (!clazz.getName()) {
                 // clazz.rename('SpsrComponent')    // this throws
                 throw new Error('anonymous component class is not supported')
             }
+
+            for (const prop of clazz.getProperties()) {
+                const name = prop.getName()
+
+                if (name === 'filters' || name === 'computed') {
+                    if (!prop.isStatic()) prop.setIsStatic(true)
+                }
+            }
+
             const decl = clazz.addProperty({
                 isStatic: true,
                 name: this.idPropertyName,

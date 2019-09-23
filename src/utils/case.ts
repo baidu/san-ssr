@@ -48,7 +48,7 @@ export function compileToPHP (caseName) {
     if (existsSync(ts)) {
         const component = parser.parseComponent(ts)
         componentClass = ccj.compileAndRun(component.getComponentSourceFile())['default']
-        emitter.writeLines(ccp.compileComponent(component))
+        ccp.compileComponent(component, emitter)
     } else {
         const js = resolve(caseDir, 'component.js')
         componentClass = ccj.run(readFileSync(js, 'utf8'))

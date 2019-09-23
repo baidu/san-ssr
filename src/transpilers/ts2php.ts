@@ -1,4 +1,5 @@
 import { Project } from 'ts-morph'
+import { PHPEmitter } from '../emitters/php-emitter'
 import { Component } from '../parser/component'
 import camelCase from 'camelcase'
 import { shimObjectLiteralInitiator } from '../parser/ast-util'
@@ -10,6 +11,8 @@ import { sep, extname } from 'path'
 import debugFactory from 'debug'
 
 const debug = debugFactory('ast-util')
+const reservedNames = ['List']
+const uselessProps = ['components']
 
 export class Compiler {
     private root: string
@@ -32,40 +35,47 @@ export class Compiler {
         })
     }
 
-    compileToPHP (sourceFile: SanSourceFile) {
+    private compileToPHP (sourceFile: SanSourceFile) {
         this.transform(sourceFile)
         return this.doCompile(sourceFile)
     }
 
-    compileComponent (component: Component) {
+    compileComponent (component: Component, emitter: PHPEmitter = new PHPEmitter()) {
         const registry = new ComponentRegistry()
-        let code = ''
         for (const [path, sourceFile] of component.getFiles()) {
             registry.registerComponents(sourceFile)
-            code += `namespace ${this.ns(path)} {\n`
-            code += `    use \\san\\runtime\\_;\n`
-            code += `    use \\san\\runtime\\Component;\n`
-            code += `    ${this.compileToPHP(sourceFile)}\n`
-            code += '}\n'
+
+            emitter.beginNamespace(this.ns(path))
+            emitter.writeLine('use \\san\\runtime\\_;')
+            emitter.writeLine('use \\san\\runtime\\Component;')
+            emitter.writeLines(this.compileToPHP(sourceFile))
+            emitter.endNamespace()
         }
-        code += registry.genComponentRegistry(path => this.ns(path))
-        return code
+        registry.genComponentRegistry(path => this.ns(path), emitter)
+        return emitter.fullText()
     }
 
     private transform (sourceFile: SanSourceFile) {
         sourceFile.fakeProperties.forEach(prop => prop.remove())
 
         for (const clazz of sourceFile.componentClasses.values()) {
-            const comps = clazz.getStaticProperty('components')
-            if (comps) comps.remove()
+            for (const useless of uselessProps) {
+                const comps = clazz.getStaticProperty(useless)
+                if (comps) comps.remove()
+            }
 
             for (const prop of clazz.getProperties()) {
-                const name = prop.getName()
-
-                if (name === 'filters' || name === 'computed') {
-                    if (!prop.isStatic()) prop.setIsStatic(true)
-                }
                 shimObjectLiteralInitiator(sourceFile.origin, clazz, prop)
+            }
+        }
+
+        for (const clazz of sourceFile.getClasses()) {
+            const name = clazz.getName()
+            if (reservedNames.includes(name)) {
+                if (clazz.isExported()) {
+                    throw new Error(`${name} is a reserved keyword in PHP`)
+                }
+                clazz.rename(`SpsrClass${name}`)
             }
         }
     }

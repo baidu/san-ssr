@@ -15,7 +15,7 @@
     "unit": "npm run unit-ts && npm run unit-php",
     "integration": "./bin/build-integration.js && jest test/integration.spec.js",
     "coverage": "jest --coverage",
-    "test": "jest && npm run e2e",
+    "test": "npm run unit && npm run integration && npm run e2e",
     "render": "./bin/render.js",
     "e2e": "./bin/build-e2e.js && npx karma start ./test/karma.conf.js --single-run"
   },

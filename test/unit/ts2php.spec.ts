@@ -28,7 +28,8 @@ describe('ts2php', function () {
 
         expect(result).toContain('namespace stub\\aComp {')
         expect(result).toContain('class A extends Component {')
-        expect(result).toContain('ComponentRegistry::$comps = ["0" => "\\\\stub\\\\aComp\\\\A"]')
+        expect(result).toContain('ComponentRegistry::$comps = [')
+        expect(result).toContain('"0" => "\\\\stub\\\\aComp\\\\A"')
     })
 
     it('should compile filters into static methods', function () {

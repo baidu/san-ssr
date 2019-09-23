@@ -35,7 +35,7 @@ export class Compiler {
         })
     }
 
-    private compileToPHP (sourceFile: SanSourceFile) {
+    public compileToPHP (sourceFile: SanSourceFile) {
         this.transform(sourceFile)
         return this.doCompile(sourceFile)
     }

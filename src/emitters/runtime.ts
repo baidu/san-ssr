@@ -1,4 +1,5 @@
 import { readPHPSource } from '../utils/fs'
+import { PHPEmitter } from './php-emitter'
 import { resolve } from 'path'
 
 const runtimeFiles = [
@@ -7,19 +8,20 @@ const runtimeFiles = [
     'component-registry.php'
 ]
 
-export function emitRuntimeInPHP () {
-    let code = 'namespace san\\runtime {\n'
-
+export function emitRuntimeInPHP (emitter = new PHPEmitter()) {
+    emitter.beginNamespace('san\\runtime')
     for (const file of runtimeFiles) {
         const path = resolve(__dirname, `../../runtime/${file}`)
-        code += readPHPSource(path) + '\n'
+        emitter.writeLines(readPHPSource(path))
     }
-    code += `}\n`
+    emitter.endNamespace()
 
-    code += 'namespace {\n'
+    // TODO move Ts2Php_Helper into \san\runtime namespace
+    // see: https://github.com/max-team/ts2php/issues/49
+    emitter.beginNamespace()
     const path = resolve(__dirname, `../../runtime/Ts2Php_Helper.php`)
-    code += readPHPSource(path) + '\n'
-    code += '}\n'
+    emitter.writeLines(readPHPSource(path))
+    emitter.endNamespace()
 
-    return code
+    return emitter.fullText()
 }

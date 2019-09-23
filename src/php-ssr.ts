@@ -1,4 +1,5 @@
 import { each, contains, empty, extend, bind, inherits } from './utils/underscore'
+import { PHPEmitter } from './emitters/php-emitter'
 
 /**
 * 编译源码的 helper 方法集合对象
@@ -5595,7 +5596,7 @@ function compileComponentSource (sourceBuffer, ComponentClass, contextId) {
         sourceBuffer.addRaw('  $data->$computedName = _::callComputed($componentCtx, $computedName);')
         sourceBuffer.addRaw('}')
 
-        const ifDirective = component.aNode.directives['if'] // eslint-disable-line dot-notation
+        const ifDirective = component.aNode.directives['if']
         if (ifDirective) {
             sourceBuffer.addRaw('if (' + compileExprSource.expr(ifDirective.value) + ') {')
         }

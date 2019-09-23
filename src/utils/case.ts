@@ -1,6 +1,7 @@
 import { ComponentParser } from '../parser/component-parser'
 import { emitRuntimeInPHP } from '../emitters/runtime'
 import { readFileSync, readdirSync, writeFileSync, existsSync } from 'fs'
+import { PHPEmitter } from '../emitters/php-emitter'
 import { resolve, join } from 'path'
 import { compileToSource as compileToJSSource } from '../js-ssr'
 import { compileToSource as compileToPHPSource } from '../php-ssr'
@@ -39,31 +40,31 @@ export function compileToJS (caseName) {
 export function compileToPHP (caseName) {
     const caseDir = join(caseRoot, caseName)
     const ts = join(caseDir, 'component.ts')
+    const emitter = new PHPEmitter()
     let componentClass
-    let code = ''
 
-    code += emitRuntimeInPHP()
+    emitRuntimeInPHP(emitter)
 
     if (existsSync(ts)) {
         const component = parser.parseComponent(ts)
         componentClass = ccj.compileAndRun(component.getComponentSourceFile())['default']
-        code += ccp.compileComponent(component)
+        emitter.writeLines(ccp.compileComponent(component))
     } else {
         const js = resolve(caseDir, 'component.js')
         componentClass = ccj.run(readFileSync(js, 'utf8'))
     }
 
-    const renderCode = compileToPHPSource(
-        componentClass,
-        { funcName: 'render' }
+    emitter.beginNamespace(`san\\renderer\\${camelCase(caseName)}`)
+    emitter.writeLine(`use \\san\\runtime\\_;`)
+    emitter.writeLines(
+        compileToPHPSource(
+            componentClass,
+            { funcName: 'render' }
+        )
     )
+    emitter.endNamespace()
 
-    code +=
-        `namespace san\\renderer\\${camelCase(caseName)} {\n` +
-        `    use \\san\\runtime\\_;\n` +
-        `    ${renderCode}` +
-        `}\n`
-    writeFileSync(join(caseDir, 'ssr.php'), `<?php ${code} ?>`)
+    writeFileSync(join(caseDir, 'ssr.php'), `<?php ${emitter.fullText()} ?>`)
 }
 
 export function compileAllToJS () {

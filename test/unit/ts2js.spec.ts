@@ -7,9 +7,9 @@ describe('ts2js', function () {
 
     it('should a single class', function () {
         const path = resolve(__dirname, '../stub/obj.ts')
-        const parser = new ComponentParser(path, tsconfig)
+        const parser = new ComponentParser(tsconfig)
 
-        const file = parser.parseComponent().get(path)
+        const file = parser.parseComponent(path).getComponentSourceFile()
         const cc = new Compiler(tsconfig)
         const result = cc.compileToJS(file)
 
@@ -19,9 +19,9 @@ describe('ts2js', function () {
 
     it('should mark component class with cid', function () {
         const path = resolve(__dirname, '../stub/a.comp.ts')
-        const parser = new ComponentParser(path, tsconfig)
+        const parser = new ComponentParser(tsconfig)
 
-        const file = parser.parseComponent().get(path)
+        const file = parser.parseComponent(path).getComponentSourceFile()
         const cc = new Compiler(tsconfig)
         const result = cc.compileToJS(file)
 
@@ -32,9 +32,9 @@ describe('ts2js', function () {
 
     it('should compile and run a component', function () {
         const path = resolve(__dirname, '../stub/a.comp.ts')
-        const parser = new ComponentParser(path, tsconfig)
+        const parser = new ComponentParser(tsconfig)
 
-        const file = parser.parseComponent().get(path)
+        const file = parser.parseComponent(path).getComponentSourceFile()
         const cc = new Compiler(tsconfig)
         const componentClass = cc.compileAndRun(file)['default']
 

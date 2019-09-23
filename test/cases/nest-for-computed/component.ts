@@ -14,7 +14,7 @@ export default class MyComponent extends Component {
         }
     }
 
-    computed: ComputedDeclarations = {
+    static computed: ComputedDeclarations = {
         forms () {
             const cates = this.data.get('cates')
             const formLen = this.data.get('formLen')

@@ -295,6 +295,14 @@ const compileExprSource = {
     }
 }
 
+function functionString (fn) {
+    let str = fn.toString()
+    if (!/^function /.test(fn)) { // es6 method
+        str = 'function ' + str
+    }
+    return str
+}
+
 /**
 * 编译源码的中间buffer类
 *
@@ -6543,7 +6551,12 @@ function genComponentProtoCode (component) {
 
     // members for call expr
     const ComponentProto = component.constructor.prototype
-    Object.keys(ComponentProto).forEach(function (protoMemberKey) {
+
+    const builtinKeys = ['components', '_cmptReady', 'aNode', 'constructor']
+
+    Object.getOwnPropertyNames(ComponentProto).forEach(function (protoMemberKey) {
+        if (builtinKeys.includes(protoMemberKey)) return
+
         const protoMember = ComponentProto[protoMemberKey]
         if (COMPONENT_RESERVED_MEMBERS[protoMemberKey] || !protoMember) {
             return
@@ -6551,7 +6564,7 @@ function genComponentProtoCode (component) {
 
         switch (typeof protoMember) {
         case 'function':
-            code.push(protoMemberKey + ': ' + protoMember.toString() + ',')
+            code.push(protoMemberKey + ': ' + functionString(protoMember) + ',')
             break
 
         case 'object':
@@ -6560,7 +6573,7 @@ function genComponentProtoCode (component) {
             if (protoMember instanceof Array) {
                 code.push('[')
                 protoMember.forEach(function (item) {
-                    code.push(typeof item === 'function' ? item.toString() : '' + ',')
+                    code.push(typeof item === 'function' ? functionString(item) : '' + ',')
                 })
                 code.push(']')
             } else {
@@ -6568,7 +6581,7 @@ function genComponentProtoCode (component) {
                 Object.keys(protoMember).forEach(function (itemKey) {
                     const item = protoMember[itemKey]
                     if (typeof item === 'function') {
-                        code.push(itemKey + ':' + item.toString() + ',')
+                        code.push(itemKey + ':' + functionString(item) + ',')
                     }
                 })
                 code.push('}')
@@ -6586,7 +6599,7 @@ function genComponentProtoCode (component) {
             const filter = component.filters[key]
 
             if (typeof filter === 'function') {
-                filterCode.push(key + ': ' + filter.toString())
+                filterCode.push(key + ': ' + functionString(filter))
             }
         }
     }
@@ -6609,8 +6622,8 @@ function genComponentProtoCode (component) {
                     computedNamesCode.push('"' + key + '"')
                 }
 
-                computedCode.push(key + ': ' +
-                computed.toString()
+                let fn = functionString(computed)
+                fn = fn
                     .replace(/^\s*function\s*(\S+)?\(/, 'function $1 (componentCtx')
                     .replace(
                         /this.data.get\(([^)]+)\)/g,
@@ -6629,7 +6642,7 @@ function genComponentProtoCode (component) {
                             return compileExprSource.expr(expr)
                         }
                     )
-                )
+                computedCode.push(key + ': ' + fn)
             }
         }
     }

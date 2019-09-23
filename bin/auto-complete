@@ -4,11 +4,12 @@
 # autoload -U compinit
 # compinit
 #
-# 2. Run `source ./bin/auto-complete.sh`
+# 2. Run `source ./bin/auto-complete`
 # 
 # 3. Input `./bin/test.ts` and press <Tab>
 
-compdef _test debug.sh
+compdef _test debug
+compdef _test scat
 compdef _test render.ts
 compdef _test compile-to-js.ts
 compdef _test compile-to-php.ts

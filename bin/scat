@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -e
+
+print_help () {
+    echo 'Usage: scat [OPTION] <case name>'
+    echo
+    echo '-j    prints the ssr.js for <case name>'
+    echo '-p    prints the ssr.php for <case name>'
+    echo '-c    prints the component.ts or component.js for <case name>'
+    echo '-h    prints the result.html for <case name>'
+    echo 
+    echo 'Example: scat -j array-literal'
+}
+
+if [ "$1" == "" -o $2 == "" ]; then
+    print_help
+    exit 1
+fi
+
+caseRoot=`dirname $0`/../test/cases/$2
+
+if [ "$1" == "-j" ]; then
+    cat $caseRoot/ssr.js
+elif [ "$1" == "-p" ]; then
+    cat $caseRoot/ssr.php
+elif [ "$1" == "-h" ]; then
+    cat $caseRoot/result.html
+elif [ "$1" == "-c" ]; then
+    cat $caseRoot/component.*
+else
+    print_help
+    exit 1
+fi

@@ -1,7 +1,6 @@
 <?php
 final class _
 {
-    public static $componentRenderers = [];
     private const HTML_ENTITY = [
         '&' => '&amp;',
         '<' => '&lt;',
@@ -159,7 +158,7 @@ final class _
     }
 
     public static function getClassByCtx($ctx) {
-        $cid = $ctx["spsrId"];
+        $cid = $ctx["spsrCid"];
         return _::getClass($cid);
     }
 
@@ -189,7 +188,7 @@ final class _
     {
         $func = _::getClassByCtx($ctx)::$computed[$name];
         if (is_callable($func)) {
-            $result = call_user_func($func->bindTo($ctx["proto"]));
+            $result = call_user_func($func->bindTo($ctx["instance"]));
             return is_array($result) ? (object)$result : $result;
         }
     }

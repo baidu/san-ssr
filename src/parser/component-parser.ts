@@ -16,7 +16,7 @@ export class ComponentParser {
 
     constructor (
         tsconfigPath = getDefaultConfigPath(),
-        idPropertyName = 'spsrId'
+        idPropertyName = 'spsrCid'
     ) {
         this.idPropertyName = idPropertyName
         this.tsconfigPath = tsconfigPath

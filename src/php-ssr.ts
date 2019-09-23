@@ -55,7 +55,7 @@ const compileExprSource = {
      */
     callExpr: function (callExpr) {
         const paths = callExpr.name.paths
-        let code = `$componentCtx["proto"]->${paths[0].value}`
+        let code = `$componentCtx["instance"]->${paths[0].value}`
 
         for (let i = 1; i < paths.length; i++) {
             const path = paths[i]
@@ -4827,7 +4827,7 @@ function camelComponentBinds (binds) {
 let ssrIndex = 0
 
 function genSSRId () {
-    return '_id' + (ssrIndex++)
+    return '_spsrId' + (ssrIndex++)
 }
 
 const stringifier = {
@@ -5399,10 +5399,10 @@ const aNodeCompiler = {
         sourceBuffer.addRaw('$slotCtx = $isInserted ? $componentCtx["owner"] : $componentCtx;')
 
         if (aNode.vars || aNode.directives.bind) {
-        sourceBuffer.addRaw('$slotCtx = ["spsrId" => $slotCtx["spsrId"], "data" => $slotCtx["data"], "proto" => $slotCtx["proto"], "owner" => $slotCtx["owner"]];'); // eslint-disable-line
+            sourceBuffer.addRaw('$slotCtx = ["spsrCid" => $slotCtx["spsrCid"], "data" => $slotCtx["data"], "instance" => $slotCtx["instance"], "owner" => $slotCtx["owner"]];')
 
             if (aNode.directives.bind) {
-            sourceBuffer.addRaw('_::extend($slotCtx["data"], ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
+                sourceBuffer.addRaw('_::extend($slotCtx["data"], ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
             }
 
             each(aNode.vars, function (varItem) {
@@ -5574,8 +5574,6 @@ function compileComponentSource (sourceBuffer, ComponentClass, contextId) {
             )
         }
 
-        // sourceBuffer.addRaw(`if (!isset(_::$componentRenderers["${cid}")) _::$componentRenderers["${cid}"] = $${cid};`)
-
         sourceBuffer.addRaw(`function ${cid}($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {`)
         sourceBuffer.addRaw('$html = "";')
 
@@ -5635,7 +5633,7 @@ function genComponentContextCode (component) {
     code.push(Object.keys(component.computed).map(x => `"${x}"`).join(','))
     code.push('],')
 
-    code.push(`"spsrId" => ${component.constructor.spsrId || 0},`)
+    code.push(`"spsrCid" => ${component.constructor.spsrCid || 0},`)
 
     // sourceSlots
     code.push('"sourceSlots" => $sourceSlots,')
@@ -5653,7 +5651,7 @@ function genComponentContextCode (component) {
     code.push('];')
 
     // create proto
-    code.push('$componentCtx["proto"] = _::createComponent($componentCtx);')
+    code.push('$componentCtx["instance"] = _::createComponent($componentCtx);')
 
     return code.join('\n')
 }

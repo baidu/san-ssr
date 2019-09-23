@@ -27,7 +27,7 @@ describe('ts2js', function () {
 
         expect(result).toContain('class A extends')
         expect(result).toContain('A.template = \'A\'')
-        expect(result).toContain('A.spsrId = 0')
+        expect(result).toContain('A.spsrCid = 0')
     })
 
     it('should compile and run a component', function () {
@@ -39,6 +39,6 @@ describe('ts2js', function () {
         const componentClass = cc.compileAndRun(file)['default']
 
         expect(componentClass.template).toEqual('A')
-        expect(componentClass.spsrId).toEqual(0)
+        expect(componentClass.spsrCid).toEqual(0)
     })
 })

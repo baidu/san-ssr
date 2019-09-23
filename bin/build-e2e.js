@@ -3,7 +3,12 @@
 const fs = require('fs')
 const { join, resolve } = require('path')
 const testRoot = resolve(__dirname, '../test')
+const { ComponentParser } = require('../dist/parser/component-parser')
+const { Compiler } = require('../dist/transpilers/ts2js')
+const tsconfigPath = resolve(__dirname, '../test/tsconfig.json')
+const ccj = new Compiler(tsconfigPath)
 
+const parser = new ComponentParser(tsconfigPath)
 let html = ''
 let specTpls = ''
 
@@ -58,6 +63,18 @@ function buildFile (caseDir) {
         // if it's a file, init data
         if (isFile) {
             switch (filename) {
+            case 'component.ts':
+                const comp = parser.parseComponent(abFilePath)
+                componentSource = ccj
+                    .compileToJS(comp.getFile(abFilePath))
+                    .replace(/(\S+)\s*=\s*require\("san"\)/, '$1 = san')
+                    .split('\n')
+                    .filter(x => !/exports.default/.test(x))
+                    .filter(x => !/__esModule/.test(x))
+                    .join('\n')
+                sourceFile = filename
+                break
+
             case 'component.js':
                 componentSource = fs.readFileSync(abFilePath, 'UTF-8')
                     .split('\n')

@@ -5585,6 +5585,7 @@ function compileComponentSource (sourceBuffer, ComponentClass, contextId) {
         sourceBuffer.addRaw('if ($data) {')
         Object.keys(defaultData).forEach(function (key) {
             const val = stringifier.any(defaultData[key])
+            if (val === 'NaN') return
             sourceBuffer.addRaw(`$componentCtx["data"]->${key} = isset($componentCtx["data"]->${key}) ? $componentCtx["data"]->${key} : ${val};`)
         })
         sourceBuffer.addRaw('}')

@@ -21,6 +21,9 @@ export default class MyComponent extends Component {
 
             const result = {}
             let start = 1
+
+            if (!cates) return result
+
             for (let i = 0; i < cates.length; i++) {
                 result[cates[i]] = []
                 for (let j = 0; j < formLen; j++) {

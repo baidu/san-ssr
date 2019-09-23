@@ -10,7 +10,7 @@ const htmlPath = resolve(__dirname, '../../test/cases', caseName, 'result.html')
 const expected = readFileSync(htmlPath, 'utf8')
 const [expectedData, expectedHtml] = parseHtml(expected)
 
-// console.log(chalk.green('[COMP  JS]'), measure(() => compileToJS(caseName)))
+console.log(chalk.green('[COMP  JS]'), measure(() => compileToJS(caseName)))
 console.log(chalk.green('[COMP PHP]'), measure(() => compileToPHP(caseName)))
 
 check(`[EXPECTED] ${caseName}`, () => expected)

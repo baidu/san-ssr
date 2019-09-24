@@ -1,9 +1,13 @@
 import { transpileModule } from 'typescript'
 import { Project } from 'ts-morph'
+import { movePropertyInitiatorToPrototype } from '../parser/ast-util'
 import { SanSourceFile } from '../parser/san-sourcefile'
 import { getDefaultConfigPath } from '../parser/tsconfig'
 import { Compiler } from './compiler'
 import { sep } from 'path'
+import debugFactory from 'debug'
+
+const debug = debugFactory('to-js-compiler')
 
 export class ToJSCompiler extends Compiler {
     private root: string
@@ -36,7 +40,15 @@ export class ToJSCompiler extends Compiler {
         return module.exports
     }
 
+    private transform (sourceFile: SanSourceFile) {
+        for (const clazz of sourceFile.getComponentClassNames()) {
+            movePropertyInitiatorToPrototype(sourceFile.origin, sourceFile.getClass(clazz))
+        }
+    }
+
     compileToJS (source: SanSourceFile) {
+        // source = source.openInProject(this.project)
+        // this.transform(source)
         const compilerOptions = this.tsconfig['compilerOptions']
         const { diagnostics, outputText } =
             transpileModule(source.getFullText(), { compilerOptions })

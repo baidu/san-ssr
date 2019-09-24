@@ -4,7 +4,7 @@ import { Project } from 'ts-morph'
 import { PHPEmitter } from '../emitters/php-emitter'
 import { Component } from '../parser/component'
 import camelCase from 'camelcase'
-import { shimObjectLiteralInitiator } from '../parser/ast-util'
+import { removeObjectLiteralInitiator } from '../parser/ast-util'
 import { ComponentRegistry } from './component-registry'
 import { SanSourceFile } from '../parser/san-sourcefile'
 import { compile } from 'ts2php'
@@ -80,7 +80,7 @@ export class ToPHPCompiler extends Compiler {
             }
 
             for (const prop of clazz.getProperties()) {
-                shimObjectLiteralInitiator(sourceFile.origin, clazz, prop)
+                removeObjectLiteralInitiator(sourceFile.origin, clazz, prop)
             }
         }
 

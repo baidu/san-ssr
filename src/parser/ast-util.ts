@@ -1,4 +1,4 @@
-import { TypeGuards, Expression, PropertyDeclaration, SyntaxKind, ClassDeclaration, ts, SourceFile } from 'ts-morph'
+import { TypeGuards, Expression, PropertyDeclaration, ClassDeclaration, ts, SourceFile } from 'ts-morph'
 import debugFactory from 'debug'
 
 const debug = debugFactory('ast-util')
@@ -38,8 +38,8 @@ function isObjectLiteralExpression (expr: Expression) {
     return false
 }
 
-export function shimObjectLiteralInitiator (sourceFile: SourceFile, clazz: ClassDeclaration, prop: PropertyDeclaration) {
-    debug('shimObjectLiteralInitiator', prop.getName())
+export function removeObjectLiteralInitiator (sourceFile: SourceFile, clazz: ClassDeclaration, prop: PropertyDeclaration) {
+    debug('removeObjectLiteralInitiator', prop.getName())
 
     const initializer = prop.getInitializer()
     if (!initializer || !isObjectLiteralExpression(initializer)) return
@@ -57,4 +57,16 @@ export function shimObjectLiteralInitiator (sourceFile: SourceFile, clazz: Class
         init.setBodyText(init.getBodyText() + '\n' + statement)
     }
     prop.removeInitializer()
+}
+
+export function movePropertyInitiatorToPrototype (sourceFile: SourceFile, clazz: ClassDeclaration) {
+    debug('props', clazz.getProperties())
+    for (const prop of clazz.getProperties()) {
+        debug('movePropertyInitiatorToPrototype', prop.getName())
+        const initializer = prop.getInitializer()
+        if (!initializer || prop.isStatic()) continue
+        const statement = clazz.getName() + '.prototype.' + prop.getName() + ' = ' + initializer.getFullText()
+        sourceFile.addStatements(statement)
+        prop.removeInitializer()
+    }
 }

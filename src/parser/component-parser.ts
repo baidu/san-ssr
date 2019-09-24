@@ -1,6 +1,6 @@
 import { getComponentClassIdentifier, isChildClassOf } from './ast-util'
 import { SanSourceFile } from './san-sourcefile'
-import { Project, SourceFile } from 'ts-morph'
+import { Project, SourceFile, ClassDeclaration } from 'ts-morph'
 import { getDefaultConfigPath } from './tsconfig'
 import { Component } from './component'
 import debugFactory from 'debug'
@@ -58,35 +58,36 @@ export class ComponentParser {
         debug('san identifier', componentClassIdentifier)
 
         for (const clazz of sourceFile.getClasses()) {
-            const name = clazz.getName()
-            debug('parsing class', name)
-
             if (!isChildClassOf(clazz, componentClassIdentifier)) continue
-
-            if (!clazz.getName()) {
-                // clazz.rename('SpsrComponent')    // this throws
-                throw new Error('anonymous component class is not supported')
-            }
-
-            for (const prop of clazz.getProperties()) {
-                const name = prop.getName()
-
-                if (name === 'filters' || name === 'computed') {
-                    if (!prop.isStatic()) prop.setIsStatic(true)
-                }
-            }
-
-            const decl = clazz.addProperty({
-                isStatic: true,
-                name: this.idPropertyName,
-                type: 'number',
-                initializer: String(this.id)
-            })
-
-            sanSourceFile.fakeProperties.push(decl)
-            sanSourceFile.componentClasses.set(this.id, clazz)
-            this.id++
+            this.normalizeComponentClass(clazz)
+            this.setComponentID(sanSourceFile, clazz)
         }
         return sanSourceFile
+    }
+
+    setComponentID (sourceFile: SanSourceFile, clazz: ClassDeclaration) {
+        const decl = clazz.addProperty({
+            isStatic: true,
+            name: this.idPropertyName,
+            type: 'number',
+            initializer: String(this.id)
+        })
+        sourceFile.fakeProperties.push(decl)
+        sourceFile.componentClasses.set(this.id++, clazz)
+    }
+
+    normalizeComponentClass (clazz: ClassDeclaration) {
+        if (!clazz.getName()) {
+            // clazz.rename('SpsrComponent')    // this throws
+            throw new Error('anonymous component class is not supported')
+        }
+
+        for (const prop of clazz.getProperties()) {
+            const name = prop.getName()
+
+            if (name === 'filters' || name === 'computed') {
+                if (!prop.isStatic()) prop.setIsStatic(true)
+            }
+        }
     }
 }

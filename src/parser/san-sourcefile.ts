@@ -1,4 +1,4 @@
-import { SourceFile, ClassDeclaration, PropertyDeclaration } from 'ts-morph'
+import { Project, SourceFile, ClassDeclaration, PropertyDeclaration } from 'ts-morph'
 
 export class SanSourceFile {
     public origin: SourceFile
@@ -11,6 +11,12 @@ export class SanSourceFile {
         this.componentClassIdentifier = componentClassIdentifier
     }
 
+    * getComponentClassNames () {
+        for (const clazz of this.componentClasses.values()) {
+            yield clazz.getName()
+        }
+    }
+
     getClasses () {
         return this.origin.getClasses()
     }
@@ -21,5 +27,16 @@ export class SanSourceFile {
 
     getFilePath (): string {
         return this.origin.getFilePath()
+    }
+
+    getClass (name: string) {
+        return this.origin.getClass(name)
+    }
+
+    openInProject (project: Project) {
+        return new SanSourceFile(
+            project.getSourceFile(this.getFilePath()),
+            this.componentClassIdentifier
+        )
     }
 }

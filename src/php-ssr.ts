@@ -2772,10 +2772,6 @@ const stringifier = {
     }
 }
 
-// const COMPONENT_RESERVED_MEMBERS = splitStr2Obj('aNode,computed,filters,components,' +
-// 'initData,template,attached,created,detached,disposed,compiled'
-// )
-
 /**
 * 生成序列化时起始桩的html
 *
@@ -3525,10 +3521,10 @@ export function compileToSource ({
 
     const contextId = genSSRId()
 
-    emitter.addRendererStart(funcName)
+    emitter.addRaw(`function ${funcName}($data, $noDataOutput) {`)
     const renderId = compileComponentSource(emitter, ComponentClass, contextId)
     emitter.addRaw(`return ${renderId}($data, $noDataOutput);`)
-    emitter.addRendererEnd()
+    emitter.addRaw('}')
 
     emitter.flush()
     emitter.endNamespace()

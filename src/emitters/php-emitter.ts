@@ -3,6 +3,8 @@ import { ExpressionEmitter } from './expression-emitter'
 import { emitRuntimeInPHP } from './runtime'
 
 export class PHPEmitter extends Emitter {
+    stringBuffer = ''
+
     public writeRuntime () {
         emitRuntimeInPHP(this)
     }
@@ -21,13 +23,9 @@ export class PHPEmitter extends Emitter {
         this.writeLine(`}`)
     }
 
-    stringBuffer = ''
-
     addRaw (code) {
-        this.push({
-            type: 'RAW',
-            code: code
-        })
+        this.flush()
+        this.writeLine(code)
     }
 
     /**
@@ -36,24 +34,8 @@ export class PHPEmitter extends Emitter {
     * @param {string} code 原始代码
     */
     joinRaw (code) {
-        this.push({
-            type: 'JOIN_RAW',
-            code: code
-        })
-    }
-
-    /**
-    * 添加renderer方法的起始源码
-    */
-    addRendererStart (funcName) {
-        this.addRaw(`function ${funcName}($data, $noDataOutput) {`)
-    }
-
-    /**
-    * 添加renderer方法的结束源码
-    */
-    addRendererEnd () {
-        this.addRaw('}')
+        this.flush()
+        this.writeLine('$html .= ' + code + ';')
     }
 
     /**
@@ -62,10 +44,7 @@ export class PHPEmitter extends Emitter {
     * @param {string} str 被拼接的字符串
     */
     joinString (str) {
-        this.push({
-            str: str,
-            type: 'JOIN_STRING'
-        })
+        this.stringBuffer += str
     }
 
     /**
@@ -74,9 +53,9 @@ export class PHPEmitter extends Emitter {
     * @param {Object?} accessor 数据访问表达式对象
     */
     joinDataStringify () {
-        this.push({
-            type: 'JOIN_DATA_STRINGIFY'
-        })
+        this.flush()
+        this.writeLine('$html .= "<!--s-data:" . json_encode(' +
+        ExpressionEmitter.dataAccess() + ', JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";\n')
     }
 
     /**
@@ -85,10 +64,8 @@ export class PHPEmitter extends Emitter {
     * @param {Object} expr 表达式对象
     */
     joinExpr (expr) {
-        this.push({
-            expr: expr,
-            type: 'JOIN_EXPR'
-        })
+        this.flush()
+        this.writeLine('$html .= ' + ExpressionEmitter.expr(expr) + ';')
     }
 
     flush () {
@@ -97,32 +74,5 @@ export class PHPEmitter extends Emitter {
         }
 
         this.stringBuffer = ''
-    }
-
-    push (seg) {
-        if (seg.type === 'JOIN_STRING') {
-            this.stringBuffer += seg.str
-            return
-        }
-        this.flush()
-
-        switch (seg.type) {
-        case 'JOIN_DATA_STRINGIFY':
-            this.writeLine('$html .= "<!--s-data:" . json_encode(' +
-            ExpressionEmitter.dataAccess() + ', JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";\n')
-            break
-
-        case 'JOIN_EXPR':
-            this.writeLine('$html .= ' + ExpressionEmitter.expr(seg.expr) + ';')
-            break
-
-        case 'JOIN_RAW':
-            this.writeLine('$html .= ' + seg.code + ';')
-            break
-
-        case 'RAW':
-            this.writeLine(seg.code)
-            break
-        }
     }
 }

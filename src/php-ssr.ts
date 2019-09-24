@@ -4527,22 +4527,22 @@ const elementSourceCompiler = {
     /**
      * 编译元素标签头
      *
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {PHPEmitter} emitter 编译源码的中间buffer
      * @param {ANode} aNode 抽象节点
      * @param {string=} tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
-    tagStart: function (sourceBuffer, aNode, tagNameVariable?) {
+    tagStart: function (emitter, aNode, tagNameVariable?) {
         const props = aNode.props
         const bindDirective = aNode.directives.bind
         const tagName = aNode.tagName
 
         if (tagName) {
-            sourceBuffer.joinString('<' + tagName)
+            emitter.joinString('<' + tagName)
         } else if (tagNameVariable) {
-            sourceBuffer.joinString('<')
-            sourceBuffer.joinRaw(`$${tagNameVariable} ? $${tagNameVariable} : "div"`)
+            emitter.joinString('<')
+            emitter.joinRaw(`$${tagNameVariable} ? $${tagNameVariable} : "div"`)
         } else {
-            sourceBuffer.joinString('<div')
+            emitter.joinString('<div')
         }
 
         // index list
@@ -4551,7 +4551,7 @@ const elementSourceCompiler = {
             propsIndex[prop.name] = prop
 
             if (prop.name !== 'slot' && prop.expr.value != null) {
-                sourceBuffer.joinString(' ' + prop.name + '="' + prop.expr.segs[0].literal + '"')
+                emitter.joinString(' ' + prop.name + '="' + prop.expr.segs[0].literal + '"')
             }
         })
 
@@ -4566,26 +4566,26 @@ const elementSourceCompiler = {
                     return
 
                 case 'select':
-                    sourceBuffer.addRaw('$selectValue = ' +
+                    emitter.addRaw('$selectValue = ' +
                         compileExprSource.expr(prop.expr) + '?' +
                         compileExprSource.expr(prop.expr) + ': "";'
                     )
                     return
 
                 case 'option':
-                    sourceBuffer.addRaw('$optionValue = ' +
+                    emitter.addRaw('$optionValue = ' +
                         compileExprSource.expr(prop.expr) +
                         ';'
                     )
                     // value
-                    sourceBuffer.addRaw('if (isset($optionValue)) {')
-                    sourceBuffer.joinRaw('" value=\\"" . $optionValue . "\\""')
-                    sourceBuffer.addRaw('}')
+                    emitter.addRaw('if (isset($optionValue)) {')
+                    emitter.joinRaw('" value=\\"" . $optionValue . "\\""')
+                    emitter.addRaw('}')
 
                     // selected
-                    sourceBuffer.addRaw('if ($optionValue == $selectValue) {')
-                    sourceBuffer.joinString(' selected')
-                    sourceBuffer.addRaw('}')
+                    emitter.addRaw('if ($optionValue == $selectValue) {')
+                    emitter.joinString(' selected')
+                    emitter.addRaw('}')
                     return
                 }
             }
@@ -4595,9 +4595,9 @@ const elementSourceCompiler = {
             case 'disabled':
             case 'multiple':
                 if (prop.raw == null) {
-                    sourceBuffer.joinString(' ' + prop.name)
+                    emitter.joinString(' ' + prop.name)
                 } else {
-                    sourceBuffer.joinRaw('_::boolAttrFilter(\'' + prop.name + '\', ' +
+                    emitter.joinRaw('_::boolAttrFilter(\'' + prop.name + '\', ' +
                         compileExprSource.expr(prop.expr) +
                         ')'
                     )
@@ -4612,25 +4612,25 @@ const elementSourceCompiler = {
                     if (valueProp) {
                         switch (propsIndex.type.raw) {
                         case 'checkbox':
-                            sourceBuffer.addRaw('if (_::contains(' +
+                            emitter.addRaw('if (_::contains(' +
                                     compileExprSource.expr(prop.expr) +
                                     ', ' +
                                     valueCode +
                                     ')) {'
                             )
-                            sourceBuffer.joinString(' checked')
-                            sourceBuffer.addRaw('}')
+                            emitter.joinString(' checked')
+                            emitter.addRaw('}')
                             break
 
                         case 'radio':
-                            sourceBuffer.addRaw('if (' +
+                            emitter.addRaw('if (' +
                                     compileExprSource.expr(prop.expr) +
                                     ' === ' +
                                     valueCode +
                                     ') {'
                             )
-                            sourceBuffer.joinString(' checked')
-                            sourceBuffer.addRaw('}')
+                            emitter.joinString(' checked')
+                            emitter.addRaw('}')
                             break
                         }
                     }
@@ -4657,10 +4657,10 @@ const elementSourceCompiler = {
                 }
 
                 if (onlyOneAccessor) {
-                    sourceBuffer.addRaw('if (' + compileExprSource.expr(preCondExpr) + ') {')
+                    emitter.addRaw('if (' + compileExprSource.expr(preCondExpr) + ') {')
                 }
 
-                sourceBuffer.joinRaw('_::attrFilter(\'' + prop.name + '\', ' +
+                emitter.joinRaw('_::attrFilter(\'' + prop.name + '\', ' +
                     (prop.x ? '_::escapeHTML(' : '') +
                     compileExprSource.expr(prop.expr) +
                     (prop.x ? ')' : '') +
@@ -4668,7 +4668,7 @@ const elementSourceCompiler = {
                 )
 
                 if (onlyOneAccessor) {
-                    sourceBuffer.addRaw('}')
+                    emitter.addRaw('}')
                 }
 
                 break
@@ -4676,19 +4676,19 @@ const elementSourceCompiler = {
         })
 
         if (bindDirective) {
-            sourceBuffer.addRaw(
+            emitter.addRaw(
                 '(function ($bindObj) use (&$html){foreach ($bindObj as $key => $value) {'
             )
 
             if (tagName === 'textarea') {
-                sourceBuffer.addRaw(
+                emitter.addRaw(
                     'if ($key == "value") {' +
                 'continue;' +
                 '}'
                 )
             }
 
-            sourceBuffer.addRaw('switch ($key) {\n' +
+            emitter.addRaw('switch ($key) {\n' +
             'case "readonly":\n' +
             'case "disabled":\n' +
             'case "multiple":\n' +
@@ -4700,59 +4700,59 @@ const elementSourceCompiler = {
             '}'
             )
 
-            sourceBuffer.addRaw(
+            emitter.addRaw(
                 '}})(' +
             compileExprSource.expr(bindDirective.value) +
             ');'
             )
         }
 
-        sourceBuffer.joinString('>')
+        emitter.joinString('>')
     },
     /* eslint-enable max-params */
 
     /**
      * 编译元素闭合
      *
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {PHPEmitter} emitter 编译源码的中间buffer
      * @param {ANode} aNode 抽象节点
      * @param {string=} tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
-    tagEnd: function (sourceBuffer, aNode, tagNameVariable?) {
+    tagEnd: function (emitter, aNode, tagNameVariable?) {
         const tagName = aNode.tagName
 
         if (tagName) {
             if (!autoCloseTags[tagName]) {
-                sourceBuffer.joinString('</' + tagName + '>')
+                emitter.joinString('</' + tagName + '>')
             }
 
             if (tagName === 'select') {
-                sourceBuffer.addRaw('$selectValue = null;')
+                emitter.addRaw('$selectValue = null;')
             }
 
             if (tagName === 'option') {
-                sourceBuffer.addRaw('$optionValue = null;')
+                emitter.addRaw('$optionValue = null;')
             }
         } else {
-            sourceBuffer.joinString('</')
-            sourceBuffer.joinRaw(`$${tagNameVariable} ? $${tagNameVariable} : "div"`)
-            sourceBuffer.joinString('>')
+            emitter.joinString('</')
+            emitter.joinRaw(`$${tagNameVariable} ? $${tagNameVariable} : "div"`)
+            emitter.joinString('>')
         }
     },
 
     /**
      * 编译元素内容
      *
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {PHPEmitter} emitter 编译源码的中间buffer
      * @param {ANode} aNode 元素的抽象节点信息
      * @param {Component} owner 所属组件实例环境
      */
-    inner: function (sourceBuffer, aNode, owner) {
+    inner: function (emitter, aNode, owner) {
         // inner content
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodeProp(aNode, 'value')
             if (valueProp) {
-                sourceBuffer.joinRaw('_::escapeHTML(' +
+                emitter.joinRaw('_::escapeHTML(' +
                 compileExprSource.expr(valueProp.expr) +
                 ')'
                 )
@@ -4763,11 +4763,11 @@ const elementSourceCompiler = {
 
         const htmlDirective = aNode.directives.html
         if (htmlDirective) {
-            sourceBuffer.joinExpr(htmlDirective.value)
+            emitter.joinExpr(htmlDirective.value)
         } else {
             /* eslint-disable no-use-before-define */
             each(aNode.children, function (aNodeChild) {
-                aNodeCompiler.compile(aNodeChild, sourceBuffer, owner)
+                aNodeCompiler.compile(aNodeChild, emitter, owner)
             })
             /* eslint-enable no-use-before-define */
         }
@@ -4785,11 +4785,11 @@ const aNodeCompiler = {
      * 编译节点
      *
      * @param {ANode} aNode 抽象节点
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {PHPEmitter} emitter 编译源码的中间buffer
      * @param {Component} owner 所属组件实例环境
      * @param {Object} extra 编译所需的一些额外信息
      */
-    compile: function (aNode, sourceBuffer, owner, extra?) {
+    compile: function (aNode, emitter, owner, extra?) {
         extra = extra || {}
         let compileMethod = 'compileElement'
 
@@ -4818,28 +4818,28 @@ const aNodeCompiler = {
             }
         }
 
-        aNodeCompiler[compileMethod](aNode, sourceBuffer, owner, extra)
+        aNodeCompiler[compileMethod](aNode, emitter, owner, extra)
     },
 
     /**
      * 编译文本节点
      *
-     * @param {ANode} aNode 节点对象
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param aNode 节点对象
+     * @param emitter 编译源码的中间buffer
      */
-    compileText: function (aNode, sourceBuffer) {
+    compileText: function (aNode, emitter) {
         if (aNode.textExpr.original) {
-            sourceBuffer.joinString(serializeStump('text'))
+            emitter.joinString(serializeStump('text'))
         }
 
         if (aNode.textExpr.value != null) {
-            sourceBuffer.joinString(aNode.textExpr.segs[0].literal)
+            emitter.joinString(aNode.textExpr.segs[0].literal)
         } else {
-            sourceBuffer.joinExpr(aNode.textExpr)
+            emitter.joinExpr(aNode.textExpr)
         }
 
         if (aNode.textExpr.original) {
-            sourceBuffer.joinString(serializeStumpEnd('text'))
+            emitter.joinString(serializeStumpEnd('text'))
         }
     },
 
@@ -4847,46 +4847,42 @@ const aNodeCompiler = {
      * 编译template节点
      *
      * @param {ANode} aNode 节点对象
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param emitter 编译源码的中间buffer
      * @param {Component} owner 所属组件实例环境
      */
-    compileTemplate: function (aNode, sourceBuffer, owner) {
-        elementSourceCompiler.inner(sourceBuffer, aNode, owner)
+    compileTemplate: function (aNode, emitter: PHPEmitter, owner) {
+        elementSourceCompiler.inner(emitter, aNode, owner)
     },
 
     /**
      * 编译 if 节点
      *
      * @param {ANode} aNode 节点对象
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param emitter 编译源码的中间buffer
      * @param {Component} owner 所属组件实例环境
      */
-    compileIf: function (aNode, sourceBuffer, owner) {
+    compileIf: function (aNode, emitter: PHPEmitter, owner) {
         // output main if
         const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
-        sourceBuffer.addRaw('if (' + compileExprSource.expr(ifDirective.value) + ') {')
+        emitter.addRaw('if (' + compileExprSource.expr(ifDirective.value) + ') {')
         aNodeCompiler.compile(
             aNode.ifRinsed,
-            sourceBuffer,
+            emitter,
             owner
         )
-        sourceBuffer.addRaw('}')
+        emitter.addRaw('}')
 
         // output elif and else
         each(aNode.elses, function (elseANode) {
             const elifDirective = elseANode.directives.elif
             if (elifDirective) {
-                sourceBuffer.addRaw('else if (' + compileExprSource.expr(elifDirective.value) + ') {')
+                emitter.addRaw('else if (' + compileExprSource.expr(elifDirective.value) + ') {')
             } else {
-                sourceBuffer.addRaw('else {')
+                emitter.addRaw('else {')
             }
 
-            aNodeCompiler.compile(
-                elseANode,
-                sourceBuffer,
-                owner
-            )
-            sourceBuffer.addRaw('}')
+            aNodeCompiler.compile(elseANode, emitter, owner)
+            emitter.addRaw('}')
         })
     },
 
@@ -4894,10 +4890,10 @@ const aNodeCompiler = {
      * 编译 for 节点
      *
      * @param {ANode} aNode 节点对象
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {PHPEmitter} emitter 编译源码的中间buffer
      * @param {Component} owner 所属组件实例环境
      */
-    compileFor: function (aNode, sourceBuffer, owner) {
+    compileFor: function (aNode, emitter, owner) {
         const forElementANode = {
             children: aNode.children,
             props: aNode.props,
@@ -4913,72 +4909,72 @@ const aNodeCompiler = {
         const indexName = forDirective.index || genSSRId()
         const listName = genSSRId()
 
-        sourceBuffer.addRaw('$' + listName + ' = ' + compileExprSource.expr(forDirective.value) + ';')
-        sourceBuffer.addRaw(`if (is_array($${listName}) || is_object($${listName})) {`)
+        emitter.addRaw('$' + listName + ' = ' + compileExprSource.expr(forDirective.value) + ';')
+        emitter.addRaw(`if (is_array($${listName}) || is_object($${listName})) {`)
 
         // for array
-        sourceBuffer.addRaw(`foreach ($${listName} as $${indexName} => $value) {`)
-        sourceBuffer.addRaw(`$componentCtx["data"]->${indexName} = $${indexName};`)
-        sourceBuffer.addRaw(`$componentCtx["data"]->${itemName} = $value;`)
-        aNodeCompiler.compile(forElementANode, sourceBuffer, owner)
-        sourceBuffer.addRaw('}')
-        sourceBuffer.addRaw('}')
+        emitter.addRaw(`foreach ($${listName} as $${indexName} => $value) {`)
+        emitter.addRaw(`$componentCtx["data"]->${indexName} = $${indexName};`)
+        emitter.addRaw(`$componentCtx["data"]->${itemName} = $value;`)
+        aNodeCompiler.compile(forElementANode, emitter, owner)
+        emitter.addRaw('}')
+        emitter.addRaw('}')
     },
 
     /**
      * 编译 slot 节点
      *
      * @param {ANode} aNode 节点对象
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param emitter 编译源码的中间buffer
      * @param {Component} owner 所属组件实例环境
      */
-    compileSlot: function (aNode, sourceBuffer, owner) {
+    compileSlot: function (aNode, emitter: PHPEmitter, owner) {
         const rendererId = genSSRId()
 
-        sourceBuffer.addRaw(`if (!isset($componentCtx["slotRenderers"]["${rendererId}"])) ` +
+        emitter.addRaw(`if (!isset($componentCtx["slotRenderers"]["${rendererId}"])) ` +
         `$componentCtx["slotRenderers"]["${rendererId}"] = function () use (&$componentCtx, &$html){`)
 
-        sourceBuffer.addRaw('$defaultSlotRender = function ($componentCtx) {')
-        sourceBuffer.addRaw('  $html = "";')
+        emitter.addRaw('$defaultSlotRender = function ($componentCtx) {')
+        emitter.addRaw('  $html = "";')
         each(aNode.children, function (aNodeChild) {
-            aNodeCompiler.compile(aNodeChild, sourceBuffer, owner)
+            aNodeCompiler.compile(aNodeChild, emitter, owner)
         })
-        sourceBuffer.addRaw('  return $html;')
-        sourceBuffer.addRaw('};')
+        emitter.addRaw('  return $html;')
+        emitter.addRaw('};')
 
-        sourceBuffer.addRaw('$isInserted = false;')
-        sourceBuffer.addRaw('$ctxSourceSlots = $componentCtx["sourceSlots"];')
-        sourceBuffer.addRaw('$mySourceSlots = [];')
+        emitter.addRaw('$isInserted = false;')
+        emitter.addRaw('$ctxSourceSlots = $componentCtx["sourceSlots"];')
+        emitter.addRaw('$mySourceSlots = [];')
 
         const nameProp = getANodeProp(aNode, 'name')
         if (nameProp) {
-            sourceBuffer.addRaw('$slotName = ' + compileExprSource.expr(nameProp.expr) + ';')
+            emitter.addRaw('$slotName = ' + compileExprSource.expr(nameProp.expr) + ';')
 
-            sourceBuffer.addRaw('foreach ($ctxSourceSlots as $i => $slot) {')
-            sourceBuffer.addRaw('  if (count($slot) > 1 && $slot[1] == $slotName) {')
-            sourceBuffer.addRaw('    array_push($mySourceSlots, $slot[0]);')
-            sourceBuffer.addRaw('    $isInserted = true;')
-            sourceBuffer.addRaw('  }')
-            sourceBuffer.addRaw('}')
+            emitter.addRaw('foreach ($ctxSourceSlots as $i => $slot) {')
+            emitter.addRaw('  if (count($slot) > 1 && $slot[1] == $slotName) {')
+            emitter.addRaw('    array_push($mySourceSlots, $slot[0]);')
+            emitter.addRaw('    $isInserted = true;')
+            emitter.addRaw('  }')
+            emitter.addRaw('}')
         } else {
-            sourceBuffer.addRaw('if (count($ctxSourceSlots) > 0 && !isset($ctxSourceSlots[0][1])) {')
-            sourceBuffer.addRaw('  array_push($mySourceSlots, $ctxSourceSlots[0][0]);')
-            sourceBuffer.addRaw('  $isInserted = true;')
-            sourceBuffer.addRaw('}')
+            emitter.addRaw('if (count($ctxSourceSlots) > 0 && !isset($ctxSourceSlots[0][1])) {')
+            emitter.addRaw('  array_push($mySourceSlots, $ctxSourceSlots[0][0]);')
+            emitter.addRaw('  $isInserted = true;')
+            emitter.addRaw('}')
         }
 
-        sourceBuffer.addRaw('if (!$isInserted) { array_push($mySourceSlots, $defaultSlotRender); }')
-        sourceBuffer.addRaw('$slotCtx = $isInserted ? $componentCtx["owner"] : $componentCtx;')
+        emitter.addRaw('if (!$isInserted) { array_push($mySourceSlots, $defaultSlotRender); }')
+        emitter.addRaw('$slotCtx = $isInserted ? $componentCtx["owner"] : $componentCtx;')
 
         if (aNode.vars || aNode.directives.bind) {
-            sourceBuffer.addRaw('$slotCtx = ["spsrCid" => $slotCtx["spsrCid"], "data" => $slotCtx["data"], "instance" => $slotCtx["instance"], "owner" => $slotCtx["owner"]];')
+            emitter.addRaw('$slotCtx = ["spsrCid" => $slotCtx["spsrCid"], "data" => $slotCtx["data"], "instance" => $slotCtx["instance"], "owner" => $slotCtx["owner"]];')
 
             if (aNode.directives.bind) {
-                sourceBuffer.addRaw('_::extend($slotCtx["data"], ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
+                emitter.addRaw('_::extend($slotCtx["data"], ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
             }
 
             each(aNode.vars, function (varItem) {
-                sourceBuffer.addRaw(
+                emitter.addRaw(
                     '$slotCtx["data"]->' + varItem.name + ' = ' +
                 compileExprSource.expr(varItem.expr) +
                 ';'
@@ -4986,41 +4982,41 @@ const aNodeCompiler = {
             })
         }
 
-        sourceBuffer.addRaw('foreach ($mySourceSlots as $renderIndex => $slot) {')
-        sourceBuffer.addRaw('  $html .= $slot($slotCtx);')
-        sourceBuffer.addRaw('}')
+        emitter.addRaw('foreach ($mySourceSlots as $renderIndex => $slot) {')
+        emitter.addRaw('  $html .= $slot($slotCtx);')
+        emitter.addRaw('}')
 
-        sourceBuffer.addRaw('};')
-        sourceBuffer.addRaw(`call_user_func($componentCtx["slotRenderers"]["${rendererId}"]);`)
+        emitter.addRaw('};')
+        emitter.addRaw(`call_user_func($componentCtx["slotRenderers"]["${rendererId}"]);`)
     },
 
     /**
      * 编译普通节点
      *
      * @param {ANode} aNode 节点对象
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param emitter 编译源码的中间buffer
      * @param {Component} owner 所属组件实例环境
      * @param {Object} extra 编译所需的一些额外信息
      */
-    compileElement: function (aNode, sourceBuffer, owner) {
-        elementSourceCompiler.tagStart(sourceBuffer, aNode)
-        elementSourceCompiler.inner(sourceBuffer, aNode, owner)
-        elementSourceCompiler.tagEnd(sourceBuffer, aNode)
+    compileElement: function (aNode, emitter, owner) {
+        elementSourceCompiler.tagStart(emitter, aNode)
+        elementSourceCompiler.inner(emitter, aNode, owner)
+        elementSourceCompiler.tagEnd(emitter, aNode)
     },
 
     /**
      * 编译组件节点
      *
      * @param {ANode} aNode 节点对象
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {PHPEmitter} emitter 编译源码的中间buffer
      * @param {Component} owner 所属组件实例环境
      * @param {Object} extra 编译所需的一些额外信息
      * @param {Function} extra.ComponentClass 对应组件类
      */
-    compileComponent: function (aNode, sourceBuffer, owner, extra) {
+    compileComponent: function (aNode, emitter, owner, extra) {
         let dataLiteral = '(object)[]'
 
-        sourceBuffer.addRaw('$sourceSlots = [];')
+        emitter.addRaw('$sourceSlots = [];')
         if (aNode.children) {
             const defaultSourceSlots = []
             const sourceSlotCodes = {}
@@ -5042,24 +5038,24 @@ const aNodeCompiler = {
             })
 
             if (defaultSourceSlots.length) {
-                sourceBuffer.addRaw('array_push($sourceSlots, [function ($componentCtx) {')
-                sourceBuffer.addRaw('  $html = "";')
+                emitter.addRaw('array_push($sourceSlots, [function ($componentCtx) {')
+                emitter.addRaw('  $html = "";')
                 defaultSourceSlots.forEach(function (child) {
-                    aNodeCompiler.compile(child, sourceBuffer, owner)
+                    aNodeCompiler.compile(child, emitter, owner)
                 })
-                sourceBuffer.addRaw('  return $html;')
-                sourceBuffer.addRaw('}]);')
+                emitter.addRaw('  return $html;')
+                emitter.addRaw('}]);')
             }
 
             for (const key in sourceSlotCodes) {
                 const sourceSlotCode = sourceSlotCodes[key]
-                sourceBuffer.addRaw('array_push($sourceSlots, [function ($componentCtx) {')
-                sourceBuffer.addRaw('  $html = "";')
+                emitter.addRaw('array_push($sourceSlots, [function ($componentCtx) {')
+                emitter.addRaw('  $html = "";')
                 sourceSlotCode.children.forEach(function (child) {
-                    aNodeCompiler.compile(child, sourceBuffer, owner)
+                    aNodeCompiler.compile(child, emitter, owner)
                 })
-                sourceBuffer.addRaw('  return $html;')
-                sourceBuffer.addRaw('}, ' + compileExprSource.expr(sourceSlotCode.prop.expr) + ']);')
+                emitter.addRaw('  return $html;')
+                emitter.addRaw('}, ' + compileExprSource.expr(sourceSlotCode.prop.expr) + ']);')
             }
         }
 
@@ -5080,26 +5076,26 @@ const aNodeCompiler = {
             ')'
         }
 
-        const renderId = compileComponentSource(sourceBuffer, extra.ComponentClass, owner.ssrContextId)
-        sourceBuffer.addRaw(`$html .= ${renderId}(`)
-        sourceBuffer.addRaw(dataLiteral + ', true, $componentCtx, ' +
+        const renderId = compileComponentSource(emitter, extra.ComponentClass, owner.ssrContextId)
+        emitter.addRaw(`$html .= ${renderId}(`)
+        emitter.addRaw(dataLiteral + ', true, $componentCtx, ' +
         stringifier.str(aNode.tagName) + ', $sourceSlots);')
-        sourceBuffer.addRaw('$sourceSlots = null;')
+        emitter.addRaw('$sourceSlots = null;')
     },
 
     /**
      * 编译组件加载器节点
      *
      * @param {ANode} aNode 节点对象
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {PHPEmitter} emitter 编译源码的中间buffer
      * @param {Component} owner 所属组件实例环境
      * @param {Object} extra 编译所需的一些额外信息
      * @param {Function} extra.ComponentClass 对应类
      */
-    compileComponentLoader: function (aNode, sourceBuffer, owner, extra) {
+    compileComponentLoader: function (aNode, emitter, owner, extra) {
         const LoadingComponent = extra.ComponentClass.placeholder
         if (typeof LoadingComponent === 'function') {
-            aNodeCompiler.compileComponent(aNode, sourceBuffer, owner, {
+            aNodeCompiler.compileComponent(aNode, emitter, owner, {
                 ComponentClass: LoadingComponent
             })
         }
@@ -5114,12 +5110,12 @@ function isComponentLoader (cmpt) {
 * 生成组件构建的代码
 *
 * @inner
-* @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+* @param {PHPEmitter} emitter 编译源码的中间buffer
 * @param {Function} ComponentClass 组件类
 * @param {string} contextId 构建render环境的id
 * @return {string} 组件在当前环境下的方法标识
 */
-function compileComponentSource (sourceBuffer, ComponentClass, contextId) {
+function compileComponentSource (emitter, ComponentClass, contextId) {
     ComponentClass.ssrContext = ComponentClass.ssrContext || {}
     let cid = ComponentClass.ssrContext[contextId]
 
@@ -5140,52 +5136,52 @@ function compileComponentSource (sourceBuffer, ComponentClass, contextId) {
                     }
 
                     if (CmptClass) {
-                        compileComponentSource(sourceBuffer, CmptClass, contextId)
+                        compileComponentSource(emitter, CmptClass, contextId)
                     }
                 }
             )
         }
 
-        sourceBuffer.addRaw(`function ${cid}($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {`)
-        sourceBuffer.addRaw('$html = "";')
+        emitter.addRaw(`function ${cid}($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {`)
+        emitter.addRaw('$html = "";')
 
-        sourceBuffer.addRaw(genComponentContextCode(component))
+        emitter.addRaw(genComponentContextCode(component))
 
         // init data
         const defaultData = component.data.get()
-        sourceBuffer.addRaw('if ($data) {')
+        emitter.addRaw('if ($data) {')
         Object.keys(defaultData).forEach(function (key) {
             const val = stringifier.any(defaultData[key])
             if (val === 'NaN') return
-            sourceBuffer.addRaw(`$componentCtx["data"]->${key} = isset($componentCtx["data"]->${key}) ? $componentCtx["data"]->${key} : ${val};`)
+            emitter.addRaw(`$componentCtx["data"]->${key} = isset($componentCtx["data"]->${key}) ? $componentCtx["data"]->${key} : ${val};`)
         })
-        sourceBuffer.addRaw('}')
+        emitter.addRaw('}')
 
         // calc computed
-        sourceBuffer.addRaw('foreach ($componentCtx["computedNames"] as $i => $computedName) {')
-        sourceBuffer.addRaw('  $data->$computedName = _::callComputed($componentCtx, $computedName);')
-        sourceBuffer.addRaw('}')
+        emitter.addRaw('foreach ($componentCtx["computedNames"] as $i => $computedName) {')
+        emitter.addRaw('  $data->$computedName = _::callComputed($componentCtx, $computedName);')
+        emitter.addRaw('}')
 
         const ifDirective = component.aNode.directives['if']
         if (ifDirective) {
-            sourceBuffer.addRaw('if (' + compileExprSource.expr(ifDirective.value) + ') {')
+            emitter.addRaw('if (' + compileExprSource.expr(ifDirective.value) + ') {')
         }
 
-        elementSourceCompiler.tagStart(sourceBuffer, component.aNode, 'tagName')
+        elementSourceCompiler.tagStart(emitter, component.aNode, 'tagName')
 
-        sourceBuffer.addRaw('if (!$noDataOutput) {')
-        sourceBuffer.joinDataStringify()
-        sourceBuffer.addRaw('}')
+        emitter.addRaw('if (!$noDataOutput) {')
+        emitter.joinDataStringify()
+        emitter.addRaw('}')
 
-        elementSourceCompiler.inner(sourceBuffer, component.aNode, component)
-        elementSourceCompiler.tagEnd(sourceBuffer, component.aNode, 'tagName')
+        elementSourceCompiler.inner(emitter, component.aNode, component)
+        elementSourceCompiler.tagEnd(emitter, component.aNode, 'tagName')
 
         if (ifDirective) {
-            sourceBuffer.addRaw('}')
+            emitter.addRaw('}')
         }
 
-        sourceBuffer.addRaw('return $html;')
-        sourceBuffer.addRaw('};')
+        emitter.addRaw('return $html;')
+        emitter.addRaw('};')
     }
 
     return cid
@@ -5245,13 +5241,12 @@ export function compileToSource ({
     guid = 1
     ssrIndex = 0
 
-    const sourceBuffer = emitter
     const contextId = genSSRId()
 
-    sourceBuffer.addRendererStart(funcName)
-    const renderId = compileComponentSource(sourceBuffer, ComponentClass, contextId)
-    sourceBuffer.addRaw(`return ${renderId}($data, $noDataOutput);`)
-    sourceBuffer.addRendererEnd()
+    emitter.addRendererStart(funcName)
+    const renderId = compileComponentSource(emitter, ComponentClass, contextId)
+    emitter.addRaw(`return ${renderId}($data, $noDataOutput);`)
+    emitter.addRendererEnd()
 
     emitter.flush()
     emitter.endNamespace()

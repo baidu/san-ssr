@@ -5,7 +5,7 @@ import { getDefaultConfigPath } from './tsconfig'
 import { Component } from './component'
 import debugFactory from 'debug'
 
-const debug = debugFactory('ast-util')
+const debug = debugFactory('component-parser')
 
 export class ComponentParser {
     private root: string
@@ -18,6 +18,7 @@ export class ComponentParser {
         tsconfigPath = getDefaultConfigPath(),
         idPropertyName = 'spsrCid'
     ) {
+        debug('using tsconfig:', tsconfigPath)
         this.idPropertyName = idPropertyName
         this.tsconfigPath = tsconfigPath
         this.project = new Project({
@@ -25,22 +26,28 @@ export class ComponentParser {
         })
     }
 
-    parseComponent (componentFile: string): Component {
-        const comp = new Component(componentFile)
-        for (const [path, file] of this.getComponentFiles(componentFile)) {
-            comp.addFile(path, this.parseSanSourceFile(file))
+    parseComponent (componentTS?: string, componentJS?: string): Component {
+        debug('parsComponent', componentTS, componentJS)
+        const comp = new Component(componentTS, componentJS)
+        if (componentTS) {
+            for (const [path, file] of this.getComponentFiles(componentTS)) {
+                comp.addFile(path, this.parseSanSourceFile(file))
+            }
         }
         return comp
     }
 
-    private getComponentFiles (componentFile): Map<string, SourceFile> {
+    private getComponentFiles (entryTSFile): Map<string, SourceFile> {
+        const sourceFile = this.project.getSourceFile(entryTSFile)
+        if (!sourceFile) throw new Error('could not get sourcefile:' + entryTSFile)
         return new Map([[
-            componentFile,
-            this.project.getSourceFile(componentFile)
+            entryTSFile,
+            sourceFile
         ]])
     }
 
     private parseSanSourceFile (sourceFile: SourceFile) {
+        debug('parseSanSourceFile', sourceFile.getFilePath())
         const componentClassIdentifier = getComponentClassIdentifier(sourceFile)
         const sanSourceFile = new SanSourceFile(
             sourceFile,

@@ -5662,7 +5662,14 @@ function genComponentContextCode (component) {
 * @param {Function} ComponentClass 组件类
 * @return {string}
 */
-export function compileToSource (ComponentClass, { funcName = '' } = {}) {
+export function compileToSource ({
+    ComponentClass,
+    funcName = '',
+    ns = 'san\\renderer',
+    emitter = new PHPEmitter()
+}) {
+    emitter.beginNamespace(ns)
+    emitter.writeLine(`use \\san\\runtime\\_;`)
     guid = 1
     ssrIndex = 0
 
@@ -5674,7 +5681,9 @@ export function compileToSource (ComponentClass, { funcName = '' } = {}) {
     sourceBuffer.addRaw(`return ${renderId}($data, $noDataOutput);`)
     sourceBuffer.addRendererEnd()
 
-    return sourceBuffer.toCode()
+    emitter.writeLines(sourceBuffer.toCode())
+    emitter.endNamespace()
+    return emitter.fullText()
 }
 
 export function compileToRenderer (ComponentClass) {

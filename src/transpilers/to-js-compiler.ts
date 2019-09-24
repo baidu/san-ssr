@@ -2,9 +2,10 @@ import { transpileModule } from 'typescript'
 import { Project } from 'ts-morph'
 import { SanSourceFile } from '../parser/san-sourcefile'
 import { getDefaultConfigPath } from '../parser/tsconfig'
+import { Compiler } from './compiler'
 import { sep } from 'path'
 
-export class Compiler {
+export class ToJSCompiler extends Compiler {
     private root: string
     private tsconfig: object
     private project: Project
@@ -13,6 +14,7 @@ export class Compiler {
         tsconfigPath = getDefaultConfigPath(),
         root = tsconfigPath.split(sep).slice(0, -1).join(sep)
     ) {
+        super()
         this.root = root
         this.tsconfig = require(tsconfigPath)
         this.project = new Project({

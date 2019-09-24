@@ -1,3 +1,5 @@
+import { compileToSource as writeRenderFunction } from '../php-ssr'
+import { Compiler } from './compiler'
 import { Project } from 'ts-morph'
 import { PHPEmitter } from '../emitters/php-emitter'
 import { Component } from '../parser/component'
@@ -14,7 +16,7 @@ const debug = debugFactory('ast-util')
 const reservedNames = ['List']
 const uselessProps = ['components']
 
-export class Compiler {
+export class ToPHPCompiler extends Compiler {
     private root: string
     private tsconfigPath: string
     private tsconfig: object
@@ -26,6 +28,7 @@ export class Compiler {
         root = tsconfigPath.split(sep).slice(0, -1).join(sep),
         nsPrefix = ''
     }) {
+        super({ fileHeader: '<?php\n' })
         this.nsPrefix = nsPrefix
         this.root = root
         this.tsconfigPath = tsconfigPath
@@ -40,7 +43,20 @@ export class Compiler {
         return this.doCompile(sourceFile)
     }
 
-    compileComponent (component: Component, emitter: PHPEmitter = new PHPEmitter()) {
+    compileComponent (component: Component, ComponentClass, emitter: PHPEmitter = new PHPEmitter(), {
+        funcName = 'render',
+        ns = 'san\\renderer',
+        emitHeader = true
+    }) {
+        if (emitHeader) this.writeFileHeader(emitter)
+        emitter.writeRuntime()
+        this.transpileFiles(component, emitter)
+        writeRenderFunction({ ComponentClass, funcName, emitter, ns })
+
+        return emitter.fullText()
+    }
+
+    private transpileFiles (component: Component, emitter: PHPEmitter) {
         const registry = new ComponentRegistry()
         for (const [path, sourceFile] of component.getFiles()) {
             registry.registerComponents(sourceFile)
@@ -51,8 +67,7 @@ export class Compiler {
             emitter.writeLines(this.compileToPHP(sourceFile))
             emitter.endNamespace()
         }
-        registry.genComponentRegistry(path => this.ns(path), emitter)
-        return emitter.fullText()
+        registry.writeComponentRegistry(path => this.ns(path), emitter)
     }
 
     private transform (sourceFile: SanSourceFile) {

@@ -6578,7 +6578,8 @@ function genComponentProtoCode (component) {
                 code.push(']')
             } else {
                 code.push('{')
-                Object.keys(protoMember).forEach(function (itemKey) {
+
+                Object.getOwnPropertyNames(protoMember).forEach(function (itemKey) {
                     const item = protoMember[itemKey]
                     if (typeof item === 'function') {
                         code.push(itemKey + ':' + functionString(item) + ',')

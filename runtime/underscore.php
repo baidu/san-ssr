@@ -159,11 +159,10 @@ final class _
 
     public static function getClassByCtx($ctx) {
         $cid = $ctx["spsrCid"];
-        return _::getClass($cid);
-    }
-
-    public static function getClass($cid) {
-        return \san\runtime\ComponentRegistry::get($cid);
+        if (\san\runtime\ComponentRegistry::has($cid)) {
+            return \san\runtime\ComponentRegistry::get($cid);
+        }
+        return null;
     }
 
     public static function callFilter($ctx, $name, $args)

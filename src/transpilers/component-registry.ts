@@ -18,7 +18,7 @@ export class ComponentRegistry {
         }
     }
 
-    genComponentRegistry (ns: (file: string) => string, emitter: PHPEmitter) {
+    writeComponentRegistry (ns: (file: string) => string, emitter: PHPEmitter) {
         emitter.beginNamespace('san\\runtime')
         emitter.writeLine(`ComponentRegistry::$comps = [`)
         emitter.indent()

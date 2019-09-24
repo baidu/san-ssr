@@ -1,4 +1,4 @@
-export class Emitter {
+export abstract class Emitter {
     private indentLevel = 0
     private buffer = ''
     private shiftWidth
@@ -6,6 +6,8 @@ export class Emitter {
     constructor (shiftWidth = 4) {
         this.shiftWidth = shiftWidth
     }
+
+    public abstract writeRuntime ()
 
     public fullText () {
         return this.buffer

@@ -34,9 +34,12 @@ export class SanSourceFile {
     }
 
     openInProject (project: Project) {
-        return new SanSourceFile(
+        const sourceFile = new SanSourceFile(
             project.getSourceFile(this.getFilePath()),
             this.componentClassIdentifier
         )
+        sourceFile.fakeProperties = this.fakeProperties
+        sourceFile.componentClasses = this.componentClasses
+        return sourceFile
     }
 }

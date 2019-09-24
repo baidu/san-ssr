@@ -293,17 +293,17 @@ const compileExprSource = {
 * @class
 */
 class CompileSourceBuffer {
-    segs: any[]
-    constructor () {
-        this.segs = []
-    }
+    code = ''
+    buffer = ''
+
     /**
     * 添加原始代码，将原封不动输出
     *
     * @param {string} code 原始代码
     */
     addRaw (code) {
-        this.segs.push({
+        if (code === undefined) throw new Error()
+        this.push({
             type: 'RAW',
             code: code
         })
@@ -315,7 +315,7 @@ class CompileSourceBuffer {
     * @param {string} code 原始代码
     */
     joinRaw (code) {
-        this.segs.push({
+        this.push({
             type: 'JOIN_RAW',
             code: code
         })
@@ -341,7 +341,7 @@ class CompileSourceBuffer {
     * @param {string} str 被拼接的字符串
     */
     joinString (str) {
-        this.segs.push({
+        this.push({
             str: str,
             type: 'JOIN_STRING'
         })
@@ -353,7 +353,7 @@ class CompileSourceBuffer {
     * @param {Object?} accessor 数据访问表达式对象
     */
     joinDataStringify () {
-        this.segs.push({
+        this.push({
             type: 'JOIN_DATA_STRINGIFY'
         })
     }
@@ -364,7 +364,7 @@ class CompileSourceBuffer {
     * @param {Object} expr 表达式对象
     */
     joinExpr (expr) {
-        this.segs.push({
+        this.push({
             expr: expr,
             type: 'JOIN_EXPR'
         })
@@ -376,47 +376,44 @@ class CompileSourceBuffer {
     * @return {string}
     */
     toCode () {
-        const code = []
-        let temp = ''
+        this.flush()
+        return this.code
+    }
 
-        function genStrLiteral () {
-            if (temp) {
-                code.push('$html .= ' + compileExprSource.stringLiteralize(temp) + ';')
-            }
-
-            temp = ''
+    flush () {
+        if (this.buffer) {
+            this.code += '$html .= ' + compileExprSource.stringLiteralize(this.buffer) + ';\n'
         }
 
-        each(this.segs, function (seg) {
-            if (seg.type === 'JOIN_STRING') {
-                temp += seg.str
-                return
-            }
+        this.buffer = ''
+    }
 
-            genStrLiteral()
-            switch (seg.type) {
-            case 'JOIN_DATA_STRINGIFY':
-                code.push('$html .= "<!--s-data:" . json_encode(' +
-                compileExprSource.dataAccess() + ', JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";')
-                break
+    push (seg) {
+        if (seg.type === 'JOIN_STRING') {
+            this.buffer += seg.str
+            return
+        }
+        this.flush()
 
-            case 'JOIN_EXPR':
-                code.push('$html .= ' + compileExprSource.expr(seg.expr) + ';')
-                break
+        switch (seg.type) {
+        case 'JOIN_DATA_STRINGIFY':
+            this.code += '$html .= "<!--s-data:" . json_encode(' +
+            compileExprSource.dataAccess() + ', JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";\n'
+            break
 
-            case 'JOIN_RAW':
-                code.push('$html .= ' + seg.code + ';')
-                break
+        case 'JOIN_EXPR':
+            this.code += '$html .= ' + compileExprSource.expr(seg.expr) + ';\n'
+            break
 
-            case 'RAW':
-                code.push(seg.code)
-                break
-            }
-        })
+        case 'JOIN_RAW':
+            this.code += '$html .= ' + seg.code + ';' + '\n'
+            break
 
-        genStrLiteral()
-
-        return code.join('\n')
+        case 'RAW':
+            if (seg.code === undefined) return
+            this.code += seg.code + '\n'
+            break
+        }
     }
 }
 
@@ -5283,12 +5280,10 @@ const aNodeCompiler = {
         // output main if
         const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
         sourceBuffer.addRaw('if (' + compileExprSource.expr(ifDirective.value) + ') {')
-        sourceBuffer.addRaw(
-            aNodeCompiler.compile(
-                aNode.ifRinsed,
-                sourceBuffer,
-                owner
-            )
+        aNodeCompiler.compile(
+            aNode.ifRinsed,
+            sourceBuffer,
+            owner
         )
         sourceBuffer.addRaw('}')
 
@@ -5301,12 +5296,10 @@ const aNodeCompiler = {
                 sourceBuffer.addRaw('else {')
             }
 
-            sourceBuffer.addRaw(
-                aNodeCompiler.compile(
-                    elseANode,
-                    sourceBuffer,
-                    owner
-                )
+            aNodeCompiler.compile(
+                elseANode,
+                sourceBuffer,
+                owner
             )
             sourceBuffer.addRaw('}')
         })
@@ -5342,13 +5335,7 @@ const aNodeCompiler = {
         sourceBuffer.addRaw(`foreach ($${listName} as $${indexName} => $value) {`)
         sourceBuffer.addRaw(`$componentCtx["data"]->${indexName} = $${indexName};`)
         sourceBuffer.addRaw(`$componentCtx["data"]->${itemName} = $value;`)
-        sourceBuffer.addRaw(
-            aNodeCompiler.compile(
-                forElementANode,
-                sourceBuffer,
-                owner
-            )
-        )
+        aNodeCompiler.compile(forElementANode, sourceBuffer, owner)
         sourceBuffer.addRaw('}')
         sourceBuffer.addRaw('}')
     },
@@ -5369,7 +5356,7 @@ const aNodeCompiler = {
         sourceBuffer.addRaw('$defaultSlotRender = function ($componentCtx) {')
         sourceBuffer.addRaw('  $html = "";')
         each(aNode.children, function (aNodeChild) {
-            sourceBuffer.addRaw(aNodeCompiler.compile(aNodeChild, sourceBuffer, owner))
+            aNodeCompiler.compile(aNodeChild, sourceBuffer, owner)
         })
         sourceBuffer.addRaw('  return $html;')
         sourceBuffer.addRaw('};')
@@ -5483,9 +5470,9 @@ const aNodeCompiler = {
                 const sourceSlotCode = sourceSlotCodes[key]
                 sourceBuffer.addRaw('array_push($sourceSlots, [function ($componentCtx) {')
                 sourceBuffer.addRaw('  $html = "";')
-                sourceBuffer.addRaw(sourceSlotCode.children.forEach(function (child) {
+                sourceSlotCode.children.forEach(function (child) {
                     aNodeCompiler.compile(child, sourceBuffer, owner)
-                }))
+                })
                 sourceBuffer.addRaw('  return $html;')
                 sourceBuffer.addRaw('}, ' + compileExprSource.expr(sourceSlotCode.prop.expr) + ']);')
             }

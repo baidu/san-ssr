@@ -22,14 +22,17 @@ export class ToPHPCompiler extends Compiler {
     private tsconfig: object
     private project: Project
     private nsPrefix: string
+    private removeExternals: string[]
 
     constructor ({
         tsconfigPath = getDefaultConfigPath(),
         root = tsconfigPath.split(sep).slice(0, -1).join(sep),
+        removeExternals = [],
         nsPrefix = ''
     }) {
         super({ fileHeader: '<?php\n' })
         this.nsPrefix = nsPrefix
+        this.removeExternals = ['san-php-ssr', 'san', ...removeExternals]
         this.root = root
         this.tsconfigPath = tsconfigPath
         this.tsconfig = require(tsconfigPath)
@@ -97,25 +100,16 @@ export class ToPHPCompiler extends Compiler {
     }
 
     private doCompile (sourceFile: SanSourceFile) {
+        const modules = {}
+        for (const name of this.removeExternals) {
+            modules[name] = { name, required: true }
+        }
         const { errors, phpCode } = compile(sourceFile.getFilePath(), {
             source: sourceFile.getFullText(),
             emitHeader: false,
             plugins: [],
-            modules: {
-                san: {
-                    name: 'san',
-                    required: true
-                },
-                // TODO make it configurable by test scripts
-                '../../..': {
-                    name: 'san-ssr-php',
-                    required: true
-                },
-                'san-ssr-php': {
-                    name: 'san-ssr-php',
-                    required: true
-                }
-            },
+            modules,
+            helperClass: '\\san\\runtime\\Ts2Php_Helper',
             compilerOptions: this.tsconfig['compilerOptions']
         })
         if (errors.length) {

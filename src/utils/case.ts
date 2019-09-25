@@ -15,6 +15,7 @@ const cases = readdirSync(caseRoot)
 const toJSCompiler = new ToJSCompiler(tsconfigPath)
 const toPHPCompiler = new ToPHPCompiler({
     tsconfigPath,
+    removeExternals: ['../../..'],
     nsPrefix: 'san\\components\\test\\'
 })
 const parser = new ComponentParser(tsconfigPath)

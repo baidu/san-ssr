@@ -21,7 +21,15 @@ export abstract class Emitter {
     public writeNewLine () {
         this.write('\n')
     }
-    public writeLine (str) {
+    public nextLine (str: string) {
+        this.writeIndent()
+        this.write(str)
+    }
+    public feedLine (str: string) {
+        this.write(str)
+        this.writeNewLine()
+    }
+    public writeLine (str: string) {
         this.writeIndent()
         this.write(str)
         this.writeNewLine()

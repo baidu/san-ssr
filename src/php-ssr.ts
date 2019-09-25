@@ -2856,14 +2856,14 @@ const elementSourceCompiler = {
                         ';'
                     )
                     // value
-                    emitter.writeLine('if (isset($optionValue)) {')
-                    emitter.writeHTML('" value=\\"" . $optionValue . "\\""')
-                    emitter.writeLine('}')
+                    emitter.writeIf('isset($optionValue)', () => {
+                        emitter.writeHTML('" value=\\"" . $optionValue . "\\""')
+                    })
 
                     // selected
-                    emitter.beginIf('$optionValue == $selectValue')
-                    emitter.bufferHTMLLiteral(' selected')
-                    emitter.endIf()
+                    emitter.writeIf('$optionValue == $selectValue', () => {
+                        emitter.bufferHTMLLiteral(' selected')
+                    })
                     return
                 }
             }
@@ -2890,25 +2890,14 @@ const elementSourceCompiler = {
                     if (valueProp) {
                         switch (propsIndex.type.raw) {
                         case 'checkbox':
-                            emitter.writeLine('if (_::contains(' +
-                                    ExpressionEmitter.expr(prop.expr) +
-                                    ', ' +
-                                    valueCode +
-                                    ')) {'
-                            )
-                            emitter.bufferHTMLLiteral(' checked')
-                            emitter.writeLine('}')
+                            emitter.writeIf(`_::contains(${ExpressionEmitter.expr(prop.expr)}, ${valueCode})`, () => {
+                                emitter.bufferHTMLLiteral(' checked')
+                            })
                             break
-
                         case 'radio':
-                            emitter.writeLine('if (' +
-                                    ExpressionEmitter.expr(prop.expr) +
-                                    ' === ' +
-                                    valueCode +
-                                    ') {'
-                            )
-                            emitter.bufferHTMLLiteral(' checked')
-                            emitter.writeLine('}')
+                            emitter.writeIf(`${ExpressionEmitter.expr(prop.expr)} === ${valueCode}`, () => {
+                                emitter.bufferHTMLLiteral(' checked')
+                            })
                             break
                         }
                     }
@@ -2935,7 +2924,7 @@ const elementSourceCompiler = {
                 }
 
                 if (onlyOneAccessor) {
-                    emitter.writeLine('if (' + ExpressionEmitter.expr(preCondExpr) + ') {')
+                    emitter.beginIf(ExpressionEmitter.expr(preCondExpr))
                 }
 
                 emitter.writeHTML('_::attrFilter(\'' + prop.name + '\', ' +
@@ -2946,7 +2935,7 @@ const elementSourceCompiler = {
                 )
 
                 if (onlyOneAccessor) {
-                    emitter.writeLine('}')
+                    emitter.endIf()
                 }
 
                 break
@@ -2959,11 +2948,9 @@ const elementSourceCompiler = {
             )
 
             if (tagName === 'textarea') {
-                emitter.writeLine(
-                    'if ($key == "value") {' +
-                'continue;' +
-                '}'
-                )
+                emitter.writeIf('$key == "value"', () => {
+                    emitter.writeLine('continue;')
+                })
             }
 
             emitter.writeLine('switch ($key) {\n' +
@@ -3142,25 +3129,21 @@ const aNodeCompiler = {
     compileIf: function (aNode, emitter: PHPEmitter, owner) {
         // output main if
         const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
-        emitter.writeLine('if (' + ExpressionEmitter.expr(ifDirective.value) + ') {')
-        aNodeCompiler.compile(
-            aNode.ifRinsed,
-            emitter,
-            owner
-        )
-        emitter.writeLine('}')
+        emitter.writeIf(ExpressionEmitter.expr(ifDirective.value), () => {
+            aNodeCompiler.compile(aNode.ifRinsed, emitter, owner)
+        })
 
         // output elif and else
         each(aNode.elses, function (elseANode) {
             const elifDirective = elseANode.directives.elif
             if (elifDirective) {
-                emitter.writeLine('else if (' + ExpressionEmitter.expr(elifDirective.value) + ') {')
+                emitter.beginElseIf(ExpressionEmitter.expr(elifDirective.value))
             } else {
-                emitter.writeLine('else {')
+                emitter.beginElse()
             }
 
             aNodeCompiler.compile(elseANode, emitter, owner)
-            emitter.writeLine('}')
+            emitter.endBlock()
         })
     },
 
@@ -3188,15 +3171,13 @@ const aNodeCompiler = {
         const listName = genSSRId()
 
         emitter.writeLine('$' + listName + ' = ' + ExpressionEmitter.expr(forDirective.value) + ';')
-        emitter.writeLine(`if (is_array($${listName}) || is_object($${listName})) {`)
-
-        // for array
-        emitter.writeLine(`foreach ($${listName} as $${indexName} => $value) {`)
-        emitter.writeLine(`$componentCtx["data"]->${indexName} = $${indexName};`)
-        emitter.writeLine(`$componentCtx["data"]->${itemName} = $value;`)
-        aNodeCompiler.compile(forElementANode, emitter, owner)
-        emitter.writeLine('}')
-        emitter.writeLine('}')
+        emitter.writeIf(`is_array($${listName}) || is_object($${listName})`, () => {
+            emitter.writeForeach(`$${listName} as $${indexName} => $value`, () => {
+                emitter.writeLine(`$componentCtx["data"]->${indexName} = $${indexName};`)
+                emitter.writeLine(`$componentCtx["data"]->${itemName} = $value;`)
+                aNodeCompiler.compile(forElementANode, emitter, owner)
+            })
+        })
     },
 
     /**
@@ -3209,62 +3190,68 @@ const aNodeCompiler = {
     compileSlot: function (aNode, emitter: PHPEmitter, owner) {
         const rendererId = genSSRId()
 
-        emitter.writeLine(`if (!isset($componentCtx["slotRenderers"]["${rendererId}"])) ` +
-        `$componentCtx["slotRenderers"]["${rendererId}"] = function () use (&$componentCtx, &$html){`)
+        emitter.writeIf(`!isset($componentCtx["slotRenderers"]["${rendererId}"])`, () => {
+            emitter.writeIndent()
+            emitter.write(`$componentCtx["slotRenderers"]["${rendererId}"] = `)
+            emitter.writeAnonymousFunction([], ['&$componentCtx', '&$html'], () => {
+                emitter.writeIndent()
+                emitter.write('$defaultSlotRender = ')
+                emitter.writeAnonymousFunction(['$componentCtx'], [], () => {
+                    emitter.writeLine('$html = "";')
+                    each(aNode.children, aNodeChild => aNodeCompiler.compile(aNodeChild, emitter, owner))
+                    emitter.writeLine('return $html;')
+                })
+                emitter.write(';')
 
-        emitter.writeLine('$defaultSlotRender = function ($componentCtx) {')
-        emitter.writeLine('  $html = "";')
-        each(aNode.children, function (aNodeChild) {
-            aNodeCompiler.compile(aNodeChild, emitter, owner)
-        })
-        emitter.writeLine('  return $html;')
-        emitter.writeLine('};')
+                emitter.writeLine('$isInserted = false;')
+                emitter.writeLine('$ctxSourceSlots = $componentCtx["sourceSlots"];')
+                emitter.writeLine('$mySourceSlots = [];')
 
-        emitter.writeLine('$isInserted = false;')
-        emitter.writeLine('$ctxSourceSlots = $componentCtx["sourceSlots"];')
-        emitter.writeLine('$mySourceSlots = [];')
+                const nameProp = getANodeProp(aNode, 'name')
+                if (nameProp) {
+                    emitter.writeLine('$slotName = ' + ExpressionEmitter.expr(nameProp.expr) + ';')
 
-        const nameProp = getANodeProp(aNode, 'name')
-        if (nameProp) {
-            emitter.writeLine('$slotName = ' + ExpressionEmitter.expr(nameProp.expr) + ';')
+                    emitter.writeForeach('$ctxSourceSlots as $i => $slot', () => {
+                        emitter.writeIf('count($slot) > 1 && $slot[1] == $slotName', () => {
+                            emitter.writeLine('array_push($mySourceSlots, $slot[0]);')
+                            emitter.writeLine('$isInserted = true;')
+                        })
+                    })
+                } else {
+                    emitter.writeIf('count($ctxSourceSlots) > 0 && !isset($ctxSourceSlots[0][1])', () => {
+                        emitter.writeLine('array_push($mySourceSlots, $ctxSourceSlots[0][0]);')
+                        emitter.writeLine('$isInserted = true;')
+                    })
+                }
 
-            emitter.writeLine('foreach ($ctxSourceSlots as $i => $slot) {')
-            emitter.writeLine('  if (count($slot) > 1 && $slot[1] == $slotName) {')
-            emitter.writeLine('    array_push($mySourceSlots, $slot[0]);')
-            emitter.writeLine('    $isInserted = true;')
-            emitter.writeLine('  }')
-            emitter.writeLine('}')
-        } else {
-            emitter.writeLine('if (count($ctxSourceSlots) > 0 && !isset($ctxSourceSlots[0][1])) {')
-            emitter.writeLine('  array_push($mySourceSlots, $ctxSourceSlots[0][0]);')
-            emitter.writeLine('  $isInserted = true;')
-            emitter.writeLine('}')
-        }
+                emitter.writeIf('!$isInserted', () => {
+                    emitter.writeLine('array_push($mySourceSlots, $defaultSlotRender);')
+                })
+                emitter.writeLine('$slotCtx = $isInserted ? $componentCtx["owner"] : $componentCtx;')
 
-        emitter.writeLine('if (!$isInserted) { array_push($mySourceSlots, $defaultSlotRender); }')
-        emitter.writeLine('$slotCtx = $isInserted ? $componentCtx["owner"] : $componentCtx;')
+                if (aNode.vars || aNode.directives.bind) {
+                    emitter.writeLine('$slotCtx = ["spsrCid" => $slotCtx["spsrCid"], "data" => $slotCtx["data"], "instance" => $slotCtx["instance"], "owner" => $slotCtx["owner"]];')
 
-        if (aNode.vars || aNode.directives.bind) {
-            emitter.writeLine('$slotCtx = ["spsrCid" => $slotCtx["spsrCid"], "data" => $slotCtx["data"], "instance" => $slotCtx["instance"], "owner" => $slotCtx["owner"]];')
+                    if (aNode.directives.bind) {
+                        emitter.writeLine('_::extend($slotCtx["data"], ' + ExpressionEmitter.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
+                    }
 
-            if (aNode.directives.bind) {
-                emitter.writeLine('_::extend($slotCtx["data"], ' + ExpressionEmitter.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
-            }
+                    each(aNode.vars, function (varItem) {
+                        emitter.writeLine(
+                            '$slotCtx["data"]->' + varItem.name + ' = ' +
+                        ExpressionEmitter.expr(varItem.expr) +
+                        ';'
+                        )
+                    })
+                }
 
-            each(aNode.vars, function (varItem) {
-                emitter.writeLine(
-                    '$slotCtx["data"]->' + varItem.name + ' = ' +
-                ExpressionEmitter.expr(varItem.expr) +
-                ';'
-                )
+                emitter.writeForeach('$mySourceSlots as $renderIndex => $slot', () => {
+                    emitter.writeHTML('$slot($slotCtx);')
+                })
             })
-        }
-
-        emitter.writeLine('foreach ($mySourceSlots as $renderIndex => $slot) {')
-        emitter.writeLine('  $html .= $slot($slotCtx);')
-        emitter.writeLine('}')
-
-        emitter.writeLine('};')
+            emitter.write(';')
+            emitter.writeNewLine()
+        })
         emitter.writeLine(`call_user_func($componentCtx["slotRenderers"]["${rendererId}"]);`)
     },
 
@@ -3316,24 +3303,24 @@ const aNodeCompiler = {
             })
 
             if (defaultSourceSlots.length) {
-                emitter.writeLine('array_push($sourceSlots, [function ($componentCtx) {')
-                emitter.writeLine('  $html = "";')
-                defaultSourceSlots.forEach(function (child) {
-                    aNodeCompiler.compile(child, emitter, owner)
+                emitter.nextLine('array_push($sourceSlots, [')
+                emitter.writeAnonymousFunction(['$componentCtx'], [], () => {
+                    emitter.writeLine('$html = "";')
+                    defaultSourceSlots.forEach(child => aNodeCompiler.compile(child, emitter, owner))
+                    emitter.writeLine('return $html;')
                 })
-                emitter.writeLine('  return $html;')
-                emitter.writeLine('}]);')
+                emitter.feedLine(']);')
             }
 
             for (const key in sourceSlotCodes) {
                 const sourceSlotCode = sourceSlotCodes[key]
-                emitter.writeLine('array_push($sourceSlots, [function ($componentCtx) {')
-                emitter.writeLine('  $html = "";')
-                sourceSlotCode.children.forEach(function (child) {
-                    aNodeCompiler.compile(child, emitter, owner)
+                emitter.nextLine('array_push($sourceSlots, [')
+                emitter.writeAnonymousFunction(['$componentCtx'], [], () => {
+                    emitter.writeLine('$html = "";')
+                    sourceSlotCode.children.forEach(child => aNodeCompiler.compile(child, emitter, owner))
+                    emitter.writeLine('return $html;')
                 })
-                emitter.writeLine('  return $html;')
-                emitter.writeLine('}, ' + ExpressionEmitter.expr(sourceSlotCode.prop.expr) + ']);')
+                emitter.feedLine(', ' + ExpressionEmitter.expr(sourceSlotCode.prop.expr) + ']);')
             }
         }
 
@@ -3355,9 +3342,9 @@ const aNodeCompiler = {
         }
 
         const renderId = compileComponentSource(emitter, extra.ComponentClass, owner.ssrContextId)
-        emitter.writeLine(`$html .= ${renderId}(`)
-        emitter.writeLine(dataLiteral + ', true, $componentCtx, ' +
-        stringifier.str(aNode.tagName) + ', $sourceSlots);')
+        emitter.nextLine(`$html .= `)
+        emitter.writeFunctionCall(renderId, [dataLiteral, 'true', '$componentCtx', stringifier.str(aNode.tagName), '$sourceSlots'])
+        emitter.feedLine(';')
         emitter.writeLine('$sourceSlots = null;')
     },
 
@@ -3420,46 +3407,49 @@ function compileComponentSource (emitter, ComponentClass, contextId) {
             )
         }
 
-        emitter.writeLine(`function ${cid}($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {`)
-        emitter.writeLine('$html = "";')
+        emitter.writeIndent()
+        emitter.writeFunction(cid, ['$data', '$noDataOutput = false', '$parentCtx = []', '$tagName = null', '$sourceSlots = []'], [], () => {
+            emitter.writeLine('$html = "";')
 
-        emitter.writeLine(genComponentContextCode(component))
+            genComponentContextCode(component, emitter)
 
-        // init data
-        const defaultData = component.data.get()
-        emitter.writeLine('if ($data) {')
-        Object.keys(defaultData).forEach(function (key) {
-            const val = stringifier.any(defaultData[key])
-            if (val === 'NaN') return
-            emitter.writeLine(`$componentCtx["data"]->${key} = isset($componentCtx["data"]->${key}) ? $componentCtx["data"]->${key} : ${val};`)
+            // init data
+            const defaultData = component.data.get()
+            emitter.writeIf('$data', () => {
+                for (const key of Object.keys(defaultData)) {
+                    const val = stringifier.any(defaultData[key])
+                    if (val === 'NaN') continue
+                    emitter.writeLine(`$componentCtx["data"]->${key} = isset($componentCtx["data"]->${key}) ? $componentCtx["data"]->${key} : ${val};`)
+                }
+            })
+
+            // calc computed
+            emitter.writeForeach('$componentCtx["computedNames"] as $i => $computedName', () => {
+                emitter.writeLine('$data->$computedName = _::callComputed($componentCtx, $computedName);')
+            })
+
+            const ifDirective = component.aNode.directives['if']
+            if (ifDirective) {
+                emitter.writeLine('if (' + ExpressionEmitter.expr(ifDirective.value) + ') {')
+                emitter.indent()
+            }
+
+            elementSourceCompiler.tagStart(emitter, component.aNode, 'tagName')
+
+            emitter.writeIf('!$noDataOutput', () => {
+                emitter.writeDataComment()
+            })
+
+            elementSourceCompiler.inner(emitter, component.aNode, component)
+            elementSourceCompiler.tagEnd(emitter, component.aNode, 'tagName')
+
+            if (ifDirective) {
+                emitter.unindent()
+                emitter.writeLine('}')
+            }
+
+            emitter.writeLine('return $html;')
         })
-        emitter.writeLine('}')
-
-        // calc computed
-        emitter.writeLine('foreach ($componentCtx["computedNames"] as $i => $computedName) {')
-        emitter.writeLine('  $data->$computedName = _::callComputed($componentCtx, $computedName);')
-        emitter.writeLine('}')
-
-        const ifDirective = component.aNode.directives['if']
-        if (ifDirective) {
-            emitter.writeLine('if (' + ExpressionEmitter.expr(ifDirective.value) + ') {')
-        }
-
-        elementSourceCompiler.tagStart(emitter, component.aNode, 'tagName')
-
-        emitter.writeLine('if (!$noDataOutput) {')
-        emitter.writeDataComment()
-        emitter.writeLine('}')
-
-        elementSourceCompiler.inner(emitter, component.aNode, component)
-        elementSourceCompiler.tagEnd(emitter, component.aNode, 'tagName')
-
-        if (ifDirective) {
-            emitter.writeLine('}')
-        }
-
-        emitter.writeLine('return $html;')
-        emitter.writeLine('};')
     }
 
     return cid
@@ -3472,34 +3462,23 @@ function compileComponentSource (emitter, ComponentClass, contextId) {
 * @param {Object} component 组件实例
 * @return {string}
 */
-function genComponentContextCode (component) {
-    const code = ['$componentCtx = [']
+function genComponentContextCode (component, emitter) {
+    emitter.nextLine('$componentCtx = [')
+    emitter.indent()
 
-    code.push('"computedNames" => [')
-    code.push(Object.keys(component.computed).map(x => `"${x}"`).join(','))
-    code.push('],')
+    emitter.nextLine('"computedNames" => [')
+    emitter.write(Object.keys(component.computed).map(x => `"${x}"`).join(','))
+    emitter.feedLine('],')
 
-    code.push(`"spsrCid" => ${component.constructor.spsrCid || 0},`)
+    emitter.writeLine(`"spsrCid" => ${component.constructor.spsrCid || 0},`)
+    emitter.writeLine('"sourceSlots" => $sourceSlots,')
+    emitter.writeLine('"data" => $data ? $data : ' + stringifier.any(component.data.get()) + ',')
+    emitter.writeLine('"owner" => $parentCtx,')
+    emitter.writeLine('"slotRenderers" => []')
 
-    // sourceSlots
-    code.push('"sourceSlots" => $sourceSlots,')
-
-    // data
-    const defaultData = component.data.get()
-    code.push('"data" => $data ? $data : ' + stringifier.any(defaultData) + ',')
-
-    // parentCtx
-    code.push('"owner" => $parentCtx,')
-
-    // slotRenderers
-    code.push('"slotRenderers" => []')
-
-    code.push('];')
-
-    // create proto
-    code.push('$componentCtx["instance"] = _::createComponent($componentCtx);')
-
-    return code.join('\n')
+    emitter.unindent()
+    emitter.feedLine('];')
+    emitter.writeLine('$componentCtx["instance"] = _::createComponent($componentCtx);')
 }
 
 /**
@@ -3521,10 +3500,11 @@ export function compileToSource ({
 
     const contextId = genSSRId()
 
-    emitter.writeLine(`function ${funcName}($data, $noDataOutput) {`)
-    const renderId = compileComponentSource(emitter, ComponentClass, contextId)
-    emitter.writeLine(`return ${renderId}($data, $noDataOutput);`)
-    emitter.writeLine('}')
+    emitter.writeIndent()
+    emitter.writeFunction(funcName, ['$data', '$noDataOutput'], [], () => {
+        const renderId = compileComponentSource(emitter, ComponentClass, contextId)
+        emitter.writeLine(`return ${renderId}($data, $noDataOutput);`)
+    })
 
     emitter.endNamespace()
     return emitter.fullText()

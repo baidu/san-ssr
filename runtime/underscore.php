@@ -9,6 +9,20 @@ final class _
         "'" => '&#39;'
     ];
 
+    public static function data($ctx, $seq = []) {
+        $data = $ctx["data"];
+        foreach ($seq as $name) {
+            if (is_array($data)) {
+                if (isset($data[$name])) $data = $data[$name];
+                else return null;
+            } else {
+                if (isset($data->$name)) $data = $data->$name;
+                else return null;
+            }
+        }
+        return $data;
+    }
+
     public static function sortedStringify($obj) {
         if (!is_object($obj)) {
             return json_encode($obj, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);

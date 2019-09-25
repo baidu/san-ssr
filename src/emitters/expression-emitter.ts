@@ -30,20 +30,18 @@ export const ExpressionEmitter = {
      * @param {Object?} accessorExpr accessor表达式对象
      * @return {string}
      */
-    dataAccess: function (accessorExpr?) {
-        let code = '$componentCtx["data"]'
-        if (!accessorExpr) return code
-
+    dataAccess: function (accessorExpr = { paths: [] }) {
+        const seq = []
         each(accessorExpr.paths, function (path) {
             if (path.type === 4) {
-                code += `->{${ExpressionEmitter.dataAccess(path)}}`
+                seq.push(ExpressionEmitter.dataAccess(path))
             } else if (typeof path.value === 'string') {
-                code += `->{"${path.value}"}`
+                seq.push(`"${path.value}"`)
             } else if (typeof path.value === 'number') {
-                code += `[${path.value}]`
+                seq.push(path.value)
             }
         })
-        return `(isset(${code}) ? ${code} : null)`
+        return `_::data($ctx, [${seq.join(', ')}])`
     },
 
     /**
@@ -54,7 +52,7 @@ export const ExpressionEmitter = {
      */
     callExpr: function (callExpr) {
         const paths = callExpr.name.paths
-        let code = `$componentCtx["instance"]->${paths[0].value}`
+        let code = `$ctx["instance"]->${paths[0].value}`
 
         for (let i = 1; i < paths.length; i++) {
             const path = paths[i]
@@ -110,7 +108,7 @@ export const ExpressionEmitter = {
                 break
 
             default:
-                code = '_::callFilter($componentCtx, "' + filterName + '", [' + code
+                code = '_::callFilter($ctx, "' + filterName + '", [' + code
                 each(filter.args, function (arg) {
                     code += ', ' + ExpressionEmitter.expr(arg)
                 })

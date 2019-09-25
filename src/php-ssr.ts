@@ -2341,8 +2341,8 @@ const aNodeCompiler = {
         emitter.writeLine('$' + listName + ' = ' + ExpressionEmitter.expr(forDirective.value) + ';')
         emitter.writeIf(`is_array($${listName}) || is_object($${listName})`, () => {
             emitter.writeForeach(`$${listName} as $${indexName} => $value`, () => {
-                emitter.writeLine(`$componentCtx["data"]->${indexName} = $${indexName};`)
-                emitter.writeLine(`$componentCtx["data"]->${itemName} = $value;`)
+                emitter.writeLine(`$ctx["data"]->${indexName} = $${indexName};`)
+                emitter.writeLine(`$ctx["data"]->${itemName} = $value;`)
                 aNodeCompiler.compile(forElementANode, emitter, owner)
             })
         })
@@ -2358,13 +2358,13 @@ const aNodeCompiler = {
     compileSlot: function (aNode, emitter: PHPEmitter, owner) {
         const rendererId = genSSRId()
 
-        emitter.writeIf(`!isset($componentCtx["slotRenderers"]["${rendererId}"])`, () => {
+        emitter.writeIf(`!isset($ctx["slotRenderers"]["${rendererId}"])`, () => {
             emitter.writeIndent()
-            emitter.write(`$componentCtx["slotRenderers"]["${rendererId}"] = `)
-            emitter.writeAnonymousFunction([], ['&$componentCtx', '&$html'], () => {
+            emitter.write(`$ctx["slotRenderers"]["${rendererId}"] = `)
+            emitter.writeAnonymousFunction([], ['&$ctx', '&$html'], () => {
                 emitter.writeIndent()
                 emitter.write('$defaultSlotRender = ')
-                emitter.writeAnonymousFunction(['$componentCtx'], [], () => {
+                emitter.writeAnonymousFunction(['$ctx'], [], () => {
                     emitter.writeLine('$html = "";')
                     each(aNode.children, aNodeChild => aNodeCompiler.compile(aNodeChild, emitter, owner))
                     emitter.writeLine('return $html;')
@@ -2372,7 +2372,7 @@ const aNodeCompiler = {
                 emitter.write(';')
 
                 emitter.writeLine('$isInserted = false;')
-                emitter.writeLine('$ctxSourceSlots = $componentCtx["sourceSlots"];')
+                emitter.writeLine('$ctxSourceSlots = $ctx["sourceSlots"];')
                 emitter.writeLine('$mySourceSlots = [];')
 
                 const nameProp = getANodeProp(aNode, 'name')
@@ -2395,7 +2395,7 @@ const aNodeCompiler = {
                 emitter.writeIf('!$isInserted', () => {
                     emitter.writeLine('array_push($mySourceSlots, $defaultSlotRender);')
                 })
-                emitter.writeLine('$slotCtx = $isInserted ? $componentCtx["owner"] : $componentCtx;')
+                emitter.writeLine('$slotCtx = $isInserted ? $ctx["owner"] : $ctx;')
 
                 if (aNode.vars || aNode.directives.bind) {
                     emitter.writeLine('$slotCtx = ["spsrCid" => $slotCtx["spsrCid"], "data" => $slotCtx["data"], "instance" => $slotCtx["instance"], "owner" => $slotCtx["owner"]];')
@@ -2420,7 +2420,7 @@ const aNodeCompiler = {
             emitter.write(';')
             emitter.writeNewLine()
         })
-        emitter.writeLine(`call_user_func($componentCtx["slotRenderers"]["${rendererId}"]);`)
+        emitter.writeLine(`call_user_func($ctx["slotRenderers"]["${rendererId}"]);`)
     },
 
     /**
@@ -2472,7 +2472,7 @@ const aNodeCompiler = {
 
             if (defaultSourceSlots.length) {
                 emitter.nextLine('array_push($sourceSlots, [')
-                emitter.writeAnonymousFunction(['$componentCtx'], [], () => {
+                emitter.writeAnonymousFunction(['$ctx'], [], () => {
                     emitter.writeLine('$html = "";')
                     defaultSourceSlots.forEach(child => aNodeCompiler.compile(child, emitter, owner))
                     emitter.writeLine('return $html;')
@@ -2483,7 +2483,7 @@ const aNodeCompiler = {
             for (const key in sourceSlotCodes) {
                 const sourceSlotCode = sourceSlotCodes[key]
                 emitter.nextLine('array_push($sourceSlots, [')
-                emitter.writeAnonymousFunction(['$componentCtx'], [], () => {
+                emitter.writeAnonymousFunction(['$ctx'], [], () => {
                     emitter.writeLine('$html = "";')
                     sourceSlotCode.children.forEach(child => aNodeCompiler.compile(child, emitter, owner))
                     emitter.writeLine('return $html;')
@@ -2511,7 +2511,7 @@ const aNodeCompiler = {
 
         const renderId = compileComponentSource(emitter, extra.ComponentClass, owner.ssrContextId)
         emitter.nextLine(`$html .= `)
-        emitter.writeFunctionCall(renderId, [dataLiteral, 'true', '$componentCtx', stringifier.str(aNode.tagName), '$sourceSlots'])
+        emitter.writeFunctionCall(renderId, [dataLiteral, 'true', '$ctx', stringifier.str(aNode.tagName), '$sourceSlots'])
         emitter.feedLine(';')
         emitter.writeLine('$sourceSlots = null;')
     },
@@ -2587,13 +2587,13 @@ function compileComponentSource (emitter, ComponentClass, contextId) {
                 for (const key of Object.keys(defaultData)) {
                     const val = stringifier.any(defaultData[key])
                     if (val === 'NaN') continue
-                    emitter.writeLine(`$componentCtx["data"]->${key} = isset($componentCtx["data"]->${key}) ? $componentCtx["data"]->${key} : ${val};`)
+                    emitter.writeLine(`$ctx["data"]->${key} = isset($ctx["data"]->${key}) ? $ctx["data"]->${key} : ${val};`)
                 }
             })
 
             // calc computed
-            emitter.writeForeach('$componentCtx["computedNames"] as $i => $computedName', () => {
-                emitter.writeLine('$data->$computedName = _::callComputed($componentCtx, $computedName);')
+            emitter.writeForeach('$ctx["computedNames"] as $i => $computedName', () => {
+                emitter.writeLine('$data->$computedName = _::callComputed($ctx, $computedName);')
             })
 
             const ifDirective = component.aNode.directives['if']
@@ -2631,7 +2631,7 @@ function compileComponentSource (emitter, ComponentClass, contextId) {
 * @return {string}
 */
 function genComponentContextCode (component, emitter) {
-    emitter.nextLine('$componentCtx = [')
+    emitter.nextLine('$ctx = [')
     emitter.indent()
 
     emitter.nextLine('"computedNames" => [')
@@ -2646,7 +2646,7 @@ function genComponentContextCode (component, emitter) {
 
     emitter.unindent()
     emitter.feedLine('];')
-    emitter.writeLine('$componentCtx["instance"] = _::createComponent($componentCtx);')
+    emitter.writeLine('$ctx["instance"] = _::createComponent($ctx);')
 }
 
 /**

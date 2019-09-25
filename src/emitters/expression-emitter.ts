@@ -52,7 +52,7 @@ export const ExpressionEmitter = {
      */
     callExpr: function (callExpr) {
         const paths = callExpr.name.paths
-        let code = `$ctx["instance"]->${paths[0].value}`
+        let code = `$ctx->instance->${paths[0].value}`
 
         for (let i = 1; i < paths.length; i++) {
             const path = paths[i]
@@ -95,20 +95,20 @@ export const ExpressionEmitter = {
             switch (filterName) {
             case '_style':
             case '_class':
-                code = '_::' + filterName + 'Filter(' + code + ')'
+                code = `_::${filterName}Filter(${code})`
                 break
 
             case '_xstyle':
             case '_xclass':
-                code = '_::' + filterName + 'Filter(' + code + ', ' + ExpressionEmitter.expr(filter.args[0]) + ')'
+                code = `_::${filterName}Filter(${code}, ${ExpressionEmitter.expr(filter.args[0])})`
                 break
 
             case 'url':
-                code = 'encodeURIComponent(' + code + ')'
+                code = `encodeURIComponent(${code})`
                 break
 
             default:
-                code = '_::callFilter($ctx, "' + filterName + '", [' + code
+                code = `_::callFilter($ctx, "${filterName}", [${code}`
                 each(filter.args, function (arg) {
                     code += ', ' + ExpressionEmitter.expr(arg)
                 })
@@ -117,7 +117,7 @@ export const ExpressionEmitter = {
         })
 
         if (!interpExpr.original) {
-            return '_::escapeHTML(' + code + ')'
+            return `_::escapeHTML(${code})`
         }
 
         return code

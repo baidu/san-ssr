@@ -10,7 +10,7 @@ final class _
     ];
 
     public static function data($ctx, $seq = []) {
-        $data = $ctx["data"];
+        $data = $ctx->data;
         foreach ($seq as $name) {
             if (is_array($data)) {
                 if (isset($data[$name])) $data = $data[$name];
@@ -164,7 +164,7 @@ final class _
     }
 
     public static function getClassByCtx($ctx) {
-        $cid = $ctx["spsrCid"];
+        $cid = $ctx->spsrCid;
         if (\san\runtime\ComponentRegistry::has($cid)) {
             return \san\runtime\ComponentRegistry::get($cid);
         }
@@ -193,7 +193,7 @@ final class _
     {
         $func = _::getClassByCtx($ctx)::$computed[$name];
         if (is_callable($func)) {
-            $result = call_user_func($func->bindTo($ctx["instance"]));
+            $result = call_user_func($func->bindTo($ctx->instance));
             return is_array($result) ? (object)$result : $result;
         }
     }

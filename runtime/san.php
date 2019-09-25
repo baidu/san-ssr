@@ -6,8 +6,8 @@ class Data {
 
     public function __construct(&$ctx) {
         $this->ctx = &$ctx;
-        $this->data = &$ctx["data"];
-        $this->computedNames = array_flip($ctx["computedNames"]);
+        $this->data = &$ctx->data;
+        $this->computedNames = array_flip($ctx->computedNames);
     }
 
     public function get ($path) {

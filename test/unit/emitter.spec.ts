@@ -2,8 +2,14 @@ import { Emitter } from '../../src/emitters/emitter'
 
 describe('Emitter', function () {
     let emitter
+    class XEmitter extends Emitter {
+        writeRuntime () {}
+        write (str) {
+            this.defaultWrite(str)
+        }
+    }
     beforeEach(function () {
-        emitter = new Emitter()
+        emitter = new XEmitter()
     })
 
     it('should write chars', function () {
@@ -60,7 +66,7 @@ describe('Emitter', function () {
         })
 
         it('can be set to 2', function () {
-            const emitter = new Emitter(2)
+            const emitter = new XEmitter(2)
             emitter.write('{')
             emitter.indent()
             emitter.writeLine('foo')

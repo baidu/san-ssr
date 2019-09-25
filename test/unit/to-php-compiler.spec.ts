@@ -1,4 +1,4 @@
-import { Compiler } from '../../src/transpilers/ts2php'
+import { ToPHPCompiler } from '../../src/transpilers/to-php-compiler'
 import { ComponentParser } from '../../src/parser/component-parser'
 import { resolve } from 'path'
 
@@ -8,7 +8,7 @@ describe('ts2php', function () {
     it('should compile a component file', function () {
         const path = resolve(__dirname, '../stub/a.comp.ts')
         const parser = new ComponentParser(tsconfigPath)
-        const cc = new Compiler({ tsconfigPath })
+        const cc = new ToPHPCompiler({ tsconfigPath })
 
         const file = parser.parseComponent(path).getComponentSourceFile()
         const result = cc.compileToPHP(file)
@@ -22,9 +22,9 @@ describe('ts2php', function () {
     it('should compile a whole component', function () {
         const path = resolve(__dirname, '../stub/a.comp.ts')
         const parser = new ComponentParser(tsconfigPath)
-        const cc = new Compiler({ tsconfigPath })
+        const cc = new ToPHPCompiler({ tsconfigPath })
         const component = parser.parseComponent(path)
-        const result = cc.compileComponent(component)
+        const result = cc.transpileFiles(component)
 
         expect(result).toContain('namespace stub\\aComp {')
         expect(result).toContain('class A extends Component {')
@@ -35,7 +35,7 @@ describe('ts2php', function () {
     it('should compile filters into static methods', function () {
         const path = resolve(__dirname, '../stub/filters.comp.ts')
         const parser = new ComponentParser(tsconfigPath)
-        const cc = new Compiler({ tsconfigPath })
+        const cc = new ToPHPCompiler({ tsconfigPath })
         const file = parser.parseComponent(path).getComponentSourceFile()
         const result = cc.compileToPHP(file)
 

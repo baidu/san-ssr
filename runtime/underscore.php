@@ -106,7 +106,7 @@ final class _
 
     public static function _styleFilter($source)
     {
-        return _::defaultStyleFilter($source);
+        return _::stringifyStyles($source);
     }
 
     public static function _xclassFilter($outer, $inner)
@@ -115,10 +115,7 @@ final class _
             $outer = join(" ", $outer);
         }
         if ($outer) {
-            if ($inner) {
-                return $inner . ' ' . $outer;
-            }
-            return $outer;
+            return $inner ? $inner . ' ' . $outer : $outer;
         }
         return $inner;
     }
@@ -126,13 +123,8 @@ final class _
     public static function _xstyleFilter($outer, $inner)
     {
         if ($outer) {
-            $outer = _::defaultStyleFilter($outer);
-        }
-        if ($outer) {
-            if ($inner) {
-                return $inner . ';' . $outer;
-            }
-            return $outer;
+            $outer = _::stringifyStyles($outer);
+            return $inner ? $inner . ';' . $outer : $outer;
         }
         return $inner;
     }
@@ -192,7 +184,7 @@ final class _
         }
     }
 
-    public static function defaultStyleFilter($source)
+    public static function stringifyStyles($source)
     {
         if (is_array($source) || is_object($source)) {
             $result = '';

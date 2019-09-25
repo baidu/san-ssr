@@ -110,10 +110,10 @@ final class _Test extends TestCase
             _::boolAttrFilter("checked", "true")
         );
     }
-    public function testDefaultStyleFilter(): void {
+    public function testStringifyStyles(): void {
         $this->assertEquals(
             'height:20px;',
-            _::defaultStyleFilter(["height" => "20px"])
+            _::stringifyStyles(["height" => "20px"])
         );
     }
 }

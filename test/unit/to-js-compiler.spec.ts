@@ -1,4 +1,4 @@
-import { Compiler } from '../../src/transpilers/ts2js'
+import { ToJSCompiler } from '../../src/transpilers/to-js-compiler'
 import { ComponentParser } from '../../src/parser/component-parser'
 import { resolve } from 'path'
 
@@ -10,7 +10,7 @@ describe('ts2js', function () {
         const parser = new ComponentParser(tsconfig)
 
         const file = parser.parseComponent(path).getComponentSourceFile()
-        const cc = new Compiler(tsconfig)
+        const cc = new ToJSCompiler(tsconfig)
         const result = cc.compileToJS(file)
 
         expect(result).toContain('class Foo {')
@@ -22,7 +22,7 @@ describe('ts2js', function () {
         const parser = new ComponentParser(tsconfig)
 
         const file = parser.parseComponent(path).getComponentSourceFile()
-        const cc = new Compiler(tsconfig)
+        const cc = new ToJSCompiler(tsconfig)
         const result = cc.compileToJS(file)
 
         expect(result).toContain('class A extends')
@@ -35,7 +35,7 @@ describe('ts2js', function () {
         const parser = new ComponentParser(tsconfig)
 
         const file = parser.parseComponent(path).getComponentSourceFile()
-        const cc = new Compiler(tsconfig)
+        const cc = new ToJSCompiler(tsconfig)
         const componentClass = cc.compileAndRun(file)['default']
 
         expect(componentClass.template).toEqual('A')

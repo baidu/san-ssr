@@ -56,7 +56,7 @@ export class ToPHPCompiler extends Compiler {
         return emitter.fullText()
     }
 
-    private transpileFiles (component: Component, emitter: PHPEmitter) {
+    public transpileFiles (component: Component, emitter: PHPEmitter = new PHPEmitter()) {
         const registry = new ComponentRegistry()
         for (const [path, sourceFile] of component.getFiles()) {
             registry.registerComponents(sourceFile)
@@ -68,6 +68,7 @@ export class ToPHPCompiler extends Compiler {
             emitter.endNamespace()
         }
         registry.writeComponentRegistry(path => this.ns(path), emitter)
+        return emitter.fullText()
     }
 
     private transform (sourceFile: SanSourceFile) {

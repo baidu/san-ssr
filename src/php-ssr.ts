@@ -1,6 +1,6 @@
 import { each, extend, bind, inherits } from './utils/underscore'
 import { PHPEmitter } from './emitters/php-emitter'
-import { ExpressionEmitter as compileExprSource } from './emitters/expression-emitter'
+import { ExpressionEmitter } from './emitters/expression-emitter'
 
 /**
 * 获取唯一id
@@ -2709,7 +2709,7 @@ const stringifier = {
             }
             prefixComma = 1
 
-            const k = compileExprSource.stringLiteralize(key)
+            const k = ExpressionEmitter.stringLiteralize(key)
             const v = stringifier.any(source[key])
             result += `${k} => ${v}`
         }
@@ -2734,7 +2734,7 @@ const stringifier = {
     },
 
     str: function (source) {
-        return compileExprSource.stringLiteralize(source)
+        return ExpressionEmitter.stringLiteralize(source)
     },
 
     date: function (source) {
@@ -2815,12 +2815,12 @@ const elementSourceCompiler = {
         const tagName = aNode.tagName
 
         if (tagName) {
-            emitter.joinString('<' + tagName)
+            emitter.bufferHTMLLiteral('<' + tagName)
         } else if (tagNameVariable) {
-            emitter.joinString('<')
-            emitter.joinRaw(`$${tagNameVariable} ? $${tagNameVariable} : "div"`)
+            emitter.bufferHTMLLiteral('<')
+            emitter.writeHTML(`$${tagNameVariable} ? $${tagNameVariable} : "div"`)
         } else {
-            emitter.joinString('<div')
+            emitter.bufferHTMLLiteral('<div')
         }
 
         // index list
@@ -2829,7 +2829,7 @@ const elementSourceCompiler = {
             propsIndex[prop.name] = prop
 
             if (prop.name !== 'slot' && prop.expr.value != null) {
-                emitter.joinString(' ' + prop.name + '="' + prop.expr.segs[0].literal + '"')
+                emitter.bufferHTMLLiteral(' ' + prop.name + '="' + prop.expr.segs[0].literal + '"')
             }
         })
 
@@ -2844,26 +2844,26 @@ const elementSourceCompiler = {
                     return
 
                 case 'select':
-                    emitter.addRaw('$selectValue = ' +
-                        compileExprSource.expr(prop.expr) + '?' +
-                        compileExprSource.expr(prop.expr) + ': "";'
+                    emitter.writeLine('$selectValue = ' +
+                        ExpressionEmitter.expr(prop.expr) + '?' +
+                        ExpressionEmitter.expr(prop.expr) + ': "";'
                     )
                     return
 
                 case 'option':
-                    emitter.addRaw('$optionValue = ' +
-                        compileExprSource.expr(prop.expr) +
+                    emitter.writeLine('$optionValue = ' +
+                        ExpressionEmitter.expr(prop.expr) +
                         ';'
                     )
                     // value
-                    emitter.addRaw('if (isset($optionValue)) {')
-                    emitter.joinRaw('" value=\\"" . $optionValue . "\\""')
-                    emitter.addRaw('}')
+                    emitter.writeLine('if (isset($optionValue)) {')
+                    emitter.writeHTML('" value=\\"" . $optionValue . "\\""')
+                    emitter.writeLine('}')
 
                     // selected
-                    emitter.addRaw('if ($optionValue == $selectValue) {')
-                    emitter.joinString(' selected')
-                    emitter.addRaw('}')
+                    emitter.beginIf('$optionValue == $selectValue')
+                    emitter.bufferHTMLLiteral(' selected')
+                    emitter.endIf()
                     return
                 }
             }
@@ -2873,10 +2873,10 @@ const elementSourceCompiler = {
             case 'disabled':
             case 'multiple':
                 if (prop.raw == null) {
-                    emitter.joinString(' ' + prop.name)
+                    emitter.bufferHTMLLiteral(' ' + prop.name)
                 } else {
-                    emitter.joinRaw('_::boolAttrFilter(\'' + prop.name + '\', ' +
-                        compileExprSource.expr(prop.expr) +
+                    emitter.writeHTML('_::boolAttrFilter(\'' + prop.name + '\', ' +
+                        ExpressionEmitter.expr(prop.expr) +
                         ')'
                     )
                 }
@@ -2885,30 +2885,30 @@ const elementSourceCompiler = {
             case 'checked':
                 if (tagName === 'input') {
                     const valueProp = propsIndex.value
-                    const valueCode = compileExprSource.expr(valueProp.expr)
+                    const valueCode = ExpressionEmitter.expr(valueProp.expr)
 
                     if (valueProp) {
                         switch (propsIndex.type.raw) {
                         case 'checkbox':
-                            emitter.addRaw('if (_::contains(' +
-                                    compileExprSource.expr(prop.expr) +
+                            emitter.writeLine('if (_::contains(' +
+                                    ExpressionEmitter.expr(prop.expr) +
                                     ', ' +
                                     valueCode +
                                     ')) {'
                             )
-                            emitter.joinString(' checked')
-                            emitter.addRaw('}')
+                            emitter.bufferHTMLLiteral(' checked')
+                            emitter.writeLine('}')
                             break
 
                         case 'radio':
-                            emitter.addRaw('if (' +
-                                    compileExprSource.expr(prop.expr) +
+                            emitter.writeLine('if (' +
+                                    ExpressionEmitter.expr(prop.expr) +
                                     ' === ' +
                                     valueCode +
                                     ') {'
                             )
-                            emitter.joinString(' checked')
-                            emitter.addRaw('}')
+                            emitter.bufferHTMLLiteral(' checked')
+                            emitter.writeLine('}')
                             break
                         }
                     }
@@ -2935,18 +2935,18 @@ const elementSourceCompiler = {
                 }
 
                 if (onlyOneAccessor) {
-                    emitter.addRaw('if (' + compileExprSource.expr(preCondExpr) + ') {')
+                    emitter.writeLine('if (' + ExpressionEmitter.expr(preCondExpr) + ') {')
                 }
 
-                emitter.joinRaw('_::attrFilter(\'' + prop.name + '\', ' +
+                emitter.writeHTML('_::attrFilter(\'' + prop.name + '\', ' +
                     (prop.x ? '_::escapeHTML(' : '') +
-                    compileExprSource.expr(prop.expr) +
+                    ExpressionEmitter.expr(prop.expr) +
                     (prop.x ? ')' : '') +
                     ')'
                 )
 
                 if (onlyOneAccessor) {
-                    emitter.addRaw('}')
+                    emitter.writeLine('}')
                 }
 
                 break
@@ -2954,19 +2954,19 @@ const elementSourceCompiler = {
         })
 
         if (bindDirective) {
-            emitter.addRaw(
+            emitter.writeLine(
                 '(function ($bindObj) use (&$html){foreach ($bindObj as $key => $value) {'
             )
 
             if (tagName === 'textarea') {
-                emitter.addRaw(
+                emitter.writeLine(
                     'if ($key == "value") {' +
                 'continue;' +
                 '}'
                 )
             }
 
-            emitter.addRaw('switch ($key) {\n' +
+            emitter.writeLine('switch ($key) {\n' +
             'case "readonly":\n' +
             'case "disabled":\n' +
             'case "multiple":\n' +
@@ -2978,14 +2978,14 @@ const elementSourceCompiler = {
             '}'
             )
 
-            emitter.addRaw(
+            emitter.writeLine(
                 '}})(' +
-            compileExprSource.expr(bindDirective.value) +
+            ExpressionEmitter.expr(bindDirective.value) +
             ');'
             )
         }
 
-        emitter.joinString('>')
+        emitter.bufferHTMLLiteral('>')
     },
     /* eslint-enable max-params */
 
@@ -3001,20 +3001,20 @@ const elementSourceCompiler = {
 
         if (tagName) {
             if (!autoCloseTags[tagName]) {
-                emitter.joinString('</' + tagName + '>')
+                emitter.bufferHTMLLiteral('</' + tagName + '>')
             }
 
             if (tagName === 'select') {
-                emitter.addRaw('$selectValue = null;')
+                emitter.writeLine('$selectValue = null;')
             }
 
             if (tagName === 'option') {
-                emitter.addRaw('$optionValue = null;')
+                emitter.writeLine('$optionValue = null;')
             }
         } else {
-            emitter.joinString('</')
-            emitter.joinRaw(`$${tagNameVariable} ? $${tagNameVariable} : "div"`)
-            emitter.joinString('>')
+            emitter.bufferHTMLLiteral('</')
+            emitter.writeHTML(`$${tagNameVariable} ? $${tagNameVariable} : "div"`)
+            emitter.bufferHTMLLiteral('>')
         }
     },
 
@@ -3030,8 +3030,8 @@ const elementSourceCompiler = {
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodeProp(aNode, 'value')
             if (valueProp) {
-                emitter.joinRaw('_::escapeHTML(' +
-                compileExprSource.expr(valueProp.expr) +
+                emitter.writeHTML('_::escapeHTML(' +
+                ExpressionEmitter.expr(valueProp.expr) +
                 ')'
                 )
             }
@@ -3041,7 +3041,7 @@ const elementSourceCompiler = {
 
         const htmlDirective = aNode.directives.html
         if (htmlDirective) {
-            emitter.joinExpr(htmlDirective.value)
+            emitter.writeHTML(ExpressionEmitter.expr(htmlDirective.value))
         } else {
             /* eslint-disable no-use-before-define */
             each(aNode.children, function (aNodeChild) {
@@ -3107,17 +3107,17 @@ const aNodeCompiler = {
      */
     compileText: function (aNode, emitter) {
         if (aNode.textExpr.original) {
-            emitter.joinString(serializeStump('text'))
+            emitter.bufferHTMLLiteral(serializeStump('text'))
         }
 
         if (aNode.textExpr.value != null) {
-            emitter.joinString(aNode.textExpr.segs[0].literal)
+            emitter.bufferHTMLLiteral(aNode.textExpr.segs[0].literal)
         } else {
-            emitter.joinExpr(aNode.textExpr)
+            emitter.writeHTML(ExpressionEmitter.expr(aNode.textExpr))
         }
 
         if (aNode.textExpr.original) {
-            emitter.joinString(serializeStumpEnd('text'))
+            emitter.bufferHTMLLiteral(serializeStumpEnd('text'))
         }
     },
 
@@ -3142,25 +3142,25 @@ const aNodeCompiler = {
     compileIf: function (aNode, emitter: PHPEmitter, owner) {
         // output main if
         const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
-        emitter.addRaw('if (' + compileExprSource.expr(ifDirective.value) + ') {')
+        emitter.writeLine('if (' + ExpressionEmitter.expr(ifDirective.value) + ') {')
         aNodeCompiler.compile(
             aNode.ifRinsed,
             emitter,
             owner
         )
-        emitter.addRaw('}')
+        emitter.writeLine('}')
 
         // output elif and else
         each(aNode.elses, function (elseANode) {
             const elifDirective = elseANode.directives.elif
             if (elifDirective) {
-                emitter.addRaw('else if (' + compileExprSource.expr(elifDirective.value) + ') {')
+                emitter.writeLine('else if (' + ExpressionEmitter.expr(elifDirective.value) + ') {')
             } else {
-                emitter.addRaw('else {')
+                emitter.writeLine('else {')
             }
 
             aNodeCompiler.compile(elseANode, emitter, owner)
-            emitter.addRaw('}')
+            emitter.writeLine('}')
         })
     },
 
@@ -3187,16 +3187,16 @@ const aNodeCompiler = {
         const indexName = forDirective.index || genSSRId()
         const listName = genSSRId()
 
-        emitter.addRaw('$' + listName + ' = ' + compileExprSource.expr(forDirective.value) + ';')
-        emitter.addRaw(`if (is_array($${listName}) || is_object($${listName})) {`)
+        emitter.writeLine('$' + listName + ' = ' + ExpressionEmitter.expr(forDirective.value) + ';')
+        emitter.writeLine(`if (is_array($${listName}) || is_object($${listName})) {`)
 
         // for array
-        emitter.addRaw(`foreach ($${listName} as $${indexName} => $value) {`)
-        emitter.addRaw(`$componentCtx["data"]->${indexName} = $${indexName};`)
-        emitter.addRaw(`$componentCtx["data"]->${itemName} = $value;`)
+        emitter.writeLine(`foreach ($${listName} as $${indexName} => $value) {`)
+        emitter.writeLine(`$componentCtx["data"]->${indexName} = $${indexName};`)
+        emitter.writeLine(`$componentCtx["data"]->${itemName} = $value;`)
         aNodeCompiler.compile(forElementANode, emitter, owner)
-        emitter.addRaw('}')
-        emitter.addRaw('}')
+        emitter.writeLine('}')
+        emitter.writeLine('}')
     },
 
     /**
@@ -3209,63 +3209,63 @@ const aNodeCompiler = {
     compileSlot: function (aNode, emitter: PHPEmitter, owner) {
         const rendererId = genSSRId()
 
-        emitter.addRaw(`if (!isset($componentCtx["slotRenderers"]["${rendererId}"])) ` +
+        emitter.writeLine(`if (!isset($componentCtx["slotRenderers"]["${rendererId}"])) ` +
         `$componentCtx["slotRenderers"]["${rendererId}"] = function () use (&$componentCtx, &$html){`)
 
-        emitter.addRaw('$defaultSlotRender = function ($componentCtx) {')
-        emitter.addRaw('  $html = "";')
+        emitter.writeLine('$defaultSlotRender = function ($componentCtx) {')
+        emitter.writeLine('  $html = "";')
         each(aNode.children, function (aNodeChild) {
             aNodeCompiler.compile(aNodeChild, emitter, owner)
         })
-        emitter.addRaw('  return $html;')
-        emitter.addRaw('};')
+        emitter.writeLine('  return $html;')
+        emitter.writeLine('};')
 
-        emitter.addRaw('$isInserted = false;')
-        emitter.addRaw('$ctxSourceSlots = $componentCtx["sourceSlots"];')
-        emitter.addRaw('$mySourceSlots = [];')
+        emitter.writeLine('$isInserted = false;')
+        emitter.writeLine('$ctxSourceSlots = $componentCtx["sourceSlots"];')
+        emitter.writeLine('$mySourceSlots = [];')
 
         const nameProp = getANodeProp(aNode, 'name')
         if (nameProp) {
-            emitter.addRaw('$slotName = ' + compileExprSource.expr(nameProp.expr) + ';')
+            emitter.writeLine('$slotName = ' + ExpressionEmitter.expr(nameProp.expr) + ';')
 
-            emitter.addRaw('foreach ($ctxSourceSlots as $i => $slot) {')
-            emitter.addRaw('  if (count($slot) > 1 && $slot[1] == $slotName) {')
-            emitter.addRaw('    array_push($mySourceSlots, $slot[0]);')
-            emitter.addRaw('    $isInserted = true;')
-            emitter.addRaw('  }')
-            emitter.addRaw('}')
+            emitter.writeLine('foreach ($ctxSourceSlots as $i => $slot) {')
+            emitter.writeLine('  if (count($slot) > 1 && $slot[1] == $slotName) {')
+            emitter.writeLine('    array_push($mySourceSlots, $slot[0]);')
+            emitter.writeLine('    $isInserted = true;')
+            emitter.writeLine('  }')
+            emitter.writeLine('}')
         } else {
-            emitter.addRaw('if (count($ctxSourceSlots) > 0 && !isset($ctxSourceSlots[0][1])) {')
-            emitter.addRaw('  array_push($mySourceSlots, $ctxSourceSlots[0][0]);')
-            emitter.addRaw('  $isInserted = true;')
-            emitter.addRaw('}')
+            emitter.writeLine('if (count($ctxSourceSlots) > 0 && !isset($ctxSourceSlots[0][1])) {')
+            emitter.writeLine('  array_push($mySourceSlots, $ctxSourceSlots[0][0]);')
+            emitter.writeLine('  $isInserted = true;')
+            emitter.writeLine('}')
         }
 
-        emitter.addRaw('if (!$isInserted) { array_push($mySourceSlots, $defaultSlotRender); }')
-        emitter.addRaw('$slotCtx = $isInserted ? $componentCtx["owner"] : $componentCtx;')
+        emitter.writeLine('if (!$isInserted) { array_push($mySourceSlots, $defaultSlotRender); }')
+        emitter.writeLine('$slotCtx = $isInserted ? $componentCtx["owner"] : $componentCtx;')
 
         if (aNode.vars || aNode.directives.bind) {
-            emitter.addRaw('$slotCtx = ["spsrCid" => $slotCtx["spsrCid"], "data" => $slotCtx["data"], "instance" => $slotCtx["instance"], "owner" => $slotCtx["owner"]];')
+            emitter.writeLine('$slotCtx = ["spsrCid" => $slotCtx["spsrCid"], "data" => $slotCtx["data"], "instance" => $slotCtx["instance"], "owner" => $slotCtx["owner"]];')
 
             if (aNode.directives.bind) {
-                emitter.addRaw('_::extend($slotCtx["data"], ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
+                emitter.writeLine('_::extend($slotCtx["data"], ' + ExpressionEmitter.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
             }
 
             each(aNode.vars, function (varItem) {
-                emitter.addRaw(
+                emitter.writeLine(
                     '$slotCtx["data"]->' + varItem.name + ' = ' +
-                compileExprSource.expr(varItem.expr) +
+                ExpressionEmitter.expr(varItem.expr) +
                 ';'
                 )
             })
         }
 
-        emitter.addRaw('foreach ($mySourceSlots as $renderIndex => $slot) {')
-        emitter.addRaw('  $html .= $slot($slotCtx);')
-        emitter.addRaw('}')
+        emitter.writeLine('foreach ($mySourceSlots as $renderIndex => $slot) {')
+        emitter.writeLine('  $html .= $slot($slotCtx);')
+        emitter.writeLine('}')
 
-        emitter.addRaw('};')
-        emitter.addRaw(`call_user_func($componentCtx["slotRenderers"]["${rendererId}"]);`)
+        emitter.writeLine('};')
+        emitter.writeLine(`call_user_func($componentCtx["slotRenderers"]["${rendererId}"]);`)
     },
 
     /**
@@ -3294,7 +3294,7 @@ const aNodeCompiler = {
     compileComponent: function (aNode, emitter, owner, extra) {
         let dataLiteral = '(object)[]'
 
-        emitter.addRaw('$sourceSlots = [];')
+        emitter.writeLine('$sourceSlots = [];')
         if (aNode.children) {
             const defaultSourceSlots = []
             const sourceSlotCodes = {}
@@ -3316,49 +3316,49 @@ const aNodeCompiler = {
             })
 
             if (defaultSourceSlots.length) {
-                emitter.addRaw('array_push($sourceSlots, [function ($componentCtx) {')
-                emitter.addRaw('  $html = "";')
+                emitter.writeLine('array_push($sourceSlots, [function ($componentCtx) {')
+                emitter.writeLine('  $html = "";')
                 defaultSourceSlots.forEach(function (child) {
                     aNodeCompiler.compile(child, emitter, owner)
                 })
-                emitter.addRaw('  return $html;')
-                emitter.addRaw('}]);')
+                emitter.writeLine('  return $html;')
+                emitter.writeLine('}]);')
             }
 
             for (const key in sourceSlotCodes) {
                 const sourceSlotCode = sourceSlotCodes[key]
-                emitter.addRaw('array_push($sourceSlots, [function ($componentCtx) {')
-                emitter.addRaw('  $html = "";')
+                emitter.writeLine('array_push($sourceSlots, [function ($componentCtx) {')
+                emitter.writeLine('  $html = "";')
                 sourceSlotCode.children.forEach(function (child) {
                     aNodeCompiler.compile(child, emitter, owner)
                 })
-                emitter.addRaw('  return $html;')
-                emitter.addRaw('}, ' + compileExprSource.expr(sourceSlotCode.prop.expr) + ']);')
+                emitter.writeLine('  return $html;')
+                emitter.writeLine('}, ' + ExpressionEmitter.expr(sourceSlotCode.prop.expr) + ']);')
             }
         }
 
         const givenData = []
         each(camelComponentBinds(aNode.props), function (prop) {
             postProp(prop)
-            const key = compileExprSource.stringLiteralize(prop.name)
-            const val = compileExprSource.expr(prop.expr)
+            const key = ExpressionEmitter.stringLiteralize(prop.name)
+            const val = ExpressionEmitter.expr(prop.expr)
             givenData.push(`${key} => ${val}`)
         })
 
         dataLiteral = '(object)[' + givenData.join(',\n') + ']'
         if (aNode.directives.bind) {
             dataLiteral = '_::extend(' +
-            compileExprSource.expr(aNode.directives.bind.value) +
+            ExpressionEmitter.expr(aNode.directives.bind.value) +
             ', ' +
             dataLiteral +
             ')'
         }
 
         const renderId = compileComponentSource(emitter, extra.ComponentClass, owner.ssrContextId)
-        emitter.addRaw(`$html .= ${renderId}(`)
-        emitter.addRaw(dataLiteral + ', true, $componentCtx, ' +
+        emitter.writeLine(`$html .= ${renderId}(`)
+        emitter.writeLine(dataLiteral + ', true, $componentCtx, ' +
         stringifier.str(aNode.tagName) + ', $sourceSlots);')
-        emitter.addRaw('$sourceSlots = null;')
+        emitter.writeLine('$sourceSlots = null;')
     },
 
     /**
@@ -3420,46 +3420,46 @@ function compileComponentSource (emitter, ComponentClass, contextId) {
             )
         }
 
-        emitter.addRaw(`function ${cid}($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {`)
-        emitter.addRaw('$html = "";')
+        emitter.writeLine(`function ${cid}($data, $noDataOutput = false, $parentCtx = [], $tagName = null, $sourceSlots = []) {`)
+        emitter.writeLine('$html = "";')
 
-        emitter.addRaw(genComponentContextCode(component))
+        emitter.writeLine(genComponentContextCode(component))
 
         // init data
         const defaultData = component.data.get()
-        emitter.addRaw('if ($data) {')
+        emitter.writeLine('if ($data) {')
         Object.keys(defaultData).forEach(function (key) {
             const val = stringifier.any(defaultData[key])
             if (val === 'NaN') return
-            emitter.addRaw(`$componentCtx["data"]->${key} = isset($componentCtx["data"]->${key}) ? $componentCtx["data"]->${key} : ${val};`)
+            emitter.writeLine(`$componentCtx["data"]->${key} = isset($componentCtx["data"]->${key}) ? $componentCtx["data"]->${key} : ${val};`)
         })
-        emitter.addRaw('}')
+        emitter.writeLine('}')
 
         // calc computed
-        emitter.addRaw('foreach ($componentCtx["computedNames"] as $i => $computedName) {')
-        emitter.addRaw('  $data->$computedName = _::callComputed($componentCtx, $computedName);')
-        emitter.addRaw('}')
+        emitter.writeLine('foreach ($componentCtx["computedNames"] as $i => $computedName) {')
+        emitter.writeLine('  $data->$computedName = _::callComputed($componentCtx, $computedName);')
+        emitter.writeLine('}')
 
         const ifDirective = component.aNode.directives['if']
         if (ifDirective) {
-            emitter.addRaw('if (' + compileExprSource.expr(ifDirective.value) + ') {')
+            emitter.writeLine('if (' + ExpressionEmitter.expr(ifDirective.value) + ') {')
         }
 
         elementSourceCompiler.tagStart(emitter, component.aNode, 'tagName')
 
-        emitter.addRaw('if (!$noDataOutput) {')
-        emitter.joinDataStringify()
-        emitter.addRaw('}')
+        emitter.writeLine('if (!$noDataOutput) {')
+        emitter.writeDataComment()
+        emitter.writeLine('}')
 
         elementSourceCompiler.inner(emitter, component.aNode, component)
         elementSourceCompiler.tagEnd(emitter, component.aNode, 'tagName')
 
         if (ifDirective) {
-            emitter.addRaw('}')
+            emitter.writeLine('}')
         }
 
-        emitter.addRaw('return $html;')
-        emitter.addRaw('};')
+        emitter.writeLine('return $html;')
+        emitter.writeLine('};')
     }
 
     return cid
@@ -3521,12 +3521,11 @@ export function compileToSource ({
 
     const contextId = genSSRId()
 
-    emitter.addRaw(`function ${funcName}($data, $noDataOutput) {`)
+    emitter.writeLine(`function ${funcName}($data, $noDataOutput) {`)
     const renderId = compileComponentSource(emitter, ComponentClass, contextId)
-    emitter.addRaw(`return ${renderId}($data, $noDataOutput);`)
-    emitter.addRaw('}')
+    emitter.writeLine(`return ${renderId}($data, $noDataOutput);`)
+    emitter.writeLine('}')
 
-    emitter.flush()
     emitter.endNamespace()
     return emitter.fullText()
 }

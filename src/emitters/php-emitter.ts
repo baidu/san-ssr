@@ -3,7 +3,12 @@ import { ExpressionEmitter } from './expression-emitter'
 import { emitRuntimeInPHP } from './runtime'
 
 export class PHPEmitter extends Emitter {
-    stringBuffer = ''
+    buffer = ''
+
+    public write (str) {
+        this.clearStringLiteralBuffer()
+        return this.defaultWrite(str)
+    }
 
     public writeRuntime () {
         emitRuntimeInPHP(this)
@@ -23,56 +28,32 @@ export class PHPEmitter extends Emitter {
         this.writeLine(`}`)
     }
 
-    addRaw (code) {
-        this.flush()
-        this.writeLine(code)
+    public bufferHTMLLiteral (str: string) {
+        this.buffer += str
     }
 
-    /**
-    * 添加被拼接为html的原始代码
-    *
-    * @param {string} code 原始代码
-    */
-    joinRaw (code) {
-        this.flush()
-        this.writeLine('$html .= ' + code + ';')
+    public writeHTML (code: string) {
+        this.writeLine(`$html .= ${code};`)
     }
 
-    /**
-    * 添加被拼接为html的静态字符串
-    *
-    * @param {string} str 被拼接的字符串
-    */
-    joinString (str) {
-        this.stringBuffer += str
+    public writeDataComment () {
+        this.writeHTML('"<!--s-data:" . json_encode(' + ExpressionEmitter.dataAccess() + ', JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";')
     }
 
-    /**
-    * 添加被拼接为html的数据访问
-    *
-    * @param {Object?} accessor 数据访问表达式对象
-    */
-    joinDataStringify () {
-        this.flush()
-        this.writeLine('$html .= "<!--s-data:" . json_encode(' +
-        ExpressionEmitter.dataAccess() + ', JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";\n')
+    public clearStringLiteralBuffer () {
+        if (this.buffer === '') return
+        const buffer = this.buffer
+        this.buffer = ''
+        this.writeHTML(ExpressionEmitter.stringLiteralize(buffer))
     }
 
-    /**
-    * 添加被拼接为html的表达式
-    *
-    * @param {Object} expr 表达式对象
-    */
-    joinExpr (expr) {
-        this.flush()
-        this.writeLine('$html .= ' + ExpressionEmitter.expr(expr) + ';')
+    public beginIf (expr) {
+        this.writeLine(`if (${expr}) {`)
+        this.indent()
     }
 
-    flush () {
-        if (this.stringBuffer) {
-            this.writeLine('$html .= ' + ExpressionEmitter.stringLiteralize(this.stringBuffer) + ';')
-        }
-
-        this.stringBuffer = ''
+    public endIf () {
+        this.unindent()
+        this.writeLine(`}`)
     }
 }

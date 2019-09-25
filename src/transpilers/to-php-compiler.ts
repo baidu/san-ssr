@@ -49,9 +49,9 @@ export class ToPHPCompiler extends Compiler {
         emitHeader = true
     }) {
         if (emitHeader) this.writeFileHeader(emitter)
-        emitter.writeRuntime()
         this.transpileFiles(component, emitter)
         writeRenderFunction({ ComponentClass, funcName, emitter, ns })
+        emitter.writeRuntime()
 
         return emitter.fullText()
     }

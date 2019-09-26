@@ -1,62 +1,41 @@
-import { ComponentParser } from '../parser/component-parser'
-import { readFileSync, readdirSync, writeFileSync, existsSync } from 'fs'
-import { PHPEmitter } from '../emitters/php-emitter'
-import { JSEmitter } from '../emitters/js-emitter'
+import camelCase from 'camelcase'
+import { readdirSync, writeFileSync, existsSync } from 'fs'
 import { resolve, join } from 'path'
-import { compileToSource as compileToJSSource } from '../js-ssr'
 import { ToPHPCompiler } from '../transpilers/to-php-compiler'
 import { ToJSCompiler } from '../transpilers/to-js-compiler'
-import camelCase from 'camelcase'
 import ProgressBar = require('progress')
 
 const caseRoot = resolve(__dirname, '../../test/cases')
-const tsconfigPath = resolve(__dirname, '../../test/tsconfig.json')
+const tsConfigFilePath = resolve(__dirname, '../../test/tsconfig.json')
 const cases = readdirSync(caseRoot)
-const toJSCompiler = new ToJSCompiler(tsconfigPath)
+const toJSCompiler = new ToJSCompiler(tsConfigFilePath)
 const toPHPCompiler = new ToPHPCompiler({
-    tsconfigPath,
+    tsConfigFilePath,
     removeExternals: ['../../..'],
     nsPrefix: 'san\\components\\test\\'
 })
-const parser = new ComponentParser(tsconfigPath)
 
 export function compileToJS (caseName) {
-    const caseDir = join(caseRoot, caseName)
-    const ts = join(caseDir, 'component.ts')
-    const js = resolve(caseDir, 'component.js')
-    const emitter = new JSEmitter()
-    emitter.writeRuntime()
-    let componentClass
+    const ts = join(caseRoot, caseName, 'component.ts')
+    const js = resolve(caseRoot, caseName, 'component.js')
 
-    const component = parser.parseComponent(existsSync(ts) && ts, existsSync(js) && js)
-    if (existsSync(js)) {
-        componentClass = toJSCompiler.run(readFileSync(js, 'utf8'))
-    } else {
-        componentClass = toJSCompiler.compileAndRun(component.getComponentSourceFile())['default']
-    }
-
-    const fn = compileToJSSource(componentClass)
-    writeFileSync(join(caseDir, 'ssr.js'), `module.exports = ${fn}`)
+    const fn = existsSync(js)
+        ? toJSCompiler.compileFromJS(js)
+        : toJSCompiler.compileFromTS(ts)
+    writeFileSync(join(caseRoot, caseName, 'ssr.js'), `module.exports = ${fn}`)
 }
 
 export function compileToPHP (caseName) {
-    const caseDir = join(caseRoot, caseName)
-    const ts = join(caseDir, 'component.ts')
-    const js = resolve(caseDir, 'component.js')
-    const emitter = new PHPEmitter()
-
-    const component = parser.parseComponent(existsSync(ts) && ts, existsSync(js) && js)
-    let ComponentClass
-    if (existsSync(ts)) {
-        ComponentClass = toJSCompiler.compileAndRun(component.getComponentSourceFile())['default']
-    } else {
-        ComponentClass = toJSCompiler.run(readFileSync(js, 'utf8'))
-    }
-    toPHPCompiler.compileComponent(component, ComponentClass, emitter, {
+    const ts = join(caseRoot, caseName, 'component.ts')
+    const js = resolve(caseRoot, caseName, 'component.js')
+    const options = {
         ns: `san\\renderer\\${camelCase(caseName)}`
-    })
+    }
 
-    writeFileSync(join(caseDir, 'ssr.php'), emitter.fullText())
+    const fn = existsSync(ts)
+        ? toPHPCompiler.compileFromTS(ts, options)
+        : toPHPCompiler.compileFromJS(js, options)
+    writeFileSync(join(caseRoot, caseName, 'ssr.php'), fn)
 }
 
 export function compileAllToJS () {

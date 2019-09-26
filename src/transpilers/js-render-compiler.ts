@@ -1,11 +1,9 @@
 /**
- * JavaScript SSR 入口
+ * 接受 ComponentClass 产出 JavaScript 的 SSR 入口
  *
  * 来自 gihub.com/baidu/san 核心仓库，用来辅助 PHP SSR 的开发和测试。
  */
-import { each, contains, empty, extend, bind, inherits } from './utils/underscore'
-import * as fs from 'fs'
-import * as path from 'path'
+import { each, contains, empty, extend, bind, inherits } from '../utils/underscore'
 
 /**
 * 编译源码的 helper 方法集合对象
@@ -310,10 +308,8 @@ function functionString (fn) {
 */
 class CompileSourceBuffer {
     segs: any[]
-    target: any
-    constructor (target) {
+    constructor () {
         this.segs = []
-        this.target = target
     }
     /**
     * 添加原始代码，将原封不动输出
@@ -337,21 +333,6 @@ class CompileSourceBuffer {
             type: 'JOIN_RAW',
             code: code
         })
-    }
-
-    /**
-    * 添加renderer方法的起始源码
-    */
-    addRendererStart () {
-        this.addRaw('function (data, noDataOutput) {')
-        this.addRaw(fs.readFileSync(path.resolve(__dirname, '../runtime/underscore.js')))
-    }
-
-    /**
-    * 添加renderer方法的结束源码
-    */
-    addRendererEnd () {
-        this.addRaw('}')
     }
 
     /**
@@ -6671,16 +6652,14 @@ function genComponentProtoCode (component) {
 * @param {Function} ComponentClass 组件类
 * @return {string}
 */
-export function compileToSource (ComponentClass, target = 'js') {
+export function compileToSource (ComponentClass) {
     guid = 1
     ssrIndex = 0
-    const sourceBuffer = new CompileSourceBuffer(target)
+    const sourceBuffer = new CompileSourceBuffer()
     const contextId = genSSRId()
 
-    sourceBuffer.addRendererStart()
     const renderId = compileComponentSource(sourceBuffer, ComponentClass, contextId)
     sourceBuffer.addRaw('return componentRenderers.' + renderId + '(data, noDataOutput)')
-    sourceBuffer.addRendererEnd()
 
     return sourceBuffer.toCode()
 }

@@ -9,26 +9,26 @@ const debug = debugFactory('component-parser')
 
 export class ComponentParser {
     private root: string
-    private tsconfigPath: string
-    private project: Project
-    private idPropertyName: string
     private id: number = 0
+    public project: Project
+    public idPropertyName: string
 
-    constructor (
-        tsconfigPath = getDefaultConfigPath(),
-        idPropertyName = 'spsrCid'
-    ) {
-        debug('using tsconfig:', tsconfigPath)
+    constructor (project: Project, idPropertyName = 'spsrCid') {
+        this.project = project
         this.idPropertyName = idPropertyName
-        this.tsconfigPath = tsconfigPath
-        this.project = new Project({
-            tsConfigFilePath: tsconfigPath
-        })
     }
 
-    parseComponent (componentTS?: string, componentJS?: string): Component {
-        debug('parsComponent', componentTS, componentJS)
-        const comp = new Component(componentTS, componentJS)
+    static createUsingTsconfig (tsConfigFilePath: string) {
+        return new ComponentParser(new Project({ tsConfigFilePath }))
+    }
+
+    static crateUsingDefaultTsconfig () {
+        return ComponentParser.createUsingTsconfig(getDefaultConfigPath())
+    }
+
+    public parseComponent (componentTS: string): Component {
+        debug('parsComponent', componentTS)
+        const comp = new Component(componentTS)
         if (componentTS) {
             for (const [path, file] of this.getComponentFiles(componentTS)) {
                 comp.addFile(path, this.parseSanSourceFile(file))
@@ -37,7 +37,7 @@ export class ComponentParser {
         return comp
     }
 
-    private getComponentFiles (entryTSFile): Map<string, SourceFile> {
+    private getComponentFiles (entryTSFile: string): Map<string, SourceFile> {
         const sourceFile = this.project.getSourceFile(entryTSFile)
         if (!sourceFile) throw new Error('could not get sourcefile:' + entryTSFile)
         return new Map([[

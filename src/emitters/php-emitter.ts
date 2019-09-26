@@ -3,7 +3,12 @@ import { ExpressionEmitter } from './expression-emitter'
 import { emitRuntimeInPHP } from './runtime'
 
 export class PHPEmitter extends Emitter {
-    buffer = ''
+    buffer: string = ''
+
+    constructor (emitHeader = false) {
+        super()
+        if (emitHeader) this.writeLine('<?php')
+    }
 
     public write (str) {
         this.clearStringLiteralBuffer()
@@ -54,13 +59,11 @@ export class PHPEmitter extends Emitter {
         const nameStr = name ? `${name} ` : ''
         const argsStr = args.join(', ')
         const useStr = use.length ? `use (${use.join(', ')}) ` : ''
-        this.write(`function ${nameStr}(${argsStr}) ${useStr}{`)
-        this.writeNewLine()
+        this.feedLine(`function ${nameStr}(${argsStr}) ${useStr}{`)
         this.indent()
         body()
         this.unindent()
-        this.writeIndent()
-        this.write('}')
+        this.nextLine('}')
     }
     public writeAnonymousFunction (args = [], use = [], body: Function = () => null) {
         this.writeFunction('', args, use, body)

@@ -1,4 +1,5 @@
-import { readPHPSource } from '../utils/fs'
+import { readPHPSource, readStringSync } from '../utils/fs'
+import { Emitter } from './emitter'
 import { PHPEmitter } from './php-emitter'
 import { resolve } from 'path'
 
@@ -9,7 +10,7 @@ const runtimeFiles = [
     'component-registry.php'
 ]
 
-export function emitRuntimeInPHP (emitter = new PHPEmitter()) {
+export function emitRuntimeInPHP (emitter: PHPEmitter) {
     emitter.beginNamespace('san\\runtime')
     for (const file of runtimeFiles) {
         const path = resolve(__dirname, `../../runtime/${file}`)
@@ -17,4 +18,9 @@ export function emitRuntimeInPHP (emitter = new PHPEmitter()) {
     }
     emitter.endNamespace()
     return emitter.fullText()
+}
+
+export function emitRuntimeInJS (emitter: Emitter) {
+    const path = resolve(__dirname, '../../runtime/underscore.js')
+    emitter.writeLines(readStringSync(path))
 }

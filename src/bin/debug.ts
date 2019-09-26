@@ -2,7 +2,7 @@ import chalk from 'chalk'
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
 import { parseHtml, compileToJS, compileToPHP } from '../utils/case'
-import { renderByJS, renderByPHP } from '../runners/case'
+import { renderByJS, renderByPHP } from '../loaders/case'
 import { measure, startMeasure } from '../utils/timing'
 
 const caseName = process.argv[2]

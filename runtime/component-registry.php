@@ -1,6 +1,6 @@
 <?php
 class ComponentRegistry {
-    public static $comps;
+    public static $comps = [];
     public static function has($cid){
         return array_key_exists($cid, ComponentRegistry::$comps);
     }

@@ -1,7 +1,11 @@
-import { each, extend, inherits } from './utils/underscore'
-import { createAccessor, Walker, readTertiaryExpr } from './parser/walker'
-import { PHPEmitter } from './emitters/php-emitter'
-import { ExpressionEmitter } from './emitters/expression-emitter'
+/**
+ * 将组件树编译成 render 函数之间的递归调用
+ * 提供 compileRenderFunction 方法
+ */
+import { each, extend, inherits } from '../utils/underscore'
+import { createAccessor, Walker, readTertiaryExpr } from '../parser/walker'
+import { PHPEmitter } from '../emitters/php-emitter'
+import { ExpressionEmitter } from '../emitters/expression-emitter'
 
 /**
 * 获取唯一id
@@ -2655,7 +2659,7 @@ function genComponentContextCode (component, emitter) {
 * @param {Function} ComponentClass 组件类
 * @return {string}
 */
-export function compileToSource ({
+export function compileRenderFunction ({
     ComponentClass,
     funcName = '',
     ns = 'san\\renderer',
@@ -2676,16 +2680,4 @@ export function compileToSource ({
 
     emitter.endNamespace()
     return emitter.fullText()
-}
-
-export function compileToRenderer (ComponentClass) {
-    let renderer = null
-
-    if (!renderer) {
-        const code = compileToSource(ComponentClass)
-        renderer = (new Function('return ' + code))()   // eslint-disable-line
-        ComponentClass.__ssrRenderer = renderer
-    }
-
-    return renderer
 }

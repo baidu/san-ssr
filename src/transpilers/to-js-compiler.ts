@@ -1,5 +1,9 @@
+import { readFileSync } from 'fs'
+import { JSEmitter } from '../emitters/js-emitter'
+import { compileToSource } from './js-render-compiler'
+import { ComponentParser } from '../parser/component-parser'
 import { transpileModule } from 'typescript'
-import { Module } from '../runners/cmd'
+import { Module } from '../loaders/cmd'
 import { Project } from 'ts-morph'
 import { movePropertyInitiatorToPrototype } from '../parser/ast-util'
 import { SanSourceFile } from '../parser/san-sourcefile'
@@ -12,19 +16,42 @@ const debug = debugFactory('to-js-compiler')
 
 export class ToJSCompiler extends Compiler {
     private root: string
-    private tsconfig: object
+    private tsConfigFilePath: object
     private project: Project
 
     constructor (
-        tsconfigPath = getDefaultConfigPath(),
-        root = tsconfigPath.split(sep).slice(0, -1).join(sep)
+        tsConfigFilePath = getDefaultConfigPath(),
+        root = tsConfigFilePath.split(sep).slice(0, -1).join(sep)
     ) {
         super()
         this.root = root
-        this.tsconfig = require(tsconfigPath)
+        this.tsConfigFilePath = require(tsConfigFilePath)
         this.project = new Project({
-            tsConfigFilePath: tsconfigPath
+            tsConfigFilePath: tsConfigFilePath
         })
+    }
+
+    compileFromJS (filepath: string) {
+        const emitter = new JSEmitter()
+        emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => {
+            emitter.writeRuntime()
+            const componentClass = this.run(readFileSync(filepath, 'utf8'))
+            emitter.writeLines(compileToSource(componentClass))
+        })
+
+        return emitter.fullText()
+    }
+
+    compileFromTS (filepath: string) {
+        const emitter = new JSEmitter()
+        emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => {
+            emitter.writeRuntime()
+            const parser = new ComponentParser(this.project)
+            const component = parser.parseComponent(filepath)
+            const componentClass = this.compileAndRun(component.getComponentSourceFile())['default']
+            emitter.writeLines(compileToSource(componentClass))
+        })
+        return emitter.fullText()
     }
 
     compileAndRun (source: SanSourceFile) {
@@ -46,7 +73,7 @@ export class ToJSCompiler extends Compiler {
     compileToJS (source: SanSourceFile) {
         // source = source.openInProject(this.project)
         // this.transform(source)
-        const compilerOptions = this.tsconfig['compilerOptions']
+        const compilerOptions = this.tsConfigFilePath['compilerOptions']
         const { diagnostics, outputText } =
             transpileModule(source.getFullText(), { compilerOptions })
         if (diagnostics.length) {

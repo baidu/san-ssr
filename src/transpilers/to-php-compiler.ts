@@ -1,4 +1,7 @@
-import { compileToSource as writeRenderFunction } from '../php-ssr'
+import { ComponentParser } from '../parser/component-parser'
+import { ToJSCompiler } from './to-js-compiler'
+import { readFileSync } from 'fs'
+import { compileRenderFunction } from './php-render-compiler'
 import { Compiler } from './compiler'
 import { Project } from 'ts-morph'
 import { PHPEmitter } from '../emitters/php-emitter'
@@ -18,15 +21,15 @@ const uselessProps = ['components']
 
 export class ToPHPCompiler extends Compiler {
     private root: string
-    private tsconfigPath: string
     private tsconfig: object
     private project: Project
     private nsPrefix: string
     private removeExternals: string[]
+    private toJSCompiler: ToJSCompiler
 
     constructor ({
-        tsconfigPath = getDefaultConfigPath(),
-        root = tsconfigPath.split(sep).slice(0, -1).join(sep),
+        tsConfigFilePath = getDefaultConfigPath(),
+        root = tsConfigFilePath.split(sep).slice(0, -1).join(sep),
         removeExternals = [],
         nsPrefix = ''
     }) {
@@ -34,11 +37,43 @@ export class ToPHPCompiler extends Compiler {
         this.nsPrefix = nsPrefix
         this.removeExternals = ['san-php-ssr', 'san', ...removeExternals]
         this.root = root
-        this.tsconfigPath = tsconfigPath
-        this.tsconfig = require(tsconfigPath)
+        this.tsconfig = require(tsConfigFilePath)
         this.project = new Project({
-            tsConfigFilePath: tsconfigPath
+            tsConfigFilePath: tsConfigFilePath
         })
+        this.toJSCompiler = new ToJSCompiler(tsConfigFilePath)
+    }
+
+    public compileFromTS (filepath: string, {
+        funcName = 'render',
+        ns = 'san\\renderer',
+        emitHeader = true
+    }) {
+        const emitter = new PHPEmitter(emitHeader)
+        const parser = new ComponentParser(this.project)
+
+        const component = parser.parseComponent(filepath)
+
+        const ComponentClass = this.toJSCompiler.compileAndRun(component.getComponentSourceFile())['default']
+        compileRenderFunction({ ComponentClass, funcName, emitter, ns })
+        this.compileComponents(component, emitter)
+
+        emitter.writeRuntime()
+        return emitter.fullText()
+    }
+
+    public compileFromJS (filepath: string, {
+        funcName = 'render',
+        ns = 'san\\renderer',
+        emitHeader = true
+    }) {
+        const emitter = new PHPEmitter(emitHeader)
+
+        const ComponentClass = this.toJSCompiler.run(readFileSync(filepath, 'utf8'))
+        compileRenderFunction({ ComponentClass, funcName, emitter, ns })
+
+        emitter.writeRuntime()
+        return emitter.fullText()
     }
 
     public compileToPHP (sourceFile: SanSourceFile) {
@@ -46,20 +81,7 @@ export class ToPHPCompiler extends Compiler {
         return this.doCompile(sourceFile)
     }
 
-    compileComponent (component: Component, ComponentClass, emitter: PHPEmitter = new PHPEmitter(), {
-        funcName = 'render',
-        ns = 'san\\renderer',
-        emitHeader = true
-    }) {
-        if (emitHeader) this.writeFileHeader(emitter)
-        this.transpileFiles(component, emitter)
-        writeRenderFunction({ ComponentClass, funcName, emitter, ns })
-        emitter.writeRuntime()
-
-        return emitter.fullText()
-    }
-
-    public transpileFiles (component: Component, emitter: PHPEmitter = new PHPEmitter()) {
+    public compileComponents (component: Component, emitter: PHPEmitter = new PHPEmitter()) {
         const registry = new ComponentRegistry()
         for (const [path, sourceFile] of component.getFiles()) {
             registry.registerComponents(sourceFile)

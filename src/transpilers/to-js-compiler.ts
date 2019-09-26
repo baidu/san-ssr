@@ -1,4 +1,5 @@
 import { transpileModule } from 'typescript'
+import { Module } from '../runners/cmd'
 import { Project } from 'ts-morph'
 import { movePropertyInitiatorToPrototype } from '../parser/ast-util'
 import { SanSourceFile } from '../parser/san-sourcefile'
@@ -32,12 +33,8 @@ export class ToJSCompiler extends Compiler {
     }
 
     run (js: string) {
-        const fn = new Function('module', 'exports', 'require', js) // eslint-disable-line
-        const module = {
-            exports: {}
-        }
-        fn(module, module.exports, require)
-        return module.exports
+        Module.cache.delete(__filename)
+        return Module.require(__filename, js)
     }
 
     private transform (sourceFile: SanSourceFile) {

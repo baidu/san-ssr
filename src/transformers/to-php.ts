@@ -1,5 +1,5 @@
-import { removeObjectLiteralInitiator } from '../parser/ast-util'
-import { SanSourceFile } from '../parser/san-sourcefile'
+import { removeObjectLiteralInitiator } from './ast-util'
+import { SanSourceFile } from '../parsers/san-sourcefile'
 
 const reservedNames = ['List']
 const uselessComponentProps = ['components']

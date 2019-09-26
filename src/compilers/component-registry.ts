@@ -1,4 +1,4 @@
-import { SanSourceFile } from '../parser/san-sourcefile'
+import { SanSourceFile } from '../parsers/san-sourcefile'
 import { PHPEmitter } from '../emitters/php-emitter'
 
 type ComponentClassInfo = {

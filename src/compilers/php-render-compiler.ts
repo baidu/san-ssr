@@ -3,7 +3,7 @@
  * 提供 compileRenderFunction 方法
  */
 import { each, extend, inherits } from '../utils/underscore'
-import { createAccessor, Walker, readTertiaryExpr } from '../parser/walker'
+import { createAccessor, Walker, readTertiaryExpr } from '../parsers/walker'
 import { PHPEmitter } from '../emitters/php-emitter'
 import { ExpressionEmitter } from '../emitters/expression-emitter'
 

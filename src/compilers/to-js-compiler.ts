@@ -1,13 +1,12 @@
 import { readFileSync } from 'fs'
 import { JSEmitter } from '../emitters/js-emitter'
 import { compileToSource } from './js-render-compiler'
-import { ComponentParser } from '../parser/component-parser'
+import { ComponentParser } from '../parsers/component-parser'
 import { transpileModule } from 'typescript'
 import { Module } from '../loaders/cmd'
 import { Project } from 'ts-morph'
-import { movePropertyInitiatorToPrototype } from '../parser/ast-util'
-import { SanSourceFile } from '../parser/san-sourcefile'
-import { getDefaultConfigPath } from '../parser/tsconfig'
+import { SanSourceFile } from '../parsers/san-sourcefile'
+import { getDefaultConfigPath } from '../parsers/tsconfig'
 import { Compiler } from './compiler'
 import { sep } from 'path'
 import debugFactory from 'debug'
@@ -62,12 +61,6 @@ export class ToJSCompiler extends Compiler {
     run (js: string) {
         Module.cache.delete(__filename)
         return Module.require(__filename, js)
-    }
-
-    private transform (sourceFile: SanSourceFile) {
-        for (const clazz of sourceFile.getComponentClassNames()) {
-            movePropertyInitiatorToPrototype(sourceFile.origin, sourceFile.getClass(clazz))
-        }
     }
 
     compileToJS (source: SanSourceFile) {

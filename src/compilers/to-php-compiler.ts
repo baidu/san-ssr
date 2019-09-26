@@ -1,16 +1,17 @@
-import { ComponentParser } from '../parser/component-parser'
+import { ComponentParser } from '../parsers/component-parser'
 import { generatePHPCode } from '../emitters/generate-php-code'
 import { transformAstToPHP } from '../transformers/to-php'
 import { ToJSCompiler } from './to-js-compiler'
 import { readFileSync } from 'fs'
+import { Project } from 'ts-morph'
 import { compileRenderFunction } from './php-render-compiler'
 import { Compiler } from './compiler'
 import { PHPEmitter } from '../emitters/php-emitter'
-import { Component } from '../parser/component'
+import { Component } from '../parsers/component'
 import camelCase from 'camelcase'
 import { ComponentRegistry } from './component-registry'
-import { SanSourceFile } from '../parser/san-sourcefile'
-import { getDefaultConfigPath } from '../parser/tsconfig'
+import { SanSourceFile } from '../parsers/san-sourcefile'
+import { getDefaultConfigPath } from '../parsers/tsconfig'
 import { sep, extname } from 'path'
 import debugFactory from 'debug'
 
@@ -22,6 +23,7 @@ export class ToPHPCompiler extends Compiler {
     private nsPrefix: string
     private removeExternals: string[]
     private toJSCompiler: ToJSCompiler
+    private project: Project
 
     constructor ({
         tsConfigFilePath = getDefaultConfigPath(),
@@ -34,6 +36,7 @@ export class ToPHPCompiler extends Compiler {
         this.removeExternals = ['san-php-ssr', 'san', ...removeExternals]
         this.root = root
         this.tsConfigFilePath = tsConfigFilePath
+        this.project = new Project({ tsConfigFilePath })
         this.toJSCompiler = new ToJSCompiler(tsConfigFilePath)
     }
 
@@ -41,9 +44,9 @@ export class ToPHPCompiler extends Compiler {
         funcName = 'render',
         ns = 'san\\renderer',
         emitHeader = true
-    }) {
+    } = {}) {
         const emitter = new PHPEmitter(emitHeader)
-        const parser = ComponentParser.createUsingTsconfig(this.tsConfigFilePath)
+        const parser = new ComponentParser(this.project)
 
         const component = parser.parseComponent(filepath)
 
@@ -59,7 +62,7 @@ export class ToPHPCompiler extends Compiler {
         funcName = 'render',
         ns = 'san\\renderer',
         emitHeader = true
-    }) {
+    } = {}) {
         const emitter = new PHPEmitter(emitHeader)
 
         const ComponentClass = this.toJSCompiler.run(readFileSync(filepath, 'utf8'))
@@ -79,9 +82,9 @@ export class ToPHPCompiler extends Compiler {
         )
     }
 
-    public compileComponents (component: Component, emitter: PHPEmitter = new PHPEmitter()) {
+    public compileComponents (entryComp: Component, emitter: PHPEmitter = new PHPEmitter()) {
         const registry = new ComponentRegistry()
-        for (const [path, sourceFile] of component.getFiles()) {
+        for (const [path, sourceFile] of entryComp.getFiles()) {
             registry.registerComponents(sourceFile)
 
             emitter.beginNamespace(this.ns(path))

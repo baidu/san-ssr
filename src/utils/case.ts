@@ -1,8 +1,8 @@
 import camelCase from 'camelcase'
 import { readdirSync, writeFileSync, existsSync } from 'fs'
 import { resolve, join } from 'path'
-import { ToPHPCompiler } from '../transpilers/to-php-compiler'
-import { ToJSCompiler } from '../transpilers/to-js-compiler'
+import { ToPHPCompiler } from '../compilers/to-php-compiler'
+import { ToJSCompiler } from '../compilers/to-js-compiler'
 import ProgressBar = require('progress')
 
 const caseRoot = resolve(__dirname, '../../test/cases')

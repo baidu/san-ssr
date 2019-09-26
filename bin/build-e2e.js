@@ -3,12 +3,12 @@
 const fs = require('fs')
 const { join, resolve } = require('path')
 const testRoot = resolve(__dirname, '../test')
-const { ComponentParser } = require('../dist/parser/component-parser')
-const { Compiler } = require('../dist/transpilers/ts2js')
+const { ComponentParser } = require('../dist/parsers/component-parser')
+const { ToJSCompiler } = require('../dist/compilers/to-js-compiler')
 const tsconfigPath = resolve(__dirname, '../test/tsconfig.json')
-const ccj = new Compiler(tsconfigPath)
+const ccj = new ToJSCompiler(tsconfigPath)
+const parser = ComponentParser.createUsingTsconfig(tsconfigPath)
 
-const parser = new ComponentParser(tsconfigPath)
 let html = ''
 let specTpls = ''
 

@@ -1,4 +1,5 @@
-import { getComponentClassIdentifier, isChildClassOf } from './ast-util'
+import { getComponentClassIdentifier, isChildClassOf } from '../transformers/ast-util'
+import { normalizeComponentClass } from '../transformers/normalize-component'
 import { SanSourceFile } from './san-sourcefile'
 import { Project, SourceFile, ClassDeclaration } from 'ts-morph'
 import { getDefaultConfigPath } from './tsconfig'
@@ -36,8 +37,11 @@ export class ComponentParser {
     }
 
     private getComponentFiles (entryTSFile: string): Map<string, SourceFile> {
-        const sourceFile = this.project.getSourceFile(entryTSFile)
-        if (!sourceFile) throw new Error('could not get sourcefile:' + entryTSFile)
+        const sourceFile = this.project.getSourceFileOrThrow(entryTSFile)
+        // for (const importLiteral of sourceFile.getImportStringLiterals()) {
+            // console.log('s', importLiteral.getSourceFile().getFilePath())
+            // console.log('b', importLiteral.getText())
+        // }
         return new Map([[
             entryTSFile,
             sourceFile
@@ -57,7 +61,7 @@ export class ComponentParser {
 
         for (const clazz of sourceFile.getClasses()) {
             if (!isChildClassOf(clazz, componentClassIdentifier)) continue
-            this.normalizeComponentClass(clazz)
+            normalizeComponentClass(clazz)
             this.setComponentID(sanSourceFile, clazz)
         }
         return sanSourceFile
@@ -72,20 +76,5 @@ export class ComponentParser {
         })
         sourceFile.fakeProperties.push(decl)
         sourceFile.componentClasses.set(this.id++, clazz)
-    }
-
-    normalizeComponentClass (clazz: ClassDeclaration) {
-        if (!clazz.getName()) {
-            // clazz.rename('SpsrComponent')    // this throws
-            throw new Error('anonymous component class is not supported')
-        }
-
-        for (const prop of clazz.getProperties()) {
-            const name = prop.getName()
-
-            if (name === 'filters' || name === 'computed') {
-                if (!prop.isStatic()) prop.setIsStatic(true)
-            }
-        }
     }
 }

@@ -1,16 +1,15 @@
-import { ToJSCompiler } from '../../src/transpilers/to-js-compiler'
-import { ComponentParser } from '../../src/parser/component-parser'
+import { ToJSCompiler } from '../../src/compilers/to-js-compiler'
+import { ComponentParser } from '../../src/parsers/component-parser'
 import { resolve } from 'path'
 
-describe('ts2js', function () {
+describe('ToJSCompiler', function () {
     const tsconfig = resolve(__dirname, '../tsconfig.json')
+    const cc = new ToJSCompiler(tsconfig)
 
     it('should a single class', function () {
         const path = resolve(__dirname, '../stub/obj.ts')
-        const parser = new ComponentParser(tsconfig)
-
+        const parser = ComponentParser.createUsingTsconfig(tsconfig)
         const file = parser.parseComponent(path).getComponentSourceFile()
-        const cc = new ToJSCompiler(tsconfig)
         const result = cc.compileToJS(file)
 
         expect(result).toContain('class Foo {')
@@ -18,11 +17,9 @@ describe('ts2js', function () {
     })
 
     it('should mark component class with cid', function () {
+        const parser = ComponentParser.createUsingTsconfig(tsconfig)
         const path = resolve(__dirname, '../stub/a.comp.ts')
-        const parser = new ComponentParser(tsconfig)
-
         const file = parser.parseComponent(path).getComponentSourceFile()
-        const cc = new ToJSCompiler(tsconfig)
         const result = cc.compileToJS(file)
 
         expect(result).toContain('class A extends')
@@ -32,7 +29,7 @@ describe('ts2js', function () {
 
     it('should compile and run a component', function () {
         const path = resolve(__dirname, '../stub/a.comp.ts')
-        const parser = new ComponentParser(tsconfig)
+        const parser = ComponentParser.createUsingTsconfig(tsconfig)
 
         const file = parser.parseComponent(path).getComponentSourceFile()
         const cc = new ToJSCompiler(tsconfig)

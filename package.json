@@ -68,7 +68,7 @@
     "progress": "^2.0.3",
     "snake-case": "^2.1.0",
     "ts-morph": "^4.0.1",
-    "ts2php": "^0.12.2",
+    "ts2php": "^0.12.3",
     "typescript": "^3.4.5"
   }
 }

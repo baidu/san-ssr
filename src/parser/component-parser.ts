@@ -29,10 +29,8 @@ export class ComponentParser {
     public parseComponent (componentTS: string): Component {
         debug('parsComponent', componentTS)
         const comp = new Component(componentTS)
-        if (componentTS) {
-            for (const [path, file] of this.getComponentFiles(componentTS)) {
-                comp.addFile(path, this.parseSanSourceFile(file))
-            }
+        for (const [path, file] of this.getComponentFiles(componentTS)) {
+            comp.addFile(path, this.parseSanSourceFile(file))
         }
         return comp
     }

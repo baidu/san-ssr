@@ -7,7 +7,7 @@ describe('ToJSCompiler', function () {
     const cc = new ToJSCompiler(tsconfig)
 
     it('should a single class', function () {
-        const path = resolve(__dirname, '../stub/obj.ts')
+        const path = resolve(__dirname, '../stub/foo.ts')
         const parser = ComponentParser.createUsingTsconfig(tsconfig)
         const file = parser.parseComponent(path).getComponentSourceFile()
         const result = cc.compileToJS(file)

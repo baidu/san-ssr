@@ -1,9 +1,9 @@
-import { readFileSync } from 'fs'
+import { Component } from '../parsers/component'
 import { JSEmitter } from '../emitters/js-emitter'
 import { compileToSource } from './js-render-compiler'
 import { ComponentParser } from '../parsers/component-parser'
 import { transpileModule } from 'typescript'
-import { Module } from '../loaders/cmd'
+import { CMD } from '../loaders/cmd'
 import { Project } from 'ts-morph'
 import { SanSourceFile } from '../parsers/san-sourcefile'
 import { getDefaultConfigPath } from '../parsers/tsconfig'
@@ -34,7 +34,7 @@ export class ToJSCompiler extends Compiler {
         const emitter = new JSEmitter()
         emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => {
             emitter.writeRuntime()
-            const componentClass = this.run(readFileSync(filepath, 'utf8'))
+            const componentClass = new CMD().require(filepath)
             emitter.writeLines(compileToSource(componentClass))
         })
 
@@ -47,25 +47,23 @@ export class ToJSCompiler extends Compiler {
             emitter.writeRuntime()
             const parser = new ComponentParser(this.project)
             const component = parser.parseComponent(filepath)
-            const componentClass = this.compileAndRun(component.getComponentSourceFile())['default']
+            const componentClass = this.evalComponentClass(component)
             emitter.writeLines(compileToSource(componentClass))
         })
         return emitter.fullText()
     }
 
-    compileAndRun (source: SanSourceFile) {
-        const js = this.compileToJS(source)
-        return this.run(js)
-    }
-
-    run (js: string) {
-        Module.cache.delete(__filename)
-        return Module.require(__filename, js)
+    evalComponentClass (component: Component) {
+        const cmd = new CMD(filepath => {
+            const sourceFile = component.getModule(filepath)
+            if (!sourceFile) throw new Error(`file ${filepath} not found`)
+            const js = this.compileToJS(sourceFile)
+            return js
+        })
+        return cmd.require(component.getComponentFilepath()).default
     }
 
     compileToJS (source: SanSourceFile) {
-        // source = source.openInProject(this.project)
-        // this.transform(source)
         const compilerOptions = this.tsConfigFilePath['compilerOptions']
         const { diagnostics, outputText } =
             transpileModule(source.getFullText(), { compilerOptions })

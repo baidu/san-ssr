@@ -1,7 +1,7 @@
-import { removeObjectLiteralInitiator } from './ast-util'
+import { removeObjectLiteralInitiator } from '../utils/ast-util'
 import { SanSourceFile } from '../parsers/san-sourcefile'
+import { isReserved } from '../utils/php-util'
 
-const reservedNames = ['List']
 const uselessComponentProps = ['components']
 
 export function transformAstToPHP (sourceFile: SanSourceFile) {
@@ -20,7 +20,7 @@ export function transformAstToPHP (sourceFile: SanSourceFile) {
 
     for (const clazz of sourceFile.getClasses()) {
         const name = clazz.getName()
-        if (reservedNames.includes(name)) {
+        if (isReserved(name)) {
             if (clazz.isExported()) {
                 throw new Error(`${name} is a reserved keyword in PHP`)
             }

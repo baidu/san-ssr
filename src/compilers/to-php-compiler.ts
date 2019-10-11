@@ -1,8 +1,10 @@
+import { CMD } from '../loaders/cmd'
 import { ComponentParser } from '../parsers/component-parser'
+import { getInlineDependencyLiterals } from '../parsers/dependency-resolver'
+import { isReserved } from '../utils/php-util'
 import { generatePHPCode } from '../emitters/generate-php-code'
 import { transformAstToPHP } from '../transformers/to-php'
 import { ToJSCompiler } from './to-js-compiler'
-import { readFileSync } from 'fs'
 import { Project } from 'ts-morph'
 import { compileRenderFunction } from './php-render-compiler'
 import { Compiler } from './compiler'
@@ -21,19 +23,19 @@ export class ToPHPCompiler extends Compiler {
     private root: string
     private tsConfigFilePath: string
     private nsPrefix: string
-    private removeExternals: string[]
+    private skipRequire: string[]
     private toJSCompiler: ToJSCompiler
     private project: Project
 
     constructor ({
         tsConfigFilePath = getDefaultConfigPath(),
         root = tsConfigFilePath.split(sep).slice(0, -1).join(sep),
-        removeExternals = [],
+        skipRequire = [],
         nsPrefix = ''
     }) {
         super({ fileHeader: '<?php\n' })
         this.nsPrefix = nsPrefix
-        this.removeExternals = ['san-php-ssr', 'san', ...removeExternals]
+        this.skipRequire = ['san-php-ssr', 'san', ...skipRequire]
         this.root = root
         this.tsConfigFilePath = tsConfigFilePath
         this.project = new Project({ tsConfigFilePath })
@@ -47,10 +49,9 @@ export class ToPHPCompiler extends Compiler {
     } = {}) {
         const emitter = new PHPEmitter(emitHeader)
         const parser = new ComponentParser(this.project)
-
         const component = parser.parseComponent(filepath)
+        const ComponentClass = this.toJSCompiler.evalComponentClass(component)
 
-        const ComponentClass = this.toJSCompiler.compileAndRun(component.getComponentSourceFile())['default']
         compileRenderFunction({ ComponentClass, funcName, emitter, ns })
         this.compileComponents(component, emitter)
 
@@ -65,7 +66,7 @@ export class ToPHPCompiler extends Compiler {
     } = {}) {
         const emitter = new PHPEmitter(emitHeader)
 
-        const ComponentClass = this.toJSCompiler.run(readFileSync(filepath, 'utf8'))
+        const ComponentClass = new CMD().require(filepath)
         compileRenderFunction({ ComponentClass, funcName, emitter, ns })
 
         emitter.writeRuntime()
@@ -75,9 +76,10 @@ export class ToPHPCompiler extends Compiler {
     public compileToPHP (sourceFile: SanSourceFile) {
         transformAstToPHP(sourceFile)
         const tsconfig = require(this.tsConfigFilePath)
+
         return generatePHPCode(
             sourceFile,
-            this.removeExternals,
+            [...this.skipRequire, ...getInlineDependencyLiterals(sourceFile.origin)],
             tsconfig['compilerOptions']
         )
     }
@@ -98,9 +100,10 @@ export class ToPHPCompiler extends Compiler {
     }
 
     private ns (file) {
+        const escapeName = x => isReserved(x) ? 'spsrNS' + camelCase(x) : x
         let str = file
             .slice(this.root.length, -extname(file).length)
-            .split(sep).map(camelCase).join('\\')
+            .split(sep).map(camelCase).map(escapeName).join('\\')
             .replace(/^\\/, '')
         if (this.nsPrefix) {
             str = this.nsPrefix + str

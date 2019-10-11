@@ -8,6 +8,7 @@ const { ToJSCompiler } = require('../dist/compilers/to-js-compiler')
 const tsconfigPath = resolve(__dirname, '../test/tsconfig.json')
 const ccj = new ToJSCompiler(tsconfigPath)
 const parser = ComponentParser.createUsingTsconfig(tsconfigPath)
+const caseWithSplitedFiles = ['multi-component-files']
 
 let html = ''
 let specTpls = ''
@@ -54,7 +55,8 @@ function buildFile (caseDir) {
     }
 
     files.forEach(filename => {
-    // absolute path
+        if (caseWithSplitedFiles.includes(filename)) return
+        // absolute path
         const abFilePath = join(caseDir, filename)
         const stats = fs.statSync(abFilePath)
         const isFile = stats.isFile()

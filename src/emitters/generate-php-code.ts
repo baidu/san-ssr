@@ -1,9 +1,13 @@
 import { compile } from 'ts2php'
-import { SanSourceFile } from '../parser/san-sourcefile'
+import { SanSourceFile } from '../parsers/san-sourcefile'
+import debugFactory from 'debug'
 
-export function generatePHPCode (sourceFile: SanSourceFile, removeExternals, compilerOptions) {
+const debug = debugFactory('generate-php-code')
+
+export function generatePHPCode (sourceFile: SanSourceFile, skipRequire, compilerOptions) {
+    debug('skipRequire:', skipRequire)
     const modules = {}
-    for (const name of removeExternals) {
+    for (const name of skipRequire) {
         modules[name] = { name, required: true }
     }
     const { errors, phpCode } = compile(sourceFile.getFilePath(), {

@@ -27,13 +27,12 @@ describe('ToJSCompiler', function () {
         expect(result).toContain('A.spsrCid = 0')
     })
 
-    it('should compile and run a component', function () {
+    it('should evalComponentClass', function () {
         const path = resolve(__dirname, '../stub/a.comp.ts')
         const parser = ComponentParser.createUsingTsconfig(tsconfig)
-
-        const file = parser.parseComponent(path).getComponentSourceFile()
         const cc = new ToJSCompiler(tsconfig)
-        const componentClass = cc.compileAndRun(file)['default']
+        const comp = parser.parseComponent(path)
+        const componentClass = cc.evalComponentClass(comp)
 
         expect(componentClass.template).toEqual('A')
         expect(componentClass.spsrCid).toEqual(0)

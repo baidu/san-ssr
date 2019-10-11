@@ -1,8 +1,9 @@
-import { getComponentClassIdentifier, isChildClassOf } from '../transformers/ast-util'
+import { getComponentClassIdentifier, isChildClassOf } from '../utils/ast-util'
 import { normalizeComponentClass } from '../transformers/normalize-component'
 import { SanSourceFile } from './san-sourcefile'
 import { Project, SourceFile, ClassDeclaration } from 'ts-morph'
 import { getDefaultConfigPath } from './tsconfig'
+import { getDependenciesRecursively } from './dependency-resolver'
 import { Component } from './component'
 import debugFactory from 'debug'
 
@@ -38,14 +39,7 @@ export class ComponentParser {
 
     private getComponentFiles (entryTSFile: string): Map<string, SourceFile> {
         const sourceFile = this.project.getSourceFileOrThrow(entryTSFile)
-        // for (const importLiteral of sourceFile.getImportStringLiterals()) {
-            // console.log('s', importLiteral.getSourceFile().getFilePath())
-            // console.log('b', importLiteral.getText())
-        // }
-        return new Map([[
-            entryTSFile,
-            sourceFile
-        ]])
+        return getDependenciesRecursively(sourceFile)
     }
 
     private parseSanSourceFile (sourceFile: SourceFile) {

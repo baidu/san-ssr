@@ -1,4 +1,5 @@
 import { SanSourceFile } from './san-sourcefile'
+import { extname } from 'path'
 import { Component as SanComponent } from 'san'
 
 // js ssr 还有一些缺陷，不可用来编译 ES6 或 TypeScript 编写的组件。
@@ -8,24 +9,47 @@ export class Component {
     private files: Map<string, SanSourceFile> = new Map()
     private entry: string
     private componentClass: typeof SanComponent
+    private modules: Map<string, SanSourceFile> = new Map()
 
     constructor (entry?: string) {
         this.entry = entry
     }
 
-    addFile (path: string, file: SanSourceFile) {
-        this.files.set(path, file)
+    getComponentFilepath () {
+        return this.entry
     }
 
     getComponentSourceFile (): SanSourceFile {
         return this.files.get(this.entry)
     }
 
+    addFile (filepath: string, sourceFile: SanSourceFile) {
+        const ext = extname(filepath)
+        const moduleSpecifier = filepath.substr(0, filepath.length - ext.length)
+        this.modules.set(moduleSpecifier, sourceFile)
+        this.files.set(filepath, sourceFile)
+    }
+
     getFile (path: string) {
         return this.files.get(path)
     }
 
-    getFiles () {
-        return this.files
+    getModule (moduleSpecifier: string) {
+        if (this.files.has(moduleSpecifier)) {
+            return this.files.get(moduleSpecifier)
+        }
+        return this.modules.get(moduleSpecifier)
+    }
+
+    * getFilepaths () {
+        return this.files.keys()
+    }
+
+    * getSouceFiles () {
+        return this.files.values()
+    }
+
+    getFiles (): IterableIterator<[string, SanSourceFile]> {
+        return this.files.entries()
     }
 }

@@ -3,19 +3,22 @@ import { readdirSync, writeFileSync, existsSync } from 'fs'
 import { resolve, join } from 'path'
 import { ToPHPCompiler } from '../compilers/to-php-compiler'
 import { ToJSCompiler } from '../compilers/to-js-compiler'
+import debugFactory from 'debug'
 import ProgressBar = require('progress')
 
+const debug = debugFactory('case')
 const caseRoot = resolve(__dirname, '../../test/cases')
 const tsConfigFilePath = resolve(__dirname, '../../test/tsconfig.json')
 const cases = readdirSync(caseRoot)
 const toJSCompiler = new ToJSCompiler(tsConfigFilePath)
 const toPHPCompiler = new ToPHPCompiler({
     tsConfigFilePath,
-    removeExternals: ['../../..'],
+    skipRequire: ['../../..'],
     nsPrefix: 'san\\components\\test\\'
 })
 
 export function compileToJS (caseName) {
+    debug('compileToJS', caseName)
     const ts = join(caseRoot, caseName, 'component.ts')
     const js = resolve(caseRoot, caseName, 'component.js')
 

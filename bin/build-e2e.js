@@ -8,7 +8,7 @@ const { ToJSCompiler } = require('../dist/compilers/to-js-compiler')
 const tsconfigPath = resolve(__dirname, '../test/tsconfig.json')
 const ccj = new ToJSCompiler(tsconfigPath)
 const parser = ComponentParser.createUsingTsconfig(tsconfigPath)
-const caseWithSplitedFiles = ['multi-component-files']
+const { supportE2E } = require('../dist/utils/case')
 
 let html = ''
 let specTpls = ''
@@ -55,7 +55,6 @@ function buildFile (caseDir) {
     }
 
     files.forEach(filename => {
-        if (caseWithSplitedFiles.includes(filename)) return
         // absolute path
         const abFilePath = join(caseDir, filename)
         const stats = fs.statSync(abFilePath)
@@ -108,7 +107,9 @@ function buildFile (caseDir) {
         }
 
         // iterate
-        if (isDir) {
+        if (isDir && filename === 'multi-files')
+        console.log('sfdsafdsafdsaf', filename, supportE2E(filename))
+        if (isDir && supportE2E(filename)) {
             console.log(`[Build SSR spec] ${filename}`)
             buildFile(abFilePath)
         }

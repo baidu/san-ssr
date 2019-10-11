@@ -1,6 +1,6 @@
 import { SourceFile, ImportDeclaration } from 'ts-morph'
 
-function * getInlineDeclarations (sourceFile: SourceFile) {
+export function * getInlineDeclarations (sourceFile: SourceFile) {
     for (const decl of sourceFile.getImportDeclarations()) {
         if (shouldInline(decl)) yield decl
     }

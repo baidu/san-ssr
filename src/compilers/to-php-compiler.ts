@@ -1,8 +1,8 @@
 import { CMD } from '../loaders/cmd'
 import { ComponentParser } from '../parsers/component-parser'
-import { getInlineDependencyLiterals } from '../parsers/dependency-resolver'
+import { getInlineDeclarations } from '../parsers/dependency-resolver'
 import { isReserved } from '../utils/php-util'
-import { generatePHPCode } from '../emitters/generate-php-code'
+import { ModuleInfo, generatePHPCode } from '../emitters/generate-php-code'
 import { transformAstToPHP } from '../transformers/to-php'
 import { ToJSCompiler } from './to-js-compiler'
 import { Project } from 'ts-morph'
@@ -23,19 +23,26 @@ export class ToPHPCompiler extends Compiler {
     private root: string
     private tsConfigFilePath: string
     private nsPrefix: string
-    private skipRequire: string[]
+    private externalModules: ModuleInfo[]
     private toJSCompiler: ToJSCompiler
     private project: Project
 
     constructor ({
         tsConfigFilePath = getDefaultConfigPath(),
         root = tsConfigFilePath.split(sep).slice(0, -1).join(sep),
-        skipRequire = [],
+        externalModules = [],
         nsPrefix = ''
     }) {
         super({ fileHeader: '<?php\n' })
         this.nsPrefix = nsPrefix
-        this.skipRequire = ['san-php-ssr', 'san', ...skipRequire]
+        this.externalModules = [{
+            name: 'san-php-ssr',
+            required: true
+        }, {
+            name: 'san',
+            required: true,
+            namespace: '\\san\\runtime\\'
+        }, ...externalModules]
         this.root = root
         this.tsConfigFilePath = tsConfigFilePath
         this.project = new Project({ tsConfigFilePath })
@@ -76,10 +83,19 @@ export class ToPHPCompiler extends Compiler {
     public compileToPHP (sourceFile: SanSourceFile) {
         transformAstToPHP(sourceFile)
         const tsconfig = require(this.tsConfigFilePath)
-
+        const externalModules = [...this.externalModules]
+        for (const decl of getInlineDeclarations(sourceFile.origin)) {
+            const ns = this.ns(decl.getModuleSpecifierSourceFile().getFilePath())
+            const literal = decl.getModuleSpecifierValue()
+            externalModules.push({
+                name: literal,
+                required: true,
+                namespace: '\\' + ns + '\\'
+            })
+        }
         return generatePHPCode(
             sourceFile,
-            [...this.skipRequire, ...getInlineDependencyLiterals(sourceFile.origin)],
+            externalModules,
             tsconfig['compilerOptions']
         )
     }

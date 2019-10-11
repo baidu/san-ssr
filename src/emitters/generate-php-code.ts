@@ -1,23 +1,27 @@
 import { compile } from 'ts2php'
+import { keyBy } from 'lodash'
 import { SanSourceFile } from '../parsers/san-sourcefile'
 import debugFactory from 'debug'
 
 const debug = debugFactory('generate-php-code')
 
-export function generatePHPCode (sourceFile: SanSourceFile, skipRequire, compilerOptions) {
-    debug('skipRequire:', skipRequire)
-    const modules = {}
-    for (const name of skipRequire) {
-        modules[name] = { name, required: true }
-    }
-    const { errors, phpCode } = compile(sourceFile.getFilePath(), {
+export type ModuleInfo = {
+    name: string,
+    required?: boolean,
+    namespace?: string
+}
+
+export function generatePHPCode (sourceFile: SanSourceFile, modules: ModuleInfo[], compilerOptions) {
+    debug('modules:', modules)
+    const options = {
         source: sourceFile.getFullText(),
         emitHeader: false,
         plugins: [],
-        modules,
+        modules: keyBy(modules, 'name'),
         helperClass: '\\san\\runtime\\Ts2Php_Helper',
         compilerOptions
-    })
+    }
+    const { errors, phpCode } = compile(sourceFile.getFilePath(), options)
     if (errors.length) {
         const error = errors[0]
         throw new Error(error.msg || error['messageText'])

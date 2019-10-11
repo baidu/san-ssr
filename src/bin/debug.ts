@@ -1,7 +1,7 @@
 import chalk from 'chalk'
 import { readFileSync } from 'fs'
 import { resolve } from 'path'
-import { parseHtml, compileToJS, compileToPHP } from '../utils/case'
+import { parseHtml, compileToJS, compileToPHP, supportJSSSR } from '../utils/case'
 import { renderByJS, renderByPHP } from '../loaders/case'
 import { measure, startMeasure } from '../utils/timing'
 
@@ -10,11 +10,15 @@ const htmlPath = resolve(__dirname, '../../test/cases', caseName, 'result.html')
 const expected = readFileSync(htmlPath, 'utf8')
 const [expectedData, expectedHtml] = parseHtml(expected)
 
-console.log(chalk.green('[COMP  JS]'), measure(() => compileToJS(caseName)))
+if (supportJSSSR(caseName)) {
+    console.log(chalk.green('[COMP  JS]'), measure(() => compileToJS(caseName)))
+}
 console.log(chalk.green('[COMP PHP]'), measure(() => compileToPHP(caseName)))
 
 check(`[EXPECTED] ${caseName}`, () => expected)
-check(`[SSR   JS] ${caseName}`, () => renderByJS(caseName))
+if (supportJSSSR(caseName)) {
+    check(`[SSR   JS] ${caseName}`, () => renderByJS(caseName))
+}
 check(`[SSR  PHP] ${caseName}`, () => renderByPHP(caseName))
 
 function check (title, render) {

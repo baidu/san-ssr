@@ -6,6 +6,7 @@ import { ToJSCompiler } from '../compilers/to-js-compiler'
 import debugFactory from 'debug'
 import ProgressBar = require('progress')
 
+const jsSSRUnables = ['multi-files']
 const debug = debugFactory('case')
 const caseRoot = resolve(__dirname, '../../test/cases')
 const tsConfigFilePath = resolve(__dirname, '../../test/tsconfig.json')
@@ -13,9 +14,18 @@ const cases = readdirSync(caseRoot)
 const toJSCompiler = new ToJSCompiler(tsConfigFilePath)
 const toPHPCompiler = new ToPHPCompiler({
     tsConfigFilePath,
-    skipRequire: ['../../..'],
+    externalModules: [{ name: '../../..', required: true }],
     nsPrefix: 'san\\components\\test\\'
 })
+const multiFileCases = ['multi-component-files', 'multi-files']
+
+export function supportJSSSR (caseName) {
+    return !jsSSRUnables.includes(caseName)
+}
+
+export function supportE2E (caseName) {
+    return !multiFileCases.includes(caseName)
+}
 
 export function compileToJS (caseName) {
     debug('compileToJS', caseName)
@@ -59,6 +69,10 @@ export function compileAllToPHP () {
         { total: cases.length }
     )
     for (const caseName of cases) {
+        if (jsSSRUnables.includes(caseName)) {
+            p.tick()
+            continue
+        }
         p.tick(0, { caseName })
         compileToPHP(caseName)
         p.tick()

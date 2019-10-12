@@ -49,6 +49,16 @@ export class ToPHPCompiler extends Compiler {
         this.toJSCompiler = new ToJSCompiler(tsConfigFilePath)
     }
 
+    public compile (filepath: string, options) {
+        const ext = extname(filepath)
+        if (ext === '.ts') {
+            return this.compileFromTS(filepath, options)
+        } else if (ext === '.js') {
+            return this.compileFromJS(filepath, options)
+        }
+        throw new Error(`not recognized file extension: ${ext}`)
+    }
+
     public compileFromTS (filepath: string, {
         funcName = 'render',
         ns = 'san\\renderer',

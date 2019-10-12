@@ -8,7 +8,7 @@ import { Project } from 'ts-morph'
 import { SanSourceFile } from '../parsers/san-sourcefile'
 import { getDefaultConfigPath } from '../parsers/tsconfig'
 import { Compiler } from './compiler'
-import { sep } from 'path'
+import { sep, extname } from 'path'
 import debugFactory from 'debug'
 
 const debug = debugFactory('to-js-compiler')
@@ -30,7 +30,17 @@ export class ToJSCompiler extends Compiler {
         })
     }
 
-    compileFromJS (filepath: string) {
+    public compile (filepath: string) {
+        const ext = extname(filepath)
+        if (ext === '.ts') {
+            return this.compileFromTS(filepath)
+        } else if (ext === '.js') {
+            return this.compileFromJS(filepath)
+        }
+        throw new Error(`not recognized file extension: ${ext}`)
+    }
+
+    public compileFromJS (filepath: string) {
         const emitter = new JSEmitter()
         emitter.write('module.exports = ')
         emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => {
@@ -42,7 +52,7 @@ export class ToJSCompiler extends Compiler {
         return emitter.fullText()
     }
 
-    compileFromTS (filepath: string) {
+    public compileFromTS (filepath: string) {
         const emitter = new JSEmitter()
         emitter.write('module.exports = ')
         emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => {
@@ -55,7 +65,7 @@ export class ToJSCompiler extends Compiler {
         return emitter.fullText()
     }
 
-    evalComponentClass (component: Component) {
+    public evalComponentClass (component: Component) {
         const commonJS = new CommonJS(filepath => {
             const sourceFile = component.getModule(filepath)
             if (!sourceFile) throw new Error(`file ${filepath} not found`)
@@ -65,7 +75,7 @@ export class ToJSCompiler extends Compiler {
         return commonJS.require(component.getComponentFilepath()).default
     }
 
-    compileToJS (source: SanSourceFile) {
+    public compileToJS (source: SanSourceFile) {
         const compilerOptions = this.tsConfigFilePath['compilerOptions']
         const { diagnostics, outputText } =
             transpileModule(source.getFullText(), { compilerOptions })

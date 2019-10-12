@@ -24,14 +24,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/harttle/san-ssr-php.git"
+    "url": "git+https://github.com/harttle/san-ssr.git"
   },
   "author": "harttle <yangjvn@126.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/harttle/san-ssr-php/issues"
+    "url": "https://github.com/harttle/san-ssr/issues"
   },
-  "homepage": "https://github.com/harttle/san-ssr-php#readme",
+  "homepage": "https://github.com/harttle/san-ssr#readme",
   "devDependencies": {
     "@babel/core": "^7.6.0",
     "@babel/preset-env": "^7.6.0",

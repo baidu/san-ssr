@@ -31,23 +31,19 @@ export function compileToJS (caseName) {
     debug('compileToJS', caseName)
     const ts = join(caseRoot, caseName, 'component.ts')
     const js = resolve(caseRoot, caseName, 'component.js')
+    const targetCode = toJSCompiler.compile(existsSync(js) ? js : ts)
 
-    const fn = existsSync(js)
-        ? toJSCompiler.compileFromJS(js)
-        : toJSCompiler.compileFromTS(ts)
-    writeFileSync(join(caseRoot, caseName, 'ssr.js'), `${fn}`)
+    writeFileSync(join(caseRoot, caseName, 'ssr.js'), targetCode)
 }
 
 export function compileToPHP (caseName) {
     const ts = join(caseRoot, caseName, 'component.ts')
     const js = resolve(caseRoot, caseName, 'component.js')
-    const options = {
-        ns: `san\\renderer\\${camelCase(caseName)}`
-    }
+    const targetCode = toPHPCompiler.compile(
+        existsSync(ts) ? ts : js,
+        { ns: `san\\renderer\\${camelCase(caseName)}` }
+    )
 
-    const targetCode = existsSync(ts)
-        ? toPHPCompiler.compileFromTS(ts, options)
-        : toPHPCompiler.compileFromJS(js, options)
     writeFileSync(join(caseRoot, caseName, 'ssr.php'), targetCode)
 }
 

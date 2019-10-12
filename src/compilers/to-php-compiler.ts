@@ -36,7 +36,7 @@ export class ToPHPCompiler extends Compiler {
         super({ fileHeader: '<?php\n' })
         this.nsPrefix = nsPrefix
         this.externalModules = [{
-            name: 'san-ssr-php',
+            name: 'san-ssr',
             required: true
         }, {
             name: 'san',

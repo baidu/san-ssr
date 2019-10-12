@@ -8,11 +8,11 @@
     "build": "npm run build-js && npm run build-php",
     "render": "npm run render-js && npm run render-php",
 
-    "render-js": "./render.js",
-    "render-php": "./render.php",
+    "render-js": "./bin/render.js",
+    "render-php": "./bin/render.php",
 
-    "build-js": "sanssr -t js  ./component.ts > ssr.js",
-    "build-php": "sanssr -t php ./component.ts > ssr.php"
+    "build-js": "sanssr -t js  src/component.ts > dist/ssr.js",
+    "build-php": "sanssr -t php src/component.ts > dist/ssr.php"
   },
   "author": "",
   "license": "ISC",

@@ -1,8 +1,8 @@
 #!/usr/bin/env php
 <?php
-include('./ssr.php');
+include(__DIR__ . '/../dist/ssr.php');
 
-$data = json_decode(file_get_contents("./data.json"));
+$data = json_decode(file_get_contents(__DIR__ . "/../data.json"));
 $noDataOutput = false;
 $html = \san\renderer\render($data, $noDataOutput);
 

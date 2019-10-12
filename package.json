@@ -10,7 +10,7 @@
     "sanssr": "./dist/bin/ssr.js"
   },
   "scripts": {
-    "lint": "eslint src test",
+    "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
     "build": "tsc",
     "build-watch": "tsc --watch",
     "unit-php": "./vendor/bin/phpunit --bootstrap vendor/autoload.php test/unit/*.spec.php",

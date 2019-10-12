@@ -31,12 +31,14 @@ describe('Emitter', function () {
 
             expect(emitter.fullText()).toEqual('foobar\n')
         })
+
         it('should finish current line', function () {
             emitter.write('foo')
             emitter.writeLine('bar')
 
             expect(emitter.fullText()).toEqual('foo\nbar\n')
         })
+
         it('should not add NL if exists', function () {
             emitter.write('foo\n')
             emitter.writeLine('bar')

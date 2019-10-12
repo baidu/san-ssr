@@ -22,6 +22,7 @@ describe('CommonJS', function () {
             '/foo': 'module.exports = 1',
             '/bar': 'module.exports = require("./foo") + 1'
         })
+
         expect(commonJS.require('/bar')).toEqual(2)
     })
 

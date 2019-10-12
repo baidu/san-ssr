@@ -25,7 +25,7 @@ describe('ToPHPCompiler', function () {
         expect(result).toContain('"add" => function ($x, $y)')
     })
 
-    it.only('should compile a whole component', function () {
+    it('should compile a whole component', function () {
         const path = resolve(__dirname, '../stub/a.comp.ts')
         const result = cc.compileFromTS(path)
 

@@ -39,18 +39,9 @@ const outputFile = yargs.argv.output as OptionValue
 const componentFile = resolve(yargs.argv._[0])
 console.error(chalk.gray('compiling'), componentFile, 'to', target)
 
-let targetCode = ''
-if (target === 'php') {
-    const toPHPCompiler = new ToPHPCompiler({
-        tsConfigFilePath,
-        externalModules: [{ name: '../../..', required: true }],
-        nsPrefix: 'san\\components\\test\\'
-    })
-    targetCode = toPHPCompiler.compile(componentFile, { ns: `san\\renderer` })
-} else {
-    const toJSCompiler = new ToJSCompiler(tsConfigFilePath)
-    targetCode = toJSCompiler.compile(componentFile)
-}
+const Compiler = target === 'php' ? ToPHPCompiler : ToJSCompiler
+const compiler = new Compiler({ tsConfigFilePath })
+const targetCode = compiler.compile(componentFile)
 
 if (outputFile !== undefined) {
     writeFileSync(outputFile, targetCode)

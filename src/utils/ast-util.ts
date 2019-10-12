@@ -1,9 +1,9 @@
-import { TypeGuards, Expression, PropertyDeclaration, ClassDeclaration, ts, SourceFile } from 'ts-morph'
+import { ImportDeclaration, TypeGuards, Expression, PropertyDeclaration, ClassDeclaration, ts, SourceFile } from 'ts-morph'
 import debugFactory from 'debug'
 
 const debug = debugFactory('ast-util')
 
-export function getSanImportDeclaration (sourceFile: SourceFile) {
+export function getSanImportDeclaration (sourceFile: SourceFile): ImportDeclaration {
     return sourceFile.getImportDeclaration(
         node => node.getModuleSpecifierValue() === 'san'
     )

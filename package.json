@@ -2,12 +2,14 @@
   "name": "san-ssr",
   "version": "1.0.0",
   "description": "San server-side-render for PHP environment",
-  "main": "index.ts",
+  "main": "dist/index",
+  "types": "index.ts",
   "directories": {
-    "test": "test"
+    "test": "test",
+    "example": "example"
   },
   "bin": {
-    "sanssr": "./dist/bin/ssr.js"
+    "san-ssr": "./dist/bin/ssr.js"
   },
   "scripts": {
     "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",

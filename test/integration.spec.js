@@ -1,7 +1,7 @@
 const { readFileSync, readdirSync } = require('fs')
 const { resolve, join } = require('path')
 const { parseHtml, supportJSSSR } = require('../dist/utils/case')
-const { renderByJS, compileAllToJS, renderByPHP, compileAllToPHP, compileToPHP, compileToJS } = require('../dist/bin/case')
+const { renderByJS, compileAllToJS, renderByPHP, compileAllToPHP, compileToPHP, compileToJS } = require('../dist/loaders/case')
 
 const caseRoot = resolve(__dirname, 'cases')
 const files = readdirSync(caseRoot)

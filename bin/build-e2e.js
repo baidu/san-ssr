@@ -5,9 +5,9 @@ const { join, resolve } = require('path')
 const testRoot = resolve(__dirname, '../test')
 const { ComponentParser } = require('../dist/parsers/component-parser')
 const { ToJSCompiler } = require('../dist/compilers/to-js-compiler')
-const tsconfigPath = resolve(__dirname, '../test/tsconfig.json')
-const ccj = new ToJSCompiler(tsconfigPath)
-const parser = ComponentParser.createUsingTsconfig(tsconfigPath)
+const tsConfigFilePath = resolve(__dirname, '../test/tsconfig.json')
+const ccj = new ToJSCompiler({ tsConfigFilePath })
+const parser = ComponentParser.createUsingTsconfig(tsConfigFilePath)
 const { supportE2E } = require('../dist/utils/case')
 
 let html = ''
@@ -107,8 +107,6 @@ function buildFile (caseDir) {
         }
 
         // iterate
-        if (isDir && filename === 'multi-files')
-        console.log('sfdsafdsafdsaf', filename, supportE2E(filename))
         if (isDir && supportE2E(filename)) {
             console.log(`[Build SSR spec] ${filename}`)
             buildFile(abFilePath)

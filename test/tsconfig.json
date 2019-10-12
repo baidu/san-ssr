@@ -4,6 +4,7 @@
     "module": "CommonJS",
     "outDir": "dist",
     "skipLibCheck": true,
+    "noImplicitThis": false,
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,

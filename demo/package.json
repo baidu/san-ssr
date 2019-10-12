@@ -6,17 +6,23 @@
   "main": "index.js",
   "scripts": {
     "build": "npm run build-js && npm run build-php",
+    "build-php": "san-ssr -t php src/index.ts > dist/index.php",
+    "build-js": "san-ssr -t js  src/index.ts > dist/index.js",
+    "gulpbuild": "gulp js php",
+    "gulpbuild-js": "gulp js",
+    "gulpbuild-php": "gulp php",
     "render": "npm run render-js && npm run render-php",
-
     "render-js": "./bin/render.js",
-    "render-php": "./bin/render.php",
-
-    "build-js": "sanssr -t js  src/component.ts > dist/ssr.js",
-    "build-php": "sanssr -t php src/component.ts > dist/ssr.php"
+    "render-php": "./bin/render.php"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "san-ssr": "..",
     "san": "^3.7.9"
+  },
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "plugin-error": "^1.0.1"
   }
 }

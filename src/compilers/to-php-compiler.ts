@@ -19,6 +19,13 @@ import debugFactory from 'debug'
 
 const debug = debugFactory('ast-util')
 
+type ToPHPCompilerOptions = {
+    tsConfigFilePath?: string,
+    root?: string,
+    externalModules?: ModuleInfo[],
+    nsPrefix?: string
+}
+
 export class ToPHPCompiler extends Compiler {
     private root: string
     private tsConfigFilePath: string
@@ -32,7 +39,7 @@ export class ToPHPCompiler extends Compiler {
         root = tsConfigFilePath.split(sep).slice(0, -1).join(sep),
         externalModules = [],
         nsPrefix = ''
-    }) {
+    }: ToPHPCompilerOptions = {}) {
         super({ fileHeader: '<?php\n' })
         this.nsPrefix = nsPrefix
         this.externalModules = [{
@@ -46,10 +53,10 @@ export class ToPHPCompiler extends Compiler {
         this.root = root
         this.tsConfigFilePath = tsConfigFilePath
         this.project = new Project({ tsConfigFilePath })
-        this.toJSCompiler = new ToJSCompiler(tsConfigFilePath)
+        this.toJSCompiler = new ToJSCompiler({ tsConfigFilePath })
     }
 
-    public compile (filepath: string, options) {
+    public compile (filepath: string, options = {}) {
         const ext = extname(filepath)
         if (ext === '.ts') {
             return this.compileFromTS(filepath, options)

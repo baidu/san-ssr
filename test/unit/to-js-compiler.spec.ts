@@ -3,12 +3,12 @@ import { ComponentParser } from '../../src/parsers/component-parser'
 import { resolve } from 'path'
 
 describe('ToJSCompiler', function () {
-    const tsconfig = resolve(__dirname, '../tsconfig.json')
-    const cc = new ToJSCompiler(tsconfig)
+    const tsConfigFilePath = resolve(__dirname, '../tsconfig.json')
+    const cc = new ToJSCompiler({ tsConfigFilePath })
 
     it('should a single class', function () {
         const path = resolve(__dirname, '../stub/foo.ts')
-        const parser = ComponentParser.createUsingTsconfig(tsconfig)
+        const parser = ComponentParser.createUsingTsconfig(tsConfigFilePath)
         const file = parser.parseComponent(path).getComponentSourceFile()
         const result = cc.compileToJS(file)
 
@@ -17,7 +17,7 @@ describe('ToJSCompiler', function () {
     })
 
     it('should mark component class with cid', function () {
-        const parser = ComponentParser.createUsingTsconfig(tsconfig)
+        const parser = ComponentParser.createUsingTsconfig(tsConfigFilePath)
         const path = resolve(__dirname, '../stub/a.comp.ts')
         const file = parser.parseComponent(path).getComponentSourceFile()
         const result = cc.compileToJS(file)
@@ -29,8 +29,8 @@ describe('ToJSCompiler', function () {
 
     it('should evalComponentClass', function () {
         const path = resolve(__dirname, '../stub/a.comp.ts')
-        const parser = ComponentParser.createUsingTsconfig(tsconfig)
-        const cc = new ToJSCompiler(tsconfig)
+        const parser = ComponentParser.createUsingTsconfig(tsConfigFilePath)
+        const cc = new ToJSCompiler({ tsConfigFilePath })
         const comp = parser.parseComponent(path)
         const componentClass = cc.evalComponentClass(comp)
 

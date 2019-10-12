@@ -13,15 +13,20 @@ import debugFactory from 'debug'
 
 const debug = debugFactory('to-js-compiler')
 
+export type ToJSCompilerOptions = {
+    tsConfigFilePath?: string,
+    root?: string
+}
+
 export class ToJSCompiler extends Compiler {
     private root: string
     private tsConfigFilePath: object
     private project: Project
 
-    constructor (
+    constructor ({
         tsConfigFilePath = getDefaultConfigPath(),
         root = tsConfigFilePath.split(sep).slice(0, -1).join(sep)
-    ) {
+    }: ToJSCompilerOptions = {}) {
         super()
         this.root = root
         this.tsConfigFilePath = require(tsConfigFilePath)

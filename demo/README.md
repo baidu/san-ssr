@@ -1,21 +1,25 @@
 # SSR Demo
 
+## Install
+
+```
+npm install
+```
+
 ## SSR in PHP
 
-Call `ssp -t php` to generate `ssr.php`.
-Run `render.js` to call `ssr.php` and render HTML:
+Generate ssr file in PHP (`dist/index.php`) and pass `data.json` to it:
 
 ```bash
-npm run build-php
+npm run build-php   // or `npm run gulpbuild-php`
 npm run render-php
 ```
 
 ## SSR in JavaScript
 
-Call `ssp -t js` to generate `ssr.php`.
-Run `render.js` to call `ssr.php` and render HTML:
+Generate ssr file in JavaScript (`dist/index.js`) and pass `data.json` to it:
 
 ```bash
-npm run build-js
-npm run render-php
+npm run build-js    // or `npm run gulpbuild-js`
+npm run render-js
 ```

@@ -11,7 +11,7 @@ const debug = debugFactory('case')
 const caseRoot = resolve(__dirname, '../../test/cases')
 const tsConfigFilePath = resolve(__dirname, '../../test/tsconfig.json')
 const cases = readdirSync(caseRoot)
-const toJSCompiler = new ToJSCompiler(tsConfigFilePath)
+const toJSCompiler = new ToJSCompiler({ tsConfigFilePath })
 const toPHPCompiler = new ToPHPCompiler({
     tsConfigFilePath,
     externalModules: [{ name: '../../..', required: true }],

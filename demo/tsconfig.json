@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "declaration": true,
+    "skipLibCheck": true,
+    "module": "CommonJS",
+    "outDir": "dist",
+    "noImplicitAny": false,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "downlevelIteration": true,
+    "strict": false,
+    "suppressImplicitAnyIndexErrors": true
+  }
+}

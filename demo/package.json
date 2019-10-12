@@ -1,0 +1,17 @@
+{
+  "name": "demo",
+  "version": "1.0.0",
+  "private": "true",
+  "description": "demo for san-ssr-php",
+  "main": "index.js",
+  "scripts": {
+    "build": "ssp ./component.ts > ssr.php",
+    "render": "./render.php",
+    "start": "npm run build && npm run render"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "san": "^3.7.9"
+  }
+}

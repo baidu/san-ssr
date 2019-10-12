@@ -35,7 +35,7 @@ export function compileToJS (caseName) {
     const fn = existsSync(js)
         ? toJSCompiler.compileFromJS(js)
         : toJSCompiler.compileFromTS(ts)
-    writeFileSync(join(caseRoot, caseName, 'ssr.js'), `module.exports = ${fn}`)
+    writeFileSync(join(caseRoot, caseName, 'ssr.js'), `${fn}`)
 }
 
 export function compileToPHP (caseName) {
@@ -45,10 +45,10 @@ export function compileToPHP (caseName) {
         ns: `san\\renderer\\${camelCase(caseName)}`
     }
 
-    const fn = existsSync(ts)
+    const targetCode = existsSync(ts)
         ? toPHPCompiler.compileFromTS(ts, options)
         : toPHPCompiler.compileFromJS(js, options)
-    writeFileSync(join(caseRoot, caseName, 'ssr.php'), fn)
+    writeFileSync(join(caseRoot, caseName, 'ssr.php'), targetCode)
 }
 
 export function compileAllToJS () {

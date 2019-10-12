@@ -1,6 +1,6 @@
 import { Component } from '../parsers/component'
 import { JSEmitter } from '../emitters/js-emitter'
-import { compileToSource } from './js-render-compiler'
+import { generateRenderFunction } from './js-render-compiler'
 import { ComponentParser } from '../parsers/component-parser'
 import { transpileModule } from 'typescript'
 import { CMD } from '../loaders/cmd'
@@ -32,10 +32,11 @@ export class ToJSCompiler extends Compiler {
 
     compileFromJS (filepath: string) {
         const emitter = new JSEmitter()
+        emitter.write('module.exports = ')
         emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => {
             emitter.writeRuntime()
             const componentClass = new CMD().require(filepath)
-            emitter.writeLines(compileToSource(componentClass))
+            emitter.writeLines(generateRenderFunction(componentClass))
         })
 
         return emitter.fullText()
@@ -43,12 +44,13 @@ export class ToJSCompiler extends Compiler {
 
     compileFromTS (filepath: string) {
         const emitter = new JSEmitter()
+        emitter.write('module.exports = ')
         emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => {
             emitter.writeRuntime()
             const parser = new ComponentParser(this.project)
             const component = parser.parseComponent(filepath)
             const componentClass = this.evalComponentClass(component)
-            emitter.writeLines(compileToSource(componentClass))
+            emitter.writeLines(generateRenderFunction(componentClass))
         })
         return emitter.fullText()
     }

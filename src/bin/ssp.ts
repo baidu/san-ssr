@@ -6,11 +6,12 @@ import { ToJSCompiler } from '../compilers/to-js-compiler'
 import { writeFileSync } from 'fs'
 import { extname, resolve } from 'path'
 import * as yargs from 'yargs'
+import { byteCount } from '../utils/buffer'
 
 type OptionValue = string | undefined
 
 yargs
-    .usage('$0 [OPTION]... <FILE>')
+    .usage('$0 -o <OUT_FILE> [OPTION]... <FILE>')
     .option('output', {
         alias: 'o',
         description: 'output file path, output to STDOUT if not specified'
@@ -34,11 +35,11 @@ yargs
 
 const target = yargs.argv.target as OptionValue
 const tsConfigFilePath = yargs.argv.tsconfig as OptionValue
-const output = yargs.argv.output as OptionValue
+const outputFile = yargs.argv.output as OptionValue
 const componentFile = resolve(yargs.argv._[0])
+console.error(chalk.gray('compiling'), componentFile, 'to', target)
 
 if (target === 'php') {
-    console.error(chalk.gray('compiling'), componentFile, 'to', target)
     const toPHPCompiler = new ToPHPCompiler({
         tsConfigFilePath,
         externalModules: [{ name: '../../..', required: true }],
@@ -48,19 +49,30 @@ if (target === 'php') {
     const options = {
         ns: `san\\renderer`
     }
-    let targetCode = ''
     if (ext === '.ts') {
-        targetCode = toPHPCompiler.compileFromTS(componentFile, options)
+        print(toPHPCompiler.compileFromTS(componentFile, options))
     } else if (ext === '.js') {
-        targetCode = toPHPCompiler.compileFromJS(componentFile, options)
+        print(toPHPCompiler.compileFromJS(componentFile, options))
     } else {
         throw new Error(`not recognized file extension: ${ext}`)
     }
-    if (output !== undefined) {
-        writeFileSync(output, targetCode)
+} else {
+    const toJSCompiler = new ToJSCompiler(tsConfigFilePath)
+    const ext = extname(componentFile)
+    if (ext === '.ts') {
+        print(toJSCompiler.compileFromTS(componentFile))
+    } else if (ext === '.js') {
+        print(toJSCompiler.compileFromJS(componentFile))
     } else {
-        console.log(targetCode)
+        throw new Error(`not recognized file extension: ${ext}`)
     }
 }
 
-// const toJSCompiler = new ToJSCompiler(tsConfigFilePath)
+function print (targetCode) {
+    if (outputFile !== undefined) {
+        writeFileSync(outputFile, targetCode)
+    } else {
+        process.stdout.write(targetCode)
+    }
+    console.error(chalk.green('success'), `${byteCount(targetCode)} bytes written`)
+}

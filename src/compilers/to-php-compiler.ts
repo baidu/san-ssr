@@ -6,7 +6,7 @@ import { ModuleInfo, generatePHPCode } from '../emitters/generate-php-code'
 import { transformAstToPHP } from '../transformers/to-php'
 import { ToJSCompiler } from './to-js-compiler'
 import { Project } from 'ts-morph'
-import { generateRenderFunction } from './php-render-compiler'
+import { generateRenderModule } from './php-render-compiler'
 import { Compiler } from './compiler'
 import { PHPEmitter } from '../emitters/php-emitter'
 import { Component } from '../parsers/component'
@@ -59,7 +59,7 @@ export class ToPHPCompiler extends Compiler {
         const component = parser.parseComponent(filepath)
         const ComponentClass = this.toJSCompiler.evalComponentClass(component)
 
-        generateRenderFunction({ ComponentClass, funcName, emitter, ns })
+        generateRenderModule({ ComponentClass, funcName, emitter, ns })
         this.compileComponents(component, emitter)
 
         emitter.writeRuntime()
@@ -74,7 +74,7 @@ export class ToPHPCompiler extends Compiler {
         const emitter = new PHPEmitter(emitHeader)
 
         const ComponentClass = new CMD().require(filepath)
-        generateRenderFunction({ ComponentClass, funcName, emitter, ns })
+        generateRenderModule({ ComponentClass, funcName, emitter, ns })
 
         emitter.writeRuntime()
         return emitter.fullText()

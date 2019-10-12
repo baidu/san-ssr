@@ -6652,7 +6652,7 @@ function genComponentProtoCode (component) {
 * @param {Function} ComponentClass 组件类
 * @return {string}
 */
-export function compileToSource (ComponentClass) {
+export function generateRenderFunction (ComponentClass) {
     guid = 1
     ssrIndex = 0
     const sourceBuffer = new CompileSourceBuffer()
@@ -6664,8 +6664,6 @@ export function compileToSource (ComponentClass) {
     return sourceBuffer.toCode()
 }
 
-// #[end]
-
 /**
  * 将组件类编译成 renderer 方法
  *
@@ -6676,7 +6674,7 @@ export function compileToRenderer (ComponentClass) {
     let renderer = null
 
     if (!renderer) {
-        const code = compileToSource(ComponentClass)
+        const code = generateRenderFunction(ComponentClass)
         renderer = (new Function('return ' + code))()   // eslint-disable-line
         ComponentClass.__ssrRenderer = renderer
     }

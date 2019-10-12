@@ -1,6 +1,6 @@
 /**
  * 将组件树编译成 render 函数之间的递归调用
- * 提供 generateRenderFunction 方法
+ * 提供 generateRenderModule 方法
  */
 import { each, extend, inherits } from '../utils/underscore'
 import { createAccessor, Walker, readTertiaryExpr } from '../parsers/walker'
@@ -2659,7 +2659,7 @@ function genComponentContextCode (component, emitter) {
 * @param {Function} ComponentClass 组件类
 * @return {string}
 */
-export function generateRenderFunction ({
+export function generateRenderModule ({
     ComponentClass,
     funcName = '',
     ns = 'san\\renderer',

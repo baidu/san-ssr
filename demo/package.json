@@ -5,9 +5,14 @@
   "description": "demo for san-ssr-php",
   "main": "index.js",
   "scripts": {
-    "build": "ssp ./component.ts > ssr.php",
-    "render": "./render.php",
-    "start": "npm run build && npm run render"
+    "build": "npm run build-js && npm run build-php",
+    "render": "npm run render-js && npm run render-php",
+
+    "render-js": "./render.js",
+    "render-php": "./render.php",
+
+    "build-js": "ssp -t js  ./component.ts > ssr.js",
+    "build-php": "ssp -t php ./component.ts > ssr.php"
   },
   "author": "",
   "license": "ISC",

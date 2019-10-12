@@ -1,4 +1,4 @@
-import { CMD } from '../loaders/cmd'
+import { CommonJS } from '../loaders/common-js'
 import { ComponentParser } from '../parsers/component-parser'
 import { getInlineDeclarations } from '../parsers/dependency-resolver'
 import { isReserved } from '../utils/php-util'
@@ -73,7 +73,7 @@ export class ToPHPCompiler extends Compiler {
     } = {}) {
         const emitter = new PHPEmitter(emitHeader)
 
-        const ComponentClass = new CMD().require(filepath)
+        const ComponentClass = new CommonJS().require(filepath)
         generateRenderModule({ ComponentClass, funcName, emitter, ns })
 
         emitter.writeRuntime()

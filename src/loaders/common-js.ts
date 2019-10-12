@@ -17,7 +17,7 @@ type FileLoader = ((filepath: string) => string) | ({ [key:string]: string });
 
 const defaultFileLoader = filepath => readFileSync(filepath, 'utf8')
 
-export class CMD {
+export class CommonJS {
     private readFile
     public cache = new Map()
 

@@ -3,7 +3,7 @@ import { JSEmitter } from '../emitters/js-emitter'
 import { generateRenderFunction } from './js-render-compiler'
 import { ComponentParser } from '../parsers/component-parser'
 import { transpileModule } from 'typescript'
-import { CMD } from '../loaders/cmd'
+import { CommonJS } from '../loaders/common-js'
 import { Project } from 'ts-morph'
 import { SanSourceFile } from '../parsers/san-sourcefile'
 import { getDefaultConfigPath } from '../parsers/tsconfig'
@@ -35,7 +35,7 @@ export class ToJSCompiler extends Compiler {
         emitter.write('module.exports = ')
         emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => {
             emitter.writeRuntime()
-            const componentClass = new CMD().require(filepath)
+            const componentClass = new CommonJS().require(filepath)
             emitter.writeLines(generateRenderFunction(componentClass))
         })
 
@@ -56,13 +56,13 @@ export class ToJSCompiler extends Compiler {
     }
 
     evalComponentClass (component: Component) {
-        const cmd = new CMD(filepath => {
+        const commonJS = new CommonJS(filepath => {
             const sourceFile = component.getModule(filepath)
             if (!sourceFile) throw new Error(`file ${filepath} not found`)
             const js = this.compileToJS(sourceFile)
             return js
         })
-        return cmd.require(component.getComponentFilepath()).default
+        return commonJS.require(component.getComponentFilepath()).default
     }
 
     compileToJS (source: SanSourceFile) {

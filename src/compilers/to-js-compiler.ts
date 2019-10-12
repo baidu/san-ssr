@@ -7,9 +7,9 @@ import { CommonJS } from '../loaders/common-js'
 import { Project } from 'ts-morph'
 import { SanSourceFile } from '../parsers/san-sourcefile'
 import { getDefaultConfigPath } from '../parsers/tsconfig'
-import { Compiler } from './compiler'
 import { sep, extname } from 'path'
 import debugFactory from 'debug'
+import { Compiler } from './compiler'
 
 const debug = debugFactory('to-js-compiler')
 
@@ -18,7 +18,7 @@ export type ToJSCompilerOptions = {
     root?: string
 }
 
-export class ToJSCompiler extends Compiler {
+export class ToJSCompiler implements Compiler {
     private root: string
     private tsConfigFilePath: object
     private project: Project
@@ -27,7 +27,6 @@ export class ToJSCompiler extends Compiler {
         tsConfigFilePath = getDefaultConfigPath(),
         root = tsConfigFilePath.split(sep).slice(0, -1).join(sep)
     }: ToJSCompilerOptions = {}) {
-        super()
         this.root = root
         this.tsConfigFilePath = require(tsConfigFilePath)
         this.project = new Project({

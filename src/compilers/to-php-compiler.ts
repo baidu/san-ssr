@@ -7,7 +7,6 @@ import { transformAstToPHP } from '../transformers/to-php'
 import { ToJSCompiler } from './to-js-compiler'
 import { Project } from 'ts-morph'
 import { generateRenderModule } from './php-render-compiler'
-import { Compiler } from './compiler'
 import { PHPEmitter } from '../emitters/php-emitter'
 import { Component } from '../parsers/component'
 import camelCase from 'camelcase'
@@ -16,17 +15,18 @@ import { SanSourceFile } from '../parsers/san-sourcefile'
 import { getDefaultConfigPath } from '../parsers/tsconfig'
 import { sep, extname } from 'path'
 import debugFactory from 'debug'
+import { Compiler } from './compiler'
 
 const debug = debugFactory('ast-util')
 
-type ToPHPCompilerOptions = {
+export type ToPHPCompilerOptions = {
     tsConfigFilePath?: string,
     root?: string,
     externalModules?: ModuleInfo[],
     nsPrefix?: string
 }
 
-export class ToPHPCompiler extends Compiler {
+export class ToPHPCompiler implements Compiler {
     private root: string
     private tsConfigFilePath: string
     private nsPrefix: string
@@ -40,7 +40,6 @@ export class ToPHPCompiler extends Compiler {
         externalModules = [],
         nsPrefix = ''
     }: ToPHPCompilerOptions = {}) {
-        super({ fileHeader: '<?php\n' })
         this.nsPrefix = nsPrefix
         this.externalModules = [{
             name: 'san-ssr',

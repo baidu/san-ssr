@@ -1,6 +1,9 @@
-# San SSR for PHP
+# San SSR
 
-This is [San][san] SSR for PHP environment.
+This is [San][san] SSR for multiple platforms, supported environments:
+
+* Node.js >= 6.4.0
+* PHP 5 >= 5.3.0, PHP 7
 
 ## Usage
 
@@ -36,13 +39,15 @@ This is [San][san] SSR for PHP environment.
     - check default export extends Component
     - support SyntheticDefaultImports: `import * as san`
 
-## PHP SSR Problems
+## Known Problems
 
 THIS SECTION IS FOR MAINTAINERS ONLY
 
+### PHP
+
 - filters/computed 是 static，这要求使用时额外声明其类型
 
-## JS SSR Problems
+### JS
 
 THIS SECTION IS FOR MAINTAINERS ONLY
 

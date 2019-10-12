@@ -24,7 +24,7 @@ export function transformAstToPHP (sourceFile: SanSourceFile) {
             if (clazz.isExported()) {
                 throw new Error(`${name} is a reserved keyword in PHP`)
             }
-            clazz.rename(`SSPClass${name}`)
+            clazz.rename(`SanSSRClass${name}`)
         }
     }
 }

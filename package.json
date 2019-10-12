@@ -1,5 +1,5 @@
 {
-  "name": "san-ssr-php",
+  "name": "san-ssr",
   "version": "1.0.0",
   "description": "San server-side-render for PHP environment",
   "main": "index.ts",
@@ -7,7 +7,7 @@
     "test": "test"
   },
   "bin": {
-    "ssp": "./dist/bin/ssp.js"
+    "sanssr": "./dist/bin/ssr.js"
   },
   "scripts": {
     "lint": "eslint src test",

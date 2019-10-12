@@ -1863,7 +1863,7 @@ function camelComponentBinds (binds) {
 let ssrIndex = 0
 
 function genSSRId () {
-    return 'sspId' + (ssrIndex++)
+    return 'sanssrId' + (ssrIndex++)
 }
 
 const stringifier = {
@@ -2402,7 +2402,7 @@ const aNodeCompiler = {
                 emitter.writeLine('$slotCtx = $isInserted ? $ctx->owner : $ctx;')
 
                 if (aNode.vars || aNode.directives.bind) {
-                    emitter.writeLine('$slotCtx = (object)["sspCid" => $slotCtx->sspCid, "data" => $slotCtx->data, "instance" => $slotCtx->instance, "owner" => $slotCtx->owner];')
+                    emitter.writeLine('$slotCtx = (object)["sanssrCid" => $slotCtx->sanssrCid, "data" => $slotCtx->data, "instance" => $slotCtx->instance, "owner" => $slotCtx->owner];')
 
                     if (aNode.directives.bind) {
                         emitter.writeLine('_::extend($slotCtx->data, ' + ExpressionEmitter.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
@@ -2642,7 +2642,7 @@ function genComponentContextCode (component, emitter) {
     emitter.write(Object.keys(component.computed).map(x => `"${x}"`).join(','))
     emitter.feedLine('],')
 
-    emitter.writeLine(`"sspCid" => ${component.constructor.sspCid || 0},`)
+    emitter.writeLine(`"sanssrCid" => ${component.constructor.sanssrCid || 0},`)
     emitter.writeLine('"sourceSlots" => $sourceSlots,')
     emitter.writeLine('"data" => $data ? $data : ' + stringifier.any(component.data.get()) + ',')
     emitter.writeLine('"owner" => $parentCtx,')

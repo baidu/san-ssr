@@ -22,7 +22,7 @@ describe('ComponentParser', function () {
 
         expect(result).toContain('class A extends Component')
         expect(result).toContain('public static template = \'A\'')
-        expect(result).toContain('static sspCid: number = 0')
+        expect(result).toContain('static sanssrCid: number = 0')
     })
 
     it('should parse dependency of component class', function () {

@@ -164,7 +164,7 @@ final class _
     }
 
     public static function getClassByCtx($ctx) {
-        $cid = $ctx->sspCid;
+        $cid = $ctx->sanssrCid;
         if (\san\runtime\ComponentRegistry::has($cid)) {
             return \san\runtime\ComponentRegistry::get($cid);
         }

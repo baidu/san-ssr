@@ -18,7 +18,7 @@ yargs
     })
     .option('target', {
         alias: 't',
-        default: 'php',
+        required: true,
         choices: ['php', 'js'],
         description: 'target SSR file'
     })

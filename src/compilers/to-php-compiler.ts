@@ -116,7 +116,7 @@ export class ToPHPCompiler extends Compiler {
     }
 
     private ns (file) {
-        const escapeName = x => isReserved(x) ? 'sspNS' + camelCase(x) : x
+        const escapeName = x => isReserved(x) ? 'sanssrNS' + camelCase(x) : x
         let str = file
             .slice(this.root.length, -extname(file).length)
             .split(sep).map(camelCase).map(escapeName).join('\\')

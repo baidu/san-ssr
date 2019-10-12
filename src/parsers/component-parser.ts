@@ -15,7 +15,7 @@ export class ComponentParser {
     public project: Project
     public idPropertyName: string
 
-    constructor (project: Project, idPropertyName = 'sspCid') {
+    constructor (project: Project, idPropertyName = 'sanssrCid') {
         this.project = project
         this.idPropertyName = idPropertyName
     }

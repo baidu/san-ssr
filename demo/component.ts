@@ -1,4 +1,4 @@
-import { FilterDeclarations, ComputedDeclarations } from 'san-ssr-php'
+import { FilterDeclarations, ComputedDeclarations } from 'san-ssr'
 import { Component } from 'san'
 
 export default class DemoComponent extends Component {

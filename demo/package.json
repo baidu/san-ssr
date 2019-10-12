@@ -11,8 +11,8 @@
     "render-js": "./render.js",
     "render-php": "./render.php",
 
-    "build-js": "ssp -t js  ./component.ts > ssr.js",
-    "build-php": "ssp -t php ./component.ts > ssr.php"
+    "build-js": "sanssr -t js  ./component.ts > ssr.js",
+    "build-php": "sanssr -t php ./component.ts > ssr.php"
   },
   "author": "",
   "license": "ISC",

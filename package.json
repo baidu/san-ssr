@@ -6,6 +6,9 @@
   "directories": {
     "test": "test"
   },
+  "bin": {
+    "ssp": "./dist/bin/ssp.js"
+  },
   "scripts": {
     "lint": "eslint src test",
     "build": "tsc",
@@ -36,6 +39,7 @@
     "@babel/runtime": "^7.6.0",
     "@jest/transform": "^24.9.0",
     "@types/jest": "^24.0.18",
+    "@types/yargs": "^13.0.3",
     "@typescript-eslint/eslint-plugin": "^2.0.0",
     "@typescript-eslint/parser": "^2.0.0",
     "babel-jest": "^24.9.0",
@@ -70,6 +74,7 @@
     "snake-case": "^2.1.0",
     "ts-morph": "^4.0.1",
     "ts2php": "^0.12.3",
-    "typescript": "^3.4.5"
+    "typescript": "^3.4.5",
+    "yargs": "^14.2.0"
   }
 }

@@ -2,7 +2,7 @@ import { ClassDeclaration } from 'ts-morph'
 
 export function normalizeComponentClass (clazz: ClassDeclaration) {
     if (!clazz.getName()) {
-        // clazz.rename('SpsrComponent')    // this throws
+        // clazz.rename('SSPComponent')    // this throws
         throw new Error('anonymous component class is not supported')
     }
 

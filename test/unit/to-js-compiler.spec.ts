@@ -24,7 +24,7 @@ describe('ToJSCompiler', function () {
 
         expect(result).toContain('class A extends')
         expect(result).toContain('A.template = \'A\'')
-        expect(result).toContain('A.spsrCid = 0')
+        expect(result).toContain('A.sspCid = 0')
     })
 
     it('should evalComponentClass', function () {
@@ -35,6 +35,6 @@ describe('ToJSCompiler', function () {
         const componentClass = cc.evalComponentClass(comp)
 
         expect(componentClass.template).toEqual('A')
-        expect(componentClass.spsrCid).toEqual(0)
+        expect(componentClass.sspCid).toEqual(0)
     })
 })

@@ -6,7 +6,7 @@ import { ModuleInfo, generatePHPCode } from '../emitters/generate-php-code'
 import { transformAstToPHP } from '../transformers/to-php'
 import { ToJSCompiler } from './to-js-compiler'
 import { Project } from 'ts-morph'
-import { compileRenderFunction } from './php-render-compiler'
+import { generateRenderFunction } from './php-render-compiler'
 import { Compiler } from './compiler'
 import { PHPEmitter } from '../emitters/php-emitter'
 import { Component } from '../parsers/component'
@@ -36,7 +36,7 @@ export class ToPHPCompiler extends Compiler {
         super({ fileHeader: '<?php\n' })
         this.nsPrefix = nsPrefix
         this.externalModules = [{
-            name: 'san-php-ssr',
+            name: 'san-ssr-php',
             required: true
         }, {
             name: 'san',
@@ -59,7 +59,7 @@ export class ToPHPCompiler extends Compiler {
         const component = parser.parseComponent(filepath)
         const ComponentClass = this.toJSCompiler.evalComponentClass(component)
 
-        compileRenderFunction({ ComponentClass, funcName, emitter, ns })
+        generateRenderFunction({ ComponentClass, funcName, emitter, ns })
         this.compileComponents(component, emitter)
 
         emitter.writeRuntime()
@@ -74,7 +74,7 @@ export class ToPHPCompiler extends Compiler {
         const emitter = new PHPEmitter(emitHeader)
 
         const ComponentClass = new CMD().require(filepath)
-        compileRenderFunction({ ComponentClass, funcName, emitter, ns })
+        generateRenderFunction({ ComponentClass, funcName, emitter, ns })
 
         emitter.writeRuntime()
         return emitter.fullText()
@@ -116,7 +116,7 @@ export class ToPHPCompiler extends Compiler {
     }
 
     private ns (file) {
-        const escapeName = x => isReserved(x) ? 'spsrNS' + camelCase(x) : x
+        const escapeName = x => isReserved(x) ? 'sspNS' + camelCase(x) : x
         let str = file
             .slice(this.root.length, -extname(file).length)
             .split(sep).map(camelCase).map(escapeName).join('\\')

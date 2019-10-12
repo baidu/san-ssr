@@ -10,24 +10,37 @@ This is [San][san] SSR for PHP environment.
     - [x] create a simplified JS SSR for reference
     - [x] migrate all SSR cases from baidu/san
     - [x] migrate all e2e cases from baidu/san
-    - [x] debug scripts and Zsh auto completion
 1. Basic Templating
     - [x] implement runtime utils in PHP
     - [x] introduce emitter and apply to php-ssr
     - [x] beautify the output
     - [x] pass all template-only test cases
+    - [x] debug scripts and Zsh auto completion
+    - [ ] CLI support
+    - [ ] travis CI
+    - [ ] semantic release
 2. Bussiness Logic to PHP
     - [x] compile source files to php: make use of ts2php
     - [x] compile component files to php
     - [x] parse files to AST to bind sourcecode info to runtime
     - [x] wireup ssr.php and component.php
     - [x] pass all test cases using filters/computed
-    - [ ] allow `import {Component} from 'san'` as well as `import * as san`
-    - [ ] support anonymous component class, aka `export default class extends Component {}`
+    - [ ] set FilterDeclarations, ComputedDeclarations types if not declared
 3. Multiple Source Files
     - [x] a virtual CommonJS to load AST transformed sourceFiles
     - [x] support multiple source files for a single component
     - [x] support nested components in multiple files
+4. Misc.
+    - support anonymous default export: `export default class extends Component {}`
+    - check default export and throw a more spcific Error
+    - check default export extends Component
+    - support SyntheticDefaultImports: `import * as san`
+
+## PHP SSR Problems
+
+THIS SECTION IS FOR MAINTAINERS ONLY
+
+- filters/computed 是 static，这要求使用时额外声明其类型
 
 ## JS SSR Problems
 

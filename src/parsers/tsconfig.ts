@@ -1,9 +1,15 @@
 import { cwd } from 'process'
 import { existsSync } from 'fs'
-import { resolve } from 'path'
+import { resolve, dirname } from 'path'
 
 export function getDefaultConfigPath () {
-    return resolve(cwd(), 'tsconfig.json')
+    let dir = cwd()
+    while (true) {
+        const filepath = resolve(dir, 'tsconfig.json')
+        if (existsSync(filepath)) return filepath
+        if (dirname(dir) === dir) return
+        dir = dirname(dir)
+    }
 }
 
 export function getDefaultConfig () {

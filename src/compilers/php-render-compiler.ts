@@ -1,6 +1,6 @@
 /**
  * 将组件树编译成 render 函数之间的递归调用
- * 提供 compileRenderFunction 方法
+ * 提供 generateRenderFunction 方法
  */
 import { each, extend, inherits } from '../utils/underscore'
 import { createAccessor, Walker, readTertiaryExpr } from '../parsers/walker'
@@ -1863,7 +1863,7 @@ function camelComponentBinds (binds) {
 let ssrIndex = 0
 
 function genSSRId () {
-    return '_spsrId' + (ssrIndex++)
+    return 'sspId' + (ssrIndex++)
 }
 
 const stringifier = {
@@ -2402,7 +2402,7 @@ const aNodeCompiler = {
                 emitter.writeLine('$slotCtx = $isInserted ? $ctx->owner : $ctx;')
 
                 if (aNode.vars || aNode.directives.bind) {
-                    emitter.writeLine('$slotCtx = (object)["spsrCid" => $slotCtx->spsrCid, "data" => $slotCtx->data, "instance" => $slotCtx->instance, "owner" => $slotCtx->owner];')
+                    emitter.writeLine('$slotCtx = (object)["sspCid" => $slotCtx->sspCid, "data" => $slotCtx->data, "instance" => $slotCtx->instance, "owner" => $slotCtx->owner];')
 
                     if (aNode.directives.bind) {
                         emitter.writeLine('_::extend($slotCtx->data, ' + ExpressionEmitter.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
@@ -2642,7 +2642,7 @@ function genComponentContextCode (component, emitter) {
     emitter.write(Object.keys(component.computed).map(x => `"${x}"`).join(','))
     emitter.feedLine('],')
 
-    emitter.writeLine(`"spsrCid" => ${component.constructor.spsrCid || 0},`)
+    emitter.writeLine(`"sspCid" => ${component.constructor.sspCid || 0},`)
     emitter.writeLine('"sourceSlots" => $sourceSlots,')
     emitter.writeLine('"data" => $data ? $data : ' + stringifier.any(component.data.get()) + ',')
     emitter.writeLine('"owner" => $parentCtx,')
@@ -2659,12 +2659,15 @@ function genComponentContextCode (component, emitter) {
 * @param {Function} ComponentClass 组件类
 * @return {string}
 */
-export function compileRenderFunction ({
+export function generateRenderFunction ({
     ComponentClass,
     funcName = '',
     ns = 'san\\renderer',
     emitter = new PHPEmitter()
 }) {
+    if (typeof ComponentClass !== 'function') {
+        throw new Error('ComponentClass is needed to generate render function')
+    }
     emitter.beginNamespace(ns)
     emitter.writeLine(`use \\san\\runtime\\_;`)
     guid = 1

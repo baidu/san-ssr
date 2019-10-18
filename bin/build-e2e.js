@@ -96,6 +96,13 @@ function buildFile (caseDir) {
                 specTpl = fs.readFileSync(abFilePath, 'UTF-8')
                 break
 
+            case 'data.js':
+                componentDataLiteral = fs.readFileSync(abFilePath, 'UTF-8')
+                componentDataLiteral = componentDataLiteral
+                    .slice(componentDataLiteral.indexOf('{'))
+                    .replace(/;\s*$/, '')
+                break
+
             case 'data.json':
                 componentDataLiteral = fs.readFileSync(abFilePath, 'UTF-8')
                 break

@@ -445,7 +445,7 @@ const stringifier = {
     },
 
     date: function (source) {
-        return 'new Date(' + source.getTime() + ')'
+        return 'new \\san\\runtime\\Ts2Php_Date(' + source.getTime() + ')'
     },
 
     any: function (source) {
@@ -1177,7 +1177,7 @@ function genComponentContextCode (component, emitter) {
 
     emitter.writeLine(`"sanssrCid" => ${component.constructor.sanssrCid || 0},`)
     emitter.writeLine('"sourceSlots" => $sourceSlots,')
-    emitter.writeLine('"data" => $data ? $data : ' + stringifier.any(component.data.get()) + ',')
+    emitter.writeLine('"data" => $data ? $data : (object)[],')
     emitter.writeLine('"owner" => $parentCtx,')
     emitter.writeLine('"slotRenderers" => []')
 

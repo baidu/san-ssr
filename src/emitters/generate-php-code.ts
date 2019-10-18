@@ -18,7 +18,7 @@ export function generatePHPCode (sourceFile: SanSourceFile, modules: ModuleInfo[
         emitHeader: false,
         plugins: [],
         modules: keyBy(modules, 'name'),
-        helperClass: '\\san\\runtime\\Ts2Php_Helper',
+        helperNamespace: '\\san\\runtime\\',
         compilerOptions
     }
     const { errors, phpCode } = compile(sourceFile.getFilePath(), options)

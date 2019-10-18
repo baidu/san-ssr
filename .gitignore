@@ -2,6 +2,7 @@
 node_modules/
 npm-debug.log
 /test/e2e.spec.js
+/test/karma-context.html
 coverage
 vendor/
 dist/

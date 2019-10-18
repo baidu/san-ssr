@@ -100,7 +100,7 @@ THIS SECTION IS FOR MAINTAINERS ONLY
 
 THIS SECTION IS FOR MAINTAINERS ONLY
 
-作为对照和参考，本仓库也维护了 JS 版本的 SSR。它和 PHP SSR 一同演化，可以跑通所有 san 代码库提供的 SSR 集成测试和 e2e 测试（例外：有两项测试使用了是平台相关的 Date API，已经移除）。
+作为对照和参考，本仓库也维护了 JS 版本的 SSR。它和 PHP SSR 一同演化，可以跑通所有 san 代码库提供的 SSR 集成测试和 e2e 测试。
 
 JS SSR 目前存在以下问题：
 
@@ -112,5 +112,26 @@ JS SSR 目前存在以下问题：
     * ES6 Method，需要通过 getOwnPropertyNames/Symbols 来取。
     * ES6 Property 必须中 constructor 中赋值，也会找不到。
 * 只能编译 Component 文件，不支持引用纯工具文件。例如：`const someFilter = require('./somfilter'); export default class Component { static filters = { someFilter }}`
+
+## Contribute
+
+Development Prerequisites:
+
+* Node.js>=8
+* PHP 7
+* [composer](https://getcomposer.org)
+
+Install dependencies:
+
+```bash
+npm install
+composer install
+```
+
+Run tests
+
+```bash
+npm test
+```
 
 [san]: https://github.com/baidu/san

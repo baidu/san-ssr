@@ -4,8 +4,7 @@ $caseName = $argv[1];
 $caseDir = "test/cases/" . $caseName;
 include($caseDir . '/ssr.php');
 
-$dataStr = file_get_contents($caseDir . "/data.json");
-$data = json_decode($dataStr);
+$data = getData($caseDir);
 
 $noDataOutput = preg_match('/-ndo$/', $caseName);
 $renderFunc = '\\san\\renderer\\' . dashesToCamelCase($caseName) . '\\render';
@@ -18,4 +17,14 @@ function dashesToCamelCase($string, $capitalizeFirstCharacter = false) {
         $str[0] = strtolower($str[0]);
     }
     return $str;
+}
+
+function getData($caseDir) {
+    $dataFile = $caseDir . '/data.php';
+    if (file_exists($dataFile)) {
+        require_once($dataFile);
+        return data();
+    }
+    $dataStr = file_get_contents($caseDir . "/data.json");
+    return json_decode($dataStr);
 }

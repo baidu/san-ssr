@@ -42,7 +42,7 @@ function test (got) {
 function deepEqual (lhs, rhs) {
     if (typeof lhs === 'object') {
         for (const key of Object.keys(lhs)) {
-            if (!deepEqual(rhs[key], rhs[key])) return false
+            if (!deepEqual(lhs[key], rhs[key])) return false
         }
         return true
     }

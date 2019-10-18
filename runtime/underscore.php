@@ -23,6 +23,20 @@ final class _
         return $data;
     }
 
+    public static function setDefaultData($ctx) {
+      $data = $ctx->data;
+      $inst = $ctx->instance;
+
+      if (!method_exists($inst, 'initData')) return;
+
+      $initData = $inst->initData();
+      foreach ($initData as $key => $val) {
+          if (isset($data->$key)) continue;
+          $data->$key = $val;
+      }
+      return $data;
+    }
+
     public static function sortedStringify($obj) {
         if (!is_object($obj)) {
             return json_encode($obj, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);

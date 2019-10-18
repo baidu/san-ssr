@@ -3,7 +3,7 @@ const gulpSanSSR = require('./plugins/gulp-san-ssr.js')
 
 function php () {
     return src('src/index.ts')
-        .pipe(gulpSanSSR({ target: 'php' }))
+        .pipe(gulpSanSSR({ target: 'php', nsPrefix: 'demo\\' }))
         .pipe(dest('dist'))
 }
 

@@ -6,7 +6,7 @@
   "main": "index.js",
   "scripts": {
     "build": "npm run build-js && npm run build-php",
-    "build-php": "san-ssr -t php src/index.ts > dist/index.php",
+    "build-php": "san-ssr -t php -p 'demo\\' src/index.ts > dist/index.php",
     "build-js": "san-ssr -t js  src/index.ts > dist/index.js",
     "gulpbuild": "gulp js php",
     "gulpbuild-js": "gulp js",

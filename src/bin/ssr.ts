@@ -22,6 +22,11 @@ yargs
         choices: ['php', 'js'],
         description: 'target SSR file'
     })
+    .option('prefix', {
+        alias: 'p',
+        default: 'san\\',
+        description: 'namespace prefix for ssr.php'
+    })
     .option('tsconfig', {
         alias: 'c',
         description: 'tsconfig path, will auto resolve if not specified'
@@ -34,6 +39,7 @@ yargs
     })
 
 const target = yargs.argv.target as OptionValue
+const nsPrefix = yargs.argv.prefix as OptionValue
 const tsConfigFilePath = yargs.argv.tsconfig as OptionValue
 const outputFile = yargs.argv.output as OptionValue
 const componentFile = resolve(yargs.argv._[0])
@@ -41,7 +47,7 @@ console.error(chalk.gray('compiling'), componentFile, 'to', target)
 
 const Compiler = target === 'php' ? ToPHPCompiler : ToJSCompiler
 const compiler = new Compiler({ tsConfigFilePath })
-const targetCode = compiler.compile(componentFile)
+const targetCode = compiler.compile(componentFile, { nsPrefix })
 
 if (outputFile !== undefined) {
     writeFileSync(outputFile, targetCode)

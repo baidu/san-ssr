@@ -5,7 +5,7 @@ const { ToJSCompiler, ToPHPCompiler } = require('san-ssr')
 
 const PLUGIN_NAME = 'gulp-san-ssr'
 
-module.exports = function ({ target = 'js', ssrOptions } = {}) {
+module.exports = function (options = {}) {
     return through2.obj(function (file, _, cb) {
         if (file.isNull()) {
             this.emit('error', new PluginError(PLUGIN_NAME, 'File: "' + file.relative + '" without content. You have to read it with gulp.src(..)'))
@@ -19,11 +19,11 @@ module.exports = function ({ target = 'js', ssrOptions } = {}) {
         }
 
         if (file.isBuffer()) {
-            const targetCode = compile(file, target, ssrOptions)
+            const targetCode = compile(file, options.target, options)
             file.contents = Buffer.from(targetCode)
             const path = file.path
             const ext = extname(path)
-            file.path = path.substr(0, path.length - ext.length) + '.' + target
+            file.path = path.substr(0, path.length - ext.length) + '.' + options.target
         }
 
         cb(null, file)
@@ -33,6 +33,6 @@ module.exports = function ({ target = 'js', ssrOptions } = {}) {
 function compile (file, target, ssrOptions) {
     const Compiler = target === 'php' ? ToPHPCompiler : ToJSCompiler
     const compiler = new Compiler(ssrOptions)
-    const targetCode = compiler.compile(file.path)
+    const targetCode = compiler.compile(file.path, ssrOptions)
     return targetCode
 }

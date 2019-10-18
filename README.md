@@ -18,6 +18,7 @@ Options:
   --version       Show version number                                  [boolean]
   --output, -o    output file path, output to STDOUT if not specified
   --target, -t    target SSR file              [required] [choices: "php", "js"]
+  --prefix, -p    namespace prefix for ssr.php                 [default: "san\"]
   --tsconfig, -c  tsconfig path, will auto resolve if not specified
 ```
 
@@ -25,7 +26,7 @@ e.g.
 
 ```bash
 # build to ssr.php
-san-ssr --target php ./component.ts > ssr.php
+san-ssr --target php --prefix 'demo\\' ./component.ts > ssr.php
 
 # build to ssr.js
 san-ssr --target js  ./component.ts > ssr.js
@@ -86,7 +87,7 @@ writeFileSync('ssr.js', targetCode)
     - check default export and throw a more spcific Error
     - check default export extends Component
     - support SyntheticDefaultImports: `import * as san`
-    - prefix for all namespaces
+    - [x] prefix for all namespaces
 
 ## Known Issues
 

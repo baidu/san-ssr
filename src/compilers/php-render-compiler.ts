@@ -6,6 +6,9 @@ import { each, extend } from '../utils/underscore'
 import { PHPEmitter } from '../emitters/php-emitter'
 import { ExpressionEmitter } from '../emitters/expression-emitter'
 
+let ssrIndex = 0
+let namespacePrefix = ''
+
 /**
 * 将字符串逗号切分返回对象
 *
@@ -395,8 +398,6 @@ function camelComponentBinds (binds) {
     return result
 }
 
-let ssrIndex = 0
-
 function genSSRId () {
     return 'sanssrId' + (ssrIndex++)
 }
@@ -445,7 +446,7 @@ const stringifier = {
     },
 
     date: function (source) {
-        return 'new \\san\\runtime\\Ts2Php_Date(' + source.getTime() + ')'
+        return `new \\${namespacePrefix}runtime\\Ts2Php_Date(` + source.getTime() + ')'
     },
 
     any: function (source) {
@@ -1192,14 +1193,15 @@ function genComponentContextCode (component, emitter) {
 export function generateRenderModule ({
     ComponentClass,
     funcName = '',
-    ns = 'san\\renderer',
+    nsPrefix = '',
     emitter = new PHPEmitter()
 }) {
+    namespacePrefix = nsPrefix
     if (typeof ComponentClass !== 'function') {
         throw new Error('ComponentClass is needed to generate render function')
     }
-    emitter.beginNamespace(ns)
-    emitter.writeLine(`use \\san\\runtime\\_;`)
+    emitter.beginNamespace(nsPrefix + 'renderer')
+    emitter.writeLine(`use ${nsPrefix}runtime\\_;`)
     ssrIndex = 0
 
     const contextId = genSSRId()

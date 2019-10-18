@@ -179,8 +179,8 @@ final class _
 
     public static function getClassByCtx($ctx) {
         $cid = $ctx->sanssrCid;
-        if (\san\runtime\ComponentRegistry::has($cid)) {
-            return \san\runtime\ComponentRegistry::get($cid);
+        if (\__NSPREFIX__runtime\ComponentRegistry::has($cid)) {
+            return \__NSPREFIX__runtime\ComponentRegistry::get($cid);
         }
         return null;
     }
@@ -196,7 +196,7 @@ final class _
     public static function createComponent (&$ctx) {
         $cls = _::getClassByCtx($ctx);
         if (!class_exists($cls)) {
-          $cls = "\\san\\runtime\\Component";
+          $cls = '\__NSPREFIX__runtime\Component';
         }
         $obj = new $cls();
         $obj->data = new Data($ctx);

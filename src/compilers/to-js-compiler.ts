@@ -10,6 +10,7 @@ import { getDefaultConfigPath } from '../parsers/tsconfig'
 import { sep, extname } from 'path'
 import debugFactory from 'debug'
 import { Compiler } from './compiler'
+import { emitRuntimeInJS } from '../emitters/runtime'
 
 const debug = debugFactory('to-js-compiler')
 
@@ -48,7 +49,7 @@ export class ToJSCompiler implements Compiler {
         const emitter = new JSEmitter()
         emitter.write('module.exports = ')
         emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => {
-            emitter.writeRuntime()
+            emitRuntimeInJS(emitter)
             const componentClass = new CommonJS().require(filepath)
             emitter.writeLines(generateRenderFunction(componentClass))
         })
@@ -60,7 +61,7 @@ export class ToJSCompiler implements Compiler {
         const emitter = new JSEmitter()
         emitter.write('module.exports = ')
         emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => {
-            emitter.writeRuntime()
+            emitRuntimeInJS(emitter)
             const parser = new ComponentParser(this.project)
             const component = parser.parseComponent(filepath)
             const componentClass = this.evalComponentClass(component)

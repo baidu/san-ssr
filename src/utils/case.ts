@@ -14,8 +14,7 @@ const cases = readdirSync(caseRoot)
 const toJSCompiler = new ToJSCompiler({ tsConfigFilePath })
 const toPHPCompiler = new ToPHPCompiler({
     tsConfigFilePath,
-    externalModules: [{ name: '../../..', required: true }],
-    nsPrefix: 'san\\components\\test\\'
+    externalModules: [{ name: '../../..', required: true }]
 })
 const multiFileCases = ['multi-component-files', 'multi-files']
 
@@ -41,7 +40,7 @@ export function compileToPHP (caseName) {
     const js = resolve(caseRoot, caseName, 'component.js')
     const targetCode = toPHPCompiler.compile(
         existsSync(ts) ? ts : js,
-        { ns: `san\\renderer\\${camelCase(caseName)}` }
+        { nsPrefix: `san\\${camelCase(caseName)}\\` }
     )
 
     writeFileSync(join(caseRoot, caseName, 'ssr.php'), targetCode)

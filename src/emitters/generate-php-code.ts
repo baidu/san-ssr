@@ -11,14 +11,14 @@ export type ModuleInfo = {
     namespace?: string
 }
 
-export function generatePHPCode (sourceFile: SanSourceFile, modules: ModuleInfo[], compilerOptions) {
+export function generatePHPCode (sourceFile: SanSourceFile, modules: ModuleInfo[], compilerOptions, nsPrefix: string) {
     debug('modules:', modules)
     const options = {
         source: sourceFile.getFullText(),
         emitHeader: false,
         plugins: [],
         modules: keyBy(modules, 'name'),
-        helperNamespace: '\\san\\runtime\\',
+        helperNamespace: `\\${nsPrefix}runtime\\`,
         compilerOptions
     }
     const { errors, phpCode } = compile(sourceFile.getFilePath(), options)

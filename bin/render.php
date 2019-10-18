@@ -7,7 +7,7 @@ include($caseDir . '/ssr.php');
 $data = getData($caseDir);
 
 $noDataOutput = preg_match('/-ndo$/', $caseName);
-$renderFunc = '\\san\\renderer\\' . dashesToCamelCase($caseName) . '\\render';
+$renderFunc = '\\san\\' . dashesToCamelCase($caseName) . '\\renderer\\render';
 
 echo $renderFunc($data, $noDataOutput);
 

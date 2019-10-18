@@ -10,11 +10,11 @@ const runtimeFiles = [
     'component-registry.php'
 ]
 
-export function emitRuntimeInPHP (emitter: PHPEmitter) {
-    emitter.beginNamespace('san\\runtime')
+export function emitRuntimeInPHP (emitter: PHPEmitter, nsPrefix: string) {
+    emitter.beginNamespace(nsPrefix + 'runtime')
     for (const file of runtimeFiles) {
         const path = resolve(__dirname, `../../runtime/${file}`)
-        emitter.writeLines(readPHPSource(path))
+        emitter.writeLines(readPHPSource(path).replace(/__NSPREFIX__/g, nsPrefix))
     }
     emitter.endNamespace()
     return emitter.fullText()

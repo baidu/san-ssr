@@ -1,6 +1,5 @@
 import { Emitter } from './emitter'
 import { ExpressionEmitter } from './expression-emitter'
-import { emitRuntimeInPHP } from './runtime'
 
 export class PHPEmitter extends Emitter {
     buffer: string = ''
@@ -13,10 +12,6 @@ export class PHPEmitter extends Emitter {
     public write (str) {
         this.clearStringLiteralBuffer()
         return this.defaultWrite(str)
-    }
-
-    public writeRuntime () {
-        emitRuntimeInPHP(this)
     }
 
     public beginNamespace (ns: string = '') {

@@ -8,7 +8,6 @@ export abstract class Emitter {
     }
 
     public abstract write (str: string)
-    public abstract writeRuntime ()
     public fullText () {
         return this.code
     }

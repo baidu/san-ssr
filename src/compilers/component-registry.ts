@@ -18,15 +18,15 @@ export class ComponentRegistry {
         }
     }
 
-    writeComponentRegistry (ns: (file: string) => string, emitter: PHPEmitter) {
-        emitter.beginNamespace('san\\runtime')
+    writeComponentRegistry (nsPrefix: string, ns: (file: string) => string, emitter: PHPEmitter) {
+        emitter.beginNamespace(`${nsPrefix}runtime`)
         emitter.writeLine(`ComponentRegistry::$comps = [`)
         emitter.indent()
 
         const lines = []
         for (const [cid, { name, path }] of this.components) {
-            const classReference = `\\${ns(path)}\\${name}`
-            lines.push(`"${cid}" => "${classReference.replace(/\\/g, '\\\\')}"`)
+            const classReference = `\\${nsPrefix}${ns(path)}\\${name}`
+            lines.push(`"${cid}" => '${classReference}'`)
         }
         emitter.writeLines(lines.join(',\n'))
 

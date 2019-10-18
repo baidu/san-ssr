@@ -16,20 +16,19 @@ import { getDefaultConfigPath } from '../parsers/tsconfig'
 import { sep, extname } from 'path'
 import debugFactory from 'debug'
 import { Compiler } from './compiler'
+import { emitRuntimeInPHP } from '../emitters/runtime'
 
 const debug = debugFactory('ast-util')
 
 export type ToPHPCompilerOptions = {
     tsConfigFilePath?: string,
     root?: string,
-    externalModules?: ModuleInfo[],
-    nsPrefix?: string
+    externalModules?: ModuleInfo[]
 }
 
 export class ToPHPCompiler implements Compiler {
     private root: string
     private tsConfigFilePath: string
-    private nsPrefix: string
     private externalModules: ModuleInfo[]
     private toJSCompiler: ToJSCompiler
     private project: Project
@@ -37,10 +36,8 @@ export class ToPHPCompiler implements Compiler {
     constructor ({
         tsConfigFilePath = getDefaultConfigPath(),
         root = tsConfigFilePath.split(sep).slice(0, -1).join(sep),
-        externalModules = [],
-        nsPrefix = ''
+        externalModules = []
     }: ToPHPCompilerOptions = {}) {
-        this.nsPrefix = nsPrefix
         this.externalModules = [{
             name: 'san-ssr',
             required: true
@@ -67,7 +64,7 @@ export class ToPHPCompiler implements Compiler {
 
     public compileFromTS (filepath: string, {
         funcName = 'render',
-        ns = 'san\\renderer',
+        nsPrefix = 'san\\',
         emitHeader = true
     } = {}) {
         const emitter = new PHPEmitter(emitHeader)
@@ -75,33 +72,33 @@ export class ToPHPCompiler implements Compiler {
         const component = parser.parseComponent(filepath)
         const ComponentClass = this.toJSCompiler.evalComponentClass(component)
 
-        generateRenderModule({ ComponentClass, funcName, emitter, ns })
-        this.compileComponents(component, emitter)
+        generateRenderModule({ ComponentClass, funcName, emitter, nsPrefix })
+        this.compileComponents(component, emitter, nsPrefix)
 
-        emitter.writeRuntime()
+        emitRuntimeInPHP(emitter, nsPrefix)
         return emitter.fullText()
     }
 
     public compileFromJS (filepath: string, {
         funcName = 'render',
-        ns = 'san\\renderer',
+        nsPrefix = 'san\\',
         emitHeader = true
     } = {}) {
         const emitter = new PHPEmitter(emitHeader)
 
         const ComponentClass = new CommonJS().require(filepath)
-        generateRenderModule({ ComponentClass, funcName, emitter, ns })
+        generateRenderModule({ ComponentClass, funcName, emitter, nsPrefix })
 
-        emitter.writeRuntime()
+        emitRuntimeInPHP(emitter, nsPrefix)
         return emitter.fullText()
     }
 
-    public compileToPHP (sourceFile: SanSourceFile) {
+    public compileToPHP (sourceFile: SanSourceFile, nsPrefix = '') {
         transformAstToPHP(sourceFile)
         const tsconfig = require(this.tsConfigFilePath)
         const externalModules = [...this.externalModules]
         for (const decl of getInlineDeclarations(sourceFile.origin)) {
-            const ns = this.ns(decl.getModuleSpecifierSourceFile().getFilePath())
+            const ns = nsPrefix + this.ns(decl.getModuleSpecifierSourceFile().getFilePath())
             const literal = decl.getModuleSpecifierValue()
             externalModules.push({
                 name: literal,
@@ -112,34 +109,31 @@ export class ToPHPCompiler implements Compiler {
         return generatePHPCode(
             sourceFile,
             externalModules,
-            tsconfig['compilerOptions']
+            tsconfig['compilerOptions'],
+            nsPrefix
         )
     }
 
-    public compileComponents (entryComp: Component, emitter: PHPEmitter = new PHPEmitter()) {
+    public compileComponents (entryComp: Component, emitter: PHPEmitter = new PHPEmitter(), nsPrefix = '') {
         const registry = new ComponentRegistry()
         for (const [path, sourceFile] of entryComp.getFiles()) {
             registry.registerComponents(sourceFile)
 
-            emitter.beginNamespace(this.ns(path))
-            emitter.writeLine('use \\san\\runtime\\_;')
-            emitter.writeLine('use \\san\\runtime\\Component;')
-            emitter.writeLines(this.compileToPHP(sourceFile))
+            emitter.beginNamespace(nsPrefix + this.ns(path))
+            emitter.writeLine(`use ${nsPrefix}runtime\\_;`)
+            emitter.writeLine(`use ${nsPrefix}runtime\\Component;`)
+            emitter.writeLines(this.compileToPHP(sourceFile, nsPrefix))
             emitter.endNamespace()
         }
-        registry.writeComponentRegistry(path => this.ns(path), emitter)
+        registry.writeComponentRegistry(nsPrefix, path => this.ns(path), emitter)
         return emitter.fullText()
     }
 
-    private ns (file) {
+    private ns (file: string) {
         const escapeName = x => isReserved(x) ? 'sanssrNS' + camelCase(x) : x
-        let str = file
+        return file
             .slice(this.root.length, -extname(file).length)
-            .split(sep).map(camelCase).map(escapeName).join('\\')
+            .split(sep).map(x => camelCase(x)).map(escapeName).join('\\')
             .replace(/^\\/, '')
-        if (this.nsPrefix) {
-            str = this.nsPrefix + str
-        }
-        return str
     }
 }

@@ -1,11 +1,6 @@
 import { Emitter } from './emitter'
-import { emitRuntimeInJS } from './runtime'
 
 export class JSEmitter extends Emitter {
-    public writeRuntime () {
-        emitRuntimeInJS(this)
-    }
-
     public write (str: string) {
         return this.defaultWrite(str)
     }

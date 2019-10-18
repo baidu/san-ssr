@@ -650,33 +650,30 @@ const elementSourceCompiler = {
         })
 
         if (bindDirective) {
-            emitter.writeLine(
-                '(function ($bindObj) use (&$html){foreach ($bindObj as $key => $value) {'
-            )
+            emitter.nextLine('(')
+            emitter.writeAnonymousFunction(['$bindObj'], ['&$html'], () => {
+                emitter.writeForeach('$bindObj as $key => $value', () => {
+                    if (tagName === 'textarea') {
+                        emitter.writeIf('$key == "value"', () => emitter.writeContinue())
+                    }
 
-            if (tagName === 'textarea') {
-                emitter.writeIf('$key == "value"', () => {
-                    emitter.writeLine('continue;')
+                    emitter.writeSwitch('$key', () => {
+                        emitter.writeCase('"readonly"')
+                        emitter.writeCase('"disabled"')
+                        emitter.writeCase('"multiple"', () => {
+                            emitter.writeLine('$html .= _::boolAttrFilter($key, _::escapeHTML($value));')
+                            emitter.writeBreak()
+                        })
+                        emitter.writeDefault(() => {
+                            emitter.writeLine('$html .= _::attrFilter($key, _::escapeHTML($value));')
+                        })
+                    })
                 })
-            }
+            })
 
-            emitter.writeLine('switch ($key) {\n' +
-            'case "readonly":\n' +
-            'case "disabled":\n' +
-            'case "multiple":\n' +
-            'case "multiple":\n' +
-            '$html .= _::boolAttrFilter($key, _::escapeHTML($value));\n' +
-            'break;\n' +
-            'default:\n' +
-            '$html .= _::attrFilter($key, _::escapeHTML($value));' +
-            '}'
-            )
-
-            emitter.writeLine(
-                '}})(' +
-            ExpressionEmitter.expr(bindDirective.value) +
-            ');'
-            )
+            emitter.write(')(')
+            emitter.write(ExpressionEmitter.expr(bindDirective.value))
+            emitter.feedLine(');')
         }
 
         emitter.bufferHTMLLiteral('>')
@@ -1182,7 +1179,7 @@ function genComponentContextCode (component, emitter) {
     emitter.writeLine('"slotRenderers" => []')
 
     emitter.unindent()
-    emitter.feedLine('];')
+    emitter.writeLine('];')
     emitter.writeLine('$ctx->instance = _::createComponent($ctx);')
 }
 

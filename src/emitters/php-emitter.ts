@@ -53,6 +53,35 @@ export class PHPEmitter extends Emitter {
     }
 
     /**
+     * switch
+     */
+    public writeSwitch (expr: string, body: Function) {
+        this.writeLine(`switch (${expr}) {`)
+        this.indent()
+        body()
+        this.unindent()
+        this.writeLine('}')
+    }
+
+    public writeCase (expr: string, body: Function = () => null) {
+        this.writeLine(`case ${expr}:`)
+        this.indent()
+        body()
+        this.unindent()
+    }
+
+    public writeBreak () {
+        this.writeLine('break;')
+    }
+
+    public writeDefault (body: Function = () => null) {
+        this.writeLine('default:')
+        this.indent()
+        body()
+        this.unindent()
+    }
+
+    /**
      * function
      */
     public writeFunction (name = '', args = [], use = [], body: Function = () => null) {
@@ -107,6 +136,9 @@ export class PHPEmitter extends Emitter {
     }
     public endForeach () {
         this.endBlock()
+    }
+    public writeContinue () {
+        this.writeLine('continue;')
     }
 
     /**

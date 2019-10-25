@@ -52,6 +52,10 @@ export function compileAllToJS () {
         { total: cases.length }
     )
     for (const caseName of cases) {
+        if (!supportJSSSR(caseName)) {
+            p.tick()
+            continue
+        }
         p.tick(0, { caseName })
         compileToJS(caseName)
         p.tick()
@@ -64,10 +68,6 @@ export function compileAllToPHP () {
         { total: cases.length }
     )
     for (const caseName of cases) {
-        if (jsSSRUnables.includes(caseName)) {
-            p.tick()
-            continue
-        }
         p.tick(0, { caseName })
         compileToPHP(caseName)
         p.tick()

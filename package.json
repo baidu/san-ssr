@@ -1,9 +1,9 @@
 {
   "name": "san-ssr",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "description": "San server-side-render for PHP environment",
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "index.d.ts",
   "directories": {
     "test": "test",
     "example": "example"
@@ -12,6 +12,7 @@
     "runtime",
     "bin",
     "dist",
+    "index.d.ts",
     "*.json",
     "*.md"
   ],
@@ -19,6 +20,7 @@
     "san-ssr": "./dist/bin/ssr.js"
   },
   "scripts": {
+    "clean": "rm -rf ./dist test/cases/*/ssr.{php,js}",
     "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
     "docs": "typedoc --out docs src && touch docs/.nojekyll",
     "build": "tsc",
@@ -27,23 +29,23 @@
     "unit-ts": "jest test/unit",
     "unit": "npm run unit-ts && npm run unit-php",
     "integration": "./bin/build-integration.js && jest test/integration.spec.js",
-    "coverage": "jest --coverage",
-    "coveralls": "jest --coverage && cat ./tests/coverage/lcov.info | coveralls",
-    "test": "npm run unit && npm run integration && npm run e2e",
+    "coveralls": "jest test/unit --coverage && cat coverage/lcov.info | coveralls",
+    "test": "npm run build && npm run unit && npm run integration && npm run e2e",
     "render": "./bin/render.js",
     "version": "npm run build && npm run docs",
-    "e2e": "./bin/build-e2e.js && npx karma start ./test/karma.conf.js --single-run"
+    "e2e": "./bin/build-e2e.js && npx karma start ./test/karma.conf.js --single-run",
+    "semantic-release": "semantic-release"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/harttle/san-ssr.git"
+    "url": "https://github.com/searchfe/san-ssr.git"
   },
   "author": "harttle <yangjvn@126.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/harttle/san-ssr/issues"
+    "url": "https://github.com/searchfe/san-ssr/issues"
   },
-  "homepage": "https://github.com/harttle/san-ssr#readme",
+  "homepage": "https://github.com/searchfe/san-ssr#readme",
   "devDependencies": {
     "@babel/core": "^7.6.0",
     "@babel/preset-env": "^7.6.0",
@@ -79,7 +81,7 @@
     "karma-remap-istanbul": "^0.6.0",
     "karma-sourcemap-loader": "^0.3.7",
     "san": "^3.7.8",
-    "semantic-release": "^15.13.19",
+    "semantic-release": "^15.13.27",
     "typedoc": "^0.15.0",
     "wdio-jasmine-framework": "^0.3.0",
     "wdio-sauce-service": "^0.4.14",

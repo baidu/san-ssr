@@ -1,13 +1,12 @@
-import { FilterDeclarations, ComputedDeclarations } from 'san-ssr'
 import { Component } from 'san'
 
 export default class DemoComponent extends Component {
-    static filters: FilterDeclarations = {
+    static filters = {
         sum: function (a: number, b: number) {
             return a + b
         }
     }
-    static computed: ComputedDeclarations = {
+    static computed = {
         name: function () {
             const f = this.data.get('firstName')
             const l = this.data.get('lastName')

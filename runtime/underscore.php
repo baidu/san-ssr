@@ -1,14 +1,8 @@
 <?php
 final class _
 {
-    private const HTML_ENTITY = [
-        '&' => '&amp;',
-        '<' => '&lt;',
-        '>' => '&gt;',
-        '"' => '&quot;',
-        "'" => '&#39;'
-    ];
-
+    public static $HTML_ENTITY;
+  
     public static function data($ctx, $seq = []) {
         $data = $ctx->data;
         foreach ($seq as $name) {
@@ -107,7 +101,7 @@ final class _
 
     public static function htmlFilterReplacer($c)
     {
-        return _::HTML_ENTITY[$c];
+        return _::$HTML_ENTITY[$c];
     }
 
     public static function escapeHTML($source)
@@ -187,7 +181,8 @@ final class _
 
     public static function callFilter($ctx, $name, $args)
     {
-        $func = _::getClassByCtx($ctx)::$filters[$name];
+        $cls = _::getClassByCtx($ctx);
+        $func = $cls::$filters[$name];
         if (is_callable($func)) {
             return call_user_func_array($func, $args);
         }
@@ -205,9 +200,10 @@ final class _
 
     public static function callComputed($ctx, $name)
     {
-        $func = _::getClassByCtx($ctx)::$computed[$name];
+        $cls = _::getClassByCtx($ctx);
+        $func = $cls::$computed[$name];
         if (is_callable($func)) {
-            $result = call_user_func($func->bindTo($ctx->instance));
+            $result = call_user_func($func, $ctx->instance);
             return is_array($result) ? (object)$result : $result;
         }
     }
@@ -224,3 +220,11 @@ final class _
         return $source;
     }
 }
+
+_::$HTML_ENTITY = [
+    '&' => '&amp;',
+    '<' => '&lt;',
+    '>' => '&gt;',
+    '"' => '&quot;',
+    "'" => '&#39;'
+];

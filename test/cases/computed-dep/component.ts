@@ -1,8 +1,7 @@
 import { Component } from 'san'
-import { ComputedDeclarations } from '../../..'
 
 export default class MyComponent extends Component {
-    static computed: ComputedDeclarations = {
+    static computed = {
         less () {
             return this.data.get('normal') - 1
         },

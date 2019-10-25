@@ -1,5 +1,4 @@
 import { Component } from 'san'
-import { ComputedDeclarations } from '../../..'
 
 export default class MyComponent extends Component {
     public static template = '<form>' +
@@ -14,7 +13,7 @@ export default class MyComponent extends Component {
         }
     }
 
-    static computed: ComputedDeclarations = {
+    static computed = {
         forms () {
             const cates = this.data.get('cates')
             const formLen = this.data.get('formLen')

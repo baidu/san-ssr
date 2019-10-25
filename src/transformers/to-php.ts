@@ -1,10 +1,11 @@
 import { removeObjectLiteralInitiator } from '../utils/ast-util'
 import { SanSourceFile } from '../parsers/san-sourcefile'
 import { isReserved } from '../utils/php-util'
+import { TypeGuards, PropertyDeclaration } from 'ts-morph'
 
 const uselessComponentProps = ['components']
 
-export function transformAstToPHP (sourceFile: SanSourceFile) {
+export function transformAstToPHP (sourceFile: SanSourceFile, sanssr = 'san-ssr') {
     sourceFile.fakeProperties.forEach(prop => prop.remove())
 
     for (const clazz of sourceFile.componentClasses.values()) {
@@ -14,6 +15,11 @@ export function transformAstToPHP (sourceFile: SanSourceFile) {
         }
 
         for (const prop of clazz.getProperties()) {
+            if (prop.getName() === 'computed') {
+                refactorComputedProperty(prop, sanssr)
+            } else if (prop.getName() === 'filters') {
+                refactorFiltersProperty(prop, sanssr)
+            }
             removeObjectLiteralInitiator(sourceFile.origin, clazz, prop)
         }
     }
@@ -25,6 +31,38 @@ export function transformAstToPHP (sourceFile: SanSourceFile) {
                 throw new Error(`${name} is a reserved keyword in PHP`)
             }
             clazz.rename(`SanSSRClass${name}`)
+        }
+    }
+}
+
+function refactorFiltersProperty (filters: PropertyDeclaration, sanssr = 'san-ssr') {
+    filters.setType(`import("${sanssr}").SanSSRFiltersDeclarations`)
+}
+
+function refactorComputedProperty (computed: PropertyDeclaration, sanssr = 'san-ssr') {
+    computed.removeType()
+
+    const computedDefinitions = computed.getInitializer()
+    if (!computedDefinitions) return
+    if (!TypeGuards.isObjectLiteralExpression(computedDefinitions)) return
+    for (const prop of computedDefinitions.getProperties()) {
+        let body
+        if (TypeGuards.isMethodDeclaration(prop)) {
+            body = prop
+        }
+        if (TypeGuards.isPropertyAssignment(prop)) {
+            const init = prop.getInitializer()
+            if (TypeGuards.isFunctionExpression(init)) body = init
+        }
+        if (body) {
+            body.insertParameter(0, {
+                name: 'sanssrSelf',
+                type: `import("${sanssr}").Component`
+            })
+            const text = body
+                .getBodyText()
+                .replace(/this\.data\.get\(/g, 'sanssrSelf.data.get(')
+            body.setBodyText(text)
         }
     }
 }

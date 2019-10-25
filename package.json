@@ -23,7 +23,7 @@
     "clean": "rm -rf ./dist test/cases/*/ssr.{php,js}",
     "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
     "docs": "typedoc --out docs src && touch docs/.nojekyll",
-    "build": "tsc",
+    "build": "tsc && chmod a+x dist/bin/*",
     "build-watch": "tsc --watch",
     "unit-php": "./vendor/bin/phpunit --bootstrap vendor/autoload.php test/unit/*.spec.php",
     "unit-ts": "jest test/unit",

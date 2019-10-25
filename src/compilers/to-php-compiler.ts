@@ -23,29 +23,31 @@ const debug = debugFactory('ast-util')
 export type ToPHPCompilerOptions = {
     tsConfigFilePath?: string,
     root?: string,
-    externalModules?: ModuleInfo[]
+    sanssr?: string
 }
 
 export class ToPHPCompiler implements Compiler {
     private root: string
     private tsConfigFilePath: string
-    private externalModules: ModuleInfo[]
+    private requiredModules: ModuleInfo[]
     private toJSCompiler: ToJSCompiler
     private project: Project
+    private sanssr: string
 
     constructor ({
         tsConfigFilePath = getDefaultConfigPath(),
         root = tsConfigFilePath.split(sep).slice(0, -1).join(sep),
-        externalModules = []
+        sanssr = 'san-ssr'
     }: ToPHPCompilerOptions = {}) {
-        this.externalModules = [{
-            name: 'san-ssr',
+        this.sanssr = sanssr
+        this.requiredModules = [{
+            name: sanssr,
             required: true
         }, {
             name: 'san',
             required: true,
             namespace: '\\san\\runtime\\'
-        }, ...externalModules]
+        }]
         this.root = root
         this.tsConfigFilePath = tsConfigFilePath
         this.project = new Project({ tsConfigFilePath })
@@ -94,13 +96,13 @@ export class ToPHPCompiler implements Compiler {
     }
 
     public compileToPHP (sourceFile: SanSourceFile, nsPrefix = '') {
-        transformAstToPHP(sourceFile)
+        transformAstToPHP(sourceFile, this.sanssr)
         const tsconfig = require(this.tsConfigFilePath)
-        const externalModules = [...this.externalModules]
+        const requiredModules = [...this.requiredModules]
         for (const decl of getInlineDeclarations(sourceFile.origin)) {
             const ns = nsPrefix + this.ns(decl.getModuleSpecifierSourceFile().getFilePath())
             const literal = decl.getModuleSpecifierValue()
-            externalModules.push({
+            requiredModules.push({
                 name: literal,
                 required: true,
                 namespace: '\\' + ns + '\\'
@@ -108,7 +110,7 @@ export class ToPHPCompiler implements Compiler {
         }
         return generatePHPCode(
             sourceFile,
-            externalModules,
+            requiredModules,
             tsconfig['compilerOptions'],
             nsPrefix
         )

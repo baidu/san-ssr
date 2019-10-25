@@ -1,8 +1,7 @@
 import { Component } from 'san'
-import { FilterDeclarations } from '../../..'
 
 class Man extends Component {
-    filters: FilterDeclarations = {
+    filters = {
         upper: function (source: string) {
             return source[0].toUpperCase() + source.slice(1)
         }
@@ -15,7 +14,7 @@ export default class MyComponent extends Component {
         'x-man': Man
     }
 
-    filters: FilterDeclarations = {
+    filters = {
         upper: function (source: string) {
             return source.toUpperCase()
         }

@@ -14,7 +14,7 @@ const cases = readdirSync(caseRoot)
 const toJSCompiler = new ToJSCompiler({ tsConfigFilePath })
 const toPHPCompiler = new ToPHPCompiler({
     tsConfigFilePath,
-    externalModules: [{ name: '../../..', required: true }]
+    sanssr: '../../..'
 })
 const multiFileCases = ['multi-component-files', 'multi-files']
 

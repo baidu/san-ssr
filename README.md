@@ -1,7 +1,7 @@
 # San SSR
 [![npm version](https://img.shields.io/npm/v/san-ssr.svg)](https://www.npmjs.org/package/san-ssr)
 [![downloads](https://img.shields.io/npm/dm/san-ssr.svg)](https://www.npmjs.org/package/san-ssr)
-[![Build Status](https://travis-ci.org/searchfe/san-ssr.svg?branch=master)](https://travis-ci.org/searchfe/san-ssr)
+[![Build Status](https://travis-ci.com/searchfe/san-ssr.svg?branch=master)](https://travis-ci.com/searchfe/san-ssr)
 [![Coveralls](https://img.shields.io/coveralls/searchfe/san-ssr.svg)](https://coveralls.io/github/searchfe/san-ssr?branch=master)
 [![dependencies](https://img.shields.io/david/searchfe/san-ssr.svg)](https://david-dm.org/searchfe/san-ssr)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/searchfe/san-ssr)
@@ -110,13 +110,13 @@ writeFileSync('ssr.js', targetCode)
 
 THIS SECTION IS FOR MAINTAINERS ONLY
 
+TODO 移动以下文档到对应的代码生成器仓库。
+
 ### PHP
 
 - filters/computed 是 static，这要求使用时额外声明其类型
 
 ### JS
-
-THIS SECTION IS FOR MAINTAINERS ONLY
 
 作为对照和参考，本仓库也维护了 JS 版本的 SSR。它和 PHP SSR 一同演化，可以跑通所有 san 代码库提供的 SSR 集成测试和 e2e 测试。
 

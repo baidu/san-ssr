@@ -8,6 +8,13 @@
     "test": "test",
     "example": "example"
   },
+  "files": [
+    "runtime",
+    "bin",
+    "dist",
+    "*.json",
+    "*.md"
+  ],
   "bin": {
     "san-ssr": "./dist/bin/ssr.js"
   },

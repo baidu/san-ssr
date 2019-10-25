@@ -30,11 +30,7 @@ export class Component {
         this.files.set(filepath, sourceFile)
     }
 
-    getFile (path: string) {
-        return this.files.get(path)
-    }
-
-    getModule (moduleSpecifier: string) {
+    getFile (moduleSpecifier: string) {
         if (this.files.has(moduleSpecifier)) {
             return this.files.get(moduleSpecifier)
         }

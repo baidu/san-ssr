@@ -72,7 +72,7 @@ export class ToJSCompiler implements Compiler {
 
     public evalComponentClass (component: Component) {
         const commonJS = new CommonJS(filepath => {
-            const sourceFile = component.getModule(filepath)
+            const sourceFile = component.getFile(filepath)
             if (!sourceFile) throw new Error(`file ${filepath} not found`)
             const js = this.compileToJS(sourceFile)
             return js

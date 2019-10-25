@@ -1,7 +1,17 @@
 # San SSR
+[![npm version](https://img.shields.io/npm/v/san-ssr.svg)](https://www.npmjs.org/package/san-ssr)
+[![downloads](https://img.shields.io/npm/dm/san-ssr.svg)](https://www.npmjs.org/package/san-ssr)
+[![Build Status](https://travis-ci.org/searchfe/san-ssr.svg?branch=master)](https://travis-ci.org/searchfe/san-ssr)
+[![Coveralls](https://img.shields.io/coveralls/searchfe/san-ssr.svg)](https://coveralls.io/github/searchfe/san-ssr?branch=master)
+[![dependencies](https://img.shields.io/david/searchfe/san-ssr.svg)](https://david-dm.org/searchfe/san-ssr)
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/searchfe/san-ssr)
+[![GitHub issues](https://img.shields.io/github/issues-closed/searchfe/san-ssr.svg)](https://github.com/searchfe/san-ssr/issues)
+[![David](https://img.shields.io/david/searchfe/san-ssr.svg)](https://david-dm.org/searchfe/san-ssr)
+[![David Dev](https://img.shields.io/david/dev/searchfe/san-ssr.svg)](https://david-dm.org/searchfe/san-ssr?type=dev)
+[![DUB license](https://img.shields.io/dub/l/vibe-d.svg)](https://github.com/searchfe/san-ssr/blob/master/LICENSE)
+[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commits)
 
 **The purpurse of this repo** is to provide an SSR framework and utils for the [san][san] components.
-
 
 ## Target
 

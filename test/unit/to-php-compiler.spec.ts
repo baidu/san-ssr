@@ -29,9 +29,9 @@ describe('ToPHPCompiler', function () {
         const path = resolve(__dirname, '../stub/a.comp.ts')
         const result = cc.compileFromTS(path)
 
-        expect(result).toContain('namespace stub\\aComp {')
+        expect(result).toContain('namespace san\\stub\\aComp {')
         expect(result).toContain('class A extends Component {')
         expect(result).toContain('ComponentRegistry::$comps = [')
-        expect(result).toContain('"0" => "\\\\stub\\\\aComp\\\\A"')
+        expect(result).toContain('"0" => \'\\san\\stub\\aComp\\A\'')
     })
 })

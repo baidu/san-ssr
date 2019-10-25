@@ -1,11 +1,16 @@
 # San SSR
 
-This is [San][san] SSR for multiple platforms, supported environments:
+**The purpurse of this repo** is to provide an SSR framework and utils for the [san][san] components.
 
-* Node.js >= 6.4.0
-* PHP 5 >= 5.3.0, PHP 7
 
-## Usage
+## Target
+
+san-ssr provides static analysis for San components and generates abstract component tree, while code generation is a separated process, which is provided by specific implementations:
+
+* [san-ssr-target-js][san-ssr-target-js]
+* [san-ssr-target-php][san-ssr-target-php]
+
+## CLI Usage
 
 Command line interface:
 
@@ -22,7 +27,7 @@ Options:
   --tsconfig, -c  tsconfig path, will auto resolve if not specified
 ```
 
-e.g.
+san-ssr will lookup `san-ssr-target-{target}` from node_modules to generate target code. The san-ssr-target-js package is installed as a dependency of san-ssr by default.
 
 ```bash
 # build to ssr.php
@@ -31,6 +36,8 @@ san-ssr --target php --prefix 'demo\\' ./component.ts > ssr.php
 # build to ssr.js
 san-ssr --target js  ./component.ts > ssr.js
 ```
+
+## Programmatic Interface
 
 To PHP programmatic inteface ([typedoc: ToPHPCompiler](https://harttle.github.io/san-ssr/classes/_compilers_to_php_compiler_.tophpcompiler.html)):
 

@@ -79,6 +79,8 @@
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_transformers_to_php_.html#refactorcomputedproperty" class="tsd-kind-icon">refactor<wbr>Computed<wbr>Property</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_transformers_to_php_.html#refactorfiltersproperty" class="tsd-kind-icon">refactor<wbr>Filters<wbr>Property</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_transformers_to_php_.html#transformasttophp" class="tsd-kind-icon">transform<wbr>Ast<wbr>ToPHP</a></li>
 							</ul>
 						</section>
@@ -93,30 +95,85 @@
 					<div class="tsd-signature tsd-kind-icon">useless<wbr>Component<wbr>Props<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[&#x27;components&#x27;]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/9b6082f/src/transformers/to-php.ts#L5">transformers/to-php.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/ee2af63/src/transformers/to-php.ts#L6">transformers/to-php.ts:6</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
-				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="transformasttophp" class="tsd-anchor"></a>
-					<h3>transform<wbr>Ast<wbr>ToPHP</h3>
-					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">transform<wbr>Ast<wbr>ToPHP<span class="tsd-signature-symbol">(</span>sourceFile<span class="tsd-signature-symbol">: </span><a href="../classes/_parsers_san_sourcefile_.sansourcefile.html" class="tsd-signature-type">SanSourceFile</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="refactorcomputedproperty" class="tsd-anchor"></a>
+					<h3>refactor<wbr>Computed<wbr>Property</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">refactor<wbr>Computed<wbr>Property<span class="tsd-signature-symbol">(</span>computed<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyDeclaration</span>, sanssr<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/9b6082f/src/transformers/to-php.ts#L7">transformers/to-php.ts:7</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/ee2af63/src/transformers/to-php.ts#L42">transformers/to-php.ts:42</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>computed: <span class="tsd-signature-type">PropertyDeclaration</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> sanssr: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;san-ssr&quot;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<a name="refactorfiltersproperty" class="tsd-anchor"></a>
+					<h3>refactor<wbr>Filters<wbr>Property</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">refactor<wbr>Filters<wbr>Property<span class="tsd-signature-symbol">(</span>filters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyDeclaration</span>, sanssr<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/ee2af63/src/transformers/to-php.ts#L38">transformers/to-php.ts:38</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>filters: <span class="tsd-signature-type">PropertyDeclaration</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> sanssr: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;san-ssr&quot;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="transformasttophp" class="tsd-anchor"></a>
+					<h3>transform<wbr>Ast<wbr>ToPHP</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">transform<wbr>Ast<wbr>ToPHP<span class="tsd-signature-symbol">(</span>sourceFile<span class="tsd-signature-symbol">: </span><a href="../classes/_parsers_san_sourcefile_.sansourcefile.html" class="tsd-signature-type">SanSourceFile</a>, sanssr<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/ee2af63/src/transformers/to-php.ts#L8">transformers/to-php.ts:8</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>sourceFile: <a href="../classes/_parsers_san_sourcefile_.sansourcefile.html" class="tsd-signature-type">SanSourceFile</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> sanssr: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;&quot;san-ssr&quot;</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -140,6 +197,12 @@
 				<ul class="before-current">
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_transformers_to_php_.html#uselesscomponentprops" class="tsd-kind-icon">useless<wbr>Component<wbr>Props</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_transformers_to_php_.html#refactorcomputedproperty" class="tsd-kind-icon">refactor<wbr>Computed<wbr>Property</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="_transformers_to_php_.html#refactorfiltersproperty" class="tsd-kind-icon">refactor<wbr>Filters<wbr>Property</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_transformers_to_php_.html#transformasttophp" class="tsd-kind-icon">transform<wbr>Ast<wbr>ToPHP</a>

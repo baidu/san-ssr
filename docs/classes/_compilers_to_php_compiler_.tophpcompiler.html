@@ -96,9 +96,10 @@
 						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_to_php_compiler_.tophpcompiler.html#externalmodules" class="tsd-kind-icon">external<wbr>Modules</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_to_php_compiler_.tophpcompiler.html#project" class="tsd-kind-icon">project</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_to_php_compiler_.tophpcompiler.html#requiredmodules" class="tsd-kind-icon">required<wbr>Modules</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_to_php_compiler_.tophpcompiler.html#root" class="tsd-kind-icon">root</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_to_php_compiler_.tophpcompiler.html#sanssr" class="tsd-kind-icon">sanssr</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_to_php_compiler_.tophpcompiler.html#tojscompiler" class="tsd-kind-icon">toJSCompiler</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_compilers_to_php_compiler_.tophpcompiler.html#tsconfigfilepath" class="tsd-kind-icon">ts<wbr>Config<wbr>File<wbr>Path</a></li>
 							</ul>
@@ -129,7 +130,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/9b6082f/src/compilers/to-php-compiler.ts#L34">compilers/to-php-compiler.ts:34</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/ee2af63/src/compilers/to-php-compiler.ts#L35">compilers/to-php-compiler.ts:35</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -138,10 +139,10 @@
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> __namedParameters: <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
 									<ul class="tsd-parameters">
 										<li class="tsd-parameter">
-											<h5>external<wbr>Modules<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">[]</span></h5>
+											<h5>root<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
 										</li>
 										<li class="tsd-parameter">
-											<h5>root<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
+											<h5>sanssr<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
 										</li>
 										<li class="tsd-parameter">
 											<h5>ts<wbr>Config<wbr>File<wbr>Path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></h5>
@@ -157,22 +158,22 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="externalmodules" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> external<wbr>Modules</h3>
-					<div class="tsd-signature tsd-kind-icon">external<wbr>Modules<span class="tsd-signature-symbol">:</span> <a href="../modules/_emitters_generate_php_code_.html#moduleinfo" class="tsd-signature-type">ModuleInfo</a><span class="tsd-signature-symbol">[]</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/9b6082f/src/compilers/to-php-compiler.ts#L32">compilers/to-php-compiler.ts:32</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="project" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> project</h3>
 					<div class="tsd-signature tsd-kind-icon">project<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Project</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/9b6082f/src/compilers/to-php-compiler.ts#L34">compilers/to-php-compiler.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/ee2af63/src/compilers/to-php-compiler.ts#L34">compilers/to-php-compiler.ts:34</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="requiredmodules" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> required<wbr>Modules</h3>
+					<div class="tsd-signature tsd-kind-icon">required<wbr>Modules<span class="tsd-signature-symbol">:</span> <a href="../modules/_emitters_generate_php_code_.html#moduleinfo" class="tsd-signature-type">ModuleInfo</a><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/ee2af63/src/compilers/to-php-compiler.ts#L32">compilers/to-php-compiler.ts:32</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -182,7 +183,17 @@
 					<div class="tsd-signature tsd-kind-icon">root<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/9b6082f/src/compilers/to-php-compiler.ts#L30">compilers/to-php-compiler.ts:30</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/ee2af63/src/compilers/to-php-compiler.ts#L30">compilers/to-php-compiler.ts:30</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="sanssr" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> sanssr</h3>
+					<div class="tsd-signature tsd-kind-icon">sanssr<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/ee2af63/src/compilers/to-php-compiler.ts#L35">compilers/to-php-compiler.ts:35</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -192,7 +203,7 @@
 					<div class="tsd-signature tsd-kind-icon">toJSCompiler<span class="tsd-signature-symbol">:</span> <a href="_compilers_to_js_compiler_.tojscompiler.html" class="tsd-signature-type">ToJSCompiler</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/9b6082f/src/compilers/to-php-compiler.ts#L33">compilers/to-php-compiler.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/ee2af63/src/compilers/to-php-compiler.ts#L33">compilers/to-php-compiler.ts:33</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -202,7 +213,7 @@
 					<div class="tsd-signature tsd-kind-icon">ts<wbr>Config<wbr>File<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/9b6082f/src/compilers/to-php-compiler.ts#L31">compilers/to-php-compiler.ts:31</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/ee2af63/src/compilers/to-php-compiler.ts#L31">compilers/to-php-compiler.ts:31</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -219,7 +230,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/9b6082f/src/compilers/to-php-compiler.ts#L55">compilers/to-php-compiler.ts:55</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/ee2af63/src/compilers/to-php-compiler.ts#L57">compilers/to-php-compiler.ts:57</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -247,7 +258,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/9b6082f/src/compilers/to-php-compiler.ts#L117">compilers/to-php-compiler.ts:117</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/ee2af63/src/compilers/to-php-compiler.ts#L119">compilers/to-php-compiler.ts:119</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -276,7 +287,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/9b6082f/src/compilers/to-php-compiler.ts#L82">compilers/to-php-compiler.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/ee2af63/src/compilers/to-php-compiler.ts#L84">compilers/to-php-compiler.ts:84</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -313,7 +324,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/9b6082f/src/compilers/to-php-compiler.ts#L65">compilers/to-php-compiler.ts:65</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/ee2af63/src/compilers/to-php-compiler.ts#L67">compilers/to-php-compiler.ts:67</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -350,7 +361,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/9b6082f/src/compilers/to-php-compiler.ts#L96">compilers/to-php-compiler.ts:96</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/ee2af63/src/compilers/to-php-compiler.ts#L98">compilers/to-php-compiler.ts:98</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -376,7 +387,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/9b6082f/src/compilers/to-php-compiler.ts#L132">compilers/to-php-compiler.ts:132</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/ee2af63/src/compilers/to-php-compiler.ts#L134">compilers/to-php-compiler.ts:134</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -413,13 +424,16 @@
 								<a href="_compilers_to_php_compiler_.tophpcompiler.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_compilers_to_php_compiler_.tophpcompiler.html#externalmodules" class="tsd-kind-icon">external<wbr>Modules</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_compilers_to_php_compiler_.tophpcompiler.html#project" class="tsd-kind-icon">project</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_compilers_to_php_compiler_.tophpcompiler.html#requiredmodules" class="tsd-kind-icon">required<wbr>Modules</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_compilers_to_php_compiler_.tophpcompiler.html#root" class="tsd-kind-icon">root</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_compilers_to_php_compiler_.tophpcompiler.html#sanssr" class="tsd-kind-icon">sanssr</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_compilers_to_php_compiler_.tophpcompiler.html#tojscompiler" class="tsd-kind-icon">toJSCompiler</a>

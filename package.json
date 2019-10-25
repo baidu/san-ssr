@@ -2,8 +2,8 @@
   "name": "san-ssr",
   "version": "1.0.0",
   "description": "San server-side-render for PHP environment",
-  "main": "dist/index",
-  "types": "index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "directories": {
     "test": "test",
     "example": "example"
@@ -13,7 +13,7 @@
   },
   "scripts": {
     "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
-    "doc": "typedoc --out docs src && touch docs/.nojekyll",
+    "docs": "typedoc --out docs src && touch docs/.nojekyll",
     "build": "tsc",
     "build-watch": "tsc --watch",
     "unit-php": "./vendor/bin/phpunit --bootstrap vendor/autoload.php test/unit/*.spec.php",
@@ -21,8 +21,10 @@
     "unit": "npm run unit-ts && npm run unit-php",
     "integration": "./bin/build-integration.js && jest test/integration.spec.js",
     "coverage": "jest --coverage",
+    "coveralls": "jest --coverage && cat ./tests/coverage/lcov.info | coveralls",
     "test": "npm run unit && npm run integration && npm run e2e",
     "render": "./bin/render.js",
+    "version": "npm run build && npm run docs",
     "e2e": "./bin/build-e2e.js && npx karma start ./test/karma.conf.js --single-run"
   },
   "repository": {
@@ -41,6 +43,11 @@
     "@babel/preset-typescript": "^7.6.0",
     "@babel/runtime": "^7.6.0",
     "@jest/transform": "^24.9.0",
+    "@semantic-release/changelog": "^3.0.2",
+    "@semantic-release/commit-analyzer": "^6.1.0",
+    "@semantic-release/git": "^7.0.8",
+    "@semantic-release/npm": "^5.1.8",
+    "@semantic-release/release-notes-generator": "^7.1.4",
     "@types/jest": "^24.0.18",
     "@types/yargs": "^13.0.3",
     "@typescript-eslint/eslint-plugin": "^2.0.0",
@@ -48,6 +55,7 @@
     "babel-jest": "^24.9.0",
     "babel-plugin-transform-class-properties": "^6.24.1",
     "babel-preset-jest": "^24.9.0",
+    "coveralls": "^3.0.7",
     "eslint": "^5.12.1",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.15.0",
@@ -64,6 +72,7 @@
     "karma-remap-istanbul": "^0.6.0",
     "karma-sourcemap-loader": "^0.3.7",
     "san": "^3.7.8",
+    "semantic-release": "^15.13.19",
     "typedoc": "^0.15.0",
     "wdio-jasmine-framework": "^0.3.0",
     "wdio-sauce-service": "^0.4.14",
@@ -80,5 +89,24 @@
     "ts2php": "^0.12.5",
     "typescript": "^3.4.5",
     "yargs": "^14.2.0"
+  },
+  "release": {
+    "branch": "master",
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "docs"
+          ],
+          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        }
+      ],
+      "@semantic-release/github"
+    ]
   }
 }

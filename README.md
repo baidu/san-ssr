@@ -49,7 +49,7 @@ san-ssr --target js  ./component.ts > ssr.js
 
 ## Programmatic Interface
 
-To PHP programmatic inteface ([typedoc: ToPHPCompiler](https://harttle.github.io/san-ssr/classes/_compilers_to_php_compiler_.tophpcompiler.html)):
+To PHP programmatic inteface ([typedoc: ToPHPCompiler](https://searchfe.github.io/san-ssr/classes/_compilers_to_php_compiler_.tophpcompiler.html)):
 
 ```javascript
 const { ToPHPCompiler } = require('san-ssr')
@@ -61,7 +61,7 @@ const targetCode = compiler.compile('./component.ts')
 writeFileSync('ssr.php', targetCode)
 ```
 
-To JavaScript programmatic inteface ([typedoc: ToJSCompiler](https://harttle.github.io/san-ssr/classes/_compilers_to_js_compiler_.tojscompiler.html)):
+To JavaScript programmatic inteface ([typedoc: ToJSCompiler](https://searchfe.github.io/san-ssr/classes/_compilers_to_js_compiler_.tojscompiler.html)):
 
 ```javascript
 const { ToJSCompiler } = require('san-ssr')

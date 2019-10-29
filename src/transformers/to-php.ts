@@ -40,7 +40,7 @@ function refactorFiltersProperty (filters: PropertyDeclaration, sanssr = 'san-ss
 }
 
 function refactorComputedProperty (computed: PropertyDeclaration, sanssr = 'san-ssr') {
-    computed.removeType()
+    computed.setType(`import("${sanssr}").SanSSRComputedDeclarations`)
 
     const computedDefinitions = computed.getInitializer()
     if (!computedDefinitions) return

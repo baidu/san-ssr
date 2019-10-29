@@ -12,6 +12,6 @@ export class SanSSRFiltersDeclarations {
     [key: string]: (...args: any[]) => any
 }
 
-export class TargetComputedDeclarations {
+export class SanSSRComputedDeclarations {
     [key: string]: (sanssrSelf: Component) => any
 }

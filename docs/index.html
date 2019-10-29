@@ -110,7 +110,7 @@ san-ssr --target js  ./component.ts &gt; ssr.js</code></pre>
 				<a href="#programmatic-interface" id="programmatic-interface" style="color: inherit; text-decoration: none;">
 					<h2>Programmatic Interface</h2>
 				</a>
-				<p>To PHP programmatic inteface (<a href="https://harttle.github.io/san-ssr/classes/_compilers_to_php_compiler_.tophpcompiler.html">typedoc: ToPHPCompiler</a>):</p>
+				<p>To PHP programmatic inteface (<a href="https://searchfe.github.io/san-ssr/classes/_compilers_to_php_compiler_.tophpcompiler.html">typedoc: ToPHPCompiler</a>):</p>
 				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { ToPHPCompiler } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'san-ssr'</span>)
 <span class="hljs-keyword">const</span> { writeFileSync } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>)
 
@@ -118,7 +118,7 @@ san-ssr --target js  ./component.ts &gt; ssr.js</code></pre>
 <span class="hljs-keyword">const</span> targetCode = compiler.compile(<span class="hljs-string">'./component.ts'</span>)
 
 writeFileSync(<span class="hljs-string">'ssr.php'</span>, targetCode)</code></pre>
-				<p>To JavaScript programmatic inteface (<a href="https://harttle.github.io/san-ssr/classes/_compilers_to_js_compiler_.tojscompiler.html">typedoc: ToJSCompiler</a>):</p>
+				<p>To JavaScript programmatic inteface (<a href="https://searchfe.github.io/san-ssr/classes/_compilers_to_js_compiler_.tojscompiler.html">typedoc: ToJSCompiler</a>):</p>
 				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { ToJSCompiler } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'san-ssr'</span>)
 <span class="hljs-keyword">const</span> { writeFileSync } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>)
 
@@ -291,9 +291,6 @@ composer install</code></pre>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_parsers_tsconfig_.html">"parsers/tsconfig"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_parsers_walker_.html">"parsers/walker"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_transformers_normalize_component_.html">"transformers/normalize-<wbr>component"</a>

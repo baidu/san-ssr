@@ -1,4 +1,4 @@
-import { Component } from '../parsers/component'
+import { SanApp } from '../parsers/san-app'
 import { JSEmitter } from '../emitters/js-emitter'
 import { generateRenderFunction } from './js-render-compiler'
 import { ComponentParser } from '../parsers/component-parser'
@@ -70,7 +70,7 @@ export class ToJSCompiler implements Compiler {
         return emitter.fullText()
     }
 
-    public evalComponentClass (component: Component) {
+    public evalComponentClass (component: SanApp) {
         const commonJS = new CommonJS(filepath => {
             const sourceFile = component.getFile(filepath)
             if (!sourceFile) throw new Error(`file ${filepath} not found`)

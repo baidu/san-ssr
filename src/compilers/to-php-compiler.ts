@@ -8,7 +8,7 @@ import { ToJSCompiler } from './to-js-compiler'
 import { Project } from 'ts-morph'
 import { generateRenderModule } from './php-render-compiler'
 import { PHPEmitter } from '../emitters/php-emitter'
-import { Component } from '../parsers/component'
+import { SanApp } from '../parsers/san-app'
 import camelCase from 'camelcase'
 import { ComponentRegistry } from './component-registry'
 import { SanSourceFile } from '../parsers/san-sourcefile'
@@ -116,7 +116,7 @@ export class ToPHPCompiler implements Compiler {
         )
     }
 
-    public compileComponents (entryComp: Component, emitter: PHPEmitter = new PHPEmitter(), nsPrefix = '') {
+    public compileComponents (entryComp: SanApp, emitter: PHPEmitter = new PHPEmitter(), nsPrefix = '') {
         const registry = new ComponentRegistry()
         for (const [path, sourceFile] of entryComp.getFiles()) {
             registry.registerComponents(sourceFile)

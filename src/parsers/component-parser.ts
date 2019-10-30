@@ -4,7 +4,7 @@ import { SanSourceFile } from './san-sourcefile'
 import { Project, SourceFile, ClassDeclaration } from 'ts-morph'
 import { getDefaultConfigPath } from './tsconfig'
 import { getDependenciesRecursively } from './dependency-resolver'
-import { Component } from './component'
+import { SanApp } from './san-app'
 import debugFactory from 'debug'
 
 const debug = debugFactory('component-parser')
@@ -28,9 +28,9 @@ export class ComponentParser {
         return ComponentParser.createUsingTsconfig(getDefaultConfigPath())
     }
 
-    public parseComponent (componentTS: string): Component {
+    public parseComponent (componentTS: string): SanApp {
         debug('parsComponent', componentTS)
-        const comp = new Component(componentTS)
+        const comp = new SanApp(componentTS)
         for (const [path, file] of this.getComponentFiles(componentTS)) {
             comp.addFile(path, this.parseSanSourceFile(file))
         }

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import chalk from 'chalk'
-import { ToPHPCompiler } from '../compilers/to-php-compiler'
+import { SanProject, Target } from '../compilers'
 import { ToJSCompiler } from '../compilers/to-js-compiler'
 import { writeFileSync } from 'fs'
 import { resolve } from 'path'
@@ -45,13 +45,24 @@ const outputFile = yargs.argv.output as OptionValue
 const componentFile = resolve(yargs.argv._[0])
 console.error(chalk.gray('compiling'), componentFile, 'to', target)
 
-const Compiler = target === 'php' ? ToPHPCompiler : ToJSCompiler
-const compiler = new Compiler({ tsConfigFilePath })
-const targetCode = compiler.compile(componentFile, { nsPrefix })
+if (target === 'php') {
+    const compiler = new SanProject({ tsConfigFilePath })
+    const targetCode = compiler.compile(componentFile, Target.php, { nsPrefix })
 
-if (outputFile !== undefined) {
-    writeFileSync(outputFile, targetCode)
+    if (outputFile !== undefined) {
+        writeFileSync(outputFile, targetCode)
+    } else {
+        process.stdout.write(targetCode)
+    }
+    console.error(chalk.green('success'), `${byteCount(targetCode)} bytes written`)
 } else {
-    process.stdout.write(targetCode)
+    const compiler = new ToJSCompiler({ tsConfigFilePath })
+    const targetCode = compiler.compile(componentFile)
+
+    if (outputFile !== undefined) {
+        writeFileSync(outputFile, targetCode)
+    } else {
+        process.stdout.write(targetCode)
+    }
+    console.error(chalk.green('success'), `${byteCount(targetCode)} bytes written`)
 }
-console.error(chalk.green('success'), `${byteCount(targetCode)} bytes written`)

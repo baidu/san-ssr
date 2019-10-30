@@ -1,10 +1,7 @@
-import { CommonJS } from '../loaders/common-js'
-import { ComponentParser } from '../parsers/component-parser'
 import { getInlineDeclarations } from '../parsers/dependency-resolver'
 import { isReserved } from '../utils/php-util'
 import { ModuleInfo, generatePHPCode } from '../emitters/generate-php-code'
 import { transformAstToPHP } from '../transformers/to-php'
-import { ToJSCompiler } from './to-js-compiler'
 import { Project } from 'ts-morph'
 import { generateRenderModule } from './php-render-compiler'
 import { PHPEmitter } from '../emitters/php-emitter'
@@ -22,7 +19,7 @@ const debug = debugFactory('ast-util')
 
 export type ToPHPCompilerOptions = {
     tsConfigFilePath?: string,
-    root?: string,
+    project: any
     sanssr?: string
 }
 
@@ -30,16 +27,16 @@ export class ToPHPCompiler implements Compiler {
     private root: string
     private tsConfigFilePath: string
     private requiredModules: ModuleInfo[]
-    private toJSCompiler: ToJSCompiler
     private project: Project
     private sanssr: string
 
     constructor ({
         tsConfigFilePath = getDefaultConfigPath(),
-        root = tsConfigFilePath.split(sep).slice(0, -1).join(sep),
+        project,
         sanssr = 'san-ssr'
-    }: ToPHPCompilerOptions = {}) {
+    }: ToPHPCompilerOptions) {
         this.sanssr = sanssr
+        this.project = project
         this.requiredModules = [{
             name: sanssr,
             required: true
@@ -48,47 +45,30 @@ export class ToPHPCompiler implements Compiler {
             required: true,
             namespace: '\\san\\runtime\\'
         }]
-        this.root = root
+        this.root = tsConfigFilePath.split(sep).slice(0, -1).join(sep)
         this.tsConfigFilePath = tsConfigFilePath
-        this.project = new Project({ tsConfigFilePath })
-        this.toJSCompiler = new ToJSCompiler({ tsConfigFilePath })
-    }
-
-    public compile (filepath: string, options = {}) {
-        const ext = extname(filepath)
-        if (ext === '.ts') {
-            return this.compileFromTS(filepath, options)
-        } else if (ext === '.js') {
-            return this.compileFromJS(filepath, options)
-        }
-        throw new Error(`not recognized file extension: ${ext}`)
     }
 
     public compileFromTS (filepath: string, {
         funcName = 'render',
         nsPrefix = 'san\\',
+        component,
+        ComponentClass,
         emitHeader = true
-    } = {}) {
+    }) {
         const emitter = new PHPEmitter(emitHeader)
-        const parser = new ComponentParser(this.project)
-        const component = parser.parseComponent(filepath)
-        const ComponentClass = this.toJSCompiler.evalComponentClass(component)
-
         generateRenderModule({ ComponentClass, funcName, emitter, nsPrefix })
         this.compileComponents(component, emitter, nsPrefix)
-
         emitRuntimeInPHP(emitter, nsPrefix)
         return emitter.fullText()
     }
 
-    public compileFromJS (filepath: string, {
+    public compileFromJS (ComponentClass: string, {
         funcName = 'render',
         nsPrefix = 'san\\',
         emitHeader = true
     } = {}) {
         const emitter = new PHPEmitter(emitHeader)
-
-        const ComponentClass = new CommonJS().require(filepath)
         generateRenderModule({ ComponentClass, funcName, emitter, nsPrefix })
 
         emitRuntimeInPHP(emitter, nsPrefix)

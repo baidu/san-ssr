@@ -1,7 +1,7 @@
 import camelCase from 'camelcase'
 import { readdirSync, writeFileSync, existsSync } from 'fs'
 import { resolve, join } from 'path'
-import { ToPHPCompiler } from '../compilers/to-php-compiler'
+import { Target, SanProject } from '../compilers'
 import { ToJSCompiler } from '../compilers/to-js-compiler'
 import debugFactory from 'debug'
 import ProgressBar = require('progress')
@@ -12,7 +12,7 @@ const caseRoot = resolve(__dirname, '../../test/cases')
 const tsConfigFilePath = resolve(__dirname, '../../test/tsconfig.json')
 const cases = readdirSync(caseRoot)
 const toJSCompiler = new ToJSCompiler({ tsConfigFilePath })
-const toPHPCompiler = new ToPHPCompiler({
+const sanProject = new SanProject({
     tsConfigFilePath,
     sanssr: '../../..'
 })
@@ -38,8 +38,9 @@ export function compileToJS (caseName) {
 export function compileToPHP (caseName) {
     const ts = join(caseRoot, caseName, 'component.ts')
     const js = resolve(caseRoot, caseName, 'component.js')
-    const targetCode = toPHPCompiler.compile(
+    const targetCode = sanProject.compile(
         existsSync(ts) ? ts : js,
+        Target.php,
         { nsPrefix: `san\\${camelCase(caseName)}\\` }
     )
 

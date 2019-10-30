@@ -1,9 +1,9 @@
 import { compile } from 'ts2php'
 import { keyBy } from 'lodash'
-import { SanSourceFile } from '../parsers/san-sourcefile'
+import { SourceFile } from 'ts-morph'
 import debugFactory from 'debug'
 
-const debug = debugFactory('generate-php-code')
+const debug = debugFactory('transpilers:ts2php')
 
 export type ModuleInfo = {
     name: string,
@@ -11,7 +11,7 @@ export type ModuleInfo = {
     namespace?: string
 }
 
-export function generatePHPCode (sourceFile: SanSourceFile, modules: ModuleInfo[], compilerOptions, nsPrefix: string) {
+export function generatePHPCode (sourceFile: SourceFile, modules: ModuleInfo[], compilerOptions, nsPrefix: string) {
     debug('modules:', modules)
     const options = {
         source: sourceFile.getFullText(),

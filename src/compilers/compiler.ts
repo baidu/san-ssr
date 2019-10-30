@@ -1,4 +1,5 @@
+import { SanApp } from '../parsers/san-app'
+
 export interface Compiler {
-    compileFromTS (filepath: string, options?: any);
-    compileFromJS (filepath: string);
+    compile (sanApp: SanApp, options?: any);
 }

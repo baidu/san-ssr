@@ -1,5 +1,5 @@
 import { removeObjectLiteralInitiator } from '../utils/ast-util'
-import { SanSourceFile } from '../parsers/san-sourcefile'
+import { SanSourceFile } from '../models/san-sourcefile'
 import { isReserved } from '../utils/php-util'
 import { TypeGuards, PropertyDeclaration } from 'ts-morph'
 

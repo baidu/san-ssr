@@ -1,6 +1,6 @@
 import { getInlineDeclarations } from '../parsers/dependency-resolver'
 import { isReserved } from '../utils/php-util'
-import { ModuleInfo, generatePHPCode } from '../emitters/generate-php-code'
+import { ModuleInfo, generatePHPCode } from '../transpilers/ts2php'
 import { transformAstToPHP } from '../transformers/to-php'
 import { Project } from 'ts-morph'
 import { generateRenderModule } from './php-render-compiler'
@@ -8,7 +8,7 @@ import { PHPEmitter } from '../emitters/php-emitter'
 import { SanApp } from '../parsers/san-app'
 import camelCase from 'camelcase'
 import { ComponentRegistry } from './component-registry'
-import { SanSourceFile } from '../parsers/san-sourcefile'
+import { SanSourceFile } from '../models/san-sourcefile'
 import { getDefaultConfigPath } from '../parsers/tsconfig'
 import { sep, extname } from 'path'
 import debugFactory from 'debug'
@@ -49,33 +49,19 @@ export class ToPHPCompiler implements Compiler {
         this.tsConfigFilePath = tsConfigFilePath
     }
 
-    public compileFromTS (filepath: string, {
+    public compile (sanApp: SanApp, {
         funcName = 'render',
         nsPrefix = 'san\\',
-        component,
-        ComponentClass,
         emitHeader = true
     }) {
         const emitter = new PHPEmitter(emitHeader)
-        generateRenderModule({ ComponentClass, funcName, emitter, nsPrefix })
-        this.compileComponents(component, emitter, nsPrefix)
+        generateRenderModule({ ComponentClass: sanApp.getEntryComponentClass(), funcName, emitter, nsPrefix })
+        this.compileComponents(sanApp, emitter, nsPrefix)
         emitRuntimeInPHP(emitter, nsPrefix)
         return emitter.fullText()
     }
 
-    public compileFromJS (ComponentClass: string, {
-        funcName = 'render',
-        nsPrefix = 'san\\',
-        emitHeader = true
-    } = {}) {
-        const emitter = new PHPEmitter(emitHeader)
-        generateRenderModule({ ComponentClass, funcName, emitter, nsPrefix })
-
-        emitRuntimeInPHP(emitter, nsPrefix)
-        return emitter.fullText()
-    }
-
-    public compileToPHP (sourceFile: SanSourceFile, nsPrefix = '') {
+    public compileComponent (sourceFile: SanSourceFile, nsPrefix = '') {
         transformAstToPHP(sourceFile, this.sanssr)
         const tsconfig = require(this.tsConfigFilePath)
         const requiredModules = [...this.requiredModules]
@@ -89,7 +75,7 @@ export class ToPHPCompiler implements Compiler {
             })
         }
         return generatePHPCode(
-            sourceFile,
+            sourceFile.origin,
             requiredModules,
             tsconfig['compilerOptions'],
             nsPrefix
@@ -104,7 +90,7 @@ export class ToPHPCompiler implements Compiler {
             emitter.beginNamespace(nsPrefix + this.ns(path))
             emitter.writeLine(`use ${nsPrefix}runtime\\_;`)
             emitter.writeLine(`use ${nsPrefix}runtime\\Component;`)
-            emitter.writeLines(this.compileToPHP(sourceFile, nsPrefix))
+            emitter.writeLines(this.compileComponent(sourceFile, nsPrefix))
             emitter.endNamespace()
         }
         registry.writeComponentRegistry(nsPrefix, path => this.ns(path), emitter)

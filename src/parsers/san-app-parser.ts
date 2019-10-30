@@ -1,6 +1,7 @@
 import { getComponentClassIdentifier, isChildClassOf } from '../utils/ast-util'
+import { extname } from 'path'
 import { normalizeComponentClass } from '../transformers/normalize-component'
-import { SanSourceFile } from './san-sourcefile'
+import { SanSourceFile } from '../models/san-sourcefile'
 import { Project, SourceFile, ClassDeclaration } from 'ts-morph'
 import { getDefaultConfigPath } from './tsconfig'
 import { getDependenciesRecursively } from './dependency-resolver'
@@ -9,7 +10,7 @@ import debugFactory from 'debug'
 
 const debug = debugFactory('component-parser')
 
-export class ComponentParser {
+export class SanAppParser {
     private root: string
     private id: number = 0
     public project: Project
@@ -21,17 +22,20 @@ export class ComponentParser {
     }
 
     static createUsingTsconfig (tsConfigFilePath: string) {
-        return new ComponentParser(new Project({ tsConfigFilePath }))
+        return new SanAppParser(new Project({ tsConfigFilePath }))
     }
 
-    static crateUsingDefaultTsconfig () {
-        return ComponentParser.createUsingTsconfig(getDefaultConfigPath())
+    static createUsingDefaultTypeScriptConfig () {
+        return SanAppParser.createUsingTsconfig(getDefaultConfigPath())
     }
 
-    public parseComponent (componentTS: string): SanApp {
-        debug('parsComponent', componentTS)
-        const comp = new SanApp(componentTS)
-        for (const [path, file] of this.getComponentFiles(componentTS)) {
+    public parseSanApp (entryFilePath: string): SanApp {
+        debug('parsComponent', entryFilePath)
+        const comp = new SanApp(entryFilePath)
+        const ext = extname(entryFilePath)
+        if (ext === '.js') return comp
+
+        for (const [path, file] of this.getComponentFiles(entryFilePath)) {
             comp.addFile(path, this.parseSanSourceFile(file))
         }
         return comp
@@ -61,7 +65,7 @@ export class ComponentParser {
         return sanSourceFile
     }
 
-    setComponentID (sourceFile: SanSourceFile, clazz: ClassDeclaration) {
+    public setComponentID (sourceFile: SanSourceFile, clazz: ClassDeclaration) {
         const decl = clazz.addProperty({
             isStatic: true,
             name: this.idPropertyName,

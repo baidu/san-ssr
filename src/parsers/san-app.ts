@@ -11,6 +11,8 @@ enum SourceFileType {
     ts = 'ts'
 }
 
+const CLASS_NOT_EXIST = 'ComponentClass is needed to generate render function'
+
 export class SanApp {
     private files: Map<string, SanSourceFile> = new Map()
     private entry: string
@@ -57,6 +59,14 @@ export class SanApp {
 
     public getFiles (): IterableIterator<[string, SanSourceFile]> {
         return this.files.entries()
+    }
+
+    public getEntryComponentClassOrThrow () {
+        const clazz = this.getEntryComponentClass()
+        if (typeof clazz !== 'function') {
+            throw new Error(CLASS_NOT_EXIST)
+        }
+        return clazz
     }
 
     public getEntryComponentClass () {

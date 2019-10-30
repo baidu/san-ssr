@@ -3,7 +3,7 @@ import { isReserved } from '../utils/php-util'
 import { ModuleInfo, generatePHPCode } from '../transpilers/ts2php'
 import { transformAstToPHP } from '../transformers/to-php'
 import { Project } from 'ts-morph'
-import { generateRenderModule } from './php-render-compiler'
+import { generateComponentRendererSource } from './php-render-compiler'
 import { PHPEmitter } from '../emitters/php-emitter'
 import { SanApp } from '../parsers/san-app'
 import camelCase from 'camelcase'
@@ -55,7 +55,17 @@ export class ToPHPCompiler implements Compiler {
         emitHeader = true
     }) {
         const emitter = new PHPEmitter(emitHeader)
-        generateRenderModule({ ComponentClass: sanApp.getEntryComponentClass(), funcName, emitter, nsPrefix })
+        const ComponentClass = sanApp.getEntryComponentClassOrThrow()
+
+        emitter.beginNamespace(nsPrefix + 'renderer')
+        emitter.writeLine(`use ${nsPrefix}runtime\\_;`)
+        emitter.writeIndent()
+        emitter.writeFunction(funcName, ['$data', '$noDataOutput'], [], () => {
+            const renderId = generateComponentRendererSource(emitter, ComponentClass, false, nsPrefix, true)
+            emitter.writeLine(`return ${renderId}($data, $noDataOutput);`)
+        })
+        emitter.endNamespace()
+
         this.compileComponents(sanApp, emitter, nsPrefix)
         emitRuntimeInPHP(emitter, nsPrefix)
         return emitter.fullText()

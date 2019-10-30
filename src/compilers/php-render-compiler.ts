@@ -754,7 +754,7 @@ const aNodeCompiler = {
             ')'
         }
 
-        const renderId = compileComponentRender(emitter, extra.ComponentClass, owner.ssrContextId)
+        const renderId = generateComponentRendererSource(emitter, extra.ComponentClass, owner.ssrContextId)
         emitter.nextLine(`$html .= `)
         emitter.writeFunctionCall(renderId, [dataLiteral, 'true', '$ctx', stringifier.str(aNode.tagName), '$sourceSlots'])
         emitter.feedLine(';')
@@ -793,7 +793,13 @@ function isComponentLoader (cmpt) {
 * @param {string} contextId 构建render环境的id
 * @return {string} 组件在当前环境下的方法标识
 */
-function compileComponentRender (emitter, ComponentClass, contextId) {
+export function generateComponentRendererSource (emitter, ComponentClass, contextId, nsPrefix?, resetSSRIndex?) {
+    // TODO make it a class property
+    if (nsPrefix) namespacePrefix = nsPrefix
+    if (resetSSRIndex) ssrIndex = 0
+    if (!contextId) contextId = genSSRId()
+
+    // TODO make ssrContext to class property
     ComponentClass.ssrContext = ComponentClass.ssrContext || {}
     let cid = ComponentClass.ssrContext[contextId]
     if (cid) return cid
@@ -813,7 +819,7 @@ function compileComponentRender (emitter, ComponentClass, contextId) {
                 }
 
                 if (CmptClass) {
-                    compileComponentRender(emitter, CmptClass, contextId)
+                    generateComponentRendererSource(emitter, CmptClass, contextId)
                 }
             }
         )
@@ -889,30 +895,4 @@ function genComponentContextCode (component, emitter) {
     emitter.unindent()
     emitter.writeLine('];')
     emitter.writeLine('$ctx->instance = _::createComponent($ctx);')
-}
-
-export function generateRenderModule ({
-    ComponentClass,
-    funcName = '',
-    nsPrefix = '',
-    emitter = new PHPEmitter()
-}) {
-    namespacePrefix = nsPrefix
-    if (typeof ComponentClass !== 'function') {
-        throw new Error('ComponentClass is needed to generate render function')
-    }
-    emitter.beginNamespace(nsPrefix + 'renderer')
-    emitter.writeLine(`use ${nsPrefix}runtime\\_;`)
-    ssrIndex = 0
-
-    const contextId = genSSRId()
-
-    emitter.writeIndent()
-    emitter.writeFunction(funcName, ['$data', '$noDataOutput'], [], () => {
-        const renderId = compileComponentRender(emitter, ComponentClass, contextId)
-        emitter.writeLine(`return ${renderId}($data, $noDataOutput);`)
-    })
-
-    emitter.endNamespace()
-    return emitter.fullText()
 }

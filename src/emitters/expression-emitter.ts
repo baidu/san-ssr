@@ -1,5 +1,3 @@
-import { each } from '../utils/underscore'
-
 /**
 * 编译源码的 helper 方法集合对象
 */
@@ -32,7 +30,7 @@ export const ExpressionEmitter = {
      */
     dataAccess: function (accessorExpr = { paths: [] }) {
         const seq = []
-        each(accessorExpr.paths, function (path) {
+        for (const path of accessorExpr.paths) {
             if (path.type === 4) {
                 seq.push(ExpressionEmitter.dataAccess(path))
             } else if (typeof path.value === 'string') {
@@ -40,7 +38,7 @@ export const ExpressionEmitter = {
             } else if (typeof path.value === 'number') {
                 seq.push(path.value)
             }
-        })
+        }
         return `_::data($ctx, [${seq.join(', ')}])`
     },
 
@@ -72,9 +70,9 @@ export const ExpressionEmitter = {
         }
 
         code += '('
-        each(callExpr.args, function (arg, index) {
-            code += (index > 0 ? ', ' : '') + ExpressionEmitter.expr(arg)
-        })
+        code += callExpr.args
+            .map(arg => ExpressionEmitter.expr(arg))
+            .join(',')
         code += ')'
 
         return code
@@ -89,7 +87,7 @@ export const ExpressionEmitter = {
     interp: function (interpExpr) {
         let code = ExpressionEmitter.expr(interpExpr.expr)
 
-        each(interpExpr.filters, function (filter) {
+        for (const filter of interpExpr.filters) {
             const filterName = filter.name.paths[0].value
 
             switch (filterName) {
@@ -109,12 +107,12 @@ export const ExpressionEmitter = {
 
             default:
                 code = `_::callFilter($ctx, "${filterName}", [${code}`
-                each(filter.args, function (arg) {
+                for (const arg of filter.args) {
                     code += ', ' + ExpressionEmitter.expr(arg)
-                })
+                }
                 code += '])'
             }
-        })
+        }
 
         if (!interpExpr.original) {
             return `_::escapeHTML(${code})`
@@ -136,10 +134,10 @@ export const ExpressionEmitter = {
 
         let code = ''
 
-        each(textExpr.segs, function (seg) {
+        for (const seg of textExpr.segs) {
             const segCode = ExpressionEmitter.expr(seg)
             code += code ? ' . ' + segCode : segCode
-        })
+        }
 
         return code
     },
@@ -154,10 +152,10 @@ export const ExpressionEmitter = {
         const items = []
         const spread = []
 
-        each(arrayExpr.items, function (item) {
+        for (const item of arrayExpr.items) {
             items.push(ExpressionEmitter.expr(item.expr))
             spread.push(item.spread ? 1 : 0)
-        })
+        }
 
         return `_::spread([${items.join(', ')}], ${JSON.stringify(spread)})`
     },
@@ -172,7 +170,7 @@ export const ExpressionEmitter = {
         const items = []
         const spread = []
 
-        each(objExpr.items, function (item) {
+        for (const item of objExpr.items) {
             if (item.spread) {
                 spread.push(1)
                 items.push(ExpressionEmitter.expr(item.expr))
@@ -182,7 +180,7 @@ export const ExpressionEmitter = {
                 const val = ExpressionEmitter.expr(item.expr)
                 items.push(`[${key}, ${val}]`)
             }
-        })
+        }
         return `_::objSpread([${items.join(',')}], ${JSON.stringify(spread)})`
     },
 

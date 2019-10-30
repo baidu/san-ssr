@@ -1,7 +1,8 @@
 import camelCase from 'camelcase'
 import { readdirSync, writeFileSync, existsSync } from 'fs'
 import { resolve, join } from 'path'
-import { Target, SanProject } from '../models/san-project'
+import { SanProject } from '../models/san-project'
+import { Target } from '../models/target'
 import debugFactory from 'debug'
 import ProgressBar = require('progress')
 

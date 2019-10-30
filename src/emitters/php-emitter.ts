@@ -47,9 +47,6 @@ export class PHPEmitter extends Emitter {
         this.writeHTML(ExpressionEmitter.stringLiteralize(buffer))
     }
 
-    /**
-     * switch
-     */
     public writeSwitch (expr: string, body: Function) {
         this.writeLine(`switch (${expr}) {`)
         this.indent()
@@ -76,9 +73,6 @@ export class PHPEmitter extends Emitter {
         this.unindent()
     }
 
-    /**
-     * function
-     */
     public writeFunction (name = '', args = [], use = [], body: Function = () => null) {
         const nameStr = name ? `${name} ` : ''
         const argsStr = args.join(', ')
@@ -96,9 +90,6 @@ export class PHPEmitter extends Emitter {
         this.write(`${name}(${args.join(', ')})`)
     }
 
-    /**
-     * if
-     */
     public writeIf (expr: string, cb: Function) {
         this.beginIf(expr)
         cb()
@@ -117,10 +108,6 @@ export class PHPEmitter extends Emitter {
         this.endBlock()
     }
 
-    /**
-     * foreach
-     */
-
     public writeForeach (expr: string, cb: Function) {
         this.beginForeach(expr)
         cb()
@@ -136,9 +123,6 @@ export class PHPEmitter extends Emitter {
         this.writeLine('continue;')
     }
 
-    /**
-     * block
-     */
     public writeBlock (expr: string, cb: Function) {
         this.beginBlock(expr)
         cb()

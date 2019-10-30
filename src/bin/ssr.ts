@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 import chalk from 'chalk'
-import { SanProject, Target } from '../models/san-project'
+import { SanProject } from '../models/san-project'
+import { Target } from '../models/target'
 import { writeFileSync } from 'fs'
 import { resolve } from 'path'
 import * as yargs from 'yargs'

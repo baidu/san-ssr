@@ -1,20 +1,15 @@
-import { sep, extname } from 'path'
-import { CommonJS } from '../loaders/common-js'
+import { sep } from 'path'
 import { ToJSCompiler } from '../compilers/to-js-compiler'
 import { getDefaultConfigPath } from '../parsers/tsconfig'
 import { SanAppParser } from '../parsers/san-app-parser'
 import { Project } from 'ts-morph'
 import { ToPHPCompiler } from '../compilers/to-php-compiler'
+import { Target } from './target'
 
 export type SanProjectOptions = {
     tsConfigFilePath?: string,
     root?: string,
     sanssr?: string
-}
-
-export enum Target {
-    php = 'php',
-    js = 'js'
 }
 
 /**

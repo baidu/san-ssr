@@ -2,7 +2,6 @@
  * 将组件树编译成 render 函数之间的递归调用
  * 提供 generateRenderModule 方法
  */
-import { each, extend } from '../utils/underscore'
 import { PHPEmitter } from '../emitters/php-emitter'
 import { ExpressionEmitter } from '../emitters/expression-emitter'
 
@@ -17,12 +16,7 @@ let namespacePrefix = ''
 */
 function splitStr2Obj (source) {
     const result = {}
-    each(
-        source.split(','),
-        function (key) {
-            result[key] = key
-        }
-    )
+    for (const key of source.split(',')) result[key] = key
     return result
 }
 
@@ -273,7 +267,9 @@ function evalExpr (expr, data, owner?) {
             const itemValue = evalExpr(item.expr, data, owner)
 
             if (item.spread) {
-                itemValue && extend(value, itemValue)
+                if (itemValue) {
+                    value = { ...value, ...itemValue }
+                }
             } else {
                 value[evalExpr(item.name, data, owner)] = itemValue
             }
@@ -386,15 +382,14 @@ function getANodeProp (aNode, name) {
 */
 function camelComponentBinds (binds) {
     const result = []
-    each(binds, function (bind) {
+    for (const bind of binds) {
         result.push({
             name: kebab2camel(bind.name),
             expr: bind.expr,
             x: bind.x,
             raw: bind.raw
         })
-    })
-
+    }
     return result
 }
 
@@ -429,14 +424,14 @@ const stringifier = {
         let prefixComma
         let result = '['
 
-        each(source, function (value) {
+        for (const value of source) {
             if (prefixComma) {
                 result += ','
             }
             prefixComma = 1
 
             result += stringifier.any(value)
-        })
+        }
 
         return result + ']'
     },
@@ -533,30 +528,30 @@ const elementSourceCompiler = {
 
         // index list
         const propsIndex:any = {}
-        each(props, function (prop) {
+        for (const prop of props) {
             propsIndex[prop.name] = prop
 
             if (prop.name !== 'slot' && prop.expr.value != null) {
                 emitter.bufferHTMLLiteral(' ' + prop.name + '="' + prop.expr.segs[0].literal + '"')
             }
-        })
+        }
 
-        each(props, function (prop) {
+        for (const prop of props) {
             if (prop.name === 'slot' || prop.expr.value != null) {
-                return
+                continue
             }
 
             if (prop.name === 'value') {
                 switch (tagName) {
                 case 'textarea':
-                    return
+                    continue
 
                 case 'select':
                     emitter.writeLine('$selectValue = ' +
                         ExpressionEmitter.expr(prop.expr) + '?' +
                         ExpressionEmitter.expr(prop.expr) + ': "";'
                     )
-                    return
+                    continue
 
                 case 'option':
                     emitter.writeLine('$optionValue = ' +
@@ -572,7 +567,7 @@ const elementSourceCompiler = {
                     emitter.writeIf('$optionValue == $selectValue', () => {
                         emitter.bufferHTMLLiteral(' selected')
                     })
-                    return
+                    continue
                 }
             }
 
@@ -648,7 +643,7 @@ const elementSourceCompiler = {
 
                 break
             }
-        })
+        }
 
         if (bindDirective) {
             emitter.nextLine('(')
@@ -735,9 +730,9 @@ const elementSourceCompiler = {
         if (htmlDirective) {
             emitter.writeHTML(ExpressionEmitter.expr(htmlDirective.value))
         } else {
-            each(aNode.children, function (aNodeChild) {
+            for (const aNodeChild of aNode.children) {
                 aNodeCompiler.compile(aNodeChild, emitter, owner)
-            })
+            }
         }
     }
 }
@@ -837,7 +832,7 @@ const aNodeCompiler = {
         })
 
         // output elif and else
-        each(aNode.elses, function (elseANode) {
+        for (const elseANode of aNode.elses || []) {
             const elifDirective = elseANode.directives.elif
             if (elifDirective) {
                 emitter.beginElseIf(ExpressionEmitter.expr(elifDirective.value))
@@ -847,7 +842,7 @@ const aNodeCompiler = {
 
             aNodeCompiler.compile(elseANode, emitter, owner)
             emitter.endBlock()
-        })
+        }
     },
 
     /**
@@ -863,7 +858,7 @@ const aNodeCompiler = {
             props: aNode.props,
             events: aNode.events,
             tagName: aNode.tagName,
-            directives: extend({}, aNode.directives),
+            directives: { ...aNode.directives },
             hotspot: aNode.hotspot
         }
         forElementANode.directives['for'] = null
@@ -901,7 +896,7 @@ const aNodeCompiler = {
                 emitter.write('$defaultSlotRender = ')
                 emitter.writeAnonymousFunction(['$ctx'], [], () => {
                     emitter.writeLine('$html = "";')
-                    each(aNode.children, aNodeChild => aNodeCompiler.compile(aNodeChild, emitter, owner))
+                    for (const aNodeChild of aNode.children) aNodeCompiler.compile(aNodeChild, emitter, owner)
                     emitter.writeLine('return $html;')
                 })
                 emitter.write(';')
@@ -939,13 +934,12 @@ const aNodeCompiler = {
                         emitter.writeLine('_::extend($slotCtx->data, ' + ExpressionEmitter.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
                     }
 
-                    each(aNode.vars, function (varItem) {
+                    for (const varItem of aNode.vars) {
                         emitter.writeLine(
                             '$slotCtx->data->' + varItem.name + ' = ' +
-                        ExpressionEmitter.expr(varItem.expr) +
-                        ';'
+                            ExpressionEmitter.expr(varItem.expr) + ';'
                         )
-                    })
+                    }
                 }
 
                 emitter.writeForeach('$mySourceSlots as $renderIndex => $slot', () => {
@@ -989,7 +983,7 @@ const aNodeCompiler = {
             const defaultSourceSlots = []
             const sourceSlotCodes = {}
 
-            each(aNode.children, function (child) {
+            for (const child of aNode.children) {
                 const slotBind = !child.textExpr && getANodeProp(child, 'slot')
                 if (slotBind) {
                     if (!sourceSlotCodes[slotBind.raw]) {
@@ -1003,7 +997,7 @@ const aNodeCompiler = {
                 } else {
                     defaultSourceSlots.push(child)
                 }
-            })
+            }
 
             if (defaultSourceSlots.length) {
                 emitter.nextLine('array_push($sourceSlots, [')
@@ -1028,12 +1022,12 @@ const aNodeCompiler = {
         }
 
         const givenData = []
-        each(camelComponentBinds(aNode.props), function (prop) {
+        for (const prop of camelComponentBinds(aNode.props)) {
             postProp(prop)
             const key = ExpressionEmitter.stringLiteralize(prop.name)
             const val = ExpressionEmitter.expr(prop.expr)
             givenData.push(`${key} => ${val}`)
-        })
+        }
 
         dataLiteral = '(object)[' + givenData.join(',\n') + ']'
         if (aNode.directives.bind) {
@@ -1044,7 +1038,7 @@ const aNodeCompiler = {
             ')'
         }
 
-        const renderId = compileComponentSource(emitter, extra.ComponentClass, owner.ssrContextId)
+        const renderId = compileComponentRender(emitter, extra.ComponentClass, owner.ssrContextId)
         emitter.nextLine(`$html .= `)
         emitter.writeFunctionCall(renderId, [dataLiteral, 'true', '$ctx', stringifier.str(aNode.tagName), '$sourceSlots'])
         emitter.feedLine(';')
@@ -1083,78 +1077,75 @@ function isComponentLoader (cmpt) {
 * @param {string} contextId 构建render环境的id
 * @return {string} 组件在当前环境下的方法标识
 */
-function compileComponentSource (emitter, ComponentClass, contextId) {
+function compileComponentRender (emitter, ComponentClass, contextId) {
     ComponentClass.ssrContext = ComponentClass.ssrContext || {}
     let cid = ComponentClass.ssrContext[contextId]
+    if (cid) return cid
 
-    if (!cid) {
-        cid = genSSRId()
-        ComponentClass.ssrContext[contextId] = cid
+    cid = ComponentClass.ssrContext[contextId] = genSSRId()
 
-        // 先初始化个实例，让模板编译成 ANode，并且能获得初始化数据
-        const component = new ComponentClass()
-        component.ssrContextId = contextId
+    // 先初始化个实例，让模板编译成 ANode，并且能获得初始化数据
+    const component = new ComponentClass()
+    component.ssrContextId = contextId
 
-        if (component.components) {
-            Object.keys(component.components).forEach(
-                function (key) {
-                    let CmptClass = component.components[key]
-                    if (isComponentLoader(CmptClass)) {
-                        CmptClass = CmptClass.placeholder
-                    }
-
-                    if (CmptClass) {
-                        compileComponentSource(emitter, CmptClass, contextId)
-                    }
+    if (component.components) {
+        Object.keys(component.components).forEach(
+            function (key) {
+                let CmptClass = component.components[key]
+                if (isComponentLoader(CmptClass)) {
+                    CmptClass = CmptClass.placeholder
                 }
-            )
-        }
 
-        emitter.writeIndent()
-        emitter.writeFunction(cid, ['$data', '$noDataOutput = false', '$parentCtx = []', '$tagName = null', '$sourceSlots = []'], [], () => {
-            emitter.writeLine('$html = "";')
-
-            genComponentContextCode(component, emitter)
-
-            // init data
-            const defaultData = component.data.get()
-            emitter.writeIf('$data', () => {
-                for (const key of Object.keys(defaultData)) {
-                    const val = stringifier.any(defaultData[key])
-                    if (val === 'NaN') continue
-                    emitter.writeLine(`$ctx->data->${key} = isset($ctx->data->${key}) ? $ctx->data->${key} : ${val};`)
+                if (CmptClass) {
+                    compileComponentRender(emitter, CmptClass, contextId)
                 }
-            })
-
-            // calc computed
-            emitter.writeForeach('$ctx->computedNames as $i => $computedName', () => {
-                emitter.writeLine('$data->$computedName = _::callComputed($ctx, $computedName);')
-            })
-
-            const ifDirective = component.aNode.directives['if']
-            if (ifDirective) {
-                emitter.writeLine('if (' + ExpressionEmitter.expr(ifDirective.value) + ') {')
-                emitter.indent()
             }
-
-            elementSourceCompiler.tagStart(emitter, component.aNode, 'tagName')
-
-            emitter.writeIf('!$noDataOutput', () => {
-                emitter.writeDataComment()
-            })
-
-            elementSourceCompiler.inner(emitter, component.aNode, component)
-            elementSourceCompiler.tagEnd(emitter, component.aNode, 'tagName')
-
-            if (ifDirective) {
-                emitter.unindent()
-                emitter.writeLine('}')
-            }
-
-            emitter.writeLine('return $html;')
-        })
+        )
     }
 
+    emitter.writeIndent()
+    emitter.writeFunction(cid, ['$data', '$noDataOutput = false', '$parentCtx = []', '$tagName = null', '$sourceSlots = []'], [], () => {
+        emitter.writeLine('$html = "";')
+
+        genComponentContextCode(component, emitter)
+
+        // init data
+        const defaultData = component.data.get()
+        emitter.writeIf('$data', () => {
+            for (const key of Object.keys(defaultData)) {
+                const val = stringifier.any(defaultData[key])
+                if (val === 'NaN') continue
+                emitter.writeLine(`$ctx->data->${key} = isset($ctx->data->${key}) ? $ctx->data->${key} : ${val};`)
+            }
+        })
+
+        // calc computed
+        emitter.writeForeach('$ctx->computedNames as $i => $computedName', () => {
+            emitter.writeLine('$data->$computedName = _::callComputed($ctx, $computedName);')
+        })
+
+        const ifDirective = component.aNode.directives['if']
+        if (ifDirective) {
+            emitter.writeLine('if (' + ExpressionEmitter.expr(ifDirective.value) + ') {')
+            emitter.indent()
+        }
+
+        elementSourceCompiler.tagStart(emitter, component.aNode, 'tagName')
+
+        emitter.writeIf('!$noDataOutput', () => {
+            emitter.writeDataComment()
+        })
+
+        elementSourceCompiler.inner(emitter, component.aNode, component)
+        elementSourceCompiler.tagEnd(emitter, component.aNode, 'tagName')
+
+        if (ifDirective) {
+            emitter.unindent()
+            emitter.writeLine('}')
+        }
+
+        emitter.writeLine('return $html;')
+    })
     return cid
 }
 
@@ -1184,12 +1175,6 @@ function genComponentContextCode (component, emitter) {
     emitter.writeLine('$ctx->instance = _::createComponent($ctx);')
 }
 
-/**
-* 将组件编译成 render 方法的 js 源码
-*
-* @param {Function} ComponentClass 组件类
-* @return {string}
-*/
 export function generateRenderModule ({
     ComponentClass,
     funcName = '',
@@ -1208,7 +1193,7 @@ export function generateRenderModule ({
 
     emitter.writeIndent()
     emitter.writeFunction(funcName, ['$data', '$noDataOutput'], [], () => {
-        const renderId = compileComponentSource(emitter, ComponentClass, contextId)
+        const renderId = compileComponentRender(emitter, ComponentClass, contextId)
         emitter.writeLine(`return ${renderId}($data, $noDataOutput);`)
     })
 

@@ -1,4 +1,3 @@
-import { each, extend } from '../utils/underscore'
 import { parseExpr } from 'san'
 
 /**
@@ -34,22 +33,22 @@ const compileExprSource = {
     dataAccess: function (accessorExpr?) {
         let code = 'componentCtx.data'
         if (accessorExpr) {
-            each(accessorExpr.paths, function (path) {
+            for (const path of accessorExpr.paths) {
                 if (path.type === 4) {
                     code += '[' + compileExprSource.dataAccess(path) + ']'
-                    return
+                    continue
                 }
 
                 switch (typeof path.value) {
                 case 'string':
                     code += '.' + path.value
-                    break
+                    continue
 
                 case 'number':
                     code += '[' + path.value + ']'
-                    break
+                    continue
                 }
-            })
+            }
         }
 
         return code
@@ -83,9 +82,9 @@ const compileExprSource = {
         }
 
         code += '('
-        each(callExpr.args, function (arg, index) {
-            code += (index > 0 ? ', ' : '') + compileExprSource.expr(arg)
-        })
+        code += callExpr.args
+            .map(arg => compileExprSource.expr(arg))
+            .join(',')
         code += ')'
 
         return code
@@ -100,7 +99,7 @@ const compileExprSource = {
     interp: function (interpExpr) {
         let code = compileExprSource.expr(interpExpr.expr)
 
-        each(interpExpr.filters, function (filter) {
+        for (const filter of interpExpr.filters) {
             const filterName = filter.name.paths[0].value
 
             switch (filterName) {
@@ -120,12 +119,12 @@ const compileExprSource = {
 
             default:
                 code = 'callFilter(componentCtx, "' + filterName + '", [' + code
-                each(filter.args, function (arg) {
+                for (const arg of filter.args) {
                     code += ', ' + compileExprSource.expr(arg)
-                })
+                }
                 code += '])'
             }
-        })
+        }
 
         if (!interpExpr.original) {
             return 'escapeHTML(' + code + ')'
@@ -147,10 +146,10 @@ const compileExprSource = {
 
         let code = ''
 
-        each(textExpr.segs, function (seg) {
+        for (const seg of textExpr.segs) {
             const segCode = compileExprSource.expr(seg)
             code += code ? ' + ' + segCode : segCode
-        })
+        }
 
         return code
     },
@@ -162,13 +161,11 @@ const compileExprSource = {
      * @return {string}
      */
     array: function (arrayExpr) {
-        const code = []
-
-        each(arrayExpr.items, function (item) {
-            code.push((item.spread ? '...' : '') + compileExprSource.expr(item.expr))
-        })
-
-        return '[\n' + code.join(',\n') + '\n]'
+        return '[\n' +
+            arrayExpr.items
+                .map(expr => (expr.spread ? '...' : '') + compileExprSource.expr(expr.expr))
+                .join(',\n') +
+            '\n]'
     },
 
     /**
@@ -180,13 +177,13 @@ const compileExprSource = {
     object: function (objExpr) {
         const code = []
 
-        each(objExpr.items, function (item) {
+        for (const item of objExpr.items) {
             if (item.spread) {
                 code.push('...' + compileExprSource.expr(item.expr))
             } else {
                 code.push(compileExprSource.expr(item.name) + ':' + compileExprSource.expr(item.expr))
             }
-        })
+        }
 
         return '{\n' + code.join(',\n') + '\n}'
     },
@@ -383,10 +380,10 @@ class CompileSourceBuffer {
             temp = ''
         }
 
-        each(this.segs, function (seg) {
+        for (const seg of this.segs) {
             if (seg.type === 'JOIN_STRING') {
                 temp += seg.str
-                return
+                continue
             }
 
             genStrLiteral()
@@ -408,7 +405,7 @@ class CompileSourceBuffer {
                 code.push(seg.code)
                 break
             }
-        })
+        }
 
         genStrLiteral()
 
@@ -424,12 +421,7 @@ class CompileSourceBuffer {
 */
 function splitStr2Obj (source) {
     const result = {}
-    each(
-        source.split(','),
-        function (key) {
-            result[key] = key
-        }
-    )
+    for (const key of source.split(',')) result[key] = key
     return result
 }
 
@@ -690,7 +682,7 @@ function evalExpr (expr, data?, owner?) {
             const itemValue = evalExpr(item.expr, data, owner)
 
             if (item.spread) {
-                itemValue && extend(value, itemValue)
+                if (itemValue) value = { ...value, ...itemValue }
             } else {
                 value[evalExpr(item.name, data, owner)] = itemValue
             }
@@ -929,17 +921,7 @@ function getANodeProp (aNode, name) {
 * @return {Array}
 */
 function camelComponentBinds (binds) {
-    const result = []
-    each(binds, function (bind) {
-        result.push({
-            name: kebab2camel(bind.name),
-            expr: bind.expr,
-            x: bind.x,
-            raw: bind.raw
-        })
-    })
-
-    return result
+    return binds.map(bind => ({ ...bind, name: kebab2camel(bind.name) }))
 }
 
 // #[begin] ssr
@@ -974,14 +956,14 @@ const stringifier = {
         let prefixComma
         let result = '['
 
-        each(source, function (value) {
+        for (const value of source) {
             if (prefixComma) {
                 result += ','
             }
             prefixComma = 1
 
             result += stringifier.any(value)
-        })
+        }
 
         return result + ']'
     },
@@ -1082,30 +1064,30 @@ const elementSourceCompiler = {
 
         // index list
         const propsIndex = {}
-        each(props, function (prop) {
+        for (const prop of props) {
             propsIndex[prop.name] = prop
 
             if (prop.name !== 'slot' && prop.expr.value != null) {
                 sourceBuffer.joinString(' ' + prop.name + '="' + prop.expr.segs[0].literal + '"')
             }
-        })
+        }
 
-        each(props, function (prop) {
+        for (const prop of props) {
             if (prop.name === 'slot' || prop.expr.value != null) {
-                return
+                continue
             }
 
             if (prop.name === 'value') {
                 switch (tagName) {
                 case 'textarea':
-                    return
+                    continue
 
                 case 'select':
                     sourceBuffer.addRaw('$selectValue = ' +
                         compileExprSource.expr(prop.expr) +
                         ' || "";'
                     )
-                    return
+                    continue
 
                 case 'option':
                     sourceBuffer.addRaw('$optionValue = ' +
@@ -1121,7 +1103,7 @@ const elementSourceCompiler = {
                     sourceBuffer.addRaw('if ($optionValue === $selectValue) {')
                     sourceBuffer.joinString(' selected')
                     sourceBuffer.addRaw('}')
-                    return
+                    continue
                 }
             }
 
@@ -1132,7 +1114,8 @@ const elementSourceCompiler = {
                 if (prop.raw == null) {
                     sourceBuffer.joinString(' ' + prop.name)
                 } else {
-                    sourceBuffer.joinRaw('boolAttrFilter("' + prop.name + '", ' +
+                    sourceBuffer.joinRaw(
+                        'boolAttrFilter("' + prop.name + '", ' +
                         compileExprSource.expr(prop.expr) +
                         ')'
                     )
@@ -1208,7 +1191,7 @@ const elementSourceCompiler = {
 
                 break
             }
-        })
+        }
 
         if (bindDirective) {
             sourceBuffer.addRaw(
@@ -1301,11 +1284,9 @@ const elementSourceCompiler = {
         if (htmlDirective) {
             sourceBuffer.joinExpr(htmlDirective.value)
         } else {
-            /* eslint-disable no-use-before-define */
-            each(aNode.children, function (aNodeChild) {
+            for (const aNodeChild of aNode.children) {
                 aNodeCompiler.compile(aNodeChild, sourceBuffer, owner)
-            })
-            /* eslint-enable no-use-before-define */
+            }
         }
     }
 }
@@ -1410,7 +1391,7 @@ const aNodeCompiler = {
         sourceBuffer.addRaw('}')
 
         // output elif and else
-        each(aNode.elses, function (elseANode) {
+        for (const elseANode of aNode.elses || []) {
             const elifDirective = elseANode.directives.elif
             if (elifDirective) {
                 sourceBuffer.addRaw('else if (' + compileExprSource.expr(elifDirective.value) + ') {')
@@ -1426,7 +1407,7 @@ const aNodeCompiler = {
                 )
             )
             sourceBuffer.addRaw('}')
-        })
+        }
     },
 
     /**
@@ -1442,7 +1423,7 @@ const aNodeCompiler = {
             props: aNode.props,
             events: aNode.events,
             tagName: aNode.tagName,
-            directives: extend({}, aNode.directives),
+            directives: { ...aNode.directives },
             hotspot: aNode.hotspot
         }
         forElementANode.directives['for'] = null
@@ -1507,9 +1488,9 @@ const aNodeCompiler = {
 
         sourceBuffer.addRaw('function $defaultSlotRender(componentCtx) {')
         sourceBuffer.addRaw('  var html = "";')
-        each(aNode.children, function (aNodeChild) {
+        for (const aNodeChild of aNode.children) {
             sourceBuffer.addRaw(aNodeCompiler.compile(aNodeChild, sourceBuffer, owner))
-        })
+        }
         sourceBuffer.addRaw('  return html;')
         sourceBuffer.addRaw('}')
 
@@ -1538,19 +1519,19 @@ const aNodeCompiler = {
         sourceBuffer.addRaw('var $slotCtx = $isInserted ? componentCtx.owner : componentCtx;')
 
         if (aNode.vars || aNode.directives.bind) {
-        sourceBuffer.addRaw('$slotCtx = {data: extend({}, $slotCtx.data), proto: $slotCtx.proto, owner: $slotCtx.owner};'); // eslint-disable-line
+            sourceBuffer.addRaw('$slotCtx = {data: extend({}, $slotCtx.data), proto: $slotCtx.proto, owner: $slotCtx.owner};')
 
             if (aNode.directives.bind) {
-            sourceBuffer.addRaw('extend($slotCtx.data, ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
+                sourceBuffer.addRaw('extend($slotCtx.data, ' + compileExprSource.expr(aNode.directives.bind.value) + ');')
             }
 
-            each(aNode.vars, function (varItem) {
+            for (const varItem of aNode.vars) {
                 sourceBuffer.addRaw(
                     '$slotCtx.data["' + varItem.name + '"] = ' +
-                compileExprSource.expr(varItem.expr) +
-                ';'
+                    compileExprSource.expr(varItem.expr) +
+                    ';'
                 )
-            })
+            }
         }
 
         sourceBuffer.addRaw('for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++) {')
@@ -1592,7 +1573,7 @@ const aNodeCompiler = {
             const defaultSourceSlots = []
             const sourceSlotCodes = {}
 
-            each(aNode.children, function (child) {
+            for (const child of aNode.children) {
                 const slotBind = !child.textExpr && getANodeProp(child, 'slot')
                 if (slotBind) {
                     if (!sourceSlotCodes[slotBind.raw]) {
@@ -1606,14 +1587,12 @@ const aNodeCompiler = {
                 } else {
                     defaultSourceSlots.push(child)
                 }
-            })
+            }
 
             if (defaultSourceSlots.length) {
                 sourceBuffer.addRaw('$sourceSlots.push([function (componentCtx) {')
                 sourceBuffer.addRaw('  var html = "";')
-                defaultSourceSlots.forEach(function (child) {
-                    aNodeCompiler.compile(child, sourceBuffer, owner)
-                })
+                defaultSourceSlots.forEach(child => aNodeCompiler.compile(child, sourceBuffer, owner))
                 sourceBuffer.addRaw('  return html;')
                 sourceBuffer.addRaw('}]);')
             }
@@ -1631,14 +1610,14 @@ const aNodeCompiler = {
         }
 
         const givenData = []
-        each(camelComponentBinds(aNode.props), function (prop) {
+        for (const prop of camelComponentBinds(aNode.props)) {
             postProp(prop)
             givenData.push(
                 compileExprSource.stringLiteralize(prop.name) +
-            ':' +
-            compileExprSource.expr(prop.expr)
+                ':' +
+                compileExprSource.expr(prop.expr)
             )
-        })
+        }
 
         dataLiteral = '{' + givenData.join(',\n') + '}'
         if (aNode.directives.bind) {

@@ -1,10 +1,10 @@
 import camelCase from 'camelcase'
+import { startMeasure } from '../utils/timing'
 import { readdirSync, writeFileSync, existsSync } from 'fs'
 import { resolve, join } from 'path'
 import { SanProject } from '../models/san-project'
 import { Target } from '../models/target'
 import debugFactory from 'debug'
-import ProgressBar = require('progress')
 
 const jsSSRUnables = ['multi-files']
 const debug = debugFactory('case')
@@ -51,31 +51,24 @@ export function compileToPHP (caseName) {
 }
 
 export function compileAllToJS () {
-    const p = new ProgressBar(
-        ':current/:total (:elapseds) compiling :caseName',
-        { total: cases.length }
-    )
+    const timing = startMeasure()
     for (const caseName of cases) {
         if (!supportJSSSR(caseName)) {
-            p.tick()
             continue
         }
-        p.tick(0, { caseName })
+        console.log(`compiling ${caseName} to js`)
         compileToJS(caseName)
-        p.tick()
     }
+    console.log('compiled in', timing.duration())
 }
 
 export function compileAllToPHP () {
-    const p = new ProgressBar(
-        ':current/:total (:elapseds) compiling :caseName',
-        { total: cases.length }
-    )
+    const timing = startMeasure()
     for (const caseName of cases) {
-        p.tick(0, { caseName })
+        console.log(`compiling ${caseName} to php`)
         compileToPHP(caseName)
-        p.tick()
     }
+    console.log('compiled in', timing.duration())
 }
 
 export function parseHtml (str: string) {

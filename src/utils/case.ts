@@ -11,11 +11,7 @@ const debug = debugFactory('case')
 const caseRoot = resolve(__dirname, '../../test/cases')
 const tsConfigFilePath = resolve(__dirname, '../../test/tsconfig.json')
 const cases = readdirSync(caseRoot)
-const sanProject1 = new SanProject({
-    tsConfigFilePath,
-    sanssr: '../../..'
-})
-const sanProject2 = new SanProject({
+const sanProject = new SanProject({
     tsConfigFilePath,
     sanssr: '../../..'
 })
@@ -33,7 +29,7 @@ export function compileToJS (caseName) {
     debug('compileToJS', caseName)
     const ts = join(caseRoot, caseName, 'component.ts')
     const js = resolve(caseRoot, caseName, 'component.js')
-    const targetCode = sanProject1.compile(existsSync(js) ? js : ts, Target.js)
+    const targetCode = sanProject.compile(existsSync(js) ? js : ts, Target.js)
 
     writeFileSync(join(caseRoot, caseName, 'ssr.js'), targetCode)
 }
@@ -41,7 +37,7 @@ export function compileToJS (caseName) {
 export function compileToPHP (caseName) {
     const ts = join(caseRoot, caseName, 'component.ts')
     const js = resolve(caseRoot, caseName, 'component.js')
-    const targetCode = sanProject2.compile(
+    const targetCode = sanProject.compile(
         existsSync(ts) ? ts : js,
         Target.php,
         { nsPrefix: `san\\${camelCase(caseName)}\\` }

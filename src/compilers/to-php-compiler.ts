@@ -3,7 +3,7 @@ import { isReserved } from '../utils/php-util'
 import { ModuleInfo, generatePHPCode } from '../transpilers/ts2php'
 import { transformAstToPHP } from '../transformers/to-php'
 import { Project } from 'ts-morph'
-import { generateComponentRendererSource } from './php-render-compiler'
+import { RendererCompiler } from './renderer-compiler'
 import { PHPEmitter } from '../emitters/php-emitter'
 import { SanApp } from '../models/san-app'
 import camelCase from 'camelcase'
@@ -69,9 +69,11 @@ export class ToPHPCompiler implements Compiler {
         for (let i = 0; i < sanApp.componentClasses.length; i++) {
             const componentClass = sanApp.componentClasses[i]
             const funcName = 'sanssrRenderer' + componentClass.sanssrCid
-            generateComponentRendererSource(emitter, componentClass, funcName, nsPrefix, true)
+            emitter.writeFunction(funcName, ['$data', '$noDataOutput = false', '$parentCtx = []', '$tagName = null', '$sourceSlots = []'], [], () => {
+                new RendererCompiler(componentClass, emitter, nsPrefix).compile()
+            })
+            emitter.carriageReturn()
         }
-        emitter.carriageReturn()
         emitter.writeFunction(funcName, ['$data', '$noDataOutput'], [], () => {
             const funcName = 'sanssrRenderer' + sanApp.getEntryComponentClassOrThrow().sanssrCid
             emitter.writeLine(`return ${funcName}($data, $noDataOutput);`)

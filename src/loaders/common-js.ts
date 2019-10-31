@@ -1,5 +1,5 @@
 import { readFileSync } from 'fs'
-import { dirname, resolve } from 'path'
+import { extname, dirname, resolve } from 'path'
 import { isRelativePath } from '../parsers/dependency-resolver'
 
 export class Module {
@@ -31,7 +31,12 @@ export class CommonJS {
 
     require (filepath: string) {
         if (!this.cache.has(filepath)) {
-            const mod = new Module(filepath, this.readFile(filepath))
+            const fileContent = this.readFile(filepath) ||
+                this.readFile(filepath + '.ts') ||
+                this.readFile(filepath + '.js')
+            if (!fileContent) throw new Error(`file ${filepath} not found`)
+
+            const mod = new Module(filepath, fileContent)
             // eslint-disable-next-line
             const fn = new Function('module', 'exports', 'require', mod.content)
             fn(mod, mod.exports, path => {
@@ -45,4 +50,9 @@ export class CommonJS {
         }
         return this.cache.get(filepath)
     }
+}
+
+export function getModuleSpecifier (filepath: string) {
+    const ext = extname(filepath)
+    return filepath.substr(0, filepath.length - ext.length)
 }

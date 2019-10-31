@@ -21,7 +21,7 @@ export abstract class Emitter {
         this.write('\n')
     }
     public nextLine (str: string) {
-        this.writeIndent()
+        this.carriageReturn()
         this.write(str)
     }
     public feedLine (str: string) {
@@ -29,18 +29,18 @@ export abstract class Emitter {
         this.writeNewLine()
     }
     public writeLine (str: string) {
-        this.writeIndent()
+        this.carriageReturn()
         this.write(str)
         this.writeNewLine()
     }
     public writeLines (str: string) {
         for (const line of str.trim().split('\n')) {
-            this.writeIndent()
+            this.carriageReturn()
             this.write(line)
             this.writeNewLine()
         }
     }
-    public writeIndent () {
+    public carriageReturn () {
         if (!this.atLineBegin()) this.writeNewLine()
         for (let i = 0; i < this.indentLevel * this.shiftWidth; i++) {
             this.write(' ')

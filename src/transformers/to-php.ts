@@ -8,7 +8,7 @@ const uselessComponentProps = ['components']
 export function transformAstToPHP (sourceFile: SanSourceFile, sanssr = 'san-ssr') {
     sourceFile.fakeProperties.forEach(prop => prop.remove())
 
-    for (const clazz of sourceFile.componentClasses.values()) {
+    for (const clazz of sourceFile.componentClassDeclarations.values()) {
         for (const useless of uselessComponentProps) {
             const comps = clazz.getStaticProperty(useless)
             if (comps) comps.remove()
@@ -20,11 +20,11 @@ export function transformAstToPHP (sourceFile: SanSourceFile, sanssr = 'san-ssr'
             } else if (prop.getName() === 'filters') {
                 refactorFiltersProperty(prop, sanssr)
             }
-            removeObjectLiteralInitiator(sourceFile.origin, clazz, prop)
+            removeObjectLiteralInitiator(sourceFile.tsSourceFile, clazz, prop)
         }
     }
 
-    for (const clazz of sourceFile.getClasses()) {
+    for (const clazz of sourceFile.getClassDeclarations()) {
         const name = clazz.getName()
         if (isReserved(name)) {
             if (clazz.isExported()) {

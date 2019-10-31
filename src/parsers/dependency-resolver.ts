@@ -15,9 +15,9 @@ export function * getInlineDependencyLiterals (sourceFile: SourceFile) {
 }
 
 export function getDependenciesRecursively (sourceFile: SourceFile, result = new Map()) {
-    result.set(sourceFile.getFilePath(), sourceFile)
     for (const dep of getInlineDependencies(sourceFile)) {
         if (result.has(dep.getFilePath())) continue
+        result.set(dep.getFilePath(), dep)
         getDependenciesRecursively(dep, result)
     }
     return result

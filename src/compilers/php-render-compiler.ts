@@ -605,10 +605,10 @@ const aNodeCompiler = {
         const rendererId = genSSRId()
 
         emitter.writeIf(`!isset($ctx->slotRenderers["${rendererId}"])`, () => {
-            emitter.writeIndent()
+            emitter.carriageReturn()
             emitter.write(`$ctx->slotRenderers["${rendererId}"] = `)
             emitter.writeAnonymousFunction([], ['&$ctx', '&$html'], () => {
-                emitter.writeIndent()
+                emitter.carriageReturn()
                 emitter.write('$defaultSlotRender = ')
                 emitter.writeAnonymousFunction(['$ctx'], [], () => {
                     emitter.writeLine('$html = "";')
@@ -754,7 +754,7 @@ const aNodeCompiler = {
             ')'
         }
 
-        const renderId = generateComponentRendererSource(emitter, extra.ComponentClass, owner.ssrContextId)
+        const renderId = 'sanssrRenderer' + extra.ComponentClass.sanssrCid
         emitter.nextLine(`$html .= `)
         emitter.writeFunctionCall(renderId, [dataLiteral, 'true', '$ctx', stringifier.str(aNode.tagName), '$sourceSlots'])
         emitter.feedLine(';')
@@ -790,43 +790,18 @@ function isComponentLoader (cmpt) {
 * @inner
 * @param {PHPEmitter} emitter 编译源码的中间buffer
 * @param {Function} ComponentClass 组件类
-* @param {string} contextId 构建render环境的id
 * @return {string} 组件在当前环境下的方法标识
 */
-export function generateComponentRendererSource (emitter, ComponentClass, contextId, nsPrefix?, resetSSRIndex?) {
+export function generateComponentRendererSource (emitter, ComponentClass, funcName, nsPrefix?, resetSSRIndex?) {
     // TODO make it a class property
     if (nsPrefix) namespacePrefix = nsPrefix
     if (resetSSRIndex) ssrIndex = 0
-    if (!contextId) contextId = genSSRId()
-
-    // TODO make ssrContext to class property
-    ComponentClass.ssrContext = ComponentClass.ssrContext || {}
-    let cid = ComponentClass.ssrContext[contextId]
-    if (cid) return cid
-
-    cid = ComponentClass.ssrContext[contextId] = genSSRId()
 
     // 先初始化个实例，让模板编译成 ANode，并且能获得初始化数据
     const component = new ComponentClass()
-    component.ssrContextId = contextId
 
-    if (component.components) {
-        Object.keys(component.components).forEach(
-            function (key) {
-                let CmptClass = component.components[key]
-                if (isComponentLoader(CmptClass)) {
-                    CmptClass = CmptClass.placeholder
-                }
-
-                if (CmptClass) {
-                    generateComponentRendererSource(emitter, CmptClass, contextId)
-                }
-            }
-        )
-    }
-
-    emitter.writeIndent()
-    emitter.writeFunction(cid, ['$data', '$noDataOutput = false', '$parentCtx = []', '$tagName = null', '$sourceSlots = []'], [], () => {
+    emitter.carriageReturn()
+    emitter.writeFunction(funcName, ['$data', '$noDataOutput = false', '$parentCtx = []', '$tagName = null', '$sourceSlots = []'], [], () => {
         emitter.writeLine('$html = "";')
 
         genComponentContextCode(component, emitter)
@@ -868,7 +843,6 @@ export function generateComponentRendererSource (emitter, ComponentClass, contex
 
         emitter.writeLine('return $html;')
     })
-    return cid
 }
 
 /**

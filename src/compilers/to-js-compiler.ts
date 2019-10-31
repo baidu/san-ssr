@@ -4,7 +4,7 @@ import { Project } from 'ts-morph'
 import { getDefaultConfigPath } from '../parsers/tsconfig'
 import { sep } from 'path'
 import debugFactory from 'debug'
-import { SanApp } from '../parsers/san-app'
+import { SanApp } from '../models/san-app'
 import { Compiler } from './compiler'
 import { emitRuntimeInJS } from '../emitters/runtime'
 

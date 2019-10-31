@@ -5,7 +5,7 @@ import { transformAstToPHP } from '../transformers/to-php'
 import { Project } from 'ts-morph'
 import { generateComponentRendererSource } from './php-render-compiler'
 import { PHPEmitter } from '../emitters/php-emitter'
-import { SanApp } from '../parsers/san-app'
+import { SanApp } from '../models/san-app'
 import camelCase from 'camelcase'
 import { ComponentRegistry } from './component-registry'
 import { SanSourceFile } from '../models/san-sourcefile'
@@ -55,27 +55,37 @@ export class ToPHPCompiler implements Compiler {
         emitHeader = true
     }) {
         const emitter = new PHPEmitter(emitHeader)
-        const ComponentClass = sanApp.getEntryComponentClassOrThrow()
-
-        emitter.beginNamespace(nsPrefix + 'renderer')
-        emitter.writeLine(`use ${nsPrefix}runtime\\_;`)
-        emitter.writeIndent()
-        emitter.writeFunction(funcName, ['$data', '$noDataOutput'], [], () => {
-            const renderId = generateComponentRendererSource(emitter, ComponentClass, false, nsPrefix, true)
-            emitter.writeLine(`return ${renderId}($data, $noDataOutput);`)
-        })
-        emitter.endNamespace()
-
+        this.compileRenderer(emitter, funcName, nsPrefix, sanApp)
         this.compileComponents(sanApp, emitter, nsPrefix)
         emitRuntimeInPHP(emitter, nsPrefix)
         return emitter.fullText()
     }
 
+    private compileRenderer (emitter: PHPEmitter, funcName: string, nsPrefix: string, sanApp: SanApp) {
+        emitter.beginNamespace(nsPrefix + 'renderer')
+        emitter.writeLine(`use ${nsPrefix}runtime\\_;`)
+        emitter.carriageReturn()
+
+        for (let i = 0; i < sanApp.componentClasses.length; i++) {
+            const componentClass = sanApp.componentClasses[i]
+            const funcName = 'sanssrRenderer' + componentClass.sanssrCid
+            generateComponentRendererSource(emitter, componentClass, funcName, nsPrefix, true)
+        }
+        emitter.carriageReturn()
+        emitter.writeFunction(funcName, ['$data', '$noDataOutput'], [], () => {
+            const funcName = 'sanssrRenderer' + sanApp.getEntryComponentClassOrThrow().sanssrCid
+            emitter.writeLine(`return ${funcName}($data, $noDataOutput);`)
+        })
+        emitter.endNamespace()
+    }
+
     public compileComponent (sourceFile: SanSourceFile, nsPrefix = '') {
+        if (!sourceFile.tsSourceFile) return ''
+
         transformAstToPHP(sourceFile, this.sanssr)
         const tsconfig = require(this.tsConfigFilePath)
         const requiredModules = [...this.requiredModules]
-        for (const decl of getInlineDeclarations(sourceFile.origin)) {
+        for (const decl of getInlineDeclarations(sourceFile.tsSourceFile)) {
             const ns = nsPrefix + this.ns(decl.getModuleSpecifierSourceFile().getFilePath())
             const literal = decl.getModuleSpecifierValue()
             requiredModules.push({
@@ -85,7 +95,7 @@ export class ToPHPCompiler implements Compiler {
             })
         }
         return generatePHPCode(
-            sourceFile.origin,
+            sourceFile.tsSourceFile,
             requiredModules,
             tsconfig['compilerOptions'],
             nsPrefix
@@ -94,7 +104,7 @@ export class ToPHPCompiler implements Compiler {
 
     public compileComponents (entryComp: SanApp, emitter: PHPEmitter = new PHPEmitter(), nsPrefix = '') {
         const registry = new ComponentRegistry()
-        for (const [path, sourceFile] of entryComp.getFiles()) {
+        for (const [path, sourceFile] of entryComp.projectFiles) {
             registry.registerComponents(sourceFile)
 
             emitter.beginNamespace(nsPrefix + this.ns(path))

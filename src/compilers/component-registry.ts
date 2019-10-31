@@ -10,7 +10,7 @@ export class ComponentRegistry {
     private components: Map<number, ComponentClassInfo> = new Map()
 
     registerComponents (file: SanSourceFile) {
-        for (const [cid, clazz] of file.componentClasses) {
+        for (const [cid, clazz] of file.componentClassDeclarations) {
             this.components.set(cid, {
                 path: file.getFilePath(),
                 name: clazz.getName()

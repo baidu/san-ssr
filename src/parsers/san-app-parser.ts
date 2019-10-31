@@ -1,11 +1,14 @@
 import { getComponentClassIdentifier, isChildClassOf } from '../utils/ast-util'
-import { extname } from 'path'
+import { ComponentClassFinder } from './component-class-finder'
+import { CommonJS } from '../loaders/common-js'
+import { ts2js } from '../transpilers/ts2js'
 import { normalizeComponentClass } from '../transformers/normalize-component'
 import { SanSourceFile } from '../models/san-sourcefile'
 import { Project, SourceFile, ClassDeclaration } from 'ts-morph'
 import { getDefaultConfigPath } from './tsconfig'
 import { getDependenciesRecursively } from './dependency-resolver'
-import { SanApp } from './san-app'
+import { SanApp } from '../models/san-app'
+import { SourceFileType, getSourceFileTypeOrThrow } from '../models/source-file-type'
 import debugFactory from 'debug'
 
 const debug = debugFactory('component-parser')
@@ -14,11 +17,9 @@ export class SanAppParser {
     private root: string
     private id: number = 0
     public project: Project
-    public idPropertyName: string
 
-    constructor (project: Project, idPropertyName = 'sanssrCid') {
+    constructor (project: Project) {
         this.project = project
-        this.idPropertyName = idPropertyName
     }
 
     static createUsingTsconfig (tsConfigFilePath: string) {
@@ -31,28 +32,47 @@ export class SanAppParser {
 
     public parseSanApp (entryFilePath: string): SanApp {
         debug('parsComponent', entryFilePath)
-        const comp = new SanApp(entryFilePath)
-        const ext = extname(entryFilePath)
-        if (ext === '.js') return comp
+        const entrySourceFile = getSourceFileTypeOrThrow(entryFilePath) === SourceFileType.js
+            ? SanSourceFile.createFromJSFilePath(entryFilePath)
+            : this.parseSanSourceFile(this.project.getSourceFileOrThrow(entryFilePath))
 
-        for (const [path, file] of this.getComponentFiles(entryFilePath)) {
-            comp.addFile(path, this.parseSanSourceFile(file))
+        const projectFiles: Map<string, SanSourceFile> = new Map([[entryFilePath, entrySourceFile]])
+        if (entrySourceFile.fileType === SourceFileType.ts) {
+            const sourceFiles = getDependenciesRecursively(entrySourceFile.tsSourceFile)
+
+            for (const [path, file] of sourceFiles) {
+                projectFiles.set(path, this.parseSanSourceFile(file))
+            }
         }
-        return comp
+
+        const entryClass = this.evaluateFile(entrySourceFile, projectFiles)
+        const componentClasses = new ComponentClassFinder(entryClass).find()
+
+        if (entrySourceFile.fileType === SourceFileType.js) {
+            for (let i = 0; i < componentClasses.length; i++) {
+                const componentClass = componentClasses[i]
+                componentClass.sanssrCid = i
+            }
+        }
+        return new SanApp(entrySourceFile, projectFiles, componentClasses)
     }
 
-    private getComponentFiles (entryTSFile: string): Map<string, SourceFile> {
-        const sourceFile = this.project.getSourceFileOrThrow(entryTSFile)
-        return getDependenciesRecursively(sourceFile)
+    private evaluateFile (sourceFile: SanSourceFile, projectFiles: Map<string, SanSourceFile>) {
+        if (sourceFile.fileType === SourceFileType.js) {
+            return new CommonJS().require(sourceFile.getFilePath())
+        }
+        const commonJS = new CommonJS(filepath => {
+            if (!projectFiles.has(filepath)) return null
+            const sourceFile = projectFiles.get(filepath)
+            return ts2js(sourceFile.tsSourceFile)
+        })
+        return commonJS.require(sourceFile.getFilePath()).default
     }
 
     private parseSanSourceFile (sourceFile: SourceFile) {
         debug('parseSanSourceFile', sourceFile.getFilePath())
         const componentClassIdentifier = getComponentClassIdentifier(sourceFile)
-        const sanSourceFile = new SanSourceFile(
-            sourceFile,
-            componentClassIdentifier
-        )
+        const sanSourceFile = SanSourceFile.createFromTSSourceFile(sourceFile, componentClassIdentifier)
 
         if (!componentClassIdentifier) return sanSourceFile
         debug('san identifier', componentClassIdentifier)
@@ -68,11 +88,11 @@ export class SanAppParser {
     public setComponentID (sourceFile: SanSourceFile, clazz: ClassDeclaration) {
         const decl = clazz.addProperty({
             isStatic: true,
-            name: this.idPropertyName,
+            name: 'sanssrCid',
             type: 'number',
             initializer: String(this.id)
         })
         sourceFile.fakeProperties.push(decl)
-        sourceFile.componentClasses.set(this.id++, clazz)
+        sourceFile.componentClassDeclarations.set(this.id++, clazz)
     }
 }

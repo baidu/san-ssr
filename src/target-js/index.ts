@@ -8,7 +8,7 @@ import { Compiler } from '..'
 import { emitRuntime } from './emitters/runtime'
 import { RendererCompiler } from './compilers/renderer-compiler'
 
-const debug = debugFactory('to-js-compiler')
+const debug = debugFactory('target-js')
 
 export type ToJSCompilerOptions = {
     tsConfigFilePath?: string,
@@ -36,7 +36,8 @@ export class ToJSCompiler implements Compiler {
             emitRuntime(emitter)
             for (let i = 0; i < sanApp.componentClasses.length; i++) {
                 const componentClass = sanApp.componentClasses[i]
-                emitter.writeLines(new RendererCompiler(componentClass).compileComponentSource())
+                const compiler = new RendererCompiler(componentClass)
+                emitter.writeLines(compiler.compileComponentSource())
             }
             const funcName = 'sanssrRenderer' + sanApp.getEntryComponentClassOrThrow().sanssrCid
             emitter.writeLine(`return ${funcName}(data, noDataOutput)`)

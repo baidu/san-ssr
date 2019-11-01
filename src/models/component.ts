@@ -27,6 +27,11 @@ export function isComponentLoader (cmpt: any) {
     return cmpt && cmpt.hasOwnProperty('load') && cmpt.hasOwnProperty('placeholder')
 }
 
+export function isComponentClass (clazz: any): clazz is typeof Component {
+    return typeof clazz === 'function' &&
+        (clazz.template || clazz.prototype.template)
+}
+
 class Data {
     public get (path?: string): any {
         return path

@@ -15,7 +15,7 @@ import debugFactory from 'debug'
 import { Compiler } from '..'
 import { emitRuntime } from './emitters/runtime'
 
-const debug = debugFactory('ast-util')
+const debug = debugFactory('target-php')
 
 export type ToPHPCompilerOptions = {
     tsConfigFilePath?: string,

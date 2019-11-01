@@ -1,5 +1,5 @@
 import { SanSourceFile } from '../models/san-sourcefile'
-import { Component } from './component'
+import { Component, isComponentClass } from './component'
 
 export class SanApp {
     public readonly entrySourceFile: SanSourceFile
@@ -11,6 +11,10 @@ export class SanApp {
         projectFiles: Map<string, SanSourceFile>,
         componentClasses: typeof Component[]
     ) {
+        for (const clazz of componentClasses) {
+            this.validateComponentClass(clazz)
+        }
+
         this.entrySourceFile = entrySourceFile
         this.projectFiles = projectFiles
         this.componentClasses = componentClasses
@@ -26,5 +30,10 @@ export class SanApp {
             throw new Error('entry ComponentClass not found')
         }
         return clazz
+    }
+
+    private validateComponentClass (clazz: any) {
+        if (isComponentClass(clazz)) return
+        throw new Error('the input class is not likely a San Component')
     }
 }

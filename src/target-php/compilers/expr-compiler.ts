@@ -1,7 +1,7 @@
 /**
 * 编译源码的 helper 方法集合对象
 */
-export const ExpressionEmitter = {
+export const compileExprSource = {
 
     /**
      * 字符串字面化
@@ -10,16 +10,12 @@ export const ExpressionEmitter = {
      * @return {string} 字符串字面化结果
      */
     stringLiteralize: function (source) {
-        return '"' +
-        source
+        return '"' + source
             .replace(/\x5C/g, '\\\\')
             .replace(/"/g, '\\"')
-            .replace(/\x0A/g, '\\n')    // eslint-disable-line
-            .replace(/\x09/g, '\\t')    // eslint-disable-line
-            .replace(/\x0D/g, '\\r') +    // eslint-disable-line
-        // .replace( /\x08/g, '\\b' )
-        // .replace( /\x0C/g, '\\f' )
-        '"'
+            .replace(/\n/g, '\\n')
+            .replace(/\t/g, '\\t')
+            .replace(/\r/g, '\\r') + '"'
     },
 
     /**
@@ -32,7 +28,7 @@ export const ExpressionEmitter = {
         const seq = []
         for (const path of accessorExpr.paths) {
             if (path.type === 4) {
-                seq.push(ExpressionEmitter.dataAccess(path))
+                seq.push(compileExprSource.dataAccess(path))
             } else if (typeof path.value === 'string') {
                 seq.push(`"${path.value}"`)
             } else if (typeof path.value === 'number') {
@@ -65,13 +61,13 @@ export const ExpressionEmitter = {
                 break
 
             default:
-                code += '[' + ExpressionEmitter.expr(path) + ']'
+                code += '[' + compileExprSource.expr(path) + ']'
             }
         }
 
         code += '('
         code += callExpr.args
-            .map(arg => ExpressionEmitter.expr(arg))
+            .map(arg => compileExprSource.expr(arg))
             .join(',')
         code += ')'
 
@@ -85,7 +81,7 @@ export const ExpressionEmitter = {
      * @return {string}
      */
     interp: function (interpExpr) {
-        let code = ExpressionEmitter.expr(interpExpr.expr)
+        let code = compileExprSource.expr(interpExpr.expr)
 
         for (const filter of interpExpr.filters) {
             const filterName = filter.name.paths[0].value
@@ -98,7 +94,7 @@ export const ExpressionEmitter = {
 
             case '_xstyle':
             case '_xclass':
-                code = `_::${filterName}Filter(${code}, ${ExpressionEmitter.expr(filter.args[0])})`
+                code = `_::${filterName}Filter(${code}, ${compileExprSource.expr(filter.args[0])})`
                 break
 
             case 'url':
@@ -108,7 +104,7 @@ export const ExpressionEmitter = {
             default:
                 code = `_::callFilter($ctx, "${filterName}", [${code}`
                 for (const arg of filter.args) {
-                    code += ', ' + ExpressionEmitter.expr(arg)
+                    code += ', ' + compileExprSource.expr(arg)
                 }
                 code += '])'
             }
@@ -135,7 +131,7 @@ export const ExpressionEmitter = {
         let code = ''
 
         for (const seg of textExpr.segs) {
-            const segCode = ExpressionEmitter.expr(seg)
+            const segCode = compileExprSource.expr(seg)
             code += code ? ' . ' + segCode : segCode
         }
 
@@ -153,7 +149,7 @@ export const ExpressionEmitter = {
         const spread = []
 
         for (const item of arrayExpr.items) {
-            items.push(ExpressionEmitter.expr(item.expr))
+            items.push(compileExprSource.expr(item.expr))
             spread.push(item.spread ? 1 : 0)
         }
 
@@ -173,11 +169,11 @@ export const ExpressionEmitter = {
         for (const item of objExpr.items) {
             if (item.spread) {
                 spread.push(1)
-                items.push(ExpressionEmitter.expr(item.expr))
+                items.push(compileExprSource.expr(item.expr))
             } else {
                 spread.push(0)
-                const key = ExpressionEmitter.expr(item.name)
-                const val = ExpressionEmitter.expr(item.expr)
+                const key = compileExprSource.expr(item.name)
+                const val = compileExprSource.expr(item.expr)
                 items.push(`[${key}, ${val}]`)
             }
         }
@@ -216,10 +212,10 @@ export const ExpressionEmitter = {
      */
     expr: function (expr) {
         if (expr.parenthesized) {
-            return '(' + ExpressionEmitter._expr(expr) + ')'
+            return '(' + compileExprSource._expr(expr) + ')'
         }
 
-        return ExpressionEmitter._expr(expr)
+        return compileExprSource._expr(expr)
     },
 
     /**
@@ -233,24 +229,24 @@ export const ExpressionEmitter = {
         case 9:
             switch (expr.operator) {
             case 33:
-                return '!' + ExpressionEmitter.expr(expr.expr)
+                return '!' + compileExprSource.expr(expr.expr)
             case 45:
-                return '-' + ExpressionEmitter.expr(expr.expr)
+                return '-' + compileExprSource.expr(expr.expr)
             }
             return ''
 
         case 8:
-            return ExpressionEmitter.expr(expr.segs[0]) +
-                ExpressionEmitter.binaryOp[expr.operator] +
-                ExpressionEmitter.expr(expr.segs[1])
+            return compileExprSource.expr(expr.segs[0]) +
+                compileExprSource.binaryOp[expr.operator] +
+                compileExprSource.expr(expr.segs[1])
 
         case 10:
-            return ExpressionEmitter.expr(expr.segs[0]) +
-                '?' + ExpressionEmitter.expr(expr.segs[1]) +
-                ':' + ExpressionEmitter.expr(expr.segs[2])
+            return compileExprSource.expr(expr.segs[0]) +
+                '?' + compileExprSource.expr(expr.segs[1]) +
+                ':' + compileExprSource.expr(expr.segs[2])
 
         case 1:
-            return ExpressionEmitter.stringLiteralize(expr.literal || expr.value)
+            return compileExprSource.stringLiteralize(expr.literal || expr.value)
 
         case 2:
             return expr.value
@@ -259,22 +255,22 @@ export const ExpressionEmitter = {
             return expr.value ? 'true' : 'false'
 
         case 4:
-            return ExpressionEmitter.dataAccess(expr)
+            return compileExprSource.dataAccess(expr)
 
         case 5:
-            return ExpressionEmitter.interp(expr)
+            return compileExprSource.interp(expr)
 
         case 7:
-            return ExpressionEmitter.text(expr)
+            return compileExprSource.text(expr)
 
         case 12:
-            return ExpressionEmitter.array(expr)
+            return compileExprSource.array(expr)
 
         case 11:
-            return ExpressionEmitter.object(expr)
+            return compileExprSource.object(expr)
 
         case 6:
-            return ExpressionEmitter.callExpr(expr)
+            return compileExprSource.callExpr(expr)
 
         case 13:
             return 'null'

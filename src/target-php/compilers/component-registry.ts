@@ -1,5 +1,5 @@
-import { SanSourceFile } from '../models/san-sourcefile'
-import { PHPEmitter } from '../emitters/php-emitter'
+import { SanSourceFile } from '../..'
+import { PHPEmitter } from '../emitters/emitter'
 
 type ComponentClassInfo = {
     name: string

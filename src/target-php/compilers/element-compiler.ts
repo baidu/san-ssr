@@ -1,8 +1,5 @@
-import { ExpressionEmitter } from '../emitters/expression-emitter'
-
-const autoCloseTags = new Set(
-    'area,base,br,col,embed,hr,img,input,keygen,param,source,track,wbr'.split(',')
-)
+import { compileExprSource } from '../compilers/expr-compiler'
+import { autoCloseTags } from '../..'
 
 /**
 * element 的编译方法集合对象
@@ -56,14 +53,14 @@ export class ElementCompiler {
 
                 case 'select':
                     emitter.writeLine('$selectValue = ' +
-                        ExpressionEmitter.expr(prop.expr) + '?' +
-                        ExpressionEmitter.expr(prop.expr) + ': "";'
+                        compileExprSource.expr(prop.expr) + '?' +
+                        compileExprSource.expr(prop.expr) + ': "";'
                     )
                     continue
 
                 case 'option':
                     emitter.writeLine('$optionValue = ' +
-                        ExpressionEmitter.expr(prop.expr) +
+                        compileExprSource.expr(prop.expr) +
                         ';'
                     )
                     // value
@@ -87,7 +84,7 @@ export class ElementCompiler {
                     emitter.bufferHTMLLiteral(' ' + prop.name)
                 } else {
                     emitter.writeHTML('_::boolAttrFilter(\'' + prop.name + '\', ' +
-                        ExpressionEmitter.expr(prop.expr) +
+                        compileExprSource.expr(prop.expr) +
                         ')'
                     )
                 }
@@ -96,17 +93,17 @@ export class ElementCompiler {
             case 'checked':
                 if (tagName === 'input') {
                     const valueProp = propsIndex.value
-                    const valueCode = ExpressionEmitter.expr(valueProp.expr)
+                    const valueCode = compileExprSource.expr(valueProp.expr)
 
                     if (valueProp) {
                         switch (propsIndex.type.raw) {
                         case 'checkbox':
-                            emitter.writeIf(`_::contains(${ExpressionEmitter.expr(prop.expr)}, ${valueCode})`, () => {
+                            emitter.writeIf(`_::contains(${compileExprSource.expr(prop.expr)}, ${valueCode})`, () => {
                                 emitter.bufferHTMLLiteral(' checked')
                             })
                             break
                         case 'radio':
-                            emitter.writeIf(`${ExpressionEmitter.expr(prop.expr)} === ${valueCode}`, () => {
+                            emitter.writeIf(`${compileExprSource.expr(prop.expr)} === ${valueCode}`, () => {
                                 emitter.bufferHTMLLiteral(' checked')
                             })
                             break
@@ -135,12 +132,12 @@ export class ElementCompiler {
                 }
 
                 if (onlyOneAccessor) {
-                    emitter.beginIf(ExpressionEmitter.expr(preCondExpr))
+                    emitter.beginIf(compileExprSource.expr(preCondExpr))
                 }
 
                 emitter.writeHTML('_::attrFilter(\'' + prop.name + '\', ' +
                     (prop.x ? '_::escapeHTML(' : '') +
-                    ExpressionEmitter.expr(prop.expr) +
+                    compileExprSource.expr(prop.expr) +
                     (prop.x ? ')' : '') +
                     ')'
                 )
@@ -176,7 +173,7 @@ export class ElementCompiler {
             })
 
             emitter.write(')(')
-            emitter.write(ExpressionEmitter.expr(bindDirective.value))
+            emitter.write(compileExprSource.expr(bindDirective.value))
             emitter.feedLine(');')
         }
 
@@ -224,7 +221,7 @@ export class ElementCompiler {
             if (valueProp) {
                 emitter.writeHTML(
                     '_::escapeHTML(' +
-                    ExpressionEmitter.expr(valueProp.expr) +
+                    compileExprSource.expr(valueProp.expr) +
                     ')'
                 )
             }
@@ -233,7 +230,7 @@ export class ElementCompiler {
 
         const htmlDirective = aNode.directives.html
         if (htmlDirective) {
-            emitter.writeHTML(ExpressionEmitter.expr(htmlDirective.value))
+            emitter.writeHTML(compileExprSource.expr(htmlDirective.value))
         } else {
             for (const aNodeChild of aNode.children) {
                 this.compileANode(aNodeChild, emitter)

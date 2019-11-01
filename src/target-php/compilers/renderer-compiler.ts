@@ -2,7 +2,7 @@
  * 将组件树编译成 render 函数之间的递归调用
  * 提供 generateRenderModule 方法
  */
-import { ExpressionEmitter } from '../emitters/expression-emitter'
+import { compileExprSource } from '../compilers/expr-compiler'
 import { Stringifier } from './stringifier'
 import { ANodeCompiler } from './anode-compiler'
 import { ElementCompiler } from './element-compiler'
@@ -51,7 +51,7 @@ export class RendererCompiler {
 
         const ifDirective = this.component.aNode.directives['if']
         if (ifDirective) {
-            emitter.writeLine('if (' + ExpressionEmitter.expr(ifDirective.value) + ') {')
+            emitter.writeLine('if (' + compileExprSource.expr(ifDirective.value) + ') {')
             emitter.indent()
         }
 

@@ -1,12 +1,12 @@
-import { JSEmitter } from '../emitters/js-emitter'
-import { generateRenderFunction } from './js-render-compiler'
+import { JSEmitter } from './emitters/emitter'
 import { Project } from 'ts-morph'
 import { getDefaultConfigPath } from '../parsers/tsconfig'
 import { sep } from 'path'
 import debugFactory from 'debug'
 import { SanApp } from '../models/san-app'
-import { Compiler } from './compiler'
-import { emitRuntimeInJS } from '../emitters/runtime'
+import { Compiler } from '..'
+import { emitRuntime } from './emitters/runtime'
+import { RendererCompiler } from './compilers/renderer-compiler'
 
 const debug = debugFactory('to-js-compiler')
 
@@ -33,8 +33,13 @@ export class ToJSCompiler implements Compiler {
         const emitter = new JSEmitter()
         emitter.write('module.exports = ')
         emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => {
-            emitRuntimeInJS(emitter)
-            emitter.writeLines(generateRenderFunction(sanApp.getEntryComponentClass()))
+            emitRuntime(emitter)
+            for (let i = 0; i < sanApp.componentClasses.length; i++) {
+                const componentClass = sanApp.componentClasses[i]
+                emitter.writeLines(new RendererCompiler(componentClass).compileComponentSource())
+            }
+            const funcName = 'sanssrRenderer' + sanApp.getEntryComponentClassOrThrow().sanssrCid
+            emitter.writeLine(`return ${funcName}(data, noDataOutput)`)
         })
         return emitter.fullText()
     }

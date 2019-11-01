@@ -6,15 +6,14 @@ import { SanProject } from '../models/san-project'
 import { Target } from '../models/target'
 import debugFactory from 'debug'
 
+process.env.SAN_SSR_PACKAGE_NAME = '../../..'
+
 const jsSSRUnables = ['multi-files']
 const debug = debugFactory('case')
 const caseRoot = resolve(__dirname, '../../test/cases')
 const tsConfigFilePath = resolve(__dirname, '../../test/tsconfig.json')
 const cases = readdirSync(caseRoot)
-const sanProject = new SanProject({
-    tsConfigFilePath,
-    sanssr: '../../..'
-})
+const sanProject = new SanProject({ tsConfigFilePath })
 const multiFileCases = ['multi-component-files', 'multi-files']
 
 export function supportJSSSR (caseName) {

@@ -1,9 +1,10 @@
 import { sep } from 'path'
-import { ToJSCompiler } from '../compilers/to-js-compiler'
+import { ToJSCompiler } from '../target-js'
 import { getDefaultConfigPath } from '../parsers/tsconfig'
+import { Compiler } from '../models/compiler'
 import { SanAppParser } from '../parsers/san-app-parser'
 import { Project } from 'ts-morph'
-import { ToPHPCompiler } from '../compilers/to-php-compiler'
+import { ToPHPCompiler } from '../target-php'
 import { Target } from './target'
 
 export type SanProjectOptions = {
@@ -20,15 +21,13 @@ export class SanProject {
     private root: string
     private tsConfigFilePath: string
     private project: Project
-    private sanssr: string
+    private compilers: Map<Target, Compiler> = new Map()
 
     constructor ({
         tsConfigFilePath = getDefaultConfigPath(),
-        root = tsConfigFilePath.split(sep).slice(0, -1).join(sep),
-        sanssr = 'san-ssr'
+        root = tsConfigFilePath.split(sep).slice(0, -1).join(sep)
     }: SanProjectOptions = {}) {
         this.root = root
-        this.sanssr = sanssr
         this.tsConfigFilePath = tsConfigFilePath
         this.project = new Project({ tsConfigFilePath })
     }
@@ -36,17 +35,24 @@ export class SanProject {
     public compile (filepath: string, target: Target, options = {}) {
         const parser = new SanAppParser(this.project)
         const sanApp = parser.parseSanApp(filepath)
+        const compiler = this.getOrCreateCompilerInstance(target)
+        return compiler.compile(sanApp, options)
+    }
 
-        const compiler = target === Target.php
-            ? new ToPHPCompiler({
-                sanssr: this.sanssr,
+    private getOrCreateCompilerInstance (target: Target) {
+        if (!this.compilers.has(target)) {
+            const Class = this.loadCompilerClass(target)
+
+            this.compilers.set(target, new Class({
                 project: this.project,
                 tsConfigFilePath: this.tsConfigFilePath
-            })
-            : new ToJSCompiler({
-                tsConfigFilePath: this.tsConfigFilePath,
-                project: this.project
-            })
-        return compiler.compile(sanApp, options)
+            }))
+        }
+        return this.compilers.get(target)
+    }
+
+    private loadCompilerClass (target: Target) {
+        if (target === Target.php) return ToPHPCompiler
+        return ToJSCompiler
     }
 }

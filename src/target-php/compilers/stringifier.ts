@@ -1,4 +1,4 @@
-import { ExpressionEmitter } from '../emitters/expression-emitter'
+import { compileExprSource } from '../compilers/expr-compiler'
 
 export class Stringifier {
     private nsPrefix = ''
@@ -21,7 +21,7 @@ export class Stringifier {
             }
             prefixComma = 1
 
-            const k = ExpressionEmitter.stringLiteralize(key)
+            const k = compileExprSource.stringLiteralize(key)
             const v = this.any(source[key])
             result += `${k} => ${v}`
         }
@@ -46,7 +46,7 @@ export class Stringifier {
     }
 
     str (source) {
-        return ExpressionEmitter.stringLiteralize(source)
+        return compileExprSource.stringLiteralize(source)
     }
 
     date (source) {

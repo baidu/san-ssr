@@ -1,5 +1,5 @@
-import { Emitter } from './emitter'
-import { ExpressionEmitter } from './expression-emitter'
+import { Emitter } from '../../utils/emitter'
+import { compileExprSource } from '../compilers/expr-compiler'
 
 export class PHPEmitter extends Emitter {
     buffer: string = ''
@@ -37,14 +37,14 @@ export class PHPEmitter extends Emitter {
     }
 
     public writeDataComment () {
-        this.writeHTML('"<!--s-data:" . json_encode(' + ExpressionEmitter.dataAccess() + ', JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";')
+        this.writeHTML('"<!--s-data:" . json_encode(' + compileExprSource.dataAccess() + ', JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . "-->";')
     }
 
     public clearStringLiteralBuffer () {
         if (this.buffer === '') return
         const buffer = this.buffer
         this.buffer = ''
-        this.writeHTML(ExpressionEmitter.stringLiteralize(buffer))
+        this.writeHTML(compileExprSource.stringLiteralize(buffer))
     }
 
     public writeSwitch (expr: string, body: Function) {

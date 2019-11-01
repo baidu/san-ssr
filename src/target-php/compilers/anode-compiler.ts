@@ -1,6 +1,6 @@
-import { PHPEmitter } from '../emitters/php-emitter'
-import { camelCase } from 'lodash'
-import { ExpressionEmitter } from '../emitters/expression-emitter'
+import { PHPEmitter } from '../emitters/emitter'
+import { compileExprSource } from '../compilers/expr-compiler'
+import { ANode, isComponentLoader, getANodePropByName, getANodeProps } from '../..'
 
 /**
 * ANode 的编译方法集合对象
@@ -17,55 +17,12 @@ export class ANodeCompiler {
         this.stringifier = stringifier
     }
 
-    private nextID () {
-        return 'sanssrId' + (this.id++)
-    }
-
-    /**
-    * 对属性信息进行处理
-    * 对组件的 binds 或者特殊的属性（比如 input 的 checked）需要处理
-    *
-    * 扁平化：
-    * 当 text 解析只有一项时，要么就是 string，要么就是 interp
-    * interp 有可能是绑定到组件属性的表达式，不希望被 eval text 成 string
-    * 所以这里做个处理，只有一项时直接抽出来
-    *
-    * bool属性：
-    * 当绑定项没有值时，默认为true
-    *
-    * @param {Object} prop 属性对象
-    */
-    postProp (prop) {
-        let expr = prop.expr
-
-        if (expr.type === 7) {
-            switch (expr.segs.length) {
-            case 0:
-                if (prop.raw == null) {
-                    prop.expr = {
-                        type: 3,
-                        value: true
-                    }
-                }
-                break
-
-            case 1:
-                expr = prop.expr = expr.segs[0]
-                if (expr.type === 5 && expr.filters.length === 0) {
-                    prop.expr = expr.expr
-                }
-            }
-        }
-    }
-
     /**
      * 编译节点
      *
-     * @param {ANode} aNode 抽象节点
-     * @param {PHPEmitter} emitter 编译源码的中间buffer
      * @param {Object} extra 编译所需的一些额外信息
      */
-    compile (aNode, emitter, extra?) {
+    compile (aNode: ANode, emitter: PHPEmitter, extra?) {
         extra = extra || {}
         let compileMethod = 'compileElement'
 
@@ -88,7 +45,7 @@ export class ANodeCompiler {
                 compileMethod = 'compileComponent'
                 extra.ComponentClass = ComponentType
 
-                if (this.isComponentLoader(ComponentType)) {
+                if (isComponentLoader(ComponentType)) {
                     compileMethod = 'compileComponentLoader'
                 }
             }
@@ -99,11 +56,8 @@ export class ANodeCompiler {
 
     /**
      * 编译文本节点
-     *
-     * @param aNode 节点对象
-     * @param emitter 编译源码的中间buffer
      */
-    compileText (aNode, emitter) {
+    compileText (aNode: ANode, emitter: PHPEmitter) {
         if (aNode.textExpr.original) {
             emitter.bufferHTMLLiteral('<!--s-text-->')
         }
@@ -111,7 +65,7 @@ export class ANodeCompiler {
         if (aNode.textExpr.value != null) {
             emitter.bufferHTMLLiteral(aNode.textExpr.segs[0].literal)
         } else {
-            emitter.writeHTML(ExpressionEmitter.expr(aNode.textExpr))
+            emitter.writeHTML(compileExprSource.expr(aNode.textExpr))
         }
 
         if (aNode.textExpr.original) {
@@ -121,24 +75,18 @@ export class ANodeCompiler {
 
     /**
      * 编译template节点
-     *
-     * @param {ANode} aNode 节点对象
-     * @param emitter 编译源码的中间buffer
      */
-    compileTemplate (aNode, emitter: PHPEmitter) {
+    compileTemplate (aNode: ANode, emitter: PHPEmitter) {
         this.elementCompiler.inner(emitter, aNode)
     }
 
     /**
      * 编译 if 节点
-     *
-     * @param {ANode} aNode 节点对象
-     * @param emitter 编译源码的中间buffer
      */
-    compileIf (aNode, emitter: PHPEmitter) {
+    compileIf (aNode: ANode, emitter: PHPEmitter) {
         // output main if
         const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
-        emitter.writeIf(ExpressionEmitter.expr(ifDirective.value), () => {
+        emitter.writeIf(compileExprSource.expr(ifDirective.value), () => {
             this.compile(aNode.ifRinsed, emitter)
         })
 
@@ -146,7 +94,7 @@ export class ANodeCompiler {
         for (const elseANode of aNode.elses || []) {
             const elifDirective = elseANode.directives.elif
             if (elifDirective) {
-                emitter.beginElseIf(ExpressionEmitter.expr(elifDirective.value))
+                emitter.beginElseIf(compileExprSource.expr(elifDirective.value))
             } else {
                 emitter.beginElse()
             }
@@ -158,12 +106,9 @@ export class ANodeCompiler {
 
     /**
      * 编译 for 节点
-     *
-     * @param {ANode} aNode 节点对象
-     * @param {PHPEmitter} emitter 编译源码的中间buffer
      */
-    compileFor (aNode, emitter) {
-        const forElementANode = {
+    compileFor (aNode: ANode, emitter: PHPEmitter) {
+        const forElementANode: ANode = {
             children: aNode.children,
             props: aNode.props,
             events: aNode.events,
@@ -178,7 +123,7 @@ export class ANodeCompiler {
         const indexName = forDirective.index || this.nextID()
         const listName = this.nextID()
 
-        emitter.writeLine('$' + listName + ' = ' + ExpressionEmitter.expr(forDirective.value) + ';')
+        emitter.writeLine('$' + listName + ' = ' + compileExprSource.expr(forDirective.value) + ';')
         emitter.writeIf(`is_array($${listName}) || is_object($${listName})`, () => {
             emitter.writeForeach(`$${listName} as $${indexName} => $value`, () => {
                 emitter.writeLine(`$ctx->data->${indexName} = $${indexName};`)
@@ -191,7 +136,7 @@ export class ANodeCompiler {
     /**
      * 编译 slot 节点
      */
-    compileSlot (aNode, emitter: PHPEmitter) {
+    compileSlot (aNode: ANode, emitter: PHPEmitter) {
         const rendererId = this.nextID()
 
         emitter.writeIf(`!isset($ctx->slotRenderers["${rendererId}"])`, () => {
@@ -211,9 +156,9 @@ export class ANodeCompiler {
                 emitter.writeLine('$ctxSourceSlots = $ctx->sourceSlots;')
                 emitter.writeLine('$mySourceSlots = [];')
 
-                const nameProp = this.getANodeProp(aNode, 'name')
+                const nameProp = getANodePropByName(aNode, 'name')
                 if (nameProp) {
-                    emitter.writeLine('$slotName = ' + ExpressionEmitter.expr(nameProp.expr) + ';')
+                    emitter.writeLine('$slotName = ' + compileExprSource.expr(nameProp.expr) + ';')
 
                     emitter.writeForeach('$ctxSourceSlots as $i => $slot', () => {
                         emitter.writeIf('count($slot) > 1 && $slot[1] == $slotName', () => {
@@ -237,13 +182,13 @@ export class ANodeCompiler {
                     emitter.writeLine('$slotCtx = (object)["sanssrCid" => $slotCtx->sanssrCid, "data" => $slotCtx->data, "instance" => $slotCtx->instance, "owner" => $slotCtx->owner];')
 
                     if (aNode.directives.bind) {
-                        emitter.writeLine('_::extend($slotCtx->data, ' + ExpressionEmitter.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
+                        emitter.writeLine('_::extend($slotCtx->data, ' + compileExprSource.expr(aNode.directives.bind.value) + ');'); // eslint-disable-line
                     }
 
                     for (const varItem of aNode.vars) {
                         emitter.writeLine(
                             '$slotCtx->data->' + varItem.name + ' = ' +
-                            ExpressionEmitter.expr(varItem.expr) + ';'
+                            compileExprSource.expr(varItem.expr) + ';'
                         )
                     }
                 }
@@ -270,12 +215,10 @@ export class ANodeCompiler {
     /**
      * 编译组件节点
      *
-     * @param {ANode} aNode 节点对象
-     * @param {PHPEmitter} emitter 编译源码的中间buffer
      * @param {Object} extra 编译所需的一些额外信息
      * @param {Function} extra.ComponentClass 对应组件类
      */
-    compileComponent (aNode, emitter, extra) {
+    compileComponent (aNode: ANode, emitter: PHPEmitter, extra) {
         let dataLiteral = '(object)[]'
 
         emitter.writeLine('$sourceSlots = [];')
@@ -284,7 +227,7 @@ export class ANodeCompiler {
             const sourceSlotCodes = {}
 
             for (const child of aNode.children) {
-                const slotBind = !child.textExpr && this.getANodeProp(child, 'slot')
+                const slotBind = !child.textExpr && getANodePropByName(child, 'slot')
                 if (slotBind) {
                     if (!sourceSlotCodes[slotBind.raw]) {
                         sourceSlotCodes[slotBind.raw] = {
@@ -317,22 +260,21 @@ export class ANodeCompiler {
                     sourceSlotCode.children.forEach(child => this.compile(child, emitter))
                     emitter.writeLine('return $html;')
                 })
-                emitter.feedLine(', ' + ExpressionEmitter.expr(sourceSlotCode.prop.expr) + ']);')
+                emitter.feedLine(', ' + compileExprSource.expr(sourceSlotCode.prop.expr) + ']);')
             }
         }
 
         const givenData = []
-        for (const prop of this.camelComponentBinds(aNode.props)) {
-            this.postProp(prop)
-            const key = ExpressionEmitter.stringLiteralize(prop.name)
-            const val = ExpressionEmitter.expr(prop.expr)
+        for (const prop of getANodeProps(aNode)) {
+            const key = compileExprSource.stringLiteralize(prop.name)
+            const val = compileExprSource.expr(prop.expr)
             givenData.push(`${key} => ${val}`)
         }
 
         dataLiteral = '(object)[' + givenData.join(',\n') + ']'
         if (aNode.directives.bind) {
             dataLiteral = '_::extend(' +
-            ExpressionEmitter.expr(aNode.directives.bind.value) +
+            compileExprSource.expr(aNode.directives.bind.value) +
             ', ' +
             dataLiteral +
             ')'
@@ -348,12 +290,10 @@ export class ANodeCompiler {
     /**
      * 编译组件加载器节点
      *
-     * @param {ANode} aNode 节点对象
-     * @param {PHPEmitter} emitter 编译源码的中间buffer
      * @param {Object} extra 编译所需的一些额外信息
      * @param {Function} extra.ComponentClass 对应类
      */
-    compileComponentLoader (aNode, emitter, extra) {
+    compileComponentLoader (aNode: ANode, emitter: PHPEmitter, extra) {
         const LoadingComponent = extra.ComponentClass.placeholder
         if (typeof LoadingComponent === 'function') {
             this.compileComponent(aNode, emitter, {
@@ -362,39 +302,7 @@ export class ANodeCompiler {
         }
     }
 
-    private isComponentLoader (cmpt) {
-        return cmpt && cmpt.hasOwnProperty('load') && cmpt.hasOwnProperty('placeholder')
-    }
-
-    /**
-    * 获取 ANode props 数组中相应 name 的项
-    *
-    * @param {Object} aNode ANode对象
-    * @param {string} name name属性匹配串
-    */
-    private getANodeProp (aNode, name) {
-        const index = aNode.hotspot.props[name]
-        if (index != null) {
-            return aNode.props[index]
-        }
-    }
-
-    /**
-    * 将 binds 的 name 从 kebabcase 转换成 camelcase
-    *
-    * @param {Array} binds binds集合
-    * @return {Array}
-    */
-    camelComponentBinds (binds) {
-        const result = []
-        for (const bind of binds) {
-            result.push({
-                name: camelCase(bind.name),
-                expr: bind.expr,
-                x: bind.x,
-                raw: bind.raw
-            })
-        }
-        return result
+    private nextID () {
+        return 'sanssrId' + (this.id++)
     }
 }

@@ -1,8 +1,6 @@
 /* eslint @typescript-eslint/no-unused-vars: "off" */
 const $version = '3.7.7'
 
-const componentRenderers = {}
-
 function sortedStringify (obj) {
     if (typeof obj !== 'object') {
         return obj + ''

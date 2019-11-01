@@ -1,26 +1,25 @@
 import { getInlineDeclarations } from '../parsers/dependency-resolver'
-import { isReserved } from '../utils/php-util'
-import { ModuleInfo, generatePHPCode } from '../transpilers/ts2php'
-import { transformAstToPHP } from '../transformers/to-php'
+import { isReserved } from './util'
+import { ModuleInfo, generatePHPCode } from './compilers/ts2php'
+import { transformAstToPHP } from './transformers/index'
 import { Project } from 'ts-morph'
-import { RendererCompiler } from './renderer-compiler'
-import { PHPEmitter } from '../emitters/php-emitter'
+import { RendererCompiler } from './compilers/renderer-compiler'
+import { PHPEmitter } from './emitters/emitter'
 import { SanApp } from '../models/san-app'
 import camelCase from 'camelcase'
-import { ComponentRegistry } from './component-registry'
+import { ComponentRegistry } from './compilers/component-registry'
 import { SanSourceFile } from '../models/san-sourcefile'
 import { getDefaultConfigPath } from '../parsers/tsconfig'
 import { sep, extname } from 'path'
 import debugFactory from 'debug'
-import { Compiler } from './compiler'
-import { emitRuntimeInPHP } from '../emitters/runtime'
+import { Compiler } from '..'
+import { emitRuntime } from './emitters/runtime'
 
 const debug = debugFactory('ast-util')
 
 export type ToPHPCompilerOptions = {
     tsConfigFilePath?: string,
-    project: any
-    sanssr?: string
+    project: Project
 }
 
 export class ToPHPCompiler implements Compiler {
@@ -28,17 +27,14 @@ export class ToPHPCompiler implements Compiler {
     private tsConfigFilePath: string
     private requiredModules: ModuleInfo[]
     private project: Project
-    private sanssr: string
 
     constructor ({
         tsConfigFilePath = getDefaultConfigPath(),
-        project,
-        sanssr = 'san-ssr'
+        project
     }: ToPHPCompilerOptions) {
-        this.sanssr = sanssr
         this.project = project
         this.requiredModules = [{
-            name: sanssr,
+            name: process.env.SAN_SSR_PACKAGE_NAME || 'san-ssr',
             required: true
         }, {
             name: 'san',
@@ -57,7 +53,7 @@ export class ToPHPCompiler implements Compiler {
         const emitter = new PHPEmitter(emitHeader)
         this.compileRenderer(emitter, funcName, nsPrefix, sanApp)
         this.compileComponents(sanApp, emitter, nsPrefix)
-        emitRuntimeInPHP(emitter, nsPrefix)
+        emitRuntime(emitter, nsPrefix)
         return emitter.fullText()
     }
 
@@ -81,10 +77,10 @@ export class ToPHPCompiler implements Compiler {
         emitter.endNamespace()
     }
 
-    public compileComponent (sourceFile: SanSourceFile, nsPrefix = '') {
+    public compileComponent (sourceFile: SanSourceFile, nsPrefix: string) {
         if (!sourceFile.tsSourceFile) return ''
 
-        transformAstToPHP(sourceFile, this.sanssr)
+        transformAstToPHP(sourceFile)
         const tsconfig = require(this.tsConfigFilePath)
         const requiredModules = [...this.requiredModules]
         for (const decl of getInlineDeclarations(sourceFile.tsSourceFile)) {
@@ -104,7 +100,7 @@ export class ToPHPCompiler implements Compiler {
         )
     }
 
-    public compileComponents (entryComp: SanApp, emitter: PHPEmitter = new PHPEmitter(), nsPrefix = '') {
+    public compileComponents (entryComp: SanApp, emitter: PHPEmitter, nsPrefix: string) {
         const registry = new ComponentRegistry()
         for (const [path, sourceFile] of entryComp.projectFiles) {
             registry.registerComponents(sourceFile)

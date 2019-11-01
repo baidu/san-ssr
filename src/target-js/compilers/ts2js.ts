@@ -1,12 +1,23 @@
 import { transpileModule } from 'typescript'
 import { SourceFile } from 'ts-morph'
+import debugFactory from 'debug'
 
-export function ts2js (sourceFile: SourceFile, compilerOptions = {}) {
+const debug = debugFactory('san-ssr:ts2js')
+
+export function tsSourceFile2js (sourceFile: SourceFile, compilerOptions) {
+    debug('compile', sourceFile.getFilePath(), 'with options:', compilerOptions)
+    return tsCode2js(sourceFile.getFullText(), compilerOptions)
+}
+
+export function tsCode2js (sourceCode: string, compilerOptions) {
+    debug('source code:', sourceCode)
+
     const { diagnostics, outputText } =
-        transpileModule(sourceFile.getFullText(), { compilerOptions })
+        transpileModule(sourceCode, { compilerOptions })
     if (diagnostics.length) {
         console.log(diagnostics)
         throw new Error('typescript compile error')
     }
+    debug('target code:', outputText)
     return outputText
 }

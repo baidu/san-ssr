@@ -3,7 +3,7 @@ import { keyBy } from 'lodash'
 import { SourceFile } from 'ts-morph'
 import debugFactory from 'debug'
 
-const debug = debugFactory('transpilers:ts2php')
+const debug = debugFactory('san-ssr:ts2php')
 
 export type ModuleInfo = {
     name: string,
@@ -12,7 +12,9 @@ export type ModuleInfo = {
 }
 
 export function generatePHPCode (sourceFile: SourceFile, modules: ModuleInfo[], compilerOptions, nsPrefix: string) {
-    debug('modules:', modules)
+    debug('compile', sourceFile.getFilePath(), 'options:', modules, 'compilerOptions:', compilerOptions)
+    debug('source code:', sourceFile.getFullText())
+
     const options = {
         source: sourceFile.getFullText(),
         emitHeader: false,
@@ -26,5 +28,6 @@ export function generatePHPCode (sourceFile: SourceFile, modules: ModuleInfo[], 
         const error = errors[0]
         throw new Error(error.msg || error['messageText'])
     }
+    debug('target code:', phpCode)
     return phpCode
 }

@@ -1,7 +1,7 @@
 import { getComponentClassIdentifier, isChildClassOf } from '../utils/ast-util'
 import { ComponentClassFinder } from './component-class-finder'
 import { CommonJS } from '../loaders/common-js'
-import { ts2js } from '../target-js/compilers/ts2js'
+import { tsSourceFile2js } from '../target-js/compilers/ts2js'
 import { normalizeComponentClass } from './normalize-component'
 import { SanSourceFile } from '../models/san-sourcefile'
 import { Project, SourceFile, ClassDeclaration } from 'ts-morph'
@@ -64,7 +64,7 @@ export class SanAppParser {
         const commonJS = new CommonJS(filepath => {
             if (!projectFiles.has(filepath)) return null
             const sourceFile = projectFiles.get(filepath)
-            return ts2js(sourceFile.tsSourceFile)
+            return tsSourceFile2js(sourceFile.tsSourceFile, this.project.getCompilerOptions())
         })
         return commonJS.require(sourceFile.getFilePath()).default
     }

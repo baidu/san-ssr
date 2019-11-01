@@ -25,11 +25,10 @@ export class SanApp {
     }
 
     public getEntryComponentClassOrThrow () {
-        const clazz = this.getEntryComponentClass()
-        if (typeof clazz !== 'function') {
+        if (!this.componentClasses.length) {
             throw new Error('entry ComponentClass not found')
         }
-        return clazz
+        return this.componentClasses[0]
     }
 
     private validateComponentClass (clazz: any) {

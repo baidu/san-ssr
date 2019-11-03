@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import chalk from 'chalk'
-import { ToPHPCompiler } from '../compilers/to-php-compiler'
-import { ToJSCompiler } from '../compilers/to-js-compiler'
+import { SanProject } from '../models/san-project'
+import { Target } from '../models/target'
 import { writeFileSync } from 'fs'
 import { resolve } from 'path'
 import * as yargs from 'yargs'
@@ -45,9 +45,8 @@ const outputFile = yargs.argv.output as OptionValue
 const componentFile = resolve(yargs.argv._[0])
 console.error(chalk.gray('compiling'), componentFile, 'to', target)
 
-const Compiler = target === 'php' ? ToPHPCompiler : ToJSCompiler
-const compiler = new Compiler({ tsConfigFilePath })
-const targetCode = compiler.compile(componentFile, { nsPrefix })
+const compiler = new SanProject({ tsConfigFilePath })
+const targetCode = compiler.compile(componentFile, Target.php, { nsPrefix })
 
 if (outputFile !== undefined) {
     writeFileSync(outputFile, targetCode)

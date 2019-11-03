@@ -1,4 +1,4 @@
-import { ImportDeclaration, TypeGuards, Expression, PropertyDeclaration, ClassDeclaration, ts, SourceFile } from 'ts-morph'
+import { ImportDeclaration, ClassDeclaration, ts, SourceFile } from 'ts-morph'
 import debugFactory from 'debug'
 
 const debug = debugFactory('ast-util')
@@ -30,33 +30,6 @@ export function isChildClassOf (clazz: ClassDeclaration, parentClass: string) {
     if (!typeNode) return false
 
     return true
-}
-
-function isObjectLiteralExpression (expr: Expression) {
-    if (TypeGuards.isObjectLiteralExpression(expr)) return true
-    if (TypeGuards.isAsExpression(expr) && TypeGuards.isObjectLiteralExpression(expr.getExpression())) return true
-    return false
-}
-
-export function removeObjectLiteralInitiator (sourceFile: SourceFile, clazz: ClassDeclaration, prop: PropertyDeclaration) {
-    debug('removeObjectLiteralInitiator', prop.getName())
-
-    const initializer = prop.getInitializer()
-    if (!initializer || !isObjectLiteralExpression(initializer)) return
-
-    if (prop.isStatic()) {
-        const statement = clazz.getName() + '.' + prop.getName() + ' = ' + initializer.getFullText()
-        sourceFile.addStatements(statement)
-    } else {
-        let statement = 'this.' + prop.getName() + ' = ' + initializer.getFullText()
-        if (!clazz.getConstructors().length) {
-            clazz.addConstructor()
-            statement = 'super()\n' + statement
-        }
-        const init = clazz.getConstructors()[0]
-        init.setBodyText(init.getBodyText() + '\n' + statement)
-    }
-    prop.removeInitializer()
 }
 
 export function movePropertyInitiatorToPrototype (sourceFile: SourceFile, clazz: ClassDeclaration) {

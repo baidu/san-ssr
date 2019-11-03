@@ -1,4 +1,4 @@
-import { Emitter } from '../../src/emitters/emitter'
+import { Emitter } from '../../src/utils/emitter'
 
 describe('Emitter', function () {
     let emitter

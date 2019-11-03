@@ -1,9 +1,6 @@
-class Data {
-    public get (path: string): any {
-        return path
-    }
-}
-
+/**
+ * San Component for Users
+ */
 export class Component {
     public data: Data;
 }
@@ -14,4 +11,10 @@ export class SanSSRFiltersDeclarations {
 
 export class SanSSRComputedDeclarations {
     [key: string]: (sanssrSelf: Component) => any
+}
+
+class Data {
+    public get (path: string): any {
+        return path
+    }
 }

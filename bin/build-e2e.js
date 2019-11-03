@@ -3,11 +3,8 @@
 const fs = require('fs')
 const { join, resolve } = require('path')
 const testRoot = resolve(__dirname, '../test')
-const { ComponentParser } = require('../dist/parsers/component-parser')
-const { ToJSCompiler } = require('../dist/compilers/to-js-compiler')
-const tsConfigFilePath = resolve(__dirname, '../test/tsconfig.json')
-const ccj = new ToJSCompiler({ tsConfigFilePath })
-const parser = ComponentParser.createUsingTsconfig(tsConfigFilePath)
+const { tsCode2js } = require('../dist/target-js/compilers/ts2js')
+const tsConfig = require('../test/tsconfig.json')
 const { supportE2E } = require('../dist/utils/case')
 
 let html = ''
@@ -65,9 +62,10 @@ function buildFile (caseDir) {
         if (isFile) {
             switch (filename) {
             case 'component.ts':
-                const comp = parser.parseComponent(abFilePath)
-                componentSource = ccj
-                    .compileToJS(comp.getFile(abFilePath))
+                componentSource = tsCode2js(
+                    fs.readFileSync(abFilePath, 'UTF-8'),
+                    tsConfig.compilerOptions
+                )
                     .replace(/(\S+)\s*=\s*require\("san"\)/, '$1 = san')
                     .split('\n')
                     .filter(x => !/exports.default/.test(x))

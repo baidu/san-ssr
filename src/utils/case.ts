@@ -1,21 +1,19 @@
 import camelCase from 'camelcase'
+import { startMeasure } from '../utils/timing'
 import { readdirSync, writeFileSync, existsSync } from 'fs'
 import { resolve, join } from 'path'
-import { ToPHPCompiler } from '../compilers/to-php-compiler'
-import { ToJSCompiler } from '../compilers/to-js-compiler'
+import { SanProject } from '../models/san-project'
+import { Target } from '../models/target'
 import debugFactory from 'debug'
-import ProgressBar = require('progress')
+
+process.env.SAN_SSR_PACKAGE_NAME = '../../..'
 
 const jsSSRUnables = ['multi-files']
 const debug = debugFactory('case')
 const caseRoot = resolve(__dirname, '../../test/cases')
 const tsConfigFilePath = resolve(__dirname, '../../test/tsconfig.json')
 const cases = readdirSync(caseRoot)
-const toJSCompiler = new ToJSCompiler({ tsConfigFilePath })
-const toPHPCompiler = new ToPHPCompiler({
-    tsConfigFilePath,
-    sanssr: '../../..'
-})
+const sanProject = new SanProject({ tsConfigFilePath })
 const multiFileCases = ['multi-component-files', 'multi-files']
 
 export function supportJSSSR (caseName) {
@@ -30,7 +28,7 @@ export function compileToJS (caseName) {
     debug('compileToJS', caseName)
     const ts = join(caseRoot, caseName, 'component.ts')
     const js = resolve(caseRoot, caseName, 'component.js')
-    const targetCode = toJSCompiler.compile(existsSync(js) ? js : ts)
+    const targetCode = sanProject.compile(existsSync(js) ? js : ts, Target.js)
 
     writeFileSync(join(caseRoot, caseName, 'ssr.js'), targetCode)
 }
@@ -38,8 +36,9 @@ export function compileToJS (caseName) {
 export function compileToPHP (caseName) {
     const ts = join(caseRoot, caseName, 'component.ts')
     const js = resolve(caseRoot, caseName, 'component.js')
-    const targetCode = toPHPCompiler.compile(
+    const targetCode = sanProject.compile(
         existsSync(ts) ? ts : js,
+        Target.php,
         { nsPrefix: `san\\${camelCase(caseName)}\\` }
     )
 
@@ -47,31 +46,24 @@ export function compileToPHP (caseName) {
 }
 
 export function compileAllToJS () {
-    const p = new ProgressBar(
-        ':current/:total (:elapseds) compiling :caseName',
-        { total: cases.length }
-    )
+    const timing = startMeasure()
     for (const caseName of cases) {
         if (!supportJSSSR(caseName)) {
-            p.tick()
             continue
         }
-        p.tick(0, { caseName })
+        console.log(`compiling ${caseName} to js`)
         compileToJS(caseName)
-        p.tick()
     }
+    console.log('compiled in', timing.duration())
 }
 
 export function compileAllToPHP () {
-    const p = new ProgressBar(
-        ':current/:total (:elapseds) compiling :caseName',
-        { total: cases.length }
-    )
+    const timing = startMeasure()
     for (const caseName of cases) {
-        p.tick(0, { caseName })
+        console.log(`compiling ${caseName} to php`)
         compileToPHP(caseName)
-        p.tick()
     }
+    console.log('compiled in', timing.duration())
 }
 
 export function parseHtml (str: string) {

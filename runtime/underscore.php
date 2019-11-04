@@ -31,20 +31,6 @@ final class _
       return $data;
     }
 
-    public static function sortedStringify($obj) {
-        if (!is_object($obj)) {
-            return json_encode($obj, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-        }
-
-        $keys = array_keys($obj);
-        sort($keys);
-        $lines = [];
-        foreach ($keys as $key) {
-            array_push($lines, '"' . $key . '":' . stringify($obj->$key));
-        }
-        return "{" . join(",", $lines) . "}";
-    }
-
     public static function objSpread($arr, $needSpread) {
         $obj = (object)[];
         foreach ($arr as $idx => $val) {
@@ -104,18 +90,39 @@ final class _
         return _::$HTML_ENTITY[$c];
     }
 
-    public static function escapeHTML($source)
-    {
-        if (!$source) {
-            return "";
+    // JavaScript toString Implementation
+    public static function toString($source) {
+        if (!isset($source)) {
+            return "undefined";
         }
         if (is_string($source)) {
-            return htmlspecialchars($source, ENT_QUOTES);
+            return $source;
         }
         if (is_bool($source)) {
             return $source ? 'true' : 'false';
         }
+        if (is_array($source)) {
+            $arr = [];
+            foreach ($source as $item) array_push(_::toString($item));
+            return join(",", $arr);
+        }
+        if (is_object($source)) {
+            return _::json_encode($source);
+        }
         return strval($source);
+    }
+
+    public static function escapeHTML($source)
+    {
+        if (!isset($source)) {
+            return "";
+        }
+        $str = _::toString($source);
+        return htmlspecialchars($str, ENT_QUOTES);
+    }
+
+    public static function json_encode ($obj) {
+        return json_encode($obj, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 
     public static function _classFilter($source)
@@ -153,10 +160,11 @@ final class _
 
     public static function attrFilter($name, $value)
     {
-        if (isset($value)) {
-            return " " . $name . '="' . $value . '"';
+        if (!isset($value)) {
+            $value = "";
         }
-        return '';
+
+        return " " . $name . '="' . $value . '"';
     }
 
     public static function boolAttrFilter($name, $value)

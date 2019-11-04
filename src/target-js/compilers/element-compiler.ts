@@ -126,39 +126,14 @@ export class ElementCompiler {
                 break
 
             default:
-                let onlyOneAccessor = false
-                let preCondExpr
-
-                if (prop.expr.type === 4) {
-                    onlyOneAccessor = true
-                    preCondExpr = prop.expr
-                } else if (prop.expr.type === 7 && prop.expr.segs.length === 1) {
-                    const interpExpr = prop.expr.segs[0]
-                    const interpFilters = interpExpr.filters
-
-                    if (!interpFilters.length ||
-                        (interpFilters.length === 1 && interpFilters[0].args.length === 0)
-                    ) {
-                        onlyOneAccessor = true
-                        preCondExpr = prop.expr.segs[0].expr
-                    }
+                if (prop.hasOwnProperty('raw')) {
+                    sourceBuffer.joinRaw('attrFilter("' + prop.name + '", ' +
+                        (prop.x ? 'escapeHTML(' : '') +
+                        compileExprSource.expr(prop.expr) +
+                        (prop.x ? ')' : '') +
+                        ')'
+                    )
                 }
-
-                if (onlyOneAccessor) {
-                    sourceBuffer.addRaw('if (' + compileExprSource.expr(preCondExpr) + ') {')
-                }
-
-                sourceBuffer.joinRaw('attrFilter("' + prop.name + '", ' +
-                    (prop.x ? 'escapeHTML(' : '') +
-                    compileExprSource.expr(prop.expr) +
-                    (prop.x ? ')' : '') +
-                    ')'
-                )
-
-                if (onlyOneAccessor) {
-                    sourceBuffer.addRaw('}')
-                }
-
                 break
             }
         }

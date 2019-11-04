@@ -126,11 +126,7 @@ function _xstyleFilter (outer, inner) {
 }
 
 function attrFilter (name, value) {
-    if (value) {
-        return ' ' + name + '="' + value + '"'
-    }
-
-    return ''
+    return ' ' + name + '="' + value + '"'
 }
 
 function boolAttrFilter (name, value) {

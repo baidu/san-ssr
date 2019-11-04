@@ -120,6 +120,7 @@ TODO 移动以下文档到对应的代码生成器仓库。
 ### PHP
 
 - filters/computed 是 static，这要求使用时额外声明其类型
+- noDataOutput 控制的数据输出中，对象序列化使用 json_encode 实现，属性顺序和 JavaScript 中可能不同
 
 ### JS
 

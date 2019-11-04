@@ -39,4 +39,24 @@ describe('ToPHPCompiler', function () {
         expect(result).toContain('ComponentRegistry::$comps = [')
         expect(result).toContain('"0" => \'\\san\\stub\\aComp\\A\'')
     })
+
+    it('should respect modules config for ts2php', function () {
+        const filepath = resolve(__dirname, '../stub/b.comp.ts')
+        const project = new Project({ tsConfigFilePath })
+        const parser = new SanAppParser(project)
+        const result1 = cc.compile(parser.parseSanApp(filepath), {})
+
+        expect(result1).toContain('require_once("lodash")')
+
+        const result2 = cc.compile(parser.parseSanApp(filepath), {
+            modules: {
+                lodash: {
+                    name: 'lodash',
+                    required: true
+                }
+            }
+        })
+
+        expect(result2).not.toContain('require_once("lodash")')
+    })
 })

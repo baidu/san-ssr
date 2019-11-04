@@ -1,6 +1,7 @@
 import { getInlineDeclarations } from '../parsers/dependency-resolver'
+import { keyBy, assign } from 'lodash'
 import { isReserved } from './util'
-import { ModuleInfo, generatePHPCode } from './compilers/ts2php'
+import { Modules, generatePHPCode } from './compilers/ts2php'
 import { transformAstToPHP } from './transformers/index'
 import { Project } from 'ts-morph'
 import { RendererCompiler } from './compilers/renderer-compiler'
@@ -25,7 +26,7 @@ export type ToPHPCompilerOptions = {
 export class ToPHPCompiler implements Compiler {
     private root: string
     private tsConfigFilePath: string
-    private requiredModules: ModuleInfo[]
+    private ts2phpModules: Modules
     private project: Project
 
     constructor ({
@@ -33,14 +34,14 @@ export class ToPHPCompiler implements Compiler {
         project
     }: ToPHPCompilerOptions) {
         this.project = project
-        this.requiredModules = [{
+        this.ts2phpModules = keyBy([{
             name: process.env.SAN_SSR_PACKAGE_NAME || 'san-ssr',
             required: true
         }, {
             name: 'san',
             required: true,
             namespace: '\\san\\runtime\\'
-        }]
+        }], 'name')
         this.root = tsConfigFilePath.split(sep).slice(0, -1).join(sep)
         this.tsConfigFilePath = tsConfigFilePath
     }
@@ -48,11 +49,12 @@ export class ToPHPCompiler implements Compiler {
     public compile (sanApp: SanApp, {
         funcName = 'render',
         nsPrefix = 'san\\',
-        emitHeader = true
+        emitHeader = true,
+        modules = {}
     }) {
         const emitter = new PHPEmitter(emitHeader)
         this.compileRenderer(emitter, funcName, nsPrefix, sanApp)
-        this.compileComponents(sanApp, emitter, nsPrefix)
+        this.compileComponents(sanApp, emitter, nsPrefix, modules)
         emitRuntime(emitter, nsPrefix)
         return emitter.fullText()
     }
@@ -77,30 +79,30 @@ export class ToPHPCompiler implements Compiler {
         emitter.endNamespace()
     }
 
-    public compileComponent (sourceFile: SanSourceFile, nsPrefix: string) {
+    public compileComponent (sourceFile: SanSourceFile, nsPrefix: string, modules: Modules) {
         if (!sourceFile.tsSourceFile) return ''
 
         transformAstToPHP(sourceFile)
         const tsconfig = require(this.tsConfigFilePath)
-        const requiredModules = [...this.requiredModules]
+        modules = { ...this.ts2phpModules, ...modules }
         for (const decl of getInlineDeclarations(sourceFile.tsSourceFile)) {
             const ns = nsPrefix + this.ns(decl.getModuleSpecifierSourceFile().getFilePath())
             const literal = decl.getModuleSpecifierValue()
-            requiredModules.push({
+            modules[literal] = {
                 name: literal,
                 required: true,
                 namespace: '\\' + ns + '\\'
-            })
+            }
         }
         return generatePHPCode(
             sourceFile.tsSourceFile,
-            requiredModules,
+            modules,
             tsconfig['compilerOptions'],
             nsPrefix
         )
     }
 
-    public compileComponents (entryComp: SanApp, emitter: PHPEmitter, nsPrefix: string) {
+    public compileComponents (entryComp: SanApp, emitter: PHPEmitter, nsPrefix: string, modules: Modules) {
         const registry = new ComponentRegistry()
         for (const [path, sourceFile] of entryComp.projectFiles) {
             registry.registerComponents(sourceFile)
@@ -108,7 +110,7 @@ export class ToPHPCompiler implements Compiler {
             emitter.beginNamespace(nsPrefix + this.ns(path))
             emitter.writeLine(`use ${nsPrefix}runtime\\_;`)
             emitter.writeLine(`use ${nsPrefix}runtime\\Component;`)
-            emitter.writeLines(this.compileComponent(sourceFile, nsPrefix))
+            emitter.writeLines(this.compileComponent(sourceFile, nsPrefix, modules))
             emitter.endNamespace()
         }
         registry.writeComponentRegistry(nsPrefix, path => this.ns(path), emitter)

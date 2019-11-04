@@ -1,17 +1,20 @@
 import { compile } from 'ts2php'
-import { keyBy } from 'lodash'
 import { SourceFile } from 'ts-morph'
 import debugFactory from 'debug'
 
 const debug = debugFactory('san-ssr:ts2php')
 
-export type ModuleInfo = {
+export interface Modules {
+    [key:string]: ModuleInfo
+}
+
+type ModuleInfo = {
     name: string,
     required?: boolean,
     namespace?: string
 }
 
-export function generatePHPCode (sourceFile: SourceFile, modules: ModuleInfo[], compilerOptions, nsPrefix: string) {
+export function generatePHPCode (sourceFile: SourceFile, modules: Modules, compilerOptions, nsPrefix: string) {
     debug('compile', sourceFile.getFilePath(), 'options:', modules, 'compilerOptions:', compilerOptions)
     debug('source code:', sourceFile.getFullText())
 
@@ -19,7 +22,7 @@ export function generatePHPCode (sourceFile: SourceFile, modules: ModuleInfo[], 
         source: sourceFile.getFullText(),
         emitHeader: false,
         plugins: [],
-        modules: keyBy(modules, 'name'),
+        modules,
         helperNamespace: `\\${nsPrefix}runtime\\`,
         compilerOptions
     }

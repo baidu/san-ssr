@@ -1,6 +1,9 @@
 import { readFileSync } from 'fs'
 import { extname, dirname, resolve } from 'path'
 import { isRelativePath } from '../parsers/dependency-resolver'
+import debugFactory from 'debug'
+
+const debug = debugFactory('san-ssr:common-js')
 
 export class Module {
     public filepath: string
@@ -30,7 +33,9 @@ export class CommonJS {
     }
 
     require (filepath: string) {
+        debug('global require called with', filepath)
         if (!this.cache.has(filepath)) {
+            debug('cache miss, reading', filepath)
             const fileContent = this.readFile(filepath) ||
                 this.readFile(filepath + '.ts') ||
                 this.readFile(filepath + '.js')
@@ -40,6 +45,7 @@ export class CommonJS {
             // eslint-disable-next-line
             const fn = new Function('module', 'exports', 'require', mod.content)
             fn(mod, mod.exports, path => {
+                debug('local require called with', path)
                 if (isRelativePath(path)) {
                     path = resolve(dirname(filepath), path)
                     return this.require(path)

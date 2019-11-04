@@ -8,13 +8,13 @@ import debugFactory from 'debug'
 
 process.env.SAN_SSR_PACKAGE_NAME = '../../..'
 
-const jsSSRUnables = ['multi-files']
+const jsSSRUnables = ['multi-files', 'import-files-from-parent-directory']
 const debug = debugFactory('case')
 const caseRoot = resolve(__dirname, '../../test/cases')
 const tsConfigFilePath = resolve(__dirname, '../../test/tsconfig.json')
 const cases = readdirSync(caseRoot)
 const sanProject = new SanProject({ tsConfigFilePath })
-const multiFileCases = ['multi-component-files', 'multi-files']
+const multiFileCases = ['multi-component-files', 'multi-files', 'import-files-from-parent-directory']
 
 export function supportJSSSR (caseName) {
     return !jsSSRUnables.includes(caseName)

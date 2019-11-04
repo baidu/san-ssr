@@ -28,5 +28,5 @@ export function shouldInline (decl: ImportDeclaration) {
 }
 
 export function isRelativePath (importLiteralValue: string) {
-    return /^\.\//.test(importLiteralValue)
+    return /^\.+\//.test(importLiteralValue)
 }

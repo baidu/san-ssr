@@ -111,11 +111,11 @@ san-ssr --target js  ./component.ts &gt; ssr.js</code></pre>
 					<h2>Programmatic Interface</h2>
 				</a>
 				<p>To PHP programmatic inteface (<a href="https://searchfe.github.io/san-ssr/classes/_compilers_to_php_compiler_.tophpcompiler.html">typedoc: ToPHPCompiler</a>):</p>
-				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { ToPHPCompiler } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'san-ssr'</span>)
-<span class="hljs-keyword">const</span> { writeFileSync } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'fs'</span>)
+				<pre><code class="language-javascript"><span class="hljs-keyword">import</span> { Target, SanProject } <span class="hljs-keyword">from</span> <span class="hljs-string">'../models/san-project'</span>
+<span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs'</span>
 
-<span class="hljs-keyword">const</span> compiler = <span class="hljs-keyword">new</span> ToPHPCompiler()
-<span class="hljs-keyword">const</span> targetCode = compiler.compile(<span class="hljs-string">'./component.ts'</span>)
+<span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
+<span class="hljs-keyword">const</span> targetCode = project.compile(<span class="hljs-string">'src/component.ts'</span>, Target.php)
 
 writeFileSync(<span class="hljs-string">'ssr.php'</span>, targetCode)</code></pre>
 				<p>To JavaScript programmatic inteface (<a href="https://searchfe.github.io/san-ssr/classes/_compilers_to_js_compiler_.tojscompiler.html">typedoc: ToJSCompiler</a>):</p>
@@ -230,42 +230,6 @@ composer install</code></pre>
 						<a href="modules/_bin_ssr_.html">"bin/ssr"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_compilers_compiler_.html">"compilers/compiler"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_compilers_component_registry_.html">"compilers/component-<wbr>registry"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_compilers_js_render_compiler_.html">"compilers/js-<wbr>render-<wbr>compiler"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_compilers_php_render_compiler_.html">"compilers/php-<wbr>render-<wbr>compiler"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_compilers_to_js_compiler_.html">"compilers/to-<wbr>js-<wbr>compiler"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_compilers_to_php_compiler_.html">"compilers/to-<wbr>php-<wbr>compiler"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_emitters_emitter_.html">"emitters/emitter"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_emitters_expression_emitter_.html">"emitters/expression-<wbr>emitter"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_emitters_generate_php_code_.html">"emitters/generate-<wbr>php-<wbr>code"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_emitters_js_emitter_.html">"emitters/js-<wbr>emitter"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_emitters_php_emitter_.html">"emitters/php-<wbr>emitter"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_emitters_runtime_.html">"emitters/runtime"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
 						<a href="modules/_index_.html">"index"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -278,25 +242,127 @@ composer install</code></pre>
 						<a href="modules/_loaders_exec_.html">"loaders/exec"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_parsers_component_.html">"parsers/component"</a>
+						<a href="modules/_models_anode_.html">"models/anode"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_parsers_component_parser_.html">"parsers/component-<wbr>parser"</a>
+						<a href="modules/_models_compiler_.html">"models/compiler"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_models_component_.html">"models/component"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_models_expression_.html">"models/expression"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_models_san_app_.html">"models/san-<wbr>app"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_models_san_project_.html">"models/san-<wbr>project"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_models_san_sourcefile_.html">"models/san-<wbr>sourcefile"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_models_source_file_type_.html">"models/source-<wbr>file-<wbr>type"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_models_target_.html">"models/target"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_parsers_component_class_finder_.html">"parsers/component-<wbr>class-<wbr>finder"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_parsers_dependency_resolver_.html">"parsers/dependency-<wbr>resolver"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_parsers_san_sourcefile_.html">"parsers/san-<wbr>sourcefile"</a>
+						<a href="modules/_parsers_normalize_component_.html">"parsers/normalize-<wbr>component"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_parsers_san_app_parser_.html">"parsers/san-<wbr>app-<wbr>parser"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_parsers_tsconfig_.html">"parsers/tsconfig"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_transformers_normalize_component_.html">"transformers/normalize-<wbr>component"</a>
+						<a href="modules/_target_js_compilers_anode_compiler_.html">"target-<wbr>js/compilers/anode-<wbr>compiler"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_transformers_to_php_.html">"transformers/to-<wbr>php"</a>
+						<a href="modules/_target_js_compilers_element_compiler_.html">"target-<wbr>js/compilers/element-<wbr>compiler"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_js_compilers_expr_compiler_.html">"target-<wbr>js/compilers/expr-<wbr>compiler"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_js_compilers_renderer_compiler_.html">"target-<wbr>js/compilers/renderer-<wbr>compiler"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_js_compilers_stringifier_.html">"target-<wbr>js/compilers/stringifier"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_js_compilers_ts2js_.html">"target-<wbr>js/compilers/ts2js"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_js_emitters_emitter_.html">"target-<wbr>js/emitters/emitter"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_js_emitters_runtime_.html">"target-<wbr>js/emitters/runtime"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_js_index_.html">"target-<wbr>js/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_js_source_buffer_.html">"target-<wbr>js/source-<wbr>buffer"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_js_utils_fs_.html">"target-<wbr>js/utils/fs"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_php_compilers_anode_compiler_.html">"target-<wbr>php/compilers/anode-<wbr>compiler"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_php_compilers_component_registry_.html">"target-<wbr>php/compilers/component-<wbr>registry"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_php_compilers_element_compiler_.html">"target-<wbr>php/compilers/element-<wbr>compiler"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_php_compilers_expr_compiler_.html">"target-<wbr>php/compilers/expr-<wbr>compiler"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_php_compilers_renderer_compiler_.html">"target-<wbr>php/compilers/renderer-<wbr>compiler"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_php_compilers_stringifier_.html">"target-<wbr>php/compilers/stringifier"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_php_compilers_ts2php_.html">"target-<wbr>php/compilers/ts2php"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_php_emitters_emitter_.html">"target-<wbr>php/emitters/emitter"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_php_emitters_runtime_.html">"target-<wbr>php/emitters/runtime"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_php_index_.html">"target-<wbr>php/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_php_transformers_index_.html">"target-<wbr>php/transformers/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_php_transformers_refactor_computed_property_.html">"target-<wbr>php/transformers/refactor-<wbr>computed-<wbr>property"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_php_transformers_refactor_filters_property_.html">"target-<wbr>php/transformers/refactor-<wbr>filters-<wbr>property"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_php_util_.html">"target-<wbr>php/util"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_php_utils_fs_.html">"target-<wbr>php/utils/fs"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_utils_anode_.html">"utils/anode"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_utils_ast_util_.html">"utils/ast-<wbr>util"</a>
@@ -308,16 +374,13 @@ composer install</code></pre>
 						<a href="modules/_utils_case_.html">"utils/case"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_fs_.html">"utils/fs"</a>
+						<a href="modules/_utils_element_.html">"utils/element"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_php_util_.html">"utils/php-<wbr>util"</a>
+						<a href="modules/_utils_emitter_.html">"utils/emitter"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_utils_timing_.html">"utils/timing"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_underscore_.html">"utils/underscore"</a>
 					</li>
 				</ul>
 			</nav>

@@ -49,29 +49,34 @@ san-ssr --target js  ./component.ts > ssr.js
 
 ## Programmatic Interface
 
-To PHP programmatic inteface ([typedoc: ToPHPCompiler](https://searchfe.github.io/san-ssr/classes/_compilers_to_php_compiler_.tophpcompiler.html)):
+The [SanProject class][sanproject] is used to compile component files into ssr code string.
 
-```javascript
-const { ToPHPCompiler } = require('san-ssr')
-const { writeFileSync } = require('fs')
+TypeScript:
 
-const compiler = new ToPHPCompiler()
-const targetCode = compiler.compile('./component.ts')
+```typescript
+import { Target, SanProject } from 'san-project'
+import { writeFileSync } from 'fs'
 
-writeFileSync('ssr.php', targetCode)
-```
-
-To JavaScript programmatic inteface ([typedoc: ToJSCompiler](https://searchfe.github.io/san-ssr/classes/_compilers_to_js_compiler_.tojscompiler.html)):
-
-```javascript
-const { ToJSCompiler } = require('san-ssr')
-const { writeFileSync } = require('fs')
-
-const compiler = new ToJSCompiler()
-const targetCode = compiler.compile('./component.ts', {emitHeader: true})
+const project = new SanProject()
+const targetCode = project.compile('src/component.ts', Target.js)
 
 writeFileSync('ssr.js', targetCode)
 ```
+
+Or in JavaScript:
+
+```typescript
+const { SanProject } = require('san-project')
+import { writeFileSync } from 'fs'
+
+const project = new SanProject()
+const targetCode = project.compile('src/component.ts', 'js')
+
+writeFileSync('ssr.js', targetCode)
+```
+
+The [SanProject#compile(filepath, target, options)][compile] has a third parameter `options`, which is passed
+directly to the target code generator's [compile(sanApp, options)][target-compile] as the second parameter.
 
 ## Milestones
 
@@ -153,3 +158,6 @@ npm test
 ```
 
 [san]: https://github.com/baidu/san
+[sanproject]: https://searchfe.github.io/san-ssr/classes/_models_san_project_.sanproject.html
+[compile]: https://searchfe.github.io/san-ssr/classes/_models_san_project_.sanproject.html#compile
+[target-compile]: https://searchfe.github.io/san-ssr/interfaces/_models_compiler_.compiler.html#compile

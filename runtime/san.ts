@@ -1,9 +1,6 @@
 /**
- * San Component for Users
+ * Types for TypeScript tranpilation use
  */
-export class Component {
-    public data: Data;
-}
 
 export class SanSSRFiltersDeclarations {
     [key: string]: (...args: any[]) => any
@@ -11,6 +8,10 @@ export class SanSSRFiltersDeclarations {
 
 export class SanSSRComputedDeclarations {
     [key: string]: (sanssrSelf: Component) => any
+}
+
+class Component {
+    public data: Data;
 }
 
 class Data {

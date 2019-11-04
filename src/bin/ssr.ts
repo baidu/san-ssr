@@ -18,9 +18,9 @@ yargs
     })
     .option('target', {
         alias: 't',
-        required: true,
         choices: ['php', 'js'],
-        description: 'target SSR file'
+        default: 'js',
+        description: 'target SSR file format'
     })
     .option('prefix', {
         alias: 'p',
@@ -45,8 +45,8 @@ const outputFile = yargs.argv.output as OptionValue
 const componentFile = resolve(yargs.argv._[0])
 console.error(chalk.gray('compiling'), componentFile, 'to', target)
 
-const compiler = new SanProject({ tsConfigFilePath })
-const targetCode = compiler.compile(componentFile, Target.php, { nsPrefix })
+const project = new SanProject({ tsConfigFilePath })
+const targetCode = project.compile(componentFile, target as Target, { nsPrefix })
 
 if (outputFile !== undefined) {
     writeFileSync(outputFile, targetCode)

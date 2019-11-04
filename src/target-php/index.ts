@@ -1,5 +1,5 @@
 import { getInlineDeclarations } from '../parsers/dependency-resolver'
-import { keyBy, assign } from 'lodash'
+import { keyBy } from 'lodash'
 import { isReserved } from './util'
 import { Modules, generatePHPCode } from './compilers/ts2php'
 import { transformAstToPHP } from './transformers/index'

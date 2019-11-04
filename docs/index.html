@@ -84,8 +84,8 @@
 				</a>
 				<p>san-ssr provides static analysis for San components and generates abstract component tree, while code generation is a separated process, which is provided by specific implementations:</p>
 				<ul>
-					<li>[san-ssr-target-js][san-ssr-target-js]</li>
-					<li>[san-ssr-target-php][san-ssr-target-php]</li>
+					<li><a href="https://github.com/searchfe/san-ssr/tree/master/src/target-js">san-ssr-target-js</a></li>
+					<li><a href="https://github.com/searchfe/san-ssr/tree/master/src/target-php">san-ssr-target-php</a></li>
 				</ul>
 				<a href="#cli-usage" id="cli-usage" style="color: inherit; text-decoration: none;">
 					<h2>CLI Usage</h2>
@@ -184,6 +184,7 @@ writeFileSync(<span class="hljs-string">'ssr.js'</span>, targetCode)</code></pre
 				</a>
 				<ul>
 					<li>filters/computed 是 static，这要求使用时额外声明其类型</li>
+					<li>noDataOutput 控制的数据输出中，对象序列化使用 json_encode 实现，属性顺序和 JavaScript 中可能不同</li>
 				</ul>
 				<a href="#js" id="js" style="color: inherit; text-decoration: none;">
 					<h3>JS</h3>

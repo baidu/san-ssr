@@ -17,8 +17,8 @@
 
 san-ssr provides static analysis for San components and generates abstract component tree, while code generation is a separated process, which is provided by specific implementations:
 
-* [san-ssr-target-js][san-ssr-target-js]
-* [san-ssr-target-php][san-ssr-target-php]
+* [san-ssr-target-js](https://github.com/searchfe/san-ssr/tree/master/src/target-js)
+* [san-ssr-target-php](https://github.com/searchfe/san-ssr/tree/master/src/target-php)
 
 ## CLI Usage
 

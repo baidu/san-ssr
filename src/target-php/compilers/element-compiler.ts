@@ -126,30 +126,24 @@ export class ElementCompiler {
         }
 
         if (bindDirective) {
-            emitter.nextLine('(')
-            emitter.writeAnonymousFunction(['$bindObj'], ['&$html'], () => {
-                emitter.writeForeach('$bindObj as $key => $value', () => {
-                    if (tagName === 'textarea') {
-                        emitter.writeIf('$key == "value"', () => emitter.writeContinue())
-                    }
+            emitter.nextLine(`$bindObj = ${compileExprSource.expr(bindDirective.value)};`)
+            emitter.writeForeach('$bindObj as $key => $value', () => {
+                if (tagName === 'textarea') {
+                    emitter.writeIf('$key == "value"', () => emitter.writeContinue())
+                }
 
-                    emitter.writeSwitch('$key', () => {
-                        emitter.writeCase('"readonly"')
-                        emitter.writeCase('"disabled"')
-                        emitter.writeCase('"multiple"', () => {
-                            emitter.writeLine('$html .= _::boolAttrFilter($key, _::escapeHTML($value));')
-                            emitter.writeBreak()
-                        })
-                        emitter.writeDefault(() => {
-                            emitter.writeLine('$html .= _::attrFilter($key, _::escapeHTML($value));')
-                        })
+                emitter.writeSwitch('$key', () => {
+                    emitter.writeCase('"readonly"')
+                    emitter.writeCase('"disabled"')
+                    emitter.writeCase('"multiple"', () => {
+                        emitter.writeLine('$html .= _::boolAttrFilter($key, _::escapeHTML($value));')
+                        emitter.writeBreak()
+                    })
+                    emitter.writeDefault(() => {
+                        emitter.writeLine('$html .= _::attrFilter($key, _::escapeHTML($value));')
                     })
                 })
             })
-
-            emitter.write(')(')
-            emitter.write(compileExprSource.expr(bindDirective.value))
-            emitter.feedLine(');')
         }
 
         emitter.bufferHTMLLiteral('>')

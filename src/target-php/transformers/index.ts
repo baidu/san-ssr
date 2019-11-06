@@ -2,15 +2,19 @@ import { isReserved, removeObjectLiteralInitiator } from '../util'
 import { SanSourceFile } from '../..'
 import { refactorFiltersProperty } from './refactor-filters-property'
 import { refactorComputedProperty } from './refactor-computed-property'
+import { replaceSanModule } from './replace-san-module'
 
 const uselessComponentProps = ['components']
 
 export function transformAstToPHP (sourceFile: SanSourceFile) {
-    sourceFile.fakeProperties.forEach(prop => prop.remove())
-
     const sanssr = process.env.SAN_SSR_PACKAGE_NAME || 'san-ssr'
 
+    replaceSanModule(sourceFile.tsSourceFile, sanssr)
+    sourceFile.fakeProperties.forEach(prop => prop.remove())
+
     for (const clazz of sourceFile.componentClassDeclarations.values()) {
+        clazz.setExtends(`SanComponent`)
+
         for (const useless of uselessComponentProps) {
             const comps = clazz.getStaticProperty(useless)
             if (comps) comps.remove()

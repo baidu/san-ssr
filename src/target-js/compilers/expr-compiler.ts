@@ -69,9 +69,8 @@ export const compileExprSource = {
         }
 
         code += '('
-        code += callExpr.args
-            .map(arg => compileExprSource.expr(arg))
-            .join(',')
+        const argValues = callExpr.args.map(arg => compileExprSource.expr(arg))
+        code += [...argValues, 'componentCtx'].join(',')
         code += ')'
 
         return code

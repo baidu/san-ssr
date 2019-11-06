@@ -7,14 +7,14 @@ export class SanSSRFiltersDeclarations {
 }
 
 export class SanSSRComputedDeclarations {
-    [key: string]: (sanssrSelf: Component) => any
+    [key: string]: (sanssrSelf: SanComponent) => any
 }
 
-class Component {
-    public data: Data;
+export class SanComponent {
+    public data: SanData;
 }
 
-class Data {
+class SanData {
     public get (path: string): any {
         return path
     }

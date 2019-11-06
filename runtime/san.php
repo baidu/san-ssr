@@ -1,5 +1,5 @@
 <?php
-class Data {
+class SanData {
     private $ctx;
     private $data;
     private $computedNames;
@@ -18,7 +18,7 @@ class Data {
     }
 }
 
-class Component {
+class SanComponent {
     public $data;
     public function __construct () {}
 }

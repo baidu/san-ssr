@@ -24,7 +24,11 @@ export function getDependenciesRecursively (sourceFile: SourceFile, result = new
 }
 
 export function shouldInline (decl: ImportDeclaration) {
-    return isRelativePath(decl.getModuleSpecifierValue()) && !decl.getModuleSpecifierSourceFile().isDeclarationFile()
+    if (!isRelativePath(decl.getModuleSpecifierValue())) return false
+    const sourceFile = decl.getModuleSpecifierSourceFile()
+    if (!sourceFile) return false
+    if (sourceFile.isDeclarationFile()) return false
+    return true
 }
 
 export function isRelativePath (importLiteralValue: string) {

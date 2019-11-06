@@ -31,7 +31,7 @@ function check (title, render) {
         renderJSMeasure.duration()
     )
     console.log(got + '\n')
-    if (!result) process.exit(1)
+    if (!result) setTimeout(() => process.exit(1))
 }
 
 function test (got) {
@@ -41,7 +41,8 @@ function test (got) {
 
 function deepEqual (lhs, rhs) {
     if (typeof lhs === 'object' && lhs !== null) {
-        for (const key of Object.keys(lhs)) {
+        const keys = new Set([...Object.keys(lhs), ...Object.keys(rhs)])
+        for (const key of keys) {
             if (!deepEqual(lhs[key], rhs[key])) return false
         }
         return true

@@ -16,7 +16,7 @@ import debugFactory from 'debug'
 import { Compiler } from '..'
 import { emitRuntime } from './emitters/runtime'
 
-const debug = debugFactory('target-php')
+const debug = debugFactory('san-ssr:target-php')
 
 export type ToPHPCompilerOptions = {
     tsConfigFilePath?: string,
@@ -35,12 +35,9 @@ export class ToPHPCompiler implements Compiler {
     }: ToPHPCompilerOptions) {
         this.project = project
         this.ts2phpModules = keyBy([{
-            name: process.env.SAN_SSR_PACKAGE_NAME || 'san-ssr',
-            required: true
-        }, {
             name: 'san',
             required: true,
-            namespace: '\\san\\runtime\\'
+            namespace: '\\san\\runtime\\' // TODO what's this
         }], 'name')
         this.root = tsConfigFilePath.split(sep).slice(0, -1).join(sep)
         this.tsConfigFilePath = tsConfigFilePath
@@ -85,6 +82,13 @@ export class ToPHPCompiler implements Compiler {
         transformAstToPHP(sourceFile)
         const tsconfig = require(this.tsConfigFilePath)
         modules = { ...this.ts2phpModules, ...modules }
+
+        const sanssr = process.env.SAN_SSR_PACKAGE_NAME || 'san-ssr'
+        modules[sanssr] = {
+            name: sanssr,
+            namespace: nsPrefix + 'runtime\\',
+            required: true
+        }
         for (const decl of getInlineDeclarations(sourceFile.tsSourceFile)) {
             const ns = nsPrefix + this.ns(decl.getModuleSpecifierSourceFile().getFilePath())
             const literal = decl.getModuleSpecifierValue()
@@ -109,7 +113,7 @@ export class ToPHPCompiler implements Compiler {
 
             emitter.beginNamespace(nsPrefix + this.ns(path))
             emitter.writeLine(`use ${nsPrefix}runtime\\_;`)
-            emitter.writeLine(`use ${nsPrefix}runtime\\Component;`)
+            // emitter.writeLine(`use ${nsPrefix}runtime\\SanComponent;`)
             emitter.writeLines(this.compileComponent(sourceFile, nsPrefix, modules))
             emitter.endNamespace()
         }

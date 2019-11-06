@@ -6,6 +6,8 @@ import { ElementCompiler } from './element-compiler'
 import { ANodeCompiler } from './anode-compiler'
 import { COMPONENT_RESERVED_MEMBERS, Component } from '../..'
 
+const rDataAccess = /this.data.get\(([^)]+)\)/g
+
 /**
  * Each ComponentClass is compiled to a render function
  */
@@ -132,7 +134,11 @@ export class RendererCompiler {
 
             switch (typeof protoMember) {
             case 'function':
-                code.push(protoMemberKey + ': ' + functionString(protoMember) + ',')
+                const funcString = functionString(protoMember)
+                    .replace(/^(\s*function[^(]*\([^)]*\w+[^)]*)\)/, '$1, )')
+                    .replace(/^([^)]*)\)/, '$1componentCtx)')
+                    .replace(rDataAccess, replaceDataAccess)
+                code.push(protoMemberKey + ': ' + funcString + ',')
                 break
 
             case 'object':
@@ -194,27 +200,12 @@ export class RendererCompiler {
                     let fn = functionString(computed)
                     fn = fn
                         .replace(/^\s*function\s*(\S+)?\(/, 'function $1 (componentCtx')
-                        .replace(
-                            /this.data.get\(([^)]+)\)/g,
-                            function (match, exprLiteral) {
-                                const exprStr = (new Function('return ' + exprLiteral))()   // eslint-disable-line
-                                const expr = parseExpr(exprStr) as any
-
-                                const ident = expr.paths[0].value
-                                if (component.computed.hasOwnProperty(ident) &&
-                                    !computedNamesIndex[ident]
-                                ) {
-                                    computedNamesIndex[ident] = 1
-                                    computedNamesCode.unshift('"' + ident + '"')
-                                }
-
-                                return compileExprSource.expr(expr)
-                            }
-                        )
+                        .replace(rDataAccess, replaceDataAccess)
                     computedCode.push(key + ': ' + fn)
                 }
             }
         }
+
         code.push(computedCode.join(','))
         code.push('},')
 
@@ -222,13 +213,27 @@ export class RendererCompiler {
         code.push('computedNames: [')
         code.push(computedNamesCode.join(','))
         code.push('],')
-        /* eslint-enable no-redeclare */
 
         // tagName
         code.push('tagName: "' + component.tagName + '"')
         code.push('};')
 
         return code.join('\n')
+
+        function replaceDataAccess (match, exprLiteral) {
+            const exprStr = (new Function('return ' + exprLiteral))()   // eslint-disable-line
+            const expr = parseExpr(exprStr) as any
+
+            const ident = expr.paths[0].value
+            if (component.computed.hasOwnProperty(ident) &&
+                !computedNamesIndex[ident]
+            ) {
+                computedNamesIndex[ident] = 1
+                computedNamesCode.unshift('"' + ident + '"')
+            }
+
+            return compileExprSource.expr(expr)
+        }
     }
 }
 

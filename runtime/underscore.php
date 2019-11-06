@@ -199,10 +199,10 @@ final class _
     public static function createComponent (&$ctx) {
         $cls = _::getClassByCtx($ctx);
         if (!class_exists($cls)) {
-          $cls = '\__NSPREFIX__runtime\Component';
+          $cls = '\__NSPREFIX__runtime\SanComponent';
         }
         $obj = new $cls();
-        $obj->data = new Data($ctx);
+        $obj->data = new SanData($ctx);
         return $obj;
     }
 

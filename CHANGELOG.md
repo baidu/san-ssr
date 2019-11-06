@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/searchfe/san-ssr/compare/v1.1.1...v1.1.2) (2019-11-06)
+
+
+### Bug Fixes
+
+* method in San Component, [#10](https://github.com/searchfe/san-ssr/issues/10), [#11](https://github.com/searchfe/san-ssr/issues/11) ([80ab41a](https://github.com/searchfe/san-ssr/commit/80ab41a820321cb207f876064f3da8b4a5c52ecb))
+
 ## [1.1.1](https://github.com/searchfe/san-ssr/compare/v1.1.0...v1.1.1) (2019-11-05)
 
 

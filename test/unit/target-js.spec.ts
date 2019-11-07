@@ -3,7 +3,7 @@ import { SanAppParser } from '../../src/parsers/san-app-parser'
 import { Project } from 'ts-morph'
 import { resolve } from 'path'
 
-describe.only('ToJSCompiler', function () {
+describe('ToJSCompiler', function () {
     const tsConfigFilePath = resolve(__dirname, '../tsconfig.json')
     const project = new Project({ tsConfigFilePath })
     const parser = new SanAppParser(project)

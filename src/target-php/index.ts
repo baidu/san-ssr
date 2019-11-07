@@ -8,7 +8,6 @@ import { RendererCompiler } from './compilers/renderer-compiler'
 import { PHPEmitter } from './emitters/emitter'
 import { SanApp } from '../models/san-app'
 import camelCase from 'camelcase'
-import { ComponentRegistry } from './compilers/component-registry'
 import { SanSourceFile } from '../models/san-sourcefile'
 import { getDefaultConfigPath } from '../parsers/tsconfig'
 import { sep, extname } from 'path'
@@ -17,6 +16,14 @@ import { Compiler } from '..'
 import { emitRuntime } from './emitters/runtime'
 
 const debug = debugFactory('san-ssr:target-php')
+
+export enum EmitContent {
+    renderer = 1,
+    component = 2,
+    rendererAndComponent = 3,
+    runtime = 4,
+    all = 7
+}
 
 export type ToPHPCompilerOptions = {
     tsConfigFilePath?: string,
@@ -46,13 +53,20 @@ export class ToPHPCompiler implements Compiler {
     public compile (sanApp: SanApp, {
         funcName = 'render',
         nsPrefix = 'san\\',
+        emitContent = EmitContent.all,
         emitHeader = true,
         modules = {}
     }) {
         const emitter = new PHPEmitter(emitHeader)
-        this.compileRenderer(emitter, funcName, nsPrefix, sanApp)
-        this.compileComponents(sanApp, emitter, nsPrefix, modules)
-        emitRuntime(emitter, nsPrefix)
+        if (emitContent & EmitContent.renderer) {
+            this.compileRenderer(emitter, funcName, nsPrefix, sanApp)
+        }
+        if (emitContent & EmitContent.component) {
+            this.compileComponents(sanApp, emitter, nsPrefix, modules)
+        }
+        if (emitContent & EmitContent.runtime) {
+            emitRuntime(emitter, nsPrefix)
+        }
         return emitter.fullText()
     }
 
@@ -107,17 +121,18 @@ export class ToPHPCompiler implements Compiler {
     }
 
     public compileComponents (entryComp: SanApp, emitter: PHPEmitter, nsPrefix: string, modules: Modules) {
-        const registry = new ComponentRegistry()
         for (const [path, sourceFile] of entryComp.projectFiles) {
-            registry.registerComponents(sourceFile)
-
             emitter.beginNamespace(nsPrefix + this.ns(path))
             emitter.writeLine(`use ${nsPrefix}runtime\\_;`)
-            // emitter.writeLine(`use ${nsPrefix}runtime\\SanComponent;`)
             emitter.writeLines(this.compileComponent(sourceFile, nsPrefix, modules))
+
+            for (const [cid, clazz] of sourceFile.componentClassDeclarations) {
+                const classReference = `\\${nsPrefix}${this.ns(sourceFile.getFilePath())}\\${clazz.getName()}`
+                emitter.writeLine(`\\${nsPrefix}runtime\\ComponentRegistry::$comps[${cid}] = '${classReference}';`)
+            }
+
             emitter.endNamespace()
         }
-        registry.writeComponentRegistry(nsPrefix, path => this.ns(path), emitter)
         return emitter.fullText()
     }
 

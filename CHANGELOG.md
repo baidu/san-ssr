@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/searchfe/san-ssr/compare/v1.2.0...v1.2.1) (2019-11-07)
+
+
+### Bug Fixes
+
+* refactor non-constant property initializer for php, fixes [#16](https://github.com/searchfe/san-ssr/issues/16) ([b112ed5](https://github.com/searchfe/san-ssr/commit/b112ed53929400e252aae088ce8a696833e0cd01))
+
 # [1.2.0](https://github.com/searchfe/san-ssr/compare/v1.1.2...v1.2.0) (2019-11-07)
 
 

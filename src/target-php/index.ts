@@ -1,6 +1,6 @@
 import { getInlineDeclarations } from '../parsers/dependency-resolver'
 import { keyBy } from 'lodash'
-import { isReserved } from './util'
+import { isReserved } from './utils/lang'
 import { Modules, generatePHPCode } from './compilers/ts2php'
 import { transformAstToPHP } from './transformers/index'
 import { Project } from 'ts-morph'

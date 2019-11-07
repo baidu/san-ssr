@@ -1,4 +1,5 @@
-import { isReserved, removeObjectLiteralInitiator } from '../util'
+import { isReserved } from '../utils/lang'
+import { refactorMemberInitializer } from './refactor-member-initializer'
 import { SanSourceFile } from '../..'
 import { refactorFiltersProperty } from './refactor-filters-property'
 import { refactorComputedProperty } from './refactor-computed-property'
@@ -26,7 +27,7 @@ export function transformAstToPHP (sourceFile: SanSourceFile) {
             } else if (prop.getName() === 'filters') {
                 refactorFiltersProperty(prop, sanssr)
             }
-            removeObjectLiteralInitiator(sourceFile.tsSourceFile, clazz, prop)
+            refactorMemberInitializer(clazz, prop)
         }
     }
 

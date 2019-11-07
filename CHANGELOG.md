@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/searchfe/san-ssr/compare/v1.1.2...v1.2.0) (2019-11-07)
+
+
+### Features
+
+* emit runtime/components/renderer only when targeted to php, close [#2](https://github.com/searchfe/san-ssr/issues/2) ([859966b](https://github.com/searchfe/san-ssr/commit/859966b84de63bedfa3a85fcf3f6632557071327))
+
 ## [1.1.2](https://github.com/searchfe/san-ssr/compare/v1.1.1...v1.1.2) (2019-11-06)
 
 

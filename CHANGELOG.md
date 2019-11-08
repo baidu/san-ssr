@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/searchfe/san-ssr/compare/v1.2.1...v1.3.0) (2019-11-08)
+
+
+### Features
+
+* configuable module content for CommonJS loader, fixes [#12](https://github.com/searchfe/san-ssr/issues/12) ([92e6b16](https://github.com/searchfe/san-ssr/commit/92e6b1696d8742b252b4f84bdc02d6e556e0f09f))
+
 ## [1.2.1](https://github.com/searchfe/san-ssr/compare/v1.2.0...v1.2.1) (2019-11-07)
 
 

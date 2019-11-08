@@ -18,7 +18,7 @@ export function refactorComputedProperty (computed: PropertyDeclaration, sanssr 
         if (body) {
             body.insertParameter(0, {
                 name: 'sanssrSelf',
-                type: `import("${sanssr}").Component`
+                type: `import("${sanssr}").SanComponent`
             })
             const text = body
                 .getBodyText()

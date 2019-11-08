@@ -3,7 +3,7 @@
   "version": "0.0.0-development",
   "description": "San server-side-render for PHP environment",
   "main": "dist/index.js",
-  "types": "index.d.ts",
+  "types": "dist/index.d.ts",
   "directories": {
     "test": "test",
     "example": "example"

@@ -1,7 +1,7 @@
 import { compileExprSource } from './expr-compiler'
 import { ElementCompiler } from './element-compiler'
 import { stringifier } from './stringifier'
-import { Component, ANode, getANodeProps, getANodePropByName, isComponentLoader } from '../..'
+import { SanComponent, ANode, getANodeProps, getANodePropByName, isComponentLoader } from '../..'
 
 /**
 * ANode 的编译方法集合对象
@@ -9,9 +9,9 @@ import { Component, ANode, getANodeProps, getANodePropByName, isComponentLoader 
 export class ANodeCompiler {
     private elementSourceCompiler: ElementCompiler
     private ssrIndex = 0
-    private component: Component
+    private component: SanComponent
 
-    constructor (elemencompiler: ElementCompiler, component: Component) {
+    constructor (elemencompiler: ElementCompiler, component: SanComponent) {
         this.component = component
         this.elementSourceCompiler = elemencompiler
     }

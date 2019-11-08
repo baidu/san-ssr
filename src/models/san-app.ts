@@ -1,5 +1,5 @@
 import { SanSourceFile } from '../models/san-sourcefile'
-import { Component, isComponentClass } from './component'
+import { SanComponent as Component, isComponentClass } from './component'
 
 export class SanApp {
     public readonly entrySourceFile: SanSourceFile

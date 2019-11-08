@@ -12,6 +12,7 @@ let specTpls = ''
 
 // generate html
 function genContent ({ componentSource, componentDataLiteral, specTpl, dirName, result }) {
+    if (!specTpl) return
     const id = dirName
     const noDataOutput = /-ndo$/.test(dirName)
 

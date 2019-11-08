@@ -1,6 +1,6 @@
 import { getComponentClassIdentifier, isChildClassOf } from '../utils/ast-util'
 import { ComponentClassFinder } from './component-class-finder'
-import { CommonJS } from '../loaders/common-js'
+import { CommonJS, Modules } from '../loaders/common-js'
 import { tsSourceFile2js } from '../target-js/compilers/ts2js'
 import { normalizeComponentClass } from './normalize-component'
 import { SanSourceFile } from '../models/san-sourcefile'
@@ -30,7 +30,7 @@ export class SanAppParser {
         return SanAppParser.createUsingTsconfig(getDefaultConfigPath())
     }
 
-    public parseSanApp (entryFilePath: string): SanApp {
+    public parseSanApp (entryFilePath: string, modules: Modules = {}): SanApp {
         debug('parsComponent', entryFilePath)
         const entrySourceFile = getSourceFileTypeOrThrow(entryFilePath) === SourceFileType.js
             ? SanSourceFile.createFromJSFilePath(entryFilePath)
@@ -45,7 +45,7 @@ export class SanAppParser {
             }
         }
 
-        const entryClass = this.evaluateFile(entrySourceFile, projectFiles)
+        const entryClass = this.evaluateFile(entrySourceFile, projectFiles, modules)
         const componentClasses = new ComponentClassFinder(entryClass).find()
 
         if (entrySourceFile.fileType === SourceFileType.js) {
@@ -57,12 +57,12 @@ export class SanAppParser {
         return new SanApp(entrySourceFile, projectFiles, componentClasses)
     }
 
-    private evaluateFile (sourceFile: SanSourceFile, projectFiles: Map<string, SanSourceFile>) {
+    private evaluateFile (sourceFile: SanSourceFile, projectFiles: Map<string, SanSourceFile>, modules: Modules) {
         if (sourceFile.fileType === SourceFileType.js) {
             return new CommonJS().require(sourceFile.getFilePath())
         }
-        const commonJS = new CommonJS(filepath => {
-            if (!projectFiles.has(filepath)) return null
+        const commonJS = new CommonJS(modules, filepath => {
+            if (!projectFiles.has(filepath)) return undefined
             const sourceFile = projectFiles.get(filepath)
             return tsSourceFile2js(sourceFile.tsSourceFile, this.project.getCompilerOptions())
         })

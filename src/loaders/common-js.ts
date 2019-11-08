@@ -5,6 +5,10 @@ import debugFactory from 'debug'
 
 const debug = debugFactory('san-ssr:common-js')
 
+export type Modules = {
+    [key: string]: string
+}
+
 export class Module {
     public filepath: string
     public content: string
@@ -21,40 +25,56 @@ type FileLoader = ((filepath: string) => string) | ({ [key:string]: string });
 const defaultFileLoader = filepath => readFileSync(filepath, 'utf8')
 
 export class CommonJS {
-    private readFile
+    private readFileImpl
+    private modules
     public cache = new Map()
 
-    constructor (readFile: FileLoader = defaultFileLoader) {
+    constructor (modules: Modules = {}, readFile: FileLoader = defaultFileLoader) {
+        this.modules = modules
         if (typeof readFile === 'function') {
-            this.readFile = readFile
+            this.readFileImpl = readFile
         } else {
-            this.readFile = filepath => readFile[filepath] || ''
+            this.readFileImpl = filepath => readFile[filepath] || ''
         }
     }
 
-    require (filepath: string) {
+    require (filepath: string, specifier: string = filepath) {
         debug('global require called with', filepath)
         if (!this.cache.has(filepath)) {
             debug('cache miss, reading', filepath)
-            const fileContent = this.readFile(filepath) ||
-                this.readFile(filepath + '.ts') ||
-                this.readFile(filepath + '.js')
-            if (!fileContent) throw new Error(`file ${filepath} not found`)
 
+            const fileContent = this.readModuleContent(filepath, specifier)
             const mod = new Module(filepath, fileContent)
-            // eslint-disable-next-line
-            const fn = new Function('module', 'exports', 'require', mod.content)
+            const fn = new Function('module', 'exports', 'require', mod.content) // eslint-disable-line
+
             fn(mod, mod.exports, path => {
                 debug('local require called with', path)
                 if (isRelativePath(path)) {
-                    path = resolve(dirname(filepath), path)
-                    return this.require(path)
+                    return this.require(resolve(dirname(filepath), path), path)
                 }
                 return require(path)
             })
             return mod.exports
         }
         return this.cache.get(filepath)
+    }
+
+    private readModuleContent (filepath: string, specifier: string) {
+        if (this.modules[specifier] !== undefined) {
+            return this.modules[specifier]
+        }
+        if (this.modules[filepath] !== undefined) {
+            return this.modules[filepath]
+        }
+
+        const fileContent = this.readFileImpl(filepath, specifier) ||
+            this.readFileImpl(filepath + '.ts') ||
+            this.readFileImpl(filepath + '.js')
+
+        if (fileContent === undefined) {
+            throw new Error(`file ${filepath} not found`)
+        }
+        return fileContent
     }
 }
 

@@ -8,20 +8,23 @@ import debugFactory from 'debug'
 
 process.env.SAN_SSR_PACKAGE_NAME = '../../..'
 
-const jsSSRUnables = ['multi-files', 'import-files-from-parent-directory']
 const debug = debugFactory('case')
 const caseRoot = resolve(__dirname, '../../test/cases')
 const tsConfigFilePath = resolve(__dirname, '../../test/tsconfig.json')
 const cases = readdirSync(caseRoot)
-const sanProject = new SanProject({ tsConfigFilePath })
-const multiFileCases = ['multi-component-files', 'multi-files', 'import-files-from-parent-directory']
+const sanProject = new SanProject({
+    tsConfigFilePath,
+    modules: {
+        './php': 'exports.htmlspecialchars = x => x' // case: depend-on-declaration
+    }
+})
 
 export function supportJSSSR (caseName) {
-    return !jsSSRUnables.includes(caseName)
+    return !['multi-files', 'import-files-from-parent-directory', 'depend-on-declaration'].includes(caseName)
 }
 
 export function supportE2E (caseName) {
-    return !multiFileCases.includes(caseName)
+    return !['multi-component-files', 'multi-files', 'import-files-from-parent-directory', 'depend-on-declaration'].includes(caseName)
 }
 
 export function compileToJS (caseName) {
@@ -39,7 +42,14 @@ export function compileToPHP (caseName) {
     const targetCode = sanProject.compile(
         existsSync(ts) ? ts : js,
         Target.php,
-        { nsPrefix: `san\\${camelCase(caseName)}\\` }
+        {
+            nsPrefix: `san\\${camelCase(caseName)}\\`,
+            modules: {
+                './php': {
+                    required: true
+                }
+            }
+        }
     )
 
     writeFileSync(join(caseRoot, caseName, 'ssr.php'), targetCode)

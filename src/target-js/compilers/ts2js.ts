@@ -15,7 +15,7 @@ export function tsCode2js (sourceCode: string, compilerOptions) {
     const { diagnostics, outputText } =
         transpileModule(sourceCode, { compilerOptions })
     if (diagnostics.length) {
-        console.log(diagnostics)
+        console.error(diagnostics)
         throw new Error('typescript compile error')
     }
     debug('target code:', outputText)

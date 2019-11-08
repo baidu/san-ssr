@@ -36,4 +36,7 @@ class Data {
     public get (path?: string): any {
         return path
     }
+    public set (path: string, value: any): any {
+        return path + value
+    }
 }

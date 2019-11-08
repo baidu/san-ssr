@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/searchfe/san-ssr/compare/v1.3.0...v1.3.1) (2019-11-08)
+
+
+### Bug Fixes
+
+* temp fix for data.set call in method ([e60a0ad](https://github.com/searchfe/san-ssr/commit/e60a0adee020997e40f788ee5cd83186c9a2ef17))
+
 # [1.3.0](https://github.com/searchfe/san-ssr/compare/v1.2.1...v1.3.0) (2019-11-08)
 
 

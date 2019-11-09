@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/searchfe/san-ssr/compare/v1.3.1...v1.3.2) (2019-11-09)
+
+
+### Bug Fixes
+
+* format compilerOptions for ts2php, fixes [#19](https://github.com/searchfe/san-ssr/issues/19) ([279769a](https://github.com/searchfe/san-ssr/commit/279769a82c440f2b957f89a23bdb7ffc70fa9bb4))
+
 ## [1.3.1](https://github.com/searchfe/san-ssr/compare/v1.3.0...v1.3.1) (2019-11-08)
 
 

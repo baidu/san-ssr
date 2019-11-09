@@ -10,7 +10,7 @@ import { SanApp } from '../models/san-app'
 import camelCase from 'camelcase'
 import { SanSourceFile } from '../models/san-sourcefile'
 import { getDefaultConfigPath } from '../parsers/tsconfig'
-import { sep, extname } from 'path'
+import { sep, extname, isAbsolute, resolve } from 'path'
 import debugFactory from 'debug'
 import { Compiler } from '..'
 import { emitRuntime } from './emitters/runtime'
@@ -90,6 +90,15 @@ export class ToPHPCompiler implements Compiler {
         emitter.endNamespace()
     }
 
+    private formatCompilerOptions (compilerOptions = { baseUrl: '' }) {
+        let baseUrl = compilerOptions.baseUrl
+        if (baseUrl && !isAbsolute(baseUrl)) {
+            baseUrl = resolve(this.root, baseUrl)
+            compilerOptions.baseUrl = baseUrl
+        }
+        return compilerOptions
+    }
+
     public compileComponent (sourceFile: SanSourceFile, nsPrefix: string, modules: Modules) {
         if (!sourceFile.tsSourceFile) return ''
 
@@ -115,7 +124,7 @@ export class ToPHPCompiler implements Compiler {
         return generatePHPCode(
             sourceFile.tsSourceFile,
             modules,
-            tsconfig['compilerOptions'],
+            this.formatCompilerOptions(tsconfig['compilerOptions']),
             nsPrefix
         )
     }

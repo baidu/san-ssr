@@ -52,6 +52,12 @@ export class CommonJS {
                 if (isRelativePath(path)) {
                     return this.require(resolve(dirname(filepath), path), path)
                 }
+
+                // 兼容配置的模块名为 绝对路径或 node module 模块名
+                if (this.modules[path] !== undefined) {
+                    return this.require(path)
+                }
+
                 return require(path)
             })
             return mod.exports

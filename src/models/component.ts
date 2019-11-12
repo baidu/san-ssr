@@ -29,7 +29,7 @@ export function isComponentLoader (cmpt: any) {
 
 export function isComponentClass (clazz: any): clazz is typeof SanComponent {
     return typeof clazz === 'function' &&
-        (clazz.template || clazz.prototype.template)
+        (typeof clazz.template === 'string' || typeof clazz.prototype.template === 'string')
 }
 
 interface SanData extends OriginSanData<{}>, PHPClass {

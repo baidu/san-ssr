@@ -59,7 +59,10 @@ export class ANodeCompiler {
      */
     compileText (aNode: ANode, emitter: PHPEmitter) {
         if (aNode.textExpr.original) {
-            emitter.bufferHTMLLiteral('<!--s-text-->')
+            emitter.writeIf('!$noDataOutput', () => {
+                emitter.bufferHTMLLiteral('<!--s-text-->')
+                emitter.clearStringLiteralBuffer()
+            })
         }
 
         if (aNode.textExpr.value != null) {
@@ -69,7 +72,10 @@ export class ANodeCompiler {
         }
 
         if (aNode.textExpr.original) {
-            emitter.bufferHTMLLiteral('<!--/s-text-->')
+            emitter.writeIf('!$noDataOutput', () => {
+                emitter.bufferHTMLLiteral('<!--/s-text-->')
+                emitter.clearStringLiteralBuffer()
+            })
         }
     }
 

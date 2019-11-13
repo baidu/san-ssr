@@ -58,7 +58,9 @@ export class ANodeCompiler {
      */
     compileText (aNode: ANode, sourceBuffer) {
         if (aNode.textExpr.original) {
+            sourceBuffer.addRaw('if (!noDataOutput) {')
             sourceBuffer.joinString('<!--s-text-->')
+            sourceBuffer.addRaw('}')
         }
 
         if (aNode.textExpr.value != null) {
@@ -68,7 +70,9 @@ export class ANodeCompiler {
         }
 
         if (aNode.textExpr.original) {
+            sourceBuffer.addRaw('if (!noDataOutput) {')
             sourceBuffer.joinString('<!--/s-text-->')
+            sourceBuffer.addRaw('}')
         }
     }
 

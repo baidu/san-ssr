@@ -1,3 +1,10 @@
+## [1.3.3](https://github.com/searchfe/san-ssr/compare/v1.3.2...v1.3.3) (2019-11-13)
+
+
+### Bug Fixes
+
+* remove <!--s-text--><!--/s-text--> when noDataOutput is true, fixes [#21](https://github.com/searchfe/san-ssr/issues/21) ([4f5132c](https://github.com/searchfe/san-ssr/commit/4f5132c2c90e9caa927ca74e68741050f94d46fb))
+
 ## [1.3.2](https://github.com/searchfe/san-ssr/compare/v1.3.1...v1.3.2) (2019-11-09)
 
 

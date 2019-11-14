@@ -4,20 +4,20 @@ import { compileExprSource } from './expr-compiler'
 import { stringifier } from './stringifier'
 import { ElementCompiler } from './element-compiler'
 import { ANodeCompiler } from './anode-compiler'
-import { COMPONENT_RESERVED_MEMBERS, Component } from '../..'
+import { COMPONENT_RESERVED_MEMBERS, SanComponent } from '../..'
 
 const rDataAccess = /this.data.get\(([^)]+)\)/g
 
 /**
  * Each ComponentClass is compiled to a render function
  */
-export class RendererCompiler {
+export class RendererCompiler<T> {
     private aNodeCompiler
     private elementSourceCompiler
-    private component: Component
+    private component: SanComponent
     private funcName: string
 
-    constructor (ComponentClass: typeof Component) {
+    constructor (ComponentClass: typeof SanComponent) {
         this.elementSourceCompiler = new ElementCompiler(
             (...args) => this.aNodeCompiler.compile(...args)
         )

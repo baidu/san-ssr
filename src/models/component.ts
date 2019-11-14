@@ -1,20 +1,20 @@
 import { ANode } from './anode'
+import { PHPClass } from 'ts2php'
+import { SanData as OriginSanData, Component as OriginSanComponent } from 'san'
 
-/**
- * Compiled Component Class
- */
-export class Component {
-    static template?: string
-    template?: string
+export class SanComponent extends OriginSanComponent {
+    static components?: Components
+    static sanssrCid?: number
+    static placeholder?: typeof SanComponent
 
-    static components?: {[key: string]: typeof Component}
-    components?: {[key: string]: Component}
-
+    data: SanData
+    components?: Components
     aNode: ANode
-    data: Data
-    getComponentType?: (aNode: ANode) => typeof Component
+    getComponentType?: (aNode: ANode) => typeof SanComponent;
+}
 
-    static sanssrCid: number
+interface Components {
+    [key: string]: typeof SanComponent
 }
 
 export const COMPONENT_RESERVED_MEMBERS = new Set(
@@ -27,16 +27,20 @@ export function isComponentLoader (cmpt: any) {
     return cmpt && cmpt.hasOwnProperty('load') && cmpt.hasOwnProperty('placeholder')
 }
 
-export function isComponentClass (clazz: any): clazz is typeof Component {
+export function isComponentClass (clazz: any): clazz is typeof SanComponent {
     return typeof clazz === 'function' &&
-        (clazz.template || clazz.prototype.template)
+        (typeof clazz.template === 'string' || typeof clazz.prototype.template === 'string')
 }
 
-class Data {
-    public get (path?: string): any {
-        return path
-    }
-    public set (path: string, value: any): any {
-        return path + value
-    }
+interface SanData extends OriginSanData<{}>, PHPClass {
+    get (path?: string): any
+    set (path: string, value: any): any
+}
+
+export class SanSSRFiltersDeclarations {
+    [key: string]: (...args: any[]) => any
+}
+
+export class SanSSRComputedDeclarations {
+    [key: string]: (sanssrSelf: SanComponent) => any
 }

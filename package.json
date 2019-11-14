@@ -3,7 +3,7 @@
   "version": "0.0.0-development",
   "description": "San server-side-render for PHP environment",
   "main": "dist/index.js",
-  "types": "index.d.ts",
+  "types": "dist/index.d.ts",
   "directories": {
     "test": "test",
     "example": "example"
@@ -91,10 +91,10 @@
     "chalk": "^2.4.2",
     "debug": "^4.1.1",
     "lodash": "^4.17.15",
-    "snake-case": "^2.1.0",
     "san": "^3.7.8",
+    "snake-case": "^2.1.0",
     "ts-morph": "^4.0.1",
-    "ts2php": "^0.12.11",
+    "ts2php": "^0.14.0",
     "typescript": "^3.4.5",
     "yargs": "^14.2.0"
   },

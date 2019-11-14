@@ -1,4 +1,4 @@
-import { Component } from '../models/component'
+import { SanComponent as Component } from '../models/component'
 
 export class ComponentClassFinder {
     private root: typeof Component
@@ -19,10 +19,10 @@ export class ComponentClassFinder {
 
         for (let child of Object.values(this.getChildComponentClasses(clazz))) {
             if (this.isComponentLoader(child)) {
-                child = child['placeholder']
+                child = child.placeholder
             }
             if (!child) continue
-            this.findRecursively(child as typeof Component)
+            this.findRecursively(child)
         }
     }
     private getChildComponentClasses (componentClass: typeof Component) {

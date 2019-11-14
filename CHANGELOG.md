@@ -1,3 +1,11 @@
+## [1.3.4](https://github.com/searchfe/san-ssr/compare/v1.3.3...v1.3.4) (2019-11-14)
+
+
+### Bug Fixes
+
+* format compilerOptions for ts2php, fixes [#19](https://github.com/searchfe/san-ssr/issues/19) ([cb2329d](https://github.com/searchfe/san-ssr/commit/cb2329da1c0dc091f57cbef53300a55bc851c34e))
+* remove <!--s-text--><!--/s-text--> when noDataOutput is true, fixes [#21](https://github.com/searchfe/san-ssr/issues/21) ([c05ef7d](https://github.com/searchfe/san-ssr/commit/c05ef7db664a62781c74228e7f0bf4c0117b69ea))
+
 ## [1.3.3](https://github.com/searchfe/san-ssr/compare/v1.3.2...v1.3.3) (2019-11-13)
 
 

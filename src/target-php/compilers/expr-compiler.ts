@@ -13,6 +13,7 @@ export const compileExprSource = {
         return '"' + source
             .replace(/\x5C/g, '\\\\')
             .replace(/"/g, '\\"')
+            .replace(/(\\)?\$/g, '\\$$') // php 变量解析 fix, 方案同 ts2php
             .replace(/\n/g, '\\n')
             .replace(/\t/g, '\\t')
             .replace(/\r/g, '\\r') + '"'

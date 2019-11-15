@@ -1,3 +1,10 @@
+## [1.3.5](https://github.com/searchfe/san-ssr/compare/v1.3.4...v1.3.5) (2019-11-15)
+
+
+### Bug Fixes
+
+* $ in php string ([fd252f4](https://github.com/searchfe/san-ssr/commit/fd252f48152328b69fd4435049f4f6868d01f0e6))
+
 ## [1.3.4](https://github.com/searchfe/san-ssr/compare/v1.3.3...v1.3.4) (2019-11-14)
 
 

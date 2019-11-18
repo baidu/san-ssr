@@ -1,6 +1,6 @@
 import { JSEmitter } from './emitters/emitter'
 import { Project } from 'ts-morph'
-import { getDefaultConfigPath } from '../parsers/tsconfig'
+import { getDefaultTSConfigPath } from '../parsers/tsconfig'
 import { sep } from 'path'
 import debugFactory from 'debug'
 import { SanApp } from '../models/san-app'
@@ -21,7 +21,7 @@ export class ToJSCompiler implements Compiler {
     private project: Project
 
     constructor ({
-        tsConfigFilePath = getDefaultConfigPath(),
+        tsConfigFilePath = getDefaultTSConfigPath(),
         project
     }: ToJSCompilerOptions) {
         this.root = tsConfigFilePath.split(sep).slice(0, -1).join(sep)

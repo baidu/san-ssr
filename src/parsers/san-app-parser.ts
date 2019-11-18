@@ -5,7 +5,7 @@ import { tsSourceFile2js } from '../target-js/compilers/ts2js'
 import { normalizeComponentClass } from './normalize-component'
 import { SanSourceFile } from '../models/san-sourcefile'
 import { Project, SourceFile, ClassDeclaration } from 'ts-morph'
-import { getDefaultConfigPath } from './tsconfig'
+import { getDefaultTSConfigPath } from './tsconfig'
 import { getDependenciesRecursively } from './dependency-resolver'
 import { SanApp } from '../models/san-app'
 import { SourceFileType, getSourceFileTypeOrThrow } from '../models/source-file-type'
@@ -27,7 +27,7 @@ export class SanAppParser {
     }
 
     static createUsingDefaultTypeScriptConfig () {
-        return SanAppParser.createUsingTsconfig(getDefaultConfigPath())
+        return SanAppParser.createUsingTsconfig(getDefaultTSConfigPath())
     }
 
     public parseSanApp (entryFilePath: string, modules: Modules = {}): SanApp {
@@ -36,7 +36,9 @@ export class SanAppParser {
             ? SanSourceFile.createFromJSFilePath(entryFilePath)
             : this.parseSanSourceFile(this.project.getSourceFileOrThrow(entryFilePath))
 
-        const projectFiles: Map<string, SanSourceFile> = new Map([[entryFilePath, entrySourceFile]])
+        const projectFiles: Map<string, SanSourceFile> = new Map()
+        projectFiles.set(entryFilePath, entrySourceFile)
+
         if (entrySourceFile.fileType === SourceFileType.ts) {
             const sourceFiles = getDependenciesRecursively(entrySourceFile.tsSourceFile)
 

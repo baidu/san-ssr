@@ -2,7 +2,6 @@
 
 import chalk from 'chalk'
 import { SanProject } from '../models/san-project'
-import { Target } from '../models/target'
 import { writeFileSync } from 'fs'
 import { resolve } from 'path'
 import * as yargs from 'yargs'
@@ -18,14 +17,13 @@ yargs
     })
     .option('target', {
         alias: 't',
-        choices: ['php', 'js'],
         default: 'js',
         description: 'target SSR file format'
     })
-    .option('prefix', {
-        alias: 'p',
-        default: 'san\\',
-        description: 'namespace prefix for ssr.php'
+    .option('targetOptions', {
+        alias: 'o',
+        default: '{}',
+        description: 'JSON format options to target code generation'
     })
     .option('tsconfig', {
         alias: 'c',
@@ -39,14 +37,14 @@ yargs
     })
 
 const target = yargs.argv.target as OptionValue
-const nsPrefix = yargs.argv.prefix as OptionValue
+const options = JSON.parse(yargs.argv.targetOptions as string)
 const tsConfigFilePath = yargs.argv.tsconfig as OptionValue
 const outputFile = yargs.argv.output as OptionValue
 const componentFile = resolve(yargs.argv._[0])
 console.error(chalk.gray('compiling'), componentFile, 'to', target)
 
 const project = new SanProject({ tsConfigFilePath })
-const targetCode = project.compile(componentFile, target as Target, { nsPrefix })
+const targetCode = project.compile(componentFile, target, options)
 
 if (outputFile !== undefined) {
     writeFileSync(outputFile, targetCode)

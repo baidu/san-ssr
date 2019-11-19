@@ -1,5 +1,6 @@
 import { sep, resolve } from 'path'
 import { getDefaultTSConfigPath } from '../parsers/tsconfig'
+import { cwd } from 'process'
 import { Compiler } from '../models/compiler'
 import { SanAppParser } from '../parsers/san-app-parser'
 import { Project } from 'ts-morph'
@@ -8,7 +9,6 @@ import { loadCompilerClassByTarget } from '../loaders/target'
 
 export type SanProjectOptions = {
     tsConfigFilePath?: string,
-    root?: string,
     modules?: Modules
 }
 
@@ -28,10 +28,11 @@ export class SanProject {
 
     constructor ({
         tsConfigFilePath = getDefaultTSConfigPath(),
-        modules = {},
-        root = tsConfigFilePath.split(sep).slice(0, -1).join(sep)
+        modules = {}
     }: SanProjectOptions = {}) {
-        this.root = root
+        this.root = tsConfigFilePath
+            ? tsConfigFilePath.split(sep).slice(0, -1).join(sep)
+            : cwd()
         this.tsConfigFilePath = tsConfigFilePath
         this.tsProject = new Project({ tsConfigFilePath })
         this.modules = modules

@@ -43,7 +43,7 @@ Options:
   --tsconfig, -c        tsconfig path, will auto resolve if not specified
 ```
 
-san-ssr will lookup `san-ssr-target-${target}` from package from CWD for target code transpiler. The `san-ssr-target-js` package is installed as a dependency of san-ssr.
+san-ssr will lookup `san-ssr-target-${target}` from package from CWD for target code transpiler. The `san-ssr-target-js` is builtin san-ssr by default.
 
 ```bash
 san-ssr ./component.js > ssr.js

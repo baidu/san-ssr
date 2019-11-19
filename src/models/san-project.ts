@@ -49,15 +49,12 @@ export class SanProject {
     }
 
     private getOrCreateCompilerInstance (target: string | CompilerClass) {
-        const Class = this.loadCompilerClass(target)
+        const CompilerClass = this.loadCompilerClass(target)
 
-        if (!this.compilers.has(Class)) {
-            this.compilers.set(Class, new Class({
-                project: this.tsProject,
-                tsConfigFilePath: this.tsConfigFilePath
-            }))
+        if (!this.compilers.has(CompilerClass)) {
+            this.compilers.set(CompilerClass, new CompilerClass(this))
         }
-        return this.compilers.get(Class)
+        return this.compilers.get(CompilerClass)
     }
 
     private loadCompilerClass (target: string | CompilerClass) {

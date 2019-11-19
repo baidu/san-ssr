@@ -1,7 +1,7 @@
 import { getComponentClassIdentifier, isChildClassOf } from '../utils/ast-util'
 import { ComponentClassFinder } from './component-class-finder'
 import { CommonJS, Modules } from '../loaders/common-js'
-import { tsSourceFile2js } from '../target-js/compilers/ts2js'
+import { tsSourceFile2js } from '../transpilers/ts2js'
 import { normalizeComponentClass } from './normalize-component'
 import { SanSourceFile } from '../models/san-sourcefile'
 import { Project, SourceFile, ClassDeclaration } from 'ts-morph'

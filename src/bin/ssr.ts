@@ -13,20 +13,24 @@ yargs
     .usage('$0 -o <OUT_FILE> [OPTION]... <FILE>')
     .option('output', {
         alias: 'o',
+        type: 'string',
         description: 'output file path, output to STDOUT if not specified'
     })
     .option('target', {
         alias: 't',
         default: 'js',
+        type: 'string',
         description: 'target SSR file format'
     })
     .option('targetOptions', {
-        alias: 'o',
+        alias: 'j',
+        type: 'string',
         default: '{}',
         description: 'JSON format options to target code generation'
     })
     .option('tsconfig', {
         alias: 'c',
+        type: 'string',
         description: 'tsconfig path, will auto resolve if not specified'
     })
     .check(argv => {
@@ -48,7 +52,8 @@ const targetCode = project.compile(componentFile, target, options)
 
 if (outputFile !== undefined) {
     writeFileSync(outputFile, targetCode)
+    console.error(chalk.green('success'), `${byteCount(targetCode)} bytes written`)
 } else {
     process.stdout.write(targetCode)
+    console.error(chalk.green('success'), `${byteCount(targetCode)} bytes in total`)
 }
-console.error(chalk.green('success'), `${byteCount(targetCode)} bytes written`)

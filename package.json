@@ -25,7 +25,7 @@
     "build": "tsc && chmod a+x dist/bin/*",
     "build-watch": "tsc --watch",
     "unit": "jest test/unit",
-    "build-integration": "node -e \"require('./dist/utils/case').compileAll()\"",
+    "build-integration": "node -e \"require('./dist/target-js/utils/case').compileAll()\"",
     "integration": "npm run build-integration && jest test/integration.spec.js",
     "e2e": "./bin/build-e2e.js && karma start ./test/karma.conf.js --single-run",
     "test": "npm run unit && npm run build && npm run e2e",

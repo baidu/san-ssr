@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;target-php/emitters/runtime&quot; | san-ssr</title>
+	<title>&quot;transpilers/ts2js&quot; | san-ssr</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="_target_php_emitters_runtime_.html">&quot;target-php/emitters/runtime&quot;</a>
+					<a href="_transpilers_ts2js_.html">&quot;transpilers/ts2js&quot;</a>
 				</li>
 			</ul>
-			<h1>External module &quot;target-php/emitters/runtime&quot;</h1>
+			<h1>External module &quot;transpilers/ts2js&quot;</h1>
 		</div>
 	</div>
 </header>
@@ -73,13 +73,14 @@
 						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_target_php_emitters_runtime_.html#runtimefiles" class="tsd-kind-icon">runtime<wbr>Files</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_transpilers_ts2js_.html#debug" class="tsd-kind-icon">debug</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_target_php_emitters_runtime_.html#emitruntime" class="tsd-kind-icon">emit<wbr>Runtime</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_transpilers_ts2js_.html#tscode2js" class="tsd-kind-icon">ts<wbr>Code2js</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_transpilers_ts2js_.html#tssourcefile2js" class="tsd-kind-icon">ts<wbr>Source<wbr>File2js</a></li>
 							</ul>
 						</section>
 					</div>
@@ -88,12 +89,12 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 				<h2>Variables</h2>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="runtimefiles" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> runtime<wbr>Files</h3>
-					<div class="tsd-signature tsd-kind-icon">runtime<wbr>Files<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[&#x27;underscore.php&#x27;,&#x27;san.php&#x27;,&#x27;Ts2Php_Helper.php&#x27;,&#x27;component-registry.php&#x27;]</span></div>
+					<a name="debug" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> debug</h3>
+					<div class="tsd-signature tsd-kind-icon">debug<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;debugFactory(&#x27;san-ssr:ts2js&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/6d06e55/src/target-php/emitters/runtime.ts#L5">target-php/emitters/runtime.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/b8f7828/src/transpilers/ts2js.ts#L5">transpilers/ts2js.ts:5</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -101,25 +102,51 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="emitruntime" class="tsd-anchor"></a>
-					<h3>emit<wbr>Runtime</h3>
+					<a name="tscode2js" class="tsd-anchor"></a>
+					<h3>ts<wbr>Code2js</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">emit<wbr>Runtime<span class="tsd-signature-symbol">(</span>emitter<span class="tsd-signature-symbol">: </span><a href="../classes/_target_php_emitters_emitter_.phpemitter.html" class="tsd-signature-type">PHPEmitter</a>, nsPrefix<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">ts<wbr>Code2js<span class="tsd-signature-symbol">(</span>sourceCode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, compilerOptions<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/6d06e55/src/target-php/emitters/runtime.ts#L12">target-php/emitters/runtime.ts:12</a></li>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/b8f7828/src/transpilers/ts2js.ts#L12">transpilers/ts2js.ts:12</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>emitter: <a href="../classes/_target_php_emitters_emitter_.phpemitter.html" class="tsd-signature-type">PHPEmitter</a></h5>
+									<h5>sourceCode: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5>nsPrefix: <span class="tsd-signature-type">string</span></h5>
+									<h5>compilerOptions: <span class="tsd-signature-type">any</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="tssourcefile2js" class="tsd-anchor"></a>
+					<h3>ts<wbr>Source<wbr>File2js</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">ts<wbr>Source<wbr>File2js<span class="tsd-signature-symbol">(</span>sourceFile<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">SourceFile</span>, compilerOptions<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/b8f7828/src/transpilers/ts2js.ts#L7">transpilers/ts2js.ts:7</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>sourceFile: <span class="tsd-signature-type">SourceFile</span></h5>
+								</li>
+								<li>
+									<h5>compilerOptions: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -135,17 +162,20 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="_target_php_emitters_runtime_.html">"target-<wbr>php/emitters/runtime"</a>
+						<a href="_transpilers_ts2js_.html">"transpilers/ts2js"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_target_php_emitters_runtime_.html#runtimefiles" class="tsd-kind-icon">runtime<wbr>Files</a>
+						<a href="_transpilers_ts2js_.html#debug" class="tsd-kind-icon">debug</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="_target_php_emitters_runtime_.html#emitruntime" class="tsd-kind-icon">emit<wbr>Runtime</a>
+						<a href="_transpilers_ts2js_.html#tscode2js" class="tsd-kind-icon">ts<wbr>Code2js</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_transpilers_ts2js_.html#tssourcefile2js" class="tsd-kind-icon">ts<wbr>Source<wbr>File2js</a>
 					</li>
 				</ul>
 			</nav>

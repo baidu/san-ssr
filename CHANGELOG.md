@@ -1,3 +1,10 @@
+## [1.3.6](https://github.com/searchfe/san-ssr/compare/v1.3.5...v1.3.6) (2019-11-19)
+
+
+### Bug Fixes
+
+* dependencies ([b8f7828](https://github.com/searchfe/san-ssr/commit/b8f78289fb114c43d4f6941da359d9703eb47a3c))
+
 ## [1.3.5](https://github.com/searchfe/san-ssr/compare/v1.3.4...v1.3.5) (2019-11-15)
 
 

@@ -79,13 +79,18 @@
 					<a href="https://github.com/searchfe/san-ssr/blob/master/LICENSE"><img src="https://img.shields.io/dub/l/vibe-d.svg" alt="DUB license"></a>
 				<a href="https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commits"><img src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg" alt="Commitizen friendly"></a></p>
 				<p><strong>The purpurse of this repo</strong> is to provide an SSR framework and utils for the <a href="https://github.com/baidu/san">san</a> components.</p>
-				<a href="#target" id="target" style="color: inherit; text-decoration: none;">
-					<h2>Target</h2>
+				<a href="#work-with-san" id="work-with-san" style="color: inherit; text-decoration: none;">
+					<h2>Work with San</h2>
+				</a>
+				<p>Supported san versions for each release are specified by <code>peerDependencies</code>, that means you&#39;ll need both <code>san</code> and <code>san-ssr</code> installed in case you need server side rendering. And it&#39;s considered compatible as long as you don&#39;t see any <code>UNMET</code> warning.</p>
+				<p>Note: As described in <a href="https://github.com/baidu/san/issues/441#issuecomment-550260372">baidu/san/issues/441</a>, a minor version in san implies possible BREAKING CHANGES, thus the peerDependency is specified via <a href="https://docs.npmjs.com/misc/semver#tilde-ranges-123-12-1">tilde version</a>.</p>
+				<a href="#target-platforms" id="target-platforms" style="color: inherit; text-decoration: none;">
+					<h2>Target Platforms</h2>
 				</a>
 				<p>san-ssr provides static analysis for San components and generates abstract component tree, while code generation is a separated process, which is provided by specific implementations:</p>
 				<ul>
 					<li><a href="https://github.com/searchfe/san-ssr/tree/master/src/target-js">san-ssr-target-js</a></li>
-					<li><a href="https://github.com/searchfe/san-ssr/tree/master/src/target-php">san-ssr-target-php</a></li>
+					<li><a href="https://github.com/searchfe/san-ssr-target-php">san-ssr-target-php</a></li>
 				</ul>
 				<a href="#cli-usage" id="cli-usage" style="color: inherit; text-decoration: none;">
 					<h2>CLI Usage</h2>
@@ -95,18 +100,14 @@
 san-ssr -o &lt;OUT_FILE&gt; [OPTION]... &lt;FILE&gt;
 
 Options:
-  --help          Show help                                            [boolean]
-  --version       Show version number                                  [boolean]
-  --output, -o    output file path, output to STDOUT if not specified
-  --target, -t    target SSR file              [required] [choices: &quot;php&quot;, &quot;js&quot;]
-  --prefix, -p    namespace prefix for ssr.php                 [default: &quot;san\&quot;]
-  --tsconfig, -c  tsconfig path, will auto resolve if not specified</code></pre>
-				<p>san-ssr will lookup <code>san-ssr-target-{target}</code> from node_modules to generate target code. The san-ssr-target-js package is installed as a dependency of san-ssr by default.</p>
-				<pre><code class="language-bash"><span class="hljs-comment"># build to ssr.php</span>
-san-ssr --target php --prefix <span class="hljs-string">'demo\\'</span> ./component.ts &gt; ssr.php
-
-<span class="hljs-comment"># build to ssr.js</span>
-san-ssr --target js  ./component.ts &gt; ssr.js</code></pre>
+  --help                Show help                                           [boolean]
+  --version             Show version number                                 [boolean]
+  --output, -o          output file path, output to STDOUT if not specified
+  --target, -t          target SSR file                                     [string]
+  --targetOptions, -j   options for target compiler in JSON format          [string]
+  --tsconfig, -c        tsconfig path, will auto resolve if not specified</code></pre>
+				<p>san-ssr will lookup <code>san-ssr-target-${target}</code> from package from CWD for target code transpiler. The <code>san-ssr-target-js</code> is builtin san-ssr by default.</p>
+				<pre><code class="language-bash">san-ssr ./component.js &gt; ssr.js</code></pre>
 				<a href="#programmatic-interface" id="programmatic-interface" style="color: inherit; text-decoration: none;">
 					<h2>Programmatic Interface</h2>
 				</a>
@@ -124,101 +125,11 @@ writeFileSync(<span class="hljs-string">'ssr.js'</span>, targetCode)</code></pre
 <span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs'</span>
 
 <span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
-<span class="hljs-keyword">const</span> targetCode = project.compile(<span class="hljs-string">'src/component.ts'</span>, <span class="hljs-string">'js'</span>)
+<span class="hljs-keyword">const</span> targetCode = project.compile(<span class="hljs-string">'src/component.js'</span>, <span class="hljs-string">'js'</span>)
 
 writeFileSync(<span class="hljs-string">'ssr.js'</span>, targetCode)</code></pre>
 				<p>The <a href="https://searchfe.github.io/san-ssr/classes/_models_san_project_.sanproject.html#compile">SanProject#compile(filepath, target, options)</a> has a third parameter <code>options</code>, which is passed
 				directly to the target code generator&#39;s <a href="https://searchfe.github.io/san-ssr/interfaces/_models_compiler_.compiler.html#compile">compile(sanApp, options)</a> as the second parameter.</p>
-				<a href="#milestones" id="milestones" style="color: inherit; text-decoration: none;">
-					<h2>Milestones</h2>
-				</a>
-				<ol start="0">
-					<li>Baseline Establishment<ul>
-							<li><input checked="" disabled="" type="checkbox"> create a simplified JS SSR for reference</li>
-							<li><input checked="" disabled="" type="checkbox"> migrate all SSR cases from baidu/san</li>
-							<li><input checked="" disabled="" type="checkbox"> migrate all e2e cases from baidu/san</li>
-						</ul>
-					</li>
-					<li>Basic Templating<ul>
-							<li><input checked="" disabled="" type="checkbox"> implement runtime utils in PHP</li>
-							<li><input checked="" disabled="" type="checkbox"> introduce emitter and apply to php-ssr</li>
-							<li><input checked="" disabled="" type="checkbox"> beautify the output</li>
-							<li><input checked="" disabled="" type="checkbox"> pass all template-only test cases</li>
-							<li><input checked="" disabled="" type="checkbox"> debug scripts and Zsh auto completion</li>
-							<li><input disabled="" type="checkbox"> CLI support</li>
-							<li><input disabled="" type="checkbox"> travis CI</li>
-							<li><input disabled="" type="checkbox"> semantic release</li>
-						</ul>
-					</li>
-					<li>Bussiness Logic to PHP<ul>
-							<li><input checked="" disabled="" type="checkbox"> compile source files to php: make use of ts2php</li>
-							<li><input checked="" disabled="" type="checkbox"> compile component files to php</li>
-							<li><input checked="" disabled="" type="checkbox"> parse files to AST to bind sourcecode info to runtime</li>
-							<li><input checked="" disabled="" type="checkbox"> wireup ssr.php and component.php</li>
-							<li><input checked="" disabled="" type="checkbox"> pass all test cases using filters/computed</li>
-							<li><input disabled="" type="checkbox"> set FilterDeclarations, ComputedDeclarations types if not declared</li>
-						</ul>
-					</li>
-					<li>Multiple Source Files<ul>
-							<li><input checked="" disabled="" type="checkbox"> a virtual CommonJS to load AST transformed sourceFiles</li>
-							<li><input checked="" disabled="" type="checkbox"> support multiple source files for a single component</li>
-							<li><input checked="" disabled="" type="checkbox"> support nested components in multiple files</li>
-						</ul>
-					</li>
-					<li>Misc.<ul>
-							<li>support anonymous default export: <code>export default class extends Component {}</code></li>
-							<li>check default export and throw a more spcific Error</li>
-							<li>check default export extends Component</li>
-							<li>support SyntheticDefaultImports: <code>import * as san</code></li>
-							<li><input checked="" disabled="" type="checkbox"> prefix for all namespaces</li>
-						</ul>
-					</li>
-				</ol>
-				<a href="#known-issues" id="known-issues" style="color: inherit; text-decoration: none;">
-					<h2>Known Issues</h2>
-				</a>
-				<p>THIS SECTION IS FOR MAINTAINERS ONLY</p>
-				<p>TODO 移动以下文档到对应的代码生成器仓库。</p>
-				<a href="#php" id="php" style="color: inherit; text-decoration: none;">
-					<h3>PHP</h3>
-				</a>
-				<ul>
-					<li>filters/computed 是 static，这要求使用时额外声明其类型</li>
-					<li>noDataOutput 控制的数据输出中，对象序列化使用 json_encode 实现，属性顺序和 JavaScript 中可能不同</li>
-				</ul>
-				<a href="#js" id="js" style="color: inherit; text-decoration: none;">
-					<h3>JS</h3>
-				</a>
-				<p>作为对照和参考，本仓库也维护了 JS 版本的 SSR。它和 PHP SSR 一同演化，可以跑通所有 san 代码库提供的 SSR 集成测试和 e2e 测试。</p>
-				<p>JS SSR 目前存在以下问题：</p>
-				<ul>
-					<li>san runtime 要求 filters/computed 是 static，而 static 属性无法用接口来描述</li>
-					<li>ssr 通过 toString 来编译 function，以下情况编译不了：<ul>
-							<li>ES6 method。toString 后形如： foo: foo() {}</li>
-							<li>值为 funciton 的表达式。例如：_.curry(sum, 2)</li>
-						</ul>
-					</li>
-					<li>成员通过 Object.keys 遍历，以下情况遍历不到：<ul>
-							<li>ES6 Method，需要通过 getOwnPropertyNames/Symbols 来取。</li>
-							<li>ES6 Property 必须中 constructor 中赋值，也会找不到。</li>
-						</ul>
-					</li>
-					<li>只能编译 Component 文件，不支持引用纯工具文件。例如：<code>const someFilter = require(&#39;./somfilter&#39;); export default class Component { static filters = { someFilter }}</code></li>
-				</ul>
-				<a href="#contribute" id="contribute" style="color: inherit; text-decoration: none;">
-					<h2>Contribute</h2>
-				</a>
-				<p>Development Prerequisites:</p>
-				<ul>
-					<li>Node.js&gt;=8</li>
-					<li>PHP 7</li>
-					<li><a href="https://getcomposer.org">composer</a></li>
-				</ul>
-				<p>Install dependencies:</p>
-				<pre><code class="language-bash">npm install
-composer install</code></pre>
-				<p>Run tests</p>
-				<pre><code class="language-bash">npm <span class="hljs-built_in">test</span></code></pre>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -228,22 +139,19 @@ composer install</code></pre>
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_bin_debug_.html">"bin/debug"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
 						<a href="modules/_bin_ssr_.html">"bin/ssr"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_index_.html">"index"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_loaders_case_.html">"loaders/case"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
 						<a href="modules/_loaders_common_js_.html">"loaders/common-<wbr>js"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_loaders_exec_.html">"loaders/exec"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_loaders_target_.html">"loaders/target"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_models_anode_.html">"models/anode"</a>
@@ -268,9 +176,6 @@ composer install</code></pre>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_models_source_file_type_.html">"models/source-<wbr>file-<wbr>type"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_models_target_.html">"models/target"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_parsers_component_class_finder_.html">"parsers/component-<wbr>class-<wbr>finder"</a>
@@ -303,9 +208,6 @@ composer install</code></pre>
 						<a href="modules/_target_js_compilers_stringifier_.html">"target-<wbr>js/compilers/stringifier"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_js_compilers_ts2js_.html">"target-<wbr>js/compilers/ts2js"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
 						<a href="modules/_target_js_emitters_emitter_.html">"target-<wbr>js/emitters/emitter"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -318,55 +220,16 @@ composer install</code></pre>
 						<a href="modules/_target_js_source_buffer_.html">"target-<wbr>js/source-<wbr>buffer"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="modules/_target_js_utils_case_.html">"target-<wbr>js/utils/case"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="modules/_target_js_utils_fs_.html">"target-<wbr>js/utils/fs"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_php_compilers_anode_compiler_.html">"target-<wbr>php/compilers/anode-<wbr>compiler"</a>
+						<a href="modules/_target_js_utils_timing_.html">"target-<wbr>js/utils/timing"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_php_compilers_element_compiler_.html">"target-<wbr>php/compilers/element-<wbr>compiler"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_php_compilers_expr_compiler_.html">"target-<wbr>php/compilers/expr-<wbr>compiler"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_php_compilers_renderer_compiler_.html">"target-<wbr>php/compilers/renderer-<wbr>compiler"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_php_compilers_stringifier_.html">"target-<wbr>php/compilers/stringifier"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_php_compilers_ts2php_.html">"target-<wbr>php/compilers/ts2php"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_php_emitters_emitter_.html">"target-<wbr>php/emitters/emitter"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_php_emitters_runtime_.html">"target-<wbr>php/emitters/runtime"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_php_index_.html">"target-<wbr>php/index"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_php_transformers_index_.html">"target-<wbr>php/transformers/index"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_php_transformers_refactor_computed_property_.html">"target-<wbr>php/transformers/refactor-<wbr>computed-<wbr>property"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_php_transformers_refactor_filters_property_.html">"target-<wbr>php/transformers/refactor-<wbr>filters-<wbr>property"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_php_transformers_refactor_member_initializer_.html">"target-<wbr>php/transformers/refactor-<wbr>member-<wbr>initializer"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_php_transformers_replace_san_module_.html">"target-<wbr>php/transformers/replace-<wbr>san-<wbr>module"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_php_utils_fs_.html">"target-<wbr>php/utils/fs"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_php_utils_lang_.html">"target-<wbr>php/utils/lang"</a>
+						<a href="modules/_transpilers_ts2js_.html">"transpilers/ts2js"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_utils_anode_.html">"utils/anode"</a>
@@ -385,9 +248,6 @@ composer install</code></pre>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_utils_emitter_.html">"utils/emitter"</a>
-					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_timing_.html">"utils/timing"</a>
 					</li>
 				</ul>
 			</nav>

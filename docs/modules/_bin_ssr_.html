@@ -80,7 +80,7 @@
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_bin_ssr_.html#componentfile" class="tsd-kind-icon">component<wbr>File</a></li>
-								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_bin_ssr_.html#nsprefix" class="tsd-kind-icon">ns<wbr>Prefix</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_bin_ssr_.html#options" class="tsd-kind-icon">options</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_bin_ssr_.html#outputfile" class="tsd-kind-icon">output<wbr>File</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_bin_ssr_.html#project" class="tsd-kind-icon">project</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported"><a href="_bin_ssr_.html#target" class="tsd-kind-icon">target</a></li>
@@ -99,7 +99,7 @@
 					<div class="tsd-signature tsd-kind-icon">Option<wbr>Value<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/6d06e55/src/bin/ssr.ts#L11">bin/ssr.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/b8f7828/src/bin/ssr.ts#L10">bin/ssr.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -112,17 +112,17 @@
 					<div class="tsd-signature tsd-kind-icon">component<wbr>File<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;resolve(yargs.argv._[0])</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/6d06e55/src/bin/ssr.ts#L45">bin/ssr.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/b8f7828/src/bin/ssr.ts#L47">bin/ssr.ts:47</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="nsprefix" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> ns<wbr>Prefix</h3>
-					<div class="tsd-signature tsd-kind-icon">ns<wbr>Prefix<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;yargs.argv.prefix as OptionValue</span></div>
+					<a name="options" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> options</h3>
+					<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;JSON.parse(yargs.argv.targetOptions as string)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/6d06e55/src/bin/ssr.ts#L42">bin/ssr.ts:42</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/b8f7828/src/bin/ssr.ts#L44">bin/ssr.ts:44</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -132,7 +132,7 @@
 					<div class="tsd-signature tsd-kind-icon">output<wbr>File<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;yargs.argv.output as OptionValue</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/6d06e55/src/bin/ssr.ts#L44">bin/ssr.ts:44</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/b8f7828/src/bin/ssr.ts#L46">bin/ssr.ts:46</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -142,7 +142,7 @@
 					<div class="tsd-signature tsd-kind-icon">project<span class="tsd-signature-symbol">:</span> <a href="../classes/_models_san_project_.sanproject.html" class="tsd-signature-type">SanProject</a><span class="tsd-signature-symbol"> =&nbsp;new SanProject({ tsConfigFilePath })</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/6d06e55/src/bin/ssr.ts#L48">bin/ssr.ts:48</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/b8f7828/src/bin/ssr.ts#L50">bin/ssr.ts:50</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -152,17 +152,17 @@
 					<div class="tsd-signature tsd-kind-icon">target<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;yargs.argv.target as OptionValue</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/6d06e55/src/bin/ssr.ts#L41">bin/ssr.ts:41</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/b8f7828/src/bin/ssr.ts#L43">bin/ssr.ts:43</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 					<a name="targetcode" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> target<wbr>Code</h3>
-					<div class="tsd-signature tsd-kind-icon">target<wbr>Code<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;project.compile(componentFile, target as Target, { nsPrefix })</span></div>
+					<div class="tsd-signature tsd-kind-icon">target<wbr>Code<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> =&nbsp;project.compile(componentFile, target, options)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/6d06e55/src/bin/ssr.ts#L49">bin/ssr.ts:49</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/b8f7828/src/bin/ssr.ts#L51">bin/ssr.ts:51</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -172,7 +172,7 @@
 					<div class="tsd-signature tsd-kind-icon">ts<wbr>Config<wbr>File<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;yargs.argv.tsconfig as OptionValue</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/6d06e55/src/bin/ssr.ts#L43">bin/ssr.ts:43</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/b8f7828/src/bin/ssr.ts#L45">bin/ssr.ts:45</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -198,7 +198,7 @@
 						<a href="_bin_ssr_.html#componentfile" class="tsd-kind-icon">component<wbr>File</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_bin_ssr_.html#nsprefix" class="tsd-kind-icon">ns<wbr>Prefix</a>
+						<a href="_bin_ssr_.html#options" class="tsd-kind-icon">options</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
 						<a href="_bin_ssr_.html#outputfile" class="tsd-kind-icon">output<wbr>File</a>

@@ -37,7 +37,7 @@ export class SanProject {
         this.modules = modules
     }
 
-    public compile (filepath: string, target: string | CompilerClass, options = {}) {
+    public compile (filepath: string, target: string | CompilerClass = 'js', options = {}) {
         const sanApp = this.parseSanApp(filepath)
         const compiler = this.getOrCreateCompilerInstance(target)
         return compiler.compile(sanApp, options)

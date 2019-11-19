@@ -1,4 +1,3 @@
-import { ToJSCompiler } from '../../src/target-js'
 import { SanAppParser } from '../../src/parsers/san-app-parser'
 import { Project } from 'ts-morph'
 import { resolve } from 'path'
@@ -23,5 +22,13 @@ describe('SanAppParser', function () {
 
         expect(sanApp.componentClasses).toHaveLength(1)
         expect(sanApp.componentClasses[0]).toHaveProperty('sanssrCid', 0)
+    })
+
+    it('should compile a single component', function () {
+        const parser = new SanAppParser(project)
+        const filepath = resolve(__dirname, '../stub/foo.ts')
+
+        expect(() => parser.parseSanApp(filepath))
+            .toThrow(/not likely a San Component/)
     })
 })

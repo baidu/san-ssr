@@ -1,7 +1,7 @@
 {
   "name": "san-ssr",
   "version": "0.0.0-development",
-  "description": "San server-side-render for PHP environment",
+  "description": "San server-side-render framework and utils",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "directories": {
@@ -20,20 +20,15 @@
     "san-ssr": "./dist/bin/ssr.js"
   },
   "scripts": {
-    "clean": "rm -rf ./dist test/cases/*/ssr.{php,js}",
     "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
     "docs": "typedoc --out docs src && touch docs/.nojekyll",
     "build": "tsc && chmod a+x dist/bin/*",
     "build-watch": "tsc --watch",
-    "unit-php": "./vendor/bin/phpunit --bootstrap vendor/autoload.php test/unit/*.spec.php",
-    "unit-ts": "jest test/unit",
-    "unit": "npm run unit-ts && npm run unit-php",
-    "integration": "./bin/build-integration.js && jest test/integration.spec.js",
+    "unit": "jest test/unit",
     "coveralls": "jest test/unit --coverage && cat coverage/lcov.info | coveralls",
-    "test": "npm run build && npm run unit && npm run integration && npm run e2e",
-    "render": "./bin/render.js",
+    "test": "npm run unit && npm run e2e",
     "version": "npm run build && npm run docs",
-    "e2e": "./bin/build-e2e.js && npx karma start ./test/karma.conf.js --single-run",
+    "e2e": "./bin/build-e2e.js && karma start ./test/karma.conf.js --single-run",
     "semantic-release": "semantic-release"
   },
   "repository": {

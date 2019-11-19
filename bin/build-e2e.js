@@ -5,7 +5,6 @@ const { join, resolve } = require('path')
 const testRoot = resolve(__dirname, '../test')
 const { tsCode2js } = require('../dist/target-js/compilers/ts2js')
 const tsConfig = require('../test/tsconfig.json')
-const { supportE2E } = require('../dist/utils/case')
 
 let html = ''
 let specTpls = ''
@@ -106,14 +105,14 @@ function buildFile (caseDir) {
                 componentDataLiteral = fs.readFileSync(abFilePath, 'UTF-8')
                 break
 
-            case 'result.html':
+            case 'expected.html':
                 result = fs.readFileSync(abFilePath, 'UTF-8').replace('\n', '')
                 break
             }
         }
 
         // iterate
-        if (isDir && supportE2E(filename)) {
+        if (isDir) {
             console.log(`[Build SSR spec] ${filename}`)
             buildFile(abFilePath)
         }
@@ -155,5 +154,3 @@ console.log('----- Build SSR Specs -----')
 buildFile(resolve(testRoot, 'cases'))
 // write into file
 writeIn({ html, specTpls })
-
-console.log()

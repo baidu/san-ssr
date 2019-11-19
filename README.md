@@ -13,12 +13,18 @@
 
 **The purpurse of this repo** is to provide an SSR framework and utils for the [san][san] components.
 
-## Target
+## Work with San
+
+Supported san versions for each release are specified by `peerDependencies`, that means you'll need both `san` and `san-ssr` installed in case you need server side rendering. And it's considered compatible as long as you don't see any `UNMET` warning.
+
+Note: As described in [baidu/san/issues/441](https://github.com/baidu/san/issues/441#issuecomment-550260372), a minor version in san implies possible BREAKING CHANGES, thus the peerDependency is specified via [tilde version](https://docs.npmjs.com/misc/semver#tilde-ranges-123-12-1).
+
+## Target Platforms
 
 san-ssr provides static analysis for San components and generates abstract component tree, while code generation is a separated process, which is provided by specific implementations:
 
 * [san-ssr-target-js](https://github.com/searchfe/san-ssr/tree/master/src/target-js)
-* [san-ssr-target-php](https://github.com/searchfe/san-ssr/tree/master/src/target-php)
+* [san-ssr-target-php](https://github.com/searchfe/san-ssr-target-php)
 
 ## CLI Usage
 
@@ -29,22 +35,18 @@ Command line interface:
 san-ssr -o <OUT_FILE> [OPTION]... <FILE>
 
 Options:
-  --help          Show help                                            [boolean]
-  --version       Show version number                                  [boolean]
-  --output, -o    output file path, output to STDOUT if not specified
-  --target, -t    target SSR file              [required] [choices: "php", "js"]
-  --prefix, -p    namespace prefix for ssr.php                 [default: "san\"]
-  --tsconfig, -c  tsconfig path, will auto resolve if not specified
+  --help                Show help                                           [boolean]
+  --version             Show version number                                 [boolean]
+  --output, -o          output file path, output to STDOUT if not specified
+  --target, -t          target SSR file                                     [string]
+  --targetOptions, -j   options for target compiler in JSON format          [string]
+  --tsconfig, -c        tsconfig path, will auto resolve if not specified
 ```
 
-san-ssr will lookup `san-ssr-target-{target}` from node_modules to generate target code. The san-ssr-target-js package is installed as a dependency of san-ssr by default.
+san-ssr will lookup `san-ssr-target-${target}` from package from CWD for target code transpiler. The `san-ssr-target-js` package is installed as a dependency of san-ssr.
 
 ```bash
-# build to ssr.php
-san-ssr --target php --prefix 'demo\\' ./component.ts > ssr.php
-
-# build to ssr.js
-san-ssr --target js  ./component.ts > ssr.js
+san-ssr ./component.js > ssr.js
 ```
 
 ## Programmatic Interface
@@ -70,7 +72,7 @@ const { SanProject } = require('san-project')
 import { writeFileSync } from 'fs'
 
 const project = new SanProject()
-const targetCode = project.compile('src/component.ts', 'js')
+const targetCode = project.compile('src/component.js', 'js')
 
 writeFileSync('ssr.js', targetCode)
 ```
@@ -78,85 +80,6 @@ writeFileSync('ssr.js', targetCode)
 The [SanProject#compile(filepath, target, options)][compile] has a third parameter `options`, which is passed
 directly to the target code generator's [compile(sanApp, options)][target-compile] as the second parameter.
 
-## Milestones
-
-0. Baseline Establishment
-    - [x] create a simplified JS SSR for reference
-    - [x] migrate all SSR cases from baidu/san
-    - [x] migrate all e2e cases from baidu/san
-1. Basic Templating
-    - [x] implement runtime utils in PHP
-    - [x] introduce emitter and apply to php-ssr
-    - [x] beautify the output
-    - [x] pass all template-only test cases
-    - [x] debug scripts and Zsh auto completion
-    - [ ] CLI support
-    - [ ] travis CI
-    - [ ] semantic release
-2. Bussiness Logic to PHP
-    - [x] compile source files to php: make use of ts2php
-    - [x] compile component files to php
-    - [x] parse files to AST to bind sourcecode info to runtime
-    - [x] wireup ssr.php and component.php
-    - [x] pass all test cases using filters/computed
-    - [ ] set FilterDeclarations, ComputedDeclarations types if not declared
-3. Multiple Source Files
-    - [x] a virtual CommonJS to load AST transformed sourceFiles
-    - [x] support multiple source files for a single component
-    - [x] support nested components in multiple files
-4. Misc.
-    - support anonymous default export: `export default class extends Component {}`
-    - check default export and throw a more spcific Error
-    - check default export extends Component
-    - support SyntheticDefaultImports: `import * as san`
-    - [x] prefix for all namespaces
-
-## Known Issues
-
-THIS SECTION IS FOR MAINTAINERS ONLY
-
-TODO 移动以下文档到对应的代码生成器仓库。
-
-### PHP
-
-- filters/computed 是 static，这要求使用时额外声明其类型
-- noDataOutput 控制的数据输出中，对象序列化使用 json_encode 实现，属性顺序和 JavaScript 中可能不同
-
-### JS
-
-作为对照和参考，本仓库也维护了 JS 版本的 SSR。它和 PHP SSR 一同演化，可以跑通所有 san 代码库提供的 SSR 集成测试和 e2e 测试。
-
-JS SSR 目前存在以下问题：
-
-* san runtime 要求 filters/computed 是 static，而 static 属性无法用接口来描述
-* ssr 通过 toString 来编译 function，以下情况编译不了：
-    * ES6 method。toString 后形如： foo: foo() {}
-    * 值为 funciton 的表达式。例如：_.curry(sum, 2)
-* 成员通过 Object.keys 遍历，以下情况遍历不到：
-    * ES6 Method，需要通过 getOwnPropertyNames/Symbols 来取。
-    * ES6 Property 必须中 constructor 中赋值，也会找不到。
-* 只能编译 Component 文件，不支持引用纯工具文件。例如：`const someFilter = require('./somfilter'); export default class Component { static filters = { someFilter }}`
-
-## Contribute
-
-Development Prerequisites:
-
-* Node.js>=8
-* PHP 7
-* [composer](https://getcomposer.org)
-
-Install dependencies:
-
-```bash
-npm install
-composer install
-```
-
-Run tests
-
-```bash
-npm test
-```
 
 [san]: https://github.com/baidu/san
 [sanproject]: https://searchfe.github.io/san-ssr/classes/_models_san_project_.sanproject.html

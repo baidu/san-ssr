@@ -1,4 +1,4 @@
-import { Expression } from '../..'
+import { Expression } from '../../index'
 
 /**
 * 编译源码的 helper 方法集合对象

@@ -4,7 +4,7 @@ import { compileExprSource } from './expr-compiler'
 import { stringifier } from './stringifier'
 import { ElementCompiler } from './element-compiler'
 import { ANodeCompiler } from './anode-compiler'
-import { COMPONENT_RESERVED_MEMBERS, SanComponent } from '../..'
+import { COMPONENT_RESERVED_MEMBERS, SanComponent } from '../../index'
 
 const rDataAccess = /this.data.get\(([^)]+)\)/g
 

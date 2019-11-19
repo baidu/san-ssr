@@ -1,7 +1,7 @@
 {
   "name": "san-ssr",
-  "version": "0.0.0-development",
-  "description": "San server-side-render for PHP environment",
+  "version": "1.4.0-development",
+  "description": "San server-side-render framework and utils",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "directories": {
@@ -20,20 +20,17 @@
     "san-ssr": "./dist/bin/ssr.js"
   },
   "scripts": {
-    "clean": "rm -rf ./dist test/cases/*/ssr.{php,js}",
     "lint": "eslint 'src/**/*.ts' 'test/**/*.ts'",
     "docs": "typedoc --out docs src && touch docs/.nojekyll",
     "build": "tsc && chmod a+x dist/bin/*",
     "build-watch": "tsc --watch",
-    "unit-php": "./vendor/bin/phpunit --bootstrap vendor/autoload.php test/unit/*.spec.php",
-    "unit-ts": "jest test/unit",
-    "unit": "npm run unit-ts && npm run unit-php",
-    "integration": "./bin/build-integration.js && jest test/integration.spec.js",
+    "unit": "jest test/unit",
+    "build-integration": "node -e \"require('./dist/target-js/utils/case').compileAll()\"",
+    "integration": "npm run build-integration && jest test/integration.spec.js",
+    "e2e": "./bin/build-e2e.js && karma start ./test/karma.conf.js --single-run",
+    "test": "npm run unit && npm run build && npm run e2e",
     "coveralls": "jest test/unit --coverage && cat coverage/lcov.info | coveralls",
-    "test": "npm run build && npm run unit && npm run integration && npm run e2e",
-    "render": "./bin/render.js",
     "version": "npm run build && npm run docs",
-    "e2e": "./bin/build-e2e.js && npx karma start ./test/karma.conf.js --single-run",
     "semantic-release": "semantic-release"
   },
   "repository": {
@@ -80,6 +77,7 @@
     "karma-jasmine": "^2.0.1",
     "karma-remap-istanbul": "^0.6.0",
     "karma-sourcemap-loader": "^0.3.7",
+    "san": "^3.7.9",
     "semantic-release": "^15.13.27",
     "typedoc": "^0.15.0",
     "wdio-jasmine-framework": "^0.3.0",
@@ -91,12 +89,15 @@
     "chalk": "^2.4.2",
     "debug": "^4.1.1",
     "lodash": "^4.17.15",
-    "san": "^3.7.8",
+    "san-ssr-target-js": "^1.0.0",
     "snake-case": "^2.1.0",
     "ts-morph": "^4.0.1",
     "ts2php": "^0.14.0",
     "typescript": "^3.4.5",
     "yargs": "^14.2.0"
+  },
+  "peerDependencies": {
+    "san": "^3.7.8"
   },
   "release": {
     "branch": "master",
@@ -110,6 +111,7 @@
         {
           "assets": [
             "docs",
+            "package.json",
             "CHANGELOG.md"
           ],
           "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"

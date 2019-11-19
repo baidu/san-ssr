@@ -1,9 +1,21 @@
-#!/usr/bin/env bash
-set -e
+#!/usr/bin/env node
 
-if [ "$1" == "" ]; then
-    echo specify a test case name
-    exit 1
-fi
+const { execCommandSync, assertSanHTMLEqual } = require('../dist/index')
+const chalk = require('chalk')
+const fs = require('fs')
+const { resolve } = require('path')
+const { compile } = require('../dist/utils/case')
 
-node ./dist/bin/debug.js $1
+const caseName = process.argv[2]
+if (!caseName) throw new Error('echo specify a test case name')
+
+const htmlPath = resolve(__dirname, '../test/cases', caseName, 'expected.html')
+const expected = fs.readFileSync(htmlPath, 'utf8')
+console.log(chalk.cyan(`[EXPECTED] ${caseName}`), expected)
+
+compile(caseName)
+const got = execCommandSync(resolve(__dirname, `./render.js`), [caseName])
+const pass = assertSanHTMLEqual(got, expected)
+console.log(chalk[pass ? 'green' : 'red'](`[ SSR JS ] ${caseName}`), got)
+
+if (!pass) process.exit(1)

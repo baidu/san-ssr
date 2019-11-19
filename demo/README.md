@@ -6,20 +6,18 @@
 npm install
 ```
 
-## SSR in PHP
+## Generage ssr.js
 
-Generate ssr file in PHP (`dist/index.php`) and pass `data.json` to it:
+Generate ssr file in JavaScript (`dist/index.js`):
 
 ```bash
-npm run build-php   // or `npm run gulpbuild-php`
-npm run render-php
+npm run build   // or `npm run jsbuild`
 ```
 
-## SSR in JavaScript
+## Render
 
-Generate ssr file in JavaScript (`dist/index.js`) and pass `data.json` to it:
+Pass `data.json` to `ssr.js`:
 
 ```bash
-npm run build-js    // or `npm run gulpbuild-js`
-npm run render-js
+npm run render
 ```

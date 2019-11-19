@@ -26,7 +26,7 @@
     "build-watch": "tsc --watch",
     "unit": "jest test/unit",
     "coveralls": "jest test/unit --coverage && cat coverage/lcov.info | coveralls",
-    "test": "npm run unit && npm run e2e",
+    "test": "npm run unit && npm run build && npm run e2e",
     "version": "npm run build && npm run docs",
     "e2e": "./bin/build-e2e.js && karma start ./test/karma.conf.js --single-run",
     "semantic-release": "semantic-release"

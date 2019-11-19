@@ -2,27 +2,17 @@
   "name": "demo",
   "version": "1.0.0",
   "private": "true",
-  "description": "demo for san-ssr-php",
+  "description": "demo for san-ssr",
   "main": "index.js",
   "scripts": {
-    "build": "npm run build-js && npm run build-php",
-    "build-php": "san-ssr -t php -p 'demo\\' src/index.ts > dist/index.php",
-    "build-js": "san-ssr -t js  src/index.ts > dist/index.js",
-    "gulpbuild": "gulp js php",
-    "gulpbuild-js": "gulp js",
-    "gulpbuild-php": "gulp php",
-    "render": "npm run render-js && npm run render-php",
-    "render-js": "./bin/render.js",
-    "render-php": "./bin/render.php"
+    "build": "san-ssr src/index.ts > dist/index.js",
+    "jsbuild": "node build.js",
+    "render": "./bin/render.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "san-ssr": "..",
+    "san-ssr": "*",
     "san": "^3.7.9"
-  },
-  "devDependencies": {
-    "gulp": "^4.0.2",
-    "plugin-error": "^1.0.1"
   }
 }

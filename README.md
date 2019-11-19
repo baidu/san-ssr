@@ -13,11 +13,17 @@
 
 **The purpurse of this repo** is to provide an SSR framework and utils for the [san][san] components.
 
-## Target
+## Work with San
+
+Supported san versions for each release are specified by `peerDependencies`, that means you'll need both `san` and `san-ssr` installed in case you need server side rendering. And it's considered compatible as long as you don't see any `UNMET` warning.
+
+Note: As described in [baidu/san/issues/441](https://github.com/baidu/san/issues/441#issuecomment-550260372), a minor version in san implies possible BREAKING CHANGES, thus the peerDependency is specified via [tilde version](https://docs.npmjs.com/misc/semver#tilde-ranges-123-12-1).
+
+## Target Platforms
 
 san-ssr provides static analysis for San components and generates abstract component tree, while code generation is a separated process, which is provided by specific implementations:
 
-* [san-ssr-target-js](https://github.com/searchfe/san-ssr-target-js)
+* [san-ssr-target-js](https://github.com/searchfe/san-ssr/tree/master/src/target-js)
 * [san-ssr-target-php](https://github.com/searchfe/san-ssr-target-php)
 
 ## CLI Usage
@@ -37,7 +43,7 @@ Options:
   --tsconfig, -c        tsconfig path, will auto resolve if not specified
 ```
 
-san-ssr will lookup `san-ssr-target-{target}` from node_modules to generate target code. The san-ssr-target-js package is installed as a dependency of san-ssr by default.
+san-ssr will lookup `san-ssr-target-${target}` from package from CWD for target code transpiler. The `san-ssr-target-js` package is installed as a dependency of san-ssr.
 
 ```bash
 san-ssr ./component.js > ssr.js

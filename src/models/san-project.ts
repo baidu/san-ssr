@@ -1,10 +1,10 @@
 import { sep, resolve } from 'path'
-import { cwd } from 'process'
 import { getDefaultTSConfigPath } from '../parsers/tsconfig'
 import { Compiler } from '../models/compiler'
 import { SanAppParser } from '../parsers/san-app-parser'
 import { Project } from 'ts-morph'
 import { Modules } from '../loaders/common-js'
+import { loadCompilerClassByTarget } from '../loaders/target'
 
 export type SanProjectOptions = {
     tsConfigFilePath?: string,
@@ -58,15 +58,7 @@ export class SanProject {
     }
 
     private loadCompilerClass (target: string | CompilerClass) {
-        if (typeof target === 'function') return target
-        const pluginName = cwd() + '/node_modules/san-ssr-target-' + target
-        try {
-            const plugin = require(pluginName)
-            return plugin.default || plugin
-        } catch (e) {
-            throw new Error(
-                `failed to load "san-ssr-target-${target}": ${e.message}`
-            )
-        }
+        if (typeof target === 'string') return loadCompilerClassByTarget(target)
+        return target
     }
 }

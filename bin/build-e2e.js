@@ -3,7 +3,7 @@
 const fs = require('fs')
 const { join, resolve } = require('path')
 const testRoot = resolve(__dirname, '../test')
-const { tsCode2js } = require('../dist/target-js/compilers/ts2js')
+const { tsCode2js } = require('../dist/transpilers/ts2js')
 const tsConfig = require('../test/tsconfig.json')
 
 let html = ''

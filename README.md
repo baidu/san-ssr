@@ -17,8 +17,8 @@
 
 san-ssr provides static analysis for San components and generates abstract component tree, while code generation is a separated process, which is provided by specific implementations:
 
-* [san-ssr-target-js](https://github.com/searchfe/san-ssr/tree/master/src/target-js)
-* [san-ssr-target-php](https://github.com/searchfe/san-ssr/tree/master/src/target-php)
+* [san-ssr-target-js](https://github.com/searchfe/san-ssr-target-js)
+* [san-ssr-target-php](https://github.com/searchfe/san-ssr-target-php)
 
 ## CLI Usage
 
@@ -74,26 +74,6 @@ writeFileSync('ssr.js', targetCode)
 The [SanProject#compile(filepath, target, options)][compile] has a third parameter `options`, which is passed
 directly to the target code generator's [compile(sanApp, options)][target-compile] as the second parameter.
 
-## Contribute
-
-Development Prerequisites:
-
-* Node.js>=8
-* PHP 7
-* [composer](https://getcomposer.org)
-
-Install dependencies:
-
-```bash
-npm install
-composer install
-```
-
-Run tests
-
-```bash
-npm test
-```
 
 [san]: https://github.com/baidu/san
 [sanproject]: https://searchfe.github.io/san-ssr/classes/_models_san_project_.sanproject.html

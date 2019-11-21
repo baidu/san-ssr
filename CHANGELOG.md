@@ -1,3 +1,10 @@
+## [1.3.9](https://github.com/searchfe/san-ssr/compare/v1.3.8...v1.3.9) (2019-11-21)
+
+
+### Bug Fixes
+
+* remove console.log ([6488873](https://github.com/searchfe/san-ssr/commit/64888731d59577c6087bbe333364d2776447709f))
+
 ## [1.3.8](https://github.com/searchfe/san-ssr/compare/v1.3.7...v1.3.8) (2019-11-21)
 
 

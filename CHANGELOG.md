@@ -1,3 +1,10 @@
+## [1.3.8](https://github.com/searchfe/san-ssr/compare/v1.3.7...v1.3.8) (2019-11-21)
+
+
+### Bug Fixes
+
+* multiple parses for the same project ([60424d1](https://github.com/searchfe/san-ssr/commit/60424d113f18d0e2ad1b99aef735bd9d3aff3bb4))
+
 ## [1.3.7](https://github.com/searchfe/san-ssr/compare/v1.3.6...v1.3.7) (2019-11-19)
 
 

@@ -76,7 +76,6 @@ export class SanAppParser {
         if (!this.cache.has(sourceFile)) {
             this.cache.set(sourceFile, this.doParseSanSourceFile(sourceFile))
         }
-        console.log('cache size', this.cache.size)
         return this.cache.get(sourceFile)
     }
 

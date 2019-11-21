@@ -16,6 +16,7 @@ const debug = debugFactory('component-parser')
 export class SanAppParser {
     private root: string
     private id: number = 0
+    private cache: Map<SourceFile, SanSourceFile> = new Map()
     public project: Project
 
     constructor (project: Project) {
@@ -72,7 +73,16 @@ export class SanAppParser {
     }
 
     private parseSanSourceFile (sourceFile: SourceFile) {
+        if (!this.cache.has(sourceFile)) {
+            this.cache.set(sourceFile, this.doParseSanSourceFile(sourceFile))
+        }
+        console.log('cache size', this.cache.size)
+        return this.cache.get(sourceFile)
+    }
+
+    private doParseSanSourceFile (sourceFile: SourceFile) {
         debug('parseSanSourceFile', sourceFile.getFilePath())
+        sourceFile.refreshFromFileSystemSync()
         const componentClassIdentifier = getComponentClassIdentifier(sourceFile)
         const sanSourceFile = SanSourceFile.createFromTSSourceFile(sourceFile, componentClassIdentifier)
 

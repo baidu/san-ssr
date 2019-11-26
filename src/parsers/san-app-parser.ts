@@ -33,6 +33,7 @@ export class SanAppParser {
 
     public parseSanApp (entryFilePath: string, modules: Modules = {}): SanApp {
         debug('parsComponent', entryFilePath)
+        this.project.addExistingSourceFileIfExists(entryFilePath)
         const entrySourceFile = getSourceFileTypeOrThrow(entryFilePath) === SourceFileType.js
             ? SanSourceFile.createFromJSFilePath(entryFilePath)
             : this.parseSanSourceFile(this.project.getSourceFileOrThrow(entryFilePath))

@@ -1,3 +1,10 @@
+## [1.3.10](https://github.com/searchfe/san-ssr/compare/v1.3.9...v1.3.10) (2019-11-26)
+
+
+### Bug Fixes
+
+* add sourcefile before parseSanApp() ([4ad19ed](https://github.com/searchfe/san-ssr/commit/4ad19ed8e1d3eb2d4b7ec427dd398f00b6ce4baf))
+
 ## [1.3.9](https://github.com/searchfe/san-ssr/compare/v1.3.8...v1.3.9) (2019-11-21)
 
 

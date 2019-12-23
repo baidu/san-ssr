@@ -1,3 +1,10 @@
+## [1.3.11](https://github.com/searchfe/san-ssr/compare/v1.3.10...v1.3.11) (2019-12-23)
+
+
+### Bug Fixes
+
+* common-js not caching the actual file path ([aee90ea](https://github.com/searchfe/san-ssr/commit/aee90ea43a7c01ad2aef23a0e5ae0344e9b3f276))
+
 ## [1.3.10](https://github.com/searchfe/san-ssr/compare/v1.3.9...v1.3.10) (2019-11-26)
 
 

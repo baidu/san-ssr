@@ -45,8 +45,7 @@ export class SanProject {
     }
 
     public parseSanApp (filepath: string) {
-        const parser = new SanAppParser(this.tsProject)
-        return parser.parseSanApp(resolve(filepath), this.modules)
+        return this.getParser().parseSanApp(resolve(filepath), this.modules)
     }
 
     private getOrCreateCompilerInstance (target: string | CompilerClass) {
@@ -56,6 +55,10 @@ export class SanProject {
             this.compilers.set(CompilerClass, new CompilerClass(this))
         }
         return this.compilers.get(CompilerClass)
+    }
+
+    private getParser () {
+        return new SanAppParser(this.tsProject)
     }
 
     private loadCompilerClass (target: string | CompilerClass) {

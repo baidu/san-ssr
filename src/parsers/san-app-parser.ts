@@ -14,13 +14,22 @@ import debugFactory from 'debug'
 const debug = debugFactory('component-parser')
 
 export class SanAppParser {
+    public project: Project
     private root: string
     private id: number = 0
-    private cache: Map<SourceFile, SanSourceFile> = new Map()
-    public project: Project
+    private cache: Map<string, SanSourceFile> = new Map()
+    private projectFiles: Map<string, SanSourceFile> = new Map()
+    private commonJS: CommonJS
+    private modules = {}
 
     constructor (project: Project) {
+        debug('SanAppParser created')
         this.project = project
+        this.commonJS = new CommonJS(this.modules, filepath => {
+            if (!this.projectFiles.has(filepath)) return undefined
+            const sourceFile = this.projectFiles.get(filepath)
+            return tsSourceFile2js(sourceFile.tsSourceFile, this.project.getCompilerOptions())
+        })
     }
 
     static createUsingTsconfig (tsConfigFilePath: string) {
@@ -38,18 +47,17 @@ export class SanAppParser {
             ? SanSourceFile.createFromJSFilePath(entryFilePath)
             : this.parseSanSourceFile(this.project.getSourceFileOrThrow(entryFilePath))
 
-        const projectFiles: Map<string, SanSourceFile> = new Map()
-        projectFiles.set(entryFilePath, entrySourceFile)
+        this.projectFiles.set(entryFilePath, entrySourceFile)
 
         if (entrySourceFile.fileType === SourceFileType.ts) {
             const sourceFiles = getDependenciesRecursively(entrySourceFile.tsSourceFile)
 
             for (const [path, file] of sourceFiles) {
-                projectFiles.set(path, this.parseSanSourceFile(file))
+                this.projectFiles.set(path, this.parseSanSourceFile(file))
             }
         }
 
-        const entryClass = this.evaluateFile(entrySourceFile, projectFiles, modules)
+        const entryClass = this.evaluateFile(entrySourceFile, modules)
         const componentClasses = new ComponentClassFinder(entryClass).find()
 
         if (entrySourceFile.fileType === SourceFileType.js) {
@@ -58,26 +66,23 @@ export class SanAppParser {
                 componentClass.sanssrCid = i
             }
         }
-        return new SanApp(entrySourceFile, projectFiles, componentClasses)
+        return new SanApp(entrySourceFile, this.projectFiles, componentClasses)
     }
 
-    private evaluateFile (sourceFile: SanSourceFile, projectFiles: Map<string, SanSourceFile>, modules: Modules) {
+    private evaluateFile (sourceFile: SanSourceFile, modules: Modules) {
         if (sourceFile.fileType === SourceFileType.js) {
-            return new CommonJS().require(sourceFile.getFilePath())
+            return this.commonJS.require(sourceFile.getFilePath())
         }
-        const commonJS = new CommonJS(modules, filepath => {
-            if (!projectFiles.has(filepath)) return undefined
-            const sourceFile = projectFiles.get(filepath)
-            return tsSourceFile2js(sourceFile.tsSourceFile, this.project.getCompilerOptions())
-        })
-        return commonJS.require(sourceFile.getFilePath()).default
+        Object.assign(this.modules, modules)
+        return this.commonJS.require(sourceFile.getFilePath()).default
     }
 
     private parseSanSourceFile (sourceFile: SourceFile) {
-        if (!this.cache.has(sourceFile)) {
-            this.cache.set(sourceFile, this.doParseSanSourceFile(sourceFile))
+        const filePath = sourceFile.getFilePath()
+        if (!this.cache.has(filePath)) {
+            this.cache.set(filePath, this.doParseSanSourceFile(sourceFile))
         }
-        return this.cache.get(sourceFile)
+        return this.cache.get(filePath)
     }
 
     private doParseSanSourceFile (sourceFile: SourceFile) {

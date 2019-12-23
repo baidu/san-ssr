@@ -30,6 +30,7 @@ export class CommonJS {
     public cache = new Map()
 
     constructor (modules: Modules = {}, readFile: FileLoader = defaultFileLoader) {
+        debug('CommonJS created')
         this.modules = modules
         if (typeof readFile === 'function') {
             this.readFileImpl = readFile
@@ -40,10 +41,9 @@ export class CommonJS {
 
     require (filepath: string, specifier: string = filepath) {
         debug('global require called with', filepath)
-        if (!this.cache.has(filepath)) {
+        const [actualFilePath, fileContent] = this.readModuleContent(filepath, specifier)
+        if (!this.cache.has(actualFilePath)) {
             debug('cache miss, reading', filepath)
-
-            const fileContent = this.readModuleContent(filepath, specifier)
             const mod = new Module(filepath, fileContent)
             const fn = new Function('module', 'exports', 'require', mod.content) // eslint-disable-line
 
@@ -60,27 +60,30 @@ export class CommonJS {
 
                 return require(path)
             })
-            return mod.exports
+            this.cache.set(actualFilePath, mod.exports)
         }
-        return this.cache.get(filepath)
+        return this.cache.get(actualFilePath)
     }
 
     private readModuleContent (filepath: string, specifier: string) {
         if (this.modules[specifier] !== undefined) {
-            return this.modules[specifier]
+            return [specifier, this.modules[specifier]]
         }
         if (this.modules[filepath] !== undefined) {
-            return this.modules[filepath]
+            return [filepath, this.modules[filepath]]
         }
 
-        const fileContent = this.readFileImpl(filepath, specifier) ||
-            this.readFileImpl(filepath + '.ts') ||
-            this.readFileImpl(filepath + '.js')
-
-        if (fileContent === undefined) {
-            throw new Error(`file ${filepath} not found`)
+        let fileContent
+        if ((fileContent = this.readFileImpl(filepath, specifier))) {
+            return [filepath, fileContent]
         }
-        return fileContent
+        if ((fileContent = this.readFileImpl(filepath + '.ts', specifier))) {
+            return [filepath + '.ts', fileContent]
+        }
+        if ((fileContent = this.readFileImpl(filepath + '.js', specifier))) {
+            return [filepath + '.js', fileContent]
+        }
+        throw new Error(`file ${filepath} not found`)
     }
 }
 

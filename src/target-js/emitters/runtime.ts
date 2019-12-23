@@ -1,5 +1,5 @@
 import { readStringSync } from '../utils/fs'
-import { Emitter } from '../../index'
+import { Emitter } from '../../utils/emitter'
 import { resolve } from 'path'
 
 export function emitRuntime (emitter: Emitter) {

@@ -1,7 +1,9 @@
 import { compileExprSource } from './expr-compiler'
 import { ElementCompiler } from './element-compiler'
 import { stringifier } from './stringifier'
-import { SanComponent, ANode, getANodeProps, getANodePropByName, isComponentLoader } from '../..'
+import { SanComponent, isComponentLoader } from '../../models/component'
+import { ANode } from '../../models/anode'
+import { getANodeProps, getANodePropByName } from '../../utils/anode'
 
 /**
 * ANode 的编译方法集合对象

@@ -1,5 +1,7 @@
-import { ANode, getANodePropByName, autoCloseTags } from '../..'
 import { compileExprSource } from './expr-compiler'
+import { ANode } from '../../models/anode'
+import { getANodePropByName } from '../../utils/anode'
+import { autoCloseTags } from '../../utils/element'
 
 /*
 * element 的编译方法集合对象

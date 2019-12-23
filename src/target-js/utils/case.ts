@@ -1,3 +1,8 @@
+/**
+ * Note:
+ *   * this file is ONLY intended for development usage
+ *   * do NOT import this file in other source files
+ */
 import { startMeasure } from './timing'
 import { readdirSync, writeFileSync, existsSync } from 'fs'
 import { resolve, join } from 'path'
@@ -6,8 +11,8 @@ import ToJSCompiler from '../index'
 import debugFactory from 'debug'
 
 const debug = debugFactory('case')
-const caseRoot = resolve(__dirname, '../../test/cases')
-const tsConfigFilePath = resolve(__dirname, '../../test/tsconfig.json')
+const caseRoot = resolve(__dirname, '../../../test/cases')
+const tsConfigFilePath = resolve(__dirname, '../../../test/tsconfig.json')
 const cases = readdirSync(caseRoot)
 const sanProject = new SanProject({ tsConfigFilePath })
 

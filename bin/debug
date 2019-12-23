@@ -2,15 +2,23 @@
 
 const { execCommandSync, assertSanHTMLEqual } = require('../dist/index')
 const chalk = require('chalk')
-const fs = require('fs')
+const { readFileSync, readdirSync } = require('fs')
 const { resolve } = require('path')
-const { compile } = require('../dist/utils/case')
+const { compile } = require('../dist/target-js/utils/case')
+const root = resolve(__dirname, '../test/cases')
 
 const caseName = process.argv[2]
-if (!caseName) throw new Error('echo specify a test case name')
+if (!caseName) {
+    console.error('Usage: debug <CASE_NAME>')
+    console.error('Example: debug array-literal')
+    console.error()
+    console.error('Available case names:')
+    console.error(readdirSync(root).map(x => `  - ${x}`).join('\n'))
+    process.exit(1)
+}
 
-const htmlPath = resolve(__dirname, '../test/cases', caseName, 'expected.html')
-const expected = fs.readFileSync(htmlPath, 'utf8')
+const htmlPath = resolve(root, caseName, 'expected.html')
+const expected = readFileSync(htmlPath, 'utf8')
 console.log(chalk.cyan(`[EXPECTED] ${caseName}`), expected)
 
 compile(caseName)

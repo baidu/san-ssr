@@ -70,8 +70,9 @@ export class SanAppParser {
     }
 
     private evaluateFile (sourceFile: SanSourceFile, modules: Modules) {
+        // TODO move entryFile to constructor argument and remove this branch
         if (sourceFile.fileType === SourceFileType.js) {
-            return this.commonJS.require(sourceFile.getFilePath())
+            return new CommonJS(this.modules).require(sourceFile.getFilePath())
         }
         Object.assign(this.modules, modules)
         return this.commonJS.require(sourceFile.getFilePath()).default

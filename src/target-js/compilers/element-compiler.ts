@@ -2,6 +2,7 @@ import { compileExprSource } from './expr-compiler'
 import { ANode } from '../../models/anode'
 import { getANodePropByName } from '../../utils/anode'
 import { autoCloseTags } from '../../utils/element'
+import { ExprType } from 'san'
 
 /*
 * element 的编译方法集合对象
@@ -39,8 +40,24 @@ export class ElementCompiler {
         for (const prop of props) {
             propsIndex[prop.name] = prop
 
-            if (prop.name !== 'slot' && prop.expr.value != null) {
-                sourceBuffer.joinString(' ' + prop.name + '="' + prop.expr.segs[0].literal + '"')
+            if (prop.name !== 'slot') {
+                switch (prop.expr.type) {
+                case ExprType.BOOL:
+                    sourceBuffer.joinString(' ' + prop.name)
+                    break
+
+                case ExprType.STRING:
+                    sourceBuffer.joinString(' ' + prop.name + '="' +
+                        prop.expr.literal + '"')
+                    break
+
+                default:
+                    if (prop.expr.value != null) {
+                        sourceBuffer.joinString(' ' + prop.name + '="' +
+                            compileExprSource.expr(prop.expr) + '"')
+                    }
+                    break
+                }
             }
         }
 
@@ -128,14 +145,12 @@ export class ElementCompiler {
                 break
 
             default:
-                if (prop.hasOwnProperty('raw')) {
-                    sourceBuffer.joinRaw('attrFilter("' + prop.name + '", ' +
-                        (prop.x ? 'escapeHTML(' : '') +
-                        compileExprSource.expr(prop.expr) +
-                        (prop.x ? ')' : '') +
-                        ')'
-                    )
-                }
+                const onlyOneAccessor = prop.expr.type === ExprType.ACCESSOR
+                sourceBuffer.joinRaw('attrFilter("' + prop.name + '", ' +
+                    compileExprSource.expr(prop.expr) +
+                    (prop.x || onlyOneAccessor ? ', true' : '') +
+                    ')'
+                )
                 break
             }
         }
@@ -158,11 +173,11 @@ export class ElementCompiler {
             'case "readonly":\n' +
             'case "disabled":\n' +
             'case "multiple":\n' +
-            'case "multiple":\n' +
-            'html += boolAttrFilter($key, escapeHTML($value));\n' +
+            'case "checked":\n' +
+            'html += boolAttrFilter($key, $value);\n' +
             'break;\n' +
             'default:\n' +
-            'html += attrFilter($key, escapeHTML($value));' +
+            'html += attrFilter($key, $value, true);' +
             '}'
             )
 

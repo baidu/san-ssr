@@ -127,14 +127,6 @@ export const compileExprSource = {
             return '""'
         }
 
-        let code = ''
-
-        // for (const seg of textExpr.segs) {
-        //     const segCode = compileExprSource.expr(seg)
-        //     code += code ? ' + ' + segCode : segCode
-        // }
-
-        // return code
         return textExpr.segs
             .map(seg => compileExprSource.expr(seg))
             .map(seg => `(${seg})`)

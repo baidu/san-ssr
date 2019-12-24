@@ -1,5 +1,10 @@
 /* eslint @typescript-eslint/no-unused-vars: "off" */
 const $version = '3.7.7'
+const BASE_PROPS = {
+    'class': 1,
+    'style': 1,
+    'id': 1
+}
 
 function sortedStringify (obj) {
     if (typeof obj !== 'object') {
@@ -125,16 +130,18 @@ function _xstyleFilter (outer, inner) {
     return inner
 }
 
-function attrFilter (name, value) {
-    return ' ' + name + '="' + value + '"'
-}
-
-function boolAttrFilter (name, value) {
-    if (value && value !== 'false' && value !== '0') {
-        return ' ' + name
+function attrFilter (name, value, needHTMLEscape) {
+    if (value) {
+        return ' ' + name + '="' + (needHTMLEscape ? escapeHTML(value) : value) + '"'
+    } else if (value != null && !BASE_PROPS[name]) {
+        return ' ' + name + '="' + value + '"'
     }
 
     return ''
+}
+
+function boolAttrFilter (name, value) {
+    return value ? ' ' + name : ''
 }
 
 function callFilter (ctx, name, args) {

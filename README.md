@@ -11,24 +11,29 @@
 [![DUB license](https://img.shields.io/dub/l/vibe-d.svg)](https://github.com/searchfe/san-ssr/blob/master/LICENSE)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commits)
 
-**The purpurse of this repo** is to provide an SSR framework and utils for the [san][san] components.
+本仓库的 **目的** 是为 [san][san]  提供一个 SSR 代码框架和工具，以及内置了 JavaScript 的代码生成。
 
-## Work with San
+* [English](https://github.com/searchfe/san-ssr/blob/master/README.en.md)
+* SSR 代码迁移：[从 san 到 san-ssr](https://github.com/searchfe/san-ssr/wiki/%E4%BB%8E-san-%E8%BF%81%E7%A7%BB%E5%88%B0-san-ssr)
+* Demo：[demo/](https://github.com/searchfe/san-ssr/tree/master/demo)
 
-Supported san versions for each release are specified by `peerDependencies`, that means you'll need both `san` and `san-ssr` installed in case you need server side rendering. And it's considered compatible as long as you don't see any `UNMET` warning.
+## 安装
 
-Note: As described in [baidu/san/issues/441](https://github.com/baidu/san/issues/441#issuecomment-550260372), a minor version in san implies possible BREAKING CHANGES, thus the peerDependency is specified via [tilde version](https://docs.npmjs.com/misc/semver#tilde-ranges-123-12-1).
+```bash
+npm i san@latest san-ssr@latest
+```
 
-## Target Platforms
+san-ssr 需要 san 提供的模板字符串解析和 TypeScript 类型，因此对 san 的版本有依赖。你需要安装对应版本的 san 和 san-ssr。
+san-ssr 支持的 san 版本声明在 `peerDependencies` 里，因此只要能安装成功就能正确工作。一般的建议如下：
 
-san-ssr provides static analysis for San components and generates abstract component tree, while code generation is a separated process, which is provided by specific implementations:
+* 如果是新项目，建议使用 `npm i san@latest san-ssr@latest`
+* 否则从 san-ssr 最新版本开始降主版本号找到能安装成功的版本。
 
-* [san-ssr-target-js](https://github.com/searchfe/san-ssr/tree/master/src/target-js)
-* [san-ssr-target-php](https://github.com/searchfe/san-ssr-target-php)
+更多讨论请参考：[baidu/san/issues/441](https://github.com/baidu/san/issues/441#issuecomment-550260372)
 
-## CLI Usage
+## 命令行工具
 
-Command line interface:
+san-ssr 提供了命令行工具来编译 san 组件到 SSR 代码。
 
 ```none
 > san-ssr
@@ -43,45 +48,96 @@ Options:
   --tsconfig, -c        tsconfig path, will auto resolve if not specified
 ```
 
-san-ssr will lookup `san-ssr-target-${target}` from package from CWD for target code transpiler. The `san-ssr-target-js` is builtin san-ssr by default.
+输入文件需要把 ComponentClass 作为默认导出。对于
+
+* TypeScript 是 `export default ComponentClass`
+* CommonJS 是 `exports = module.exports = ComponentClass`
+
+把 component.js 编译到 ssr.js：
 
 ```bash
 san-ssr ./component.js > ssr.js
 ```
 
-## Programmatic Interface
+## 编程接口
 
-The [SanProject class][sanproject] is used to compile component files into ssr code string.
+[SanProject 类][sanproject] 提供了你会用到的所有接口：
 
-TypeScript:
+* 输入可以是组件对象，也可以是组件文件，这个文件可以是 JavaScript 文件，也可以是 TypeScript 文件。
+* 输出可以是 CommonJS 代码，也可以一个 render 函数。
+
+TypeScript 编写的 San 组件:
+
+```typescript
+import { SanProject } from 'san-project'
+import { writeFileSync } from 'fs'
+
+const project = new SanProject()
+const targetCode = project.compile('src/component.ts')
+
+writeFileSync('ssr.js', targetCode)
+```
+
+JavaScript 编写的 San 组件:
+
+```javascript
+const { SanProject } = require('san-project')
+import { writeFileSync } from 'fs'
+
+const project = new SanProject()
+const targetCode = project.compile('src/component.js')
+
+writeFileSync('ssr.js', targetCode)
+```
+
+输出到 render 函数：
+
+```typescript
+import { SanProject } from 'san-project'
+import { writeFileSync } from 'fs'
+
+const project = new SanProject()
+const render = project.compileToRenderer('src/component.ts')
+
+console.log(render({name: 'harttle'}))
+```
+
+Compile 还支持目标平台、编译参数，详细请参考 API 文档：[SanProject#compile(filepath, target, options)][compile]。
+
+## 其他目标平台
+
+san-ssr 提供了 San 组件的静态分析，提供了项目文件集合和 San 组件树，以及二者的对应关系。
+具体的代码生成抽象为 [Compiler 接口][compiler]，目前有 JS 和 PHP 两个实现，其中 san-ssr-target-js 内置在本仓库中：
+
+* [san-ssr-target-js](https://github.com/searchfe/san-ssr/tree/master/src/target-js)
+* [san-ssr-target-php](https://github.com/searchfe/san-ssr-target-php)
+
+CLI 参数 `--target` 参数用来选择目标代码，默认为 `js`：
+
+```bash
+san-ssr --target js ./component.js > ssr.js
+```
+
+编程接口也可以通过 `SanProject#compile()` 的第二个参数来指定目标，第三个参数来指定传给 Compiler 实现的参数：
 
 ```typescript
 import { Target, SanProject } from 'san-project'
 import { writeFileSync } from 'fs'
 
 const project = new SanProject()
-const targetCode = project.compile('src/component.ts', Target.js)
+const targetCode = project.compile('src/component.ts', Target.PHP, { emitHeader: true })
 
-writeFileSync('ssr.js', targetCode)
+writeFileSync('ssr.php', targetCode)
 ```
 
-Or in JavaScript:
+指定非 `js` 的目标时，san-ssr 会从 CWD 开始寻找 `san-ssr-target-${target}` 的包，因此需要作为 san-ssr 的 peer 来安装。例如：
 
-```typescript
-const { SanProject } = require('san-project')
-import { writeFileSync } from 'fs'
-
-const project = new SanProject()
-const targetCode = project.compile('src/component.js', 'js')
-
-writeFileSync('ssr.js', targetCode)
+```bash
+npm i san-ssr san-ssr-target-php
 ```
-
-The [SanProject#compile(filepath, target, options)][compile] has a third parameter `options`, which is passed
-directly to the target code generator's [compile(sanApp, options)][target-compile] as the second parameter.
-
 
 [san]: https://github.com/baidu/san
 [sanproject]: https://searchfe.github.io/san-ssr/classes/_models_san_project_.sanproject.html
 [compile]: https://searchfe.github.io/san-ssr/classes/_models_san_project_.sanproject.html#compile
 [target-compile]: https://searchfe.github.io/san-ssr/interfaces/_models_compiler_.compiler.html#compile
+[compiler]: https://github.com/searchfe/san-ssr/blob/809fc8eb710253f6e5aa3bd1afc0b7f615ef572e/src/models/compiler.ts#L3

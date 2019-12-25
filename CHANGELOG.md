@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/searchfe/san-ssr/compare/v1.3.11...v1.4.0) (2019-12-25)
+
+
+### Features
+
+* noTemplateOutput, see [#34](https://github.com/searchfe/san-ssr/issues/34) ([6038a0a](https://github.com/searchfe/san-ssr/commit/6038a0a1bce60f1370092393dddba3e3a7b70fac))
+
 ## [1.3.11](https://github.com/searchfe/san-ssr/compare/v1.3.10...v1.3.11) (2019-12-23)
 
 

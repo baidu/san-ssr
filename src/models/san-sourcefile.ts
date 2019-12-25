@@ -36,6 +36,13 @@ export class SanSourceFile {
         })
     }
 
+    static createVirtualSourceFile () {
+        return new SanSourceFile({
+            filepath: '/tmp/virtual-file',
+            fileType: SourceFileType.js
+        })
+    }
+
     getClassDeclarations () {
         return this.tsSourceFile.getClasses()
     }

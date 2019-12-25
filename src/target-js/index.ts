@@ -29,10 +29,13 @@ export default class ToJSCompiler implements Compiler {
     }
 
     public compile (sanApp: SanApp, {
-        noTemplateOutput = false
+        noTemplateOutput = false,
+        bareFunction = false
     }) {
         const emitter = new JSEmitter()
-        emitter.write('module.exports = ')
+        if (!bareFunction) {
+            emitter.write('exports = module.exports = ')
+        }
         emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => {
             emitRuntime(emitter)
             for (const componentClass of sanApp.componentClasses) {

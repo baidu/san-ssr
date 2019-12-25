@@ -29,6 +29,7 @@
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-unused-vars": ["error", { "varsIgnorePattern": "debug" }],
     "no-unused-vars": "off",
+    "no-dupe-class-members": "off",
     "import/export": "off"
   }
 }

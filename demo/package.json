@@ -5,14 +5,16 @@
   "description": "demo for san-ssr",
   "main": "index.js",
   "scripts": {
-    "build": "san-ssr src/index.ts > dist/index.js",
-    "jsbuild": "node build.js",
+    "cli-build": "san-ssr src/index.ts > dist/index.js",
+    "ts-build": "node ts-build.js",
+    "cpnt-build": "ts-node cpnt-build.js",
     "render": "./bin/render.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "san": "^3.7.9",
     "san-ssr": "*",
-    "san": "^3.7.9"
+    "ts-node": "^8.5.4"
   }
 }

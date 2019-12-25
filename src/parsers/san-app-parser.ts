@@ -1,4 +1,5 @@
 import { getComponentClassIdentifier, isChildClassOf } from '../utils/ast-util'
+import { resolve } from 'path'
 import { ComponentClassFinder } from './component-class-finder'
 import { CommonJS, Modules } from '../loaders/common-js'
 import { tsSourceFile2js } from '../transpilers/ts2js'
@@ -8,6 +9,7 @@ import { Project, SourceFile, ClassDeclaration } from 'ts-morph'
 import { getDefaultTSConfigPath } from './tsconfig'
 import { getDependenciesRecursively } from './dependency-resolver'
 import { SanApp } from '../models/san-app'
+import { Component } from 'san'
 import { SourceFileType, getSourceFileTypeOrThrow } from '../models/source-file-type'
 import debugFactory from 'debug'
 
@@ -40,8 +42,14 @@ export class SanAppParser {
         return SanAppParser.createUsingTsconfig(getDefaultTSConfigPath())
     }
 
+    public parseSanAppFromComponentClass (componentClass: typeof Component) {
+        const sourceFile = SanSourceFile.createVirtualSourceFile()
+        return new SanApp(sourceFile, this.projectFiles, [componentClass as any])
+    }
+
     public parseSanApp (entryFilePath: string, modules: Modules = {}): SanApp {
         debug('parsComponent', entryFilePath)
+        entryFilePath = resolve(entryFilePath)
         this.project.addExistingSourceFileIfExists(entryFilePath)
         const entrySourceFile = getSourceFileTypeOrThrow(entryFilePath) === SourceFileType.js
             ? SanSourceFile.createFromJSFilePath(entryFilePath)

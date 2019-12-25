@@ -78,24 +78,27 @@
 					<a href="https://david-dm.org/searchfe/san-ssr?type=dev"><img src="https://img.shields.io/david/dev/searchfe/san-ssr.svg" alt="David Dev"></a>
 					<a href="https://github.com/searchfe/san-ssr/blob/master/LICENSE"><img src="https://img.shields.io/dub/l/vibe-d.svg" alt="DUB license"></a>
 				<a href="https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commits"><img src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg" alt="Commitizen friendly"></a></p>
-				<p><strong>The purpurse of this repo</strong> is to provide an SSR framework and utils for the <a href="https://github.com/baidu/san">san</a> components.</p>
-				<a href="#work-with-san" id="work-with-san" style="color: inherit; text-decoration: none;">
-					<h2>Work with San</h2>
-				</a>
-				<p>Supported san versions for each release are specified by <code>peerDependencies</code>, that means you&#39;ll need both <code>san</code> and <code>san-ssr</code> installed in case you need server side rendering. And it&#39;s considered compatible as long as you don&#39;t see any <code>UNMET</code> warning.</p>
-				<p>Note: As described in <a href="https://github.com/baidu/san/issues/441#issuecomment-550260372">baidu/san/issues/441</a>, a minor version in san implies possible BREAKING CHANGES, thus the peerDependency is specified via <a href="https://docs.npmjs.com/misc/semver#tilde-ranges-123-12-1">tilde version</a>.</p>
-				<a href="#target-platforms" id="target-platforms" style="color: inherit; text-decoration: none;">
-					<h2>Target Platforms</h2>
-				</a>
-				<p>san-ssr provides static analysis for San components and generates abstract component tree, while code generation is a separated process, which is provided by specific implementations:</p>
+				<p>本仓库的 <strong>目的</strong> 是为 <a href="https://github.com/baidu/san">san</a>  提供一个 SSR 代码框架和工具，以及内置了 JavaScript 的代码生成。</p>
 				<ul>
-					<li><a href="https://github.com/searchfe/san-ssr/tree/master/src/target-js">san-ssr-target-js</a></li>
-					<li><a href="https://github.com/searchfe/san-ssr-target-php">san-ssr-target-php</a></li>
+					<li><a href="https://github.com/searchfe/san-ssr/blob/master/README.en.md">English</a></li>
+					<li>SSR 代码迁移：<a href="https://github.com/searchfe/san-ssr/wiki/%E4%BB%8E-san-%E8%BF%81%E7%A7%BB%E5%88%B0-san-ssr">从 san 到 san-ssr</a></li>
+					<li>Demo：<a href="https://github.com/searchfe/san-ssr/tree/master/demo">demo/</a></li>
 				</ul>
-				<a href="#cli-usage" id="cli-usage" style="color: inherit; text-decoration: none;">
-					<h2>CLI Usage</h2>
+				<a href="#安装" id="安装" style="color: inherit; text-decoration: none;">
+					<h2>安装</h2>
 				</a>
-				<p>Command line interface:</p>
+				<pre><code class="language-bash">npm i san@latest san-ssr@latest</code></pre>
+				<p>san-ssr 需要 san 提供的模板字符串解析和 TypeScript 类型，因此对 san 的版本有依赖。你需要安装对应版本的 san 和 san-ssr。
+				san-ssr 支持的 san 版本声明在 <code>peerDependencies</code> 里，因此只要能安装成功就能正确工作。一般的建议如下：</p>
+				<ul>
+					<li>如果是新项目，建议使用 <code>npm i san@latest san-ssr@latest</code></li>
+					<li>否则从 san-ssr 最新版本开始降主版本号找到能安装成功的版本。</li>
+				</ul>
+				<p>更多讨论请参考：<a href="https://github.com/baidu/san/issues/441#issuecomment-550260372">baidu/san/issues/441</a></p>
+				<a href="#命令行工具" id="命令行工具" style="color: inherit; text-decoration: none;">
+					<h2>命令行工具</h2>
+				</a>
+				<p>san-ssr 提供了命令行工具来编译 san 组件到 SSR 代码。</p>
 				<pre><code class="language-none">&gt; san-ssr
 san-ssr -o &lt;OUT_FILE&gt; [OPTION]... &lt;FILE&gt;
 
@@ -106,30 +109,67 @@ Options:
   --target, -t          target SSR file                                     [string]
   --targetOptions, -j   options for target compiler in JSON format          [string]
   --tsconfig, -c        tsconfig path, will auto resolve if not specified</code></pre>
-				<p>san-ssr will lookup <code>san-ssr-target-${target}</code> from package from CWD for target code transpiler. The <code>san-ssr-target-js</code> is builtin san-ssr by default.</p>
+				<p>输入文件需要把 ComponentClass 作为默认导出。对于</p>
+				<ul>
+					<li>TypeScript 是 <code>export default ComponentClass</code></li>
+					<li>CommonJS 是 <code>exports = module.exports = ComponentClass</code></li>
+				</ul>
+				<p>把 component.js 编译到 ssr.js：</p>
 				<pre><code class="language-bash">san-ssr ./component.js &gt; ssr.js</code></pre>
-				<a href="#programmatic-interface" id="programmatic-interface" style="color: inherit; text-decoration: none;">
-					<h2>Programmatic Interface</h2>
+				<a href="#编程接口" id="编程接口" style="color: inherit; text-decoration: none;">
+					<h2>编程接口</h2>
 				</a>
-				<p>The <a href="https://searchfe.github.io/san-ssr/classes/_models_san_project_.sanproject.html">SanProject class</a> is used to compile component files into ssr code string.</p>
-				<p>TypeScript:</p>
+				<p><a href="https://searchfe.github.io/san-ssr/classes/_models_san_project_.sanproject.html">SanProject 类</a> 提供了你会用到的所有接口：</p>
+				<ul>
+					<li>输入可以是组件对象，也可以是组件文件，这个文件可以是 JavaScript 文件，也可以是 TypeScript 文件。</li>
+					<li>输出可以是 CommonJS 代码，也可以一个 render 函数。</li>
+				</ul>
+				<p>TypeScript 编写的 San 组件:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { SanProject } <span class="hljs-keyword">from</span> <span class="hljs-string">'san-project'</span>
+<span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs'</span>
+
+<span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
+<span class="hljs-keyword">const</span> targetCode = project.compile(<span class="hljs-string">'src/component.ts'</span>)
+
+writeFileSync(<span class="hljs-string">'ssr.js'</span>, targetCode)</code></pre>
+				<p>JavaScript 编写的 San 组件:</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { SanProject } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'san-project'</span>)
+<span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs'</span>
+
+<span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
+<span class="hljs-keyword">const</span> targetCode = project.compile(<span class="hljs-string">'src/component.js'</span>)
+
+writeFileSync(<span class="hljs-string">'ssr.js'</span>, targetCode)</code></pre>
+				<p>输出到 render 函数：</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { SanProject } <span class="hljs-keyword">from</span> <span class="hljs-string">'san-project'</span>
+<span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs'</span>
+
+<span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
+<span class="hljs-keyword">const</span> render = project.compileToRenderer(<span class="hljs-string">'src/component.ts'</span>)
+
+<span class="hljs-built_in">console</span>.log(render({name: <span class="hljs-string">'harttle'</span>}))</code></pre>
+				<p>Compile 还支持目标平台、编译参数，详细请参考 API 文档：<a href="https://searchfe.github.io/san-ssr/classes/_models_san_project_.sanproject.html#compile">SanProject#compile(filepath, target, options)</a>。</p>
+				<a href="#其他目标平台" id="其他目标平台" style="color: inherit; text-decoration: none;">
+					<h2>其他目标平台</h2>
+				</a>
+				<p>san-ssr 提供了 San 组件的静态分析，提供了项目文件集合和 San 组件树，以及二者的对应关系。
+				具体的代码生成抽象为 <a href="https://github.com/searchfe/san-ssr/blob/809fc8eb710253f6e5aa3bd1afc0b7f615ef572e/src/models/compiler.ts#L3">Compiler 接口</a>，目前有 JS 和 PHP 两个实现，其中 san-ssr-target-js 内置在本仓库中：</p>
+				<ul>
+					<li><a href="https://github.com/searchfe/san-ssr/tree/master/src/target-js">san-ssr-target-js</a></li>
+					<li><a href="https://github.com/searchfe/san-ssr-target-php">san-ssr-target-php</a></li>
+				</ul>
+				<p>CLI 参数 <code>--target</code> 参数用来选择目标代码，默认为 <code>js</code>：</p>
+				<pre><code class="language-bash">san-ssr --target js ./component.js &gt; ssr.js</code></pre>
+				<p>编程接口也可以通过 <code>SanProject#compile()</code> 的第二个参数来指定目标，第三个参数来指定传给 Compiler 实现的参数：</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Target, SanProject } <span class="hljs-keyword">from</span> <span class="hljs-string">'san-project'</span>
 <span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs'</span>
 
 <span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
-<span class="hljs-keyword">const</span> targetCode = project.compile(<span class="hljs-string">'src/component.ts'</span>, Target.js)
+<span class="hljs-keyword">const</span> targetCode = project.compile(<span class="hljs-string">'src/component.ts'</span>, Target.PHP, { emitHeader: <span class="hljs-literal">true</span> })
 
-writeFileSync(<span class="hljs-string">'ssr.js'</span>, targetCode)</code></pre>
-				<p>Or in JavaScript:</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">const</span> { SanProject } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'san-project'</span>)
-<span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs'</span>
-
-<span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
-<span class="hljs-keyword">const</span> targetCode = project.compile(<span class="hljs-string">'src/component.js'</span>, <span class="hljs-string">'js'</span>)
-
-writeFileSync(<span class="hljs-string">'ssr.js'</span>, targetCode)</code></pre>
-				<p>The <a href="https://searchfe.github.io/san-ssr/classes/_models_san_project_.sanproject.html#compile">SanProject#compile(filepath, target, options)</a> has a third parameter <code>options</code>, which is passed
-				directly to the target code generator&#39;s <a href="https://searchfe.github.io/san-ssr/interfaces/_models_compiler_.compiler.html#compile">compile(sanApp, options)</a> as the second parameter.</p>
+writeFileSync(<span class="hljs-string">'ssr.php'</span>, targetCode)</code></pre>
+				<p>指定非 <code>js</code> 的目标时，san-ssr 会从 CWD 开始寻找 <code>san-ssr-target-${target}</code> 的包，因此需要作为 san-ssr 的 peer 来安装。例如：</p>
+				<pre><code class="language-bash">npm i san-ssr san-ssr-target-php</code></pre>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -164,6 +204,9 @@ writeFileSync(<span class="hljs-string">'ssr.js'</span>, targetCode)</code></pre
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_models_expression_.html">"models/expression"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_models_renderer_.html">"models/renderer"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_models_san_app_.html">"models/san-<wbr>app"</a>

@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/searchfe/san-ssr/compare/v1.4.0...v1.5.0) (2019-12-25)
+
+
+### Features
+
+* compileToSource, compileToRenderer, see [#1](https://github.com/searchfe/san-ssr/issues/1) ([b404dfa](https://github.com/searchfe/san-ssr/commit/b404dfa6937228011f65dd175ee5bca8fae3351f))
+
 # [1.4.0](https://github.com/searchfe/san-ssr/compare/v1.3.11...v1.4.0) (2019-12-25)
 
 

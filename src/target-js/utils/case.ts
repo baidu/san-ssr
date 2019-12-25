@@ -20,9 +20,12 @@ export function compile (caseName) {
     debug('compile', caseName)
     const tsFile = join(caseRoot, caseName, 'component.ts')
     const jsFile = resolve(caseRoot, caseName, 'component.js')
+    const noTemplateOutput = caseName.indexOf('notpl') > -1
     const targetCode = sanProject.compile(
         existsSync(jsFile) ? jsFile : tsFile,
-        ToJSCompiler
+        ToJSCompiler, {
+            noTemplateOutput
+        }
     )
 
     writeFileSync(join(caseRoot, caseName, 'ssr.js'), targetCode)

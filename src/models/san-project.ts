@@ -1,4 +1,6 @@
-import { sep, resolve } from 'path'
+import { sep } from 'path'
+import { Renderer } from './renderer'
+import { Component } from 'san'
 import { getDefaultTSConfigPath } from '../parsers/tsconfig'
 import { cwd } from 'process'
 import { Compiler } from '../models/compiler'
@@ -7,16 +9,20 @@ import { Project } from 'ts-morph'
 import { Modules } from '../loaders/common-js'
 import { loadCompilerClassByTarget } from '../loaders/target'
 
-export type SanProjectOptions = {
+export interface SanProjectOptions {
     tsConfigFilePath?: string,
     modules?: Modules
+}
+
+interface CompileOptions {
+    [key: string]: any
 }
 
 type CompilerClass = Partial<{ new(): Compiler}>
 
 /**
- * A SanProject is a directory of source code,
- * including one or more SanApps.
+ * A SanProject corresponds to a TypeScript project,
+ * which is is a set of source files in a directory using one tsconfig.json.
  */
 export class SanProject {
     public tsProject: Project
@@ -38,14 +44,46 @@ export class SanProject {
         this.modules = modules
     }
 
-    public compile (filepath: string, target: string | CompilerClass = 'js', options = {}) {
-        const sanApp = this.parseSanApp(filepath)
+    /**
+     * @alias SanProject.compileToSource
+     */
+    public compile (
+        filepathOrComponentClass: string | typeof Component,
+        target: string | CompilerClass = 'js',
+        options: CompileOptions = {}
+    ) {
+        return this.compileToSource(filepathOrComponentClass, target, options)
+    }
+    public compileToSource (
+        filepathOrComponentClass: string | typeof Component,
+        target: string | CompilerClass = 'js',
+        options: CompileOptions = {}
+    ) {
+        const parser = this.getParser()
+        const sanApp = typeof filepathOrComponentClass === 'string'
+            ? parser.parseSanApp(filepathOrComponentClass, this.modules)
+            : parser.parseSanAppFromComponentClass(filepathOrComponentClass)
+
         const compiler = this.getOrCreateCompilerInstance(target)
         return compiler.compile(sanApp, options)
     }
 
-    public parseSanApp (filepath: string) {
-        return this.getParser().parseSanApp(resolve(filepath), this.modules)
+    /**
+     * Compile to render function in current JavaScript context.
+     *
+     *  * `target` is fixed to "js"
+     *  * `options.bareFunction` is fixed to true
+     */
+    public compileToRenderer (
+        filepathOrComponentClass: string | typeof Component,
+        options: CompileOptions = {}
+    ): Renderer {
+        const targetCode = this.compile(filepathOrComponentClass, 'js', {
+            ...options,
+            bareFunction: true
+        })
+        const renderer = (new Function('return ' + targetCode))() // eslint-disable-line
+        return renderer
     }
 
     private getOrCreateCompilerInstance (target: string | CompilerClass) {

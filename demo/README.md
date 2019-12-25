@@ -1,14 +1,14 @@
 # SSR Demo
 
-## Install
+## 安装
 
 ```
 npm install
 ```
 
-## Generage ssr.js
+## 生成 SSR
 
-Generate ssr file in JavaScript (`dist/index.js`):
+生成 JavaScript 版本的 SSR 文件(`dist/index.js`):
 
 ```bash
 # 用 san-ssr CLI 构建
@@ -19,9 +19,9 @@ npm run ts-build
 npm run cpnt-build
 ```
 
-## Render
+## 渲染
 
-Pass `data.json` to `ssr.js`:
+把 `data.json` 解析出来传给上面生成的 `ssr.js`，得到 HTML 输出:
 
 ```bash
 npm run render

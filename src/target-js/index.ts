@@ -28,13 +28,15 @@ export default class ToJSCompiler implements Compiler {
         this.tsConfigFilePath = require(tsConfigFilePath)
     }
 
-    public compile (sanApp: SanApp) {
+    public compile (sanApp: SanApp, {
+        noTemplateOutput = false
+    }) {
         const emitter = new JSEmitter()
         emitter.write('module.exports = ')
         emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => {
             emitRuntime(emitter)
             for (const componentClass of sanApp.componentClasses) {
-                const renderCompiler = new RendererCompiler(componentClass)
+                const renderCompiler = new RendererCompiler(componentClass, noTemplateOutput)
                 emitter.writeLines(renderCompiler.compileComponentSource())
             }
             const funcName = 'sanssrRenderer' + sanApp.getEntryComponentClassOrThrow().sanssrCid

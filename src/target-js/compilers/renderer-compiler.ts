@@ -17,9 +17,10 @@ export class RendererCompiler<T> {
     private component: SanComponent
     private funcName: string
 
-    constructor (ComponentClass: typeof SanComponent) {
+    constructor (ComponentClass: typeof SanComponent, noTemplateOutput) {
         this.elementSourceCompiler = new ElementCompiler(
-            (...args) => this.aNodeCompiler.compile(...args)
+            (...args) => this.aNodeCompiler.compile(...args),
+            noTemplateOutput
         )
         this.funcName = 'sanssrRenderer' + ComponentClass.sanssrCid
         this.component = new ComponentClass()

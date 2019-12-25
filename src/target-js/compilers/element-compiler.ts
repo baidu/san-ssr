@@ -9,9 +9,11 @@ import { ExprType } from 'san'
 */
 export class ElementCompiler {
     private compileAnode
+    private noTemplateOutput: boolean
 
-    constructor (compileAnode) {
+    constructor (compileAnode, noTemplateOutput) {
         this.compileAnode = compileAnode
+        this.noTemplateOutput = noTemplateOutput
     }
 
     /**
@@ -28,6 +30,8 @@ export class ElementCompiler {
 
         if (tagName) {
             sourceBuffer.joinString('<' + tagName)
+        } else if (this.noTemplateOutput) {
+            return
         } else if (tagNameVariable) {
             sourceBuffer.joinString('<')
             sourceBuffer.joinRaw(tagNameVariable + ' || "div"')
@@ -213,6 +217,8 @@ export class ElementCompiler {
             if (tagName === 'option') {
                 sourceBuffer.addRaw('$optionValue = null;')
             }
+        } else if (this.noTemplateOutput) {
+            // noop
         } else {
             sourceBuffer.joinString('</')
             sourceBuffer.joinRaw(tagNameVariable + ' || "div"')

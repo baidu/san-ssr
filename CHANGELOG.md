@@ -1,3 +1,10 @@
+## [1.5.2](https://github.com/searchfe/san-ssr/compare/v1.5.1...v1.5.2) (2019-12-26)
+
+
+### Bug Fixes
+
+* don't throw when tsconfig not specified ([08aaa10](https://github.com/searchfe/san-ssr/commit/08aaa10dc315f396553f6c708c0c4389c72480ff))
+
 ## [1.5.1](https://github.com/searchfe/san-ssr/compare/v1.5.0...v1.5.1) (2019-12-26)
 
 

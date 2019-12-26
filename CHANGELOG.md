@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/searchfe/san-ssr/compare/v1.5.0...v1.5.1) (2019-12-26)
+
+
+### Bug Fixes
+
+* Renderer signature ([1e0ce6e](https://github.com/searchfe/san-ssr/commit/1e0ce6ef9573a3d60f8e5489c5915922bb6a311d))
+
 # [1.5.0](https://github.com/searchfe/san-ssr/compare/v1.4.0...v1.5.0) (2019-12-25)
 
 

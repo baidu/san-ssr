@@ -1,14 +1,14 @@
 {
-  "extends": ["standard"],
+  "extends": ["plugin:jasmine/recommended"],
   "env": {
-    "jest/globals": true,
+    "jasmine": true,
     "es6": true,
     "browser": true,
     "node": true
   },
   "parser": "@typescript-eslint/parser",
   "plugins": [
-    "jest",
+    "jasmine",
     "standard",
     "@typescript-eslint",
     "promise"
@@ -17,6 +17,7 @@
     "myComponent": true,
     "san": true,
     "wrap": true,
+    "jest": true,
     "clickInfo": true,
     "LI": true,
     "loadInvokeCount": true,

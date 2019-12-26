@@ -1,4 +1,4 @@
-const { readFileSync, readdirSync } = require('fs')
+const { lstatSync, readFileSync, readdirSync } = require('fs')
 const { resolve, join } = require('path')
 const { parseSanHTML, execCommandSync } = require('../dist/index')
 const caseRoot = resolve(__dirname, 'cases')
@@ -9,6 +9,8 @@ jest.setTimeout(10000)
 
 for (const caseName of files) {
     const caseDir = resolve(caseRoot, caseName)
+    if (lstatSync(caseDir).isDirectory()) continue
+
     const htmlPath = join(caseDir, 'expected.html')
     const [expectedData, expectedHtml] = parseSanHTML(readFileSync(htmlPath, 'utf8'))
 

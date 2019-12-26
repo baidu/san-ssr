@@ -9,9 +9,9 @@ describe('SanProject', function () {
         expect(() => new SanProject()).not.toThrow()
     })
 
-    it('should not throw if tsConfigFilePath not found', function () {
+    it('should not throw if tsConfigFilePath not specified', function () {
         expect(() => new SanProject({
-            tsConfigFilePath: null // simulate the case when no tsconfig found
+            tsConfigFilePath: null // simulate the case when no tsconfig specified
         })).not.toThrow()
     })
 
@@ -50,6 +50,14 @@ describe('SanProject', function () {
 
             expect(code).toContain('html += "A')
             expect(code).toMatch(/^function \(data, noDataOutput\) {/)
+        })
+
+        it('should not throw if tsConfigFilePath not specified', function () {
+            const proj = new SanProject({ tsConfigFilePath: null })
+            const componentClass = require(resolve(stubRoot, './a.comp.js'))
+            expect(() => {
+                proj.compile(componentClass, 'js')
+            }).not.toThrow()
         })
     })
 

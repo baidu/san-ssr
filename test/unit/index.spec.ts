@@ -1,6 +1,5 @@
 import { compileToSource, compileToRenderer } from '../../src/index'
 import { defineComponent } from 'san'
-import { resolve } from 'path'
 
 describe('compileToSource', function () {
     it('should compile ComponentClass to JavaScript code', function () {

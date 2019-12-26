@@ -136,9 +136,6 @@ export class RendererCompiler<T> {
             switch (typeof protoMember) {
             case 'function':
                 const funcString = functionString(protoMember)
-                    .replace(/^(\s*function[^(]*\([^)]*\w+[^)]*)\)/, '$1, )')
-                    .replace(/^([^)]*)\)/, '$1componentCtx)')
-                    .replace(rDataAccess, replaceDataAccess)
                 code.push(protoMemberKey + ': ' + funcString + ',')
                 break
 

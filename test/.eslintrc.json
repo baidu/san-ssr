@@ -1,17 +1,11 @@
 {
-  "extends": ["standard"],
+  "extends": ["../.eslintrc.json"],
   "env": {
-    "jest/globals": true,
-    "es6": true,
-    "browser": true,
-    "node": true
+    "jest/globals": true
   },
-  "parser": "@typescript-eslint/parser",
   "plugins": [
     "jest",
-    "standard",
-    "@typescript-eslint",
-    "promise"
+    "@typescript-eslint"
   ],
   "globals": {
     "myComponent": true,
@@ -26,20 +20,6 @@
     "triggerEvent": true
   },
   "rules": {
-    "jasmine/prefer-jasmine-matcher": "off",
-    "no-var": 2,
-    "prefer-const": 2,
-    "no-labels": "off",
-    "indent": ["error", 4],
-    "@typescript-eslint/indent": ["error", 4],
-    "@typescript-eslint/explicit-function-return-type": "off",
-    "@typescript-eslint/no-explicit-any": "off",
-    "@typescript-eslint/no-object-literal-type-assertion": "off",
-    "@typescript-eslint/no-use-before-define": "off",
-    "@typescript-eslint/interface-name-prefix": "off",
-    "@typescript-eslint/no-non-null-assertion": "off",
-    "@typescript-eslint/no-unused-vars": "off",
-    "no-unused-vars": "off",
-    "import/export": "off"
+    "jasmine/prefer-jasmine-matcher": "off"
   }
 }

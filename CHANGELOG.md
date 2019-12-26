@@ -1,3 +1,10 @@
+## [1.5.3](https://github.com/searchfe/san-ssr/compare/v1.5.2...v1.5.3) (2019-12-26)
+
+
+### Bug Fixes
+
+* remove requiring test case impl on start ([930c323](https://github.com/searchfe/san-ssr/commit/930c323bf8affa6d8b1420d861d0b4d89bc839e6))
+
 ## [1.5.2](https://github.com/searchfe/san-ssr/compare/v1.5.1...v1.5.2) (2019-12-26)
 
 

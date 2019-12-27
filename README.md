@@ -69,7 +69,7 @@ san-ssr ./component.js > ssr.js
 TypeScript 编写的 San 组件:
 
 ```typescript
-import { SanProject } from 'san-project'
+import { SanProject } from 'san-ssr'
 import { writeFileSync } from 'fs'
 
 const project = new SanProject()
@@ -81,7 +81,7 @@ writeFileSync('ssr.js', targetCode)
 JavaScript 编写的 San 组件:
 
 ```javascript
-const { SanProject } = require('san-project')
+const { SanProject } = require('san-ssr')
 import { writeFileSync } from 'fs'
 
 const project = new SanProject()
@@ -93,7 +93,7 @@ writeFileSync('ssr.js', targetCode)
 输出到 render 函数：
 
 ```typescript
-import { SanProject } from 'san-project'
+import { SanProject } from 'san-ssr'
 import { writeFileSync } from 'fs'
 
 const project = new SanProject()
@@ -121,7 +121,7 @@ san-ssr --target js ./component.js > ssr.js
 编程接口也可以通过 `SanProject#compile()` 的第二个参数来指定目标，第三个参数来指定传给 Compiler 实现的参数：
 
 ```typescript
-import { Target, SanProject } from 'san-project'
+import { Target, SanProject } from 'san-ssr'
 import { writeFileSync } from 'fs'
 
 const project = new SanProject()

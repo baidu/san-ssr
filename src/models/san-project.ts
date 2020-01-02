@@ -59,13 +59,18 @@ export class SanProject {
         target: string | CompilerClass = 'js',
         options: CompileOptions = {}
     ) {
+        const sanApp = this.parseSanApp(filepathOrComponentClass)
+        const compiler = this.getOrCreateCompilerInstance(target)
+        return compiler.compile(sanApp, options)
+    }
+    public parseSanApp (
+        filepathOrComponentClass: string | typeof Component
+    ) {
         const parser = this.getParser()
         const sanApp = typeof filepathOrComponentClass === 'string'
             ? parser.parseSanApp(filepathOrComponentClass, this.modules)
             : parser.parseSanAppFromComponentClass(filepathOrComponentClass)
-
-        const compiler = this.getOrCreateCompilerInstance(target)
-        return compiler.compile(sanApp, options)
+        return sanApp
     }
 
     /**

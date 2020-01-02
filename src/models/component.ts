@@ -11,6 +11,9 @@ export class SanComponent extends OriginSanComponent {
     components?: Components
     aNode: ANode
     getComponentType?: (aNode: ANode) => typeof SanComponent;
+    initData?: () => any;
+    inited?: () => any;
+    computed?: any;
 }
 
 interface Components {

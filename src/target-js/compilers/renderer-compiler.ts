@@ -1,12 +1,9 @@
-import { parseExpr } from 'san'
 import { CompileSourceBuffer } from '../source-buffer'
 import { compileExprSource } from './expr-compiler'
 import { stringifier } from './stringifier'
 import { ElementCompiler } from './element-compiler'
 import { ANodeCompiler } from './anode-compiler'
 import { COMPONENT_RESERVED_MEMBERS, SanComponent } from '../../models/component'
-
-const rDataAccess = /this.data.get\(([^)]+)\)/g
 
 /**
  * Each ComponentClass is compiled to a render function
@@ -23,6 +20,7 @@ export class RendererCompiler<T> {
             noTemplateOutput
         )
         this.funcName = 'sanssrRenderer' + ComponentClass.sanssrCid
+
         this.component = new ComponentClass()
         this.aNodeCompiler = new ANodeCompiler(
             this.elementSourceCompiler,
@@ -49,19 +47,23 @@ export class RendererCompiler<T> {
         sourceBuffer.addRaw(this.genComponentContextCode(funcName))
 
         // init data
-        const defaultData = this.component.data.get()
-        sourceBuffer.addRaw('if (data) {')
+        const defaultData = (this.component.initData && this.component.initData()) || {}
         Object.keys(defaultData).forEach(function (key) {
             sourceBuffer.addRaw('componentCtx.data["' + key + '"] = componentCtx.data["' + key + '"] || ' +
             stringifier.any(defaultData[key]) + ';')
         })
-        sourceBuffer.addRaw('}')
+        sourceBuffer.addRaw('componentCtx.proto.data = new SanData(componentCtx)')
+
+        // call inited
+        if (typeof this.component.inited === 'function') {
+            sourceBuffer.addRaw('componentCtx.proto.inited()')
+        }
 
         // calc computed
-        sourceBuffer.addRaw('var computedNames = componentCtx.proto.computedNames;')
+        sourceBuffer.addRaw('var computedNames = componentCtx.computedNames;')
         sourceBuffer.addRaw('for (var $i = 0; $i < computedNames.length; $i++) {')
         sourceBuffer.addRaw('  var $computedName = computedNames[$i];')
-        sourceBuffer.addRaw('  data[$computedName] = componentCtx.proto.computed[$computedName](componentCtx);')
+        sourceBuffer.addRaw('  data[$computedName] = componentCtx.proto.computed[$computedName].apply(componentCtx.proto);')
         sourceBuffer.addRaw('}')
 
         const ifDirective = this.component.aNode.directives['if'] // eslint-disable-line dot-notation
@@ -105,6 +107,11 @@ export class RendererCompiler<T> {
 
         // parentCtx
         code.push('owner: parentCtx,')
+
+        // computedNames
+        code.push('computedNames: [')
+        code.push(Object.keys(this.component.computed).map(x => `'${x}'`).join(','))
+        code.push('],')
 
         // slotRenderers
         code.push('slotRenderers: {}')
@@ -183,55 +190,25 @@ export class RendererCompiler<T> {
         // computed obj
         code.push('computed: {')
         const computedCode = []
-        const computedNamesCode = []
-        const computedNamesIndex = {}
         for (const key in component.computed) {
             if (component.computed.hasOwnProperty(key)) {
                 const computed = component.computed[key]
 
                 if (typeof computed === 'function') {
-                    if (!computedNamesIndex[key]) {
-                        computedNamesIndex[key] = 1
-                        computedNamesCode.push('"' + key + '"')
-                    }
-
-                    let fn = functionString(computed)
-                    fn = fn
-                        .replace(/^\s*function\s*(\S+)?\(/, 'function $1 (componentCtx')
-                        .replace(rDataAccess, replaceDataAccess)
+                    const fn = functionString(computed)
                     computedCode.push(key + ': ' + fn)
                 }
             }
         }
-
         code.push(computedCode.join(','))
         code.push('},')
 
-        // computed names
-        code.push('computedNames: [')
-        code.push(computedNamesCode.join(','))
-        code.push('],')
-
         // tagName
         code.push('tagName: "' + component.tagName + '"')
+
         code.push('};')
 
         return code.join('\n')
-
-        function replaceDataAccess (match, exprLiteral) {
-            const exprStr = (new Function('return ' + exprLiteral))()   // eslint-disable-line
-            const expr = parseExpr(exprStr) as any
-
-            const ident = expr.paths[0].value
-            if (component.computed.hasOwnProperty(ident) &&
-                !computedNamesIndex[ident]
-            ) {
-                computedNamesIndex[ident] = 1
-                computedNamesCode.unshift('"' + ident + '"')
-            }
-
-            return compileExprSource.expr(expr)
-        }
     }
 }
 

@@ -1,3 +1,4 @@
+import { noop } from 'lodash'
 import { CompileSourceBuffer } from '../source-buffer'
 import { compileExprSource } from './expr-compiler'
 import { stringifier } from './stringifier'
@@ -20,8 +21,7 @@ export class RendererCompiler<T> {
             noTemplateOutput
         )
         this.funcName = 'sanssrRenderer' + ComponentClass.sanssrCid
-
-        this.component = new ComponentClass()
+        this.component = this.createComponentInstance(ComponentClass)
         this.aNodeCompiler = new ANodeCompiler(
             this.elementSourceCompiler,
             this.component
@@ -209,6 +209,16 @@ export class RendererCompiler<T> {
         code.push('};')
 
         return code.join('\n')
+    }
+    private createComponentInstance (ComponentClass: typeof SanComponent) {
+        // TODO Do not `new Component` during SSR,
+        // see https://github.com/searchfe/san-ssr/issues/42
+        const proto = ComponentClass.prototype['__proto__']    // eslint-disable-line
+        const calcComputed = proto['_calcComputed']
+        proto['_calcComputed'] = noop
+        const instance = new ComponentClass()
+        proto['_calcComputed'] = calcComputed
+        return instance
     }
 }
 

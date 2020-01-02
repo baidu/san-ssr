@@ -1,3 +1,11 @@
+# [1.7.0](https://github.com/searchfe/san-ssr/compare/v1.6.0...v1.7.0) (2020-01-02)
+
+
+### Features
+
+* not to calculate computed in compile time, see [#42](https://github.com/searchfe/san-ssr/issues/42) ([c0f4875](https://github.com/searchfe/san-ssr/commit/c0f48750816b4f19e9a86f8c0d3805acee2a9d4c))
+* SanProject#parseSanApp() ([e628ab1](https://github.com/searchfe/san-ssr/commit/e628ab1c024bf8540ee2b153ee17cb43a11928fd))
+
 # [1.6.0](https://github.com/searchfe/san-ssr/compare/v1.5.3...v1.6.0) (2020-01-02)
 
 

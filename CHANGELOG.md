@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/searchfe/san-ssr/compare/v1.5.3...v1.6.0) (2020-01-02)
+
+
+### Features
+
+* call inited() in runtime, fixes [#41](https://github.com/searchfe/san-ssr/issues/41) ([4da4dfe](https://github.com/searchfe/san-ssr/commit/4da4dfe15737cae0c4ee7dbbe3fec20a48d55091))
+
 ## [1.5.3](https://github.com/searchfe/san-ssr/compare/v1.5.2...v1.5.3) (2019-12-26)
 
 

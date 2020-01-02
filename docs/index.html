@@ -125,7 +125,7 @@ Options:
 					<li>输出可以是 CommonJS 代码，也可以一个 render 函数。</li>
 				</ul>
 				<p>TypeScript 编写的 San 组件:</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { SanProject } <span class="hljs-keyword">from</span> <span class="hljs-string">'san-project'</span>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { SanProject } <span class="hljs-keyword">from</span> <span class="hljs-string">'san-ssr'</span>
 <span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs'</span>
 
 <span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
@@ -133,7 +133,7 @@ Options:
 
 writeFileSync(<span class="hljs-string">'ssr.js'</span>, targetCode)</code></pre>
 				<p>JavaScript 编写的 San 组件:</p>
-				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { SanProject } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'san-project'</span>)
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { SanProject } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'san-ssr'</span>)
 <span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs'</span>
 
 <span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
@@ -141,7 +141,7 @@ writeFileSync(<span class="hljs-string">'ssr.js'</span>, targetCode)</code></pre
 
 writeFileSync(<span class="hljs-string">'ssr.js'</span>, targetCode)</code></pre>
 				<p>输出到 render 函数：</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { SanProject } <span class="hljs-keyword">from</span> <span class="hljs-string">'san-project'</span>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { SanProject } <span class="hljs-keyword">from</span> <span class="hljs-string">'san-ssr'</span>
 <span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs'</span>
 
 <span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
@@ -161,7 +161,7 @@ writeFileSync(<span class="hljs-string">'ssr.js'</span>, targetCode)</code></pre
 				<p>CLI 参数 <code>--target</code> 参数用来选择目标代码，默认为 <code>js</code>：</p>
 				<pre><code class="language-bash">san-ssr --target js ./component.js &gt; ssr.js</code></pre>
 				<p>编程接口也可以通过 <code>SanProject#compile()</code> 的第二个参数来指定目标，第三个参数来指定传给 Compiler 实现的参数：</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Target, SanProject } <span class="hljs-keyword">from</span> <span class="hljs-string">'san-project'</span>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Target, SanProject } <span class="hljs-keyword">from</span> <span class="hljs-string">'san-ssr'</span>
 <span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs'</span>
 
 <span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()

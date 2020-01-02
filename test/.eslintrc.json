@@ -18,8 +18,5 @@
     "entityStr": true,
     "Label": true,
     "triggerEvent": true
-  },
-  "rules": {
-    "jasmine/prefer-jasmine-matcher": "off"
   }
 }

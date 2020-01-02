@@ -16,7 +16,6 @@
     "prefer-const": 2,
     "no-labels": "off",
     "indent": ["error", 4],
-    "jasmine/prefer-jasmine-matcher": "off",
     "no-var": 2,
     "prefer-const": 2,
     "no-labels": "off",

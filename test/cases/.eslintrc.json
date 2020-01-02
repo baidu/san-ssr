@@ -1,14 +1,12 @@
 {
-  "extends": ["plugin:jasmine/recommended"],
+  "extends": ["../.eslintrc.json"],
   "env": {
-    "jasmine": true,
     "es6": true,
     "browser": true,
     "node": true
   },
   "parser": "@typescript-eslint/parser",
   "plugins": [
-    "jasmine",
     "standard",
     "@typescript-eslint",
     "promise"
@@ -27,7 +25,6 @@
     "triggerEvent": true
   },
   "rules": {
-    "jasmine/prefer-jasmine-matcher": "off",
     "no-var": 2,
     "prefer-const": 2,
     "no-labels": "off",

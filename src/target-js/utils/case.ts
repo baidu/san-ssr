@@ -4,7 +4,7 @@
  *   * do NOT import this file in other source files
  */
 import { startMeasure } from './timing'
-import { readdirSync, writeFileSync, existsSync } from 'fs'
+import { lstatSync, readdirSync, writeFileSync, existsSync } from 'fs'
 import { resolve, join } from 'path'
 import { SanProject } from '../../models/san-project'
 import ToJSCompiler from '../index'
@@ -18,8 +18,13 @@ const sanProject = new SanProject({ tsConfigFilePath })
 
 export function compile (caseName) {
     debug('compile', caseName)
-    const tsFile = join(caseRoot, caseName, 'component.ts')
-    const jsFile = resolve(caseRoot, caseName, 'component.js')
+    const caseDir = join(caseRoot, caseName)
+    if (caseDir) {
+        if (!lstatSync(caseDir).isDirectory()) return
+    }
+
+    const tsFile = join(caseDir, 'component.ts')
+    const jsFile = resolve(caseDir, 'component.js')
     const noTemplateOutput = caseName.indexOf('notpl') > -1
     const targetCode = sanProject.compile(
         existsSync(jsFile) ? jsFile : tsFile,
@@ -28,7 +33,7 @@ export function compile (caseName) {
         }
     )
 
-    writeFileSync(join(caseRoot, caseName, 'ssr.js'), targetCode)
+    writeFileSync(join(caseDir, 'ssr.js'), targetCode)
 }
 
 export function compileAll () {

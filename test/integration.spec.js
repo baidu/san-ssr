@@ -9,7 +9,7 @@ jest.setTimeout(10000)
 
 for (const caseName of files) {
     const caseDir = resolve(caseRoot, caseName)
-    if (lstatSync(caseDir).isDirectory()) continue
+    if (!lstatSync(caseDir).isDirectory()) continue
 
     const htmlPath = join(caseDir, 'expected.html')
     const [expectedData, expectedHtml] = parseSanHTML(readFileSync(htmlPath, 'utf8'))

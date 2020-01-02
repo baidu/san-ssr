@@ -27,9 +27,8 @@
     "unit": "jest test/unit",
     "build-integration": "node -e \"require('./dist/target-js/utils/case').compileAll()\"",
     "integration": "npm run build-integration && jest test/integration.spec.js",
-    "e2e": "./bin/build-e2e.js && karma start ./test/karma.conf.js --single-run",
     "perf": "node ./test/perf/index.js",
-    "test": "npm run unit && npm run build && npm run e2e",
+    "test": "npm run unit && npm run build && npm run integration",
     "coveralls": "jest test/unit --coverage && cat coverage/lcov.info | coveralls",
     "version": "npm run build && npm run docs",
     "semantic-release": "semantic-release"

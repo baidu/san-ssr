@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/searchfe/san-ssr/compare/v1.7.0...v1.7.1) (2020-01-02)
+
+
+### Bug Fixes
+
+* type for initData() ([92c99a4](https://github.com/searchfe/san-ssr/commit/92c99a46b617c817e04f10b5f3f939b71a7e760d))
+
 # [1.7.0](https://github.com/searchfe/san-ssr/compare/v1.6.0...v1.7.0) (2020-01-02)
 
 

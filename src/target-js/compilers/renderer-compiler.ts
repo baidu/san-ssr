@@ -69,7 +69,7 @@ export class RendererCompiler<T> {
         const sourceBuffer = new CompileSourceBuffer()
         // 先初始化个实例，让模板编译成 ANode，并且能获得初始化数据
         sourceBuffer.addRaw(`var ${funcName}Instance = ` + this.genComponentInstanceCode(this.component))
-        sourceBuffer.addRaw(`function ${funcName}(data, noDataOutput, parentCtx, tagName, sourceSlots) {`)
+        sourceBuffer.addRaw(`function ${funcName}(sanssrRuntime, data, noDataOutput, parentCtx, tagName, sourceSlots) {`)
         this.compileComponentRendererSource(sourceBuffer)
         return sourceBuffer.toCode()
     }

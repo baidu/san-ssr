@@ -206,7 +206,7 @@ export class ANodeCompiler {
         sourceBuffer.addRaw('var $slotCtx = $isInserted ? componentCtx.owner : componentCtx;')
 
         if (aNode.vars || aNode.directives.bind) {
-            sourceBuffer.addRaw('$slotCtx = {data: _.extend({}, $slotCtx.data), proto: $slotCtx.proto, owner: $slotCtx.owner};')
+            sourceBuffer.addRaw('$slotCtx = {data: _.extend({}, $slotCtx.data), instance: $slotCtx.instance, owner: $slotCtx.owner};')
 
             if (aNode.directives.bind) {
                 sourceBuffer.addRaw('_.extend($slotCtx.data, ' + compileExprSource.expr(aNode.directives.bind.value) + ');')

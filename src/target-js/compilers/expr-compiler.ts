@@ -53,7 +53,7 @@ export const compileExprSource = {
      */
     callExpr: function (callExpr: Expression): string {
         const paths = callExpr.name.paths
-        let code = 'componentCtx.proto.' + paths[0].value
+        let code = 'componentCtx.instance.' + paths[0].value
 
         for (let i = 1; i < paths.length; i++) {
             const path = paths[i]

@@ -3,8 +3,13 @@ import { Emitter } from '../../utils/emitter'
 import { resolve } from 'path'
 
 export function emitRuntime (emitter: Emitter) {
-    const path = resolve(__dirname, '../../../runtime/underscore.js')
-    const sandata = resolve(__dirname, '../../../runtime/sandata.js')
-    emitter.writeLines(readStringSync(path))
-    emitter.writeLines(readStringSync(sandata))
+    emitter.writeLine('var sanssrRuntime = {};')
+
+    const underscore = resolve(__dirname, '../utils/underscore.js')
+    emitter.writeLines(`!(function (exports){${readStringSync(underscore)}})(sanssrRuntime);`)
+
+    const sandata = resolve(__dirname, '../../models/san-data.js')
+    emitter.writeLines(`!(function (exports){${readStringSync(sandata)}})(sanssrRuntime);`)
+
+    emitter.writeLine('var _ = sanssrRuntime._;')
 }

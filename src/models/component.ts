@@ -2,6 +2,14 @@ import { ANode } from './anode'
 import { PHPClass } from 'ts2php'
 import { SanData as OriginSanData, Component as OriginSanComponent } from 'san'
 
+export interface Computed {
+    [k: string]: (this: { data: SanData }) => any
+}
+
+export interface Filters {
+    [k: string]: (this: SanComponent, ...args: any[]) => any
+}
+
 /**
  * 编译期的 Component 类型
  * 供编译器内部的 TypeScript 代码使用，不提供给组件作者
@@ -10,6 +18,8 @@ export class SanComponent extends OriginSanComponent {
     static components?: Components
     static sanssrCid?: number
     static placeholder?: typeof SanComponent
+    static computed?: Computed;
+    static filters?: Filters;
 
     data: SanData
     components?: Components
@@ -17,7 +27,8 @@ export class SanComponent extends OriginSanComponent {
     getComponentType?: (aNode: ANode) => typeof SanComponent;
     initData?(): any;
     inited?(): any;
-    computed?: any;
+    computed?: Computed;
+    filters?: Filters;
 }
 
 interface Components {

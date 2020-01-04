@@ -1,13 +1,20 @@
-class SanData {
-    constructor (ctx) {
-        this.ctx = ctx
-        this.data = ctx.data
-        this.computedNames = ctx.computedNames
+import { Computed } from './component'
+
+/**
+ * SSR 期间的 Data
+ */
+export class SanData {
+    data: any
+    computed: Computed
+
+    constructor (data, computed: Computed) {
+        this.data = data
+        this.computed = computed
     }
 
     get (path) {
-        if (this.computedNames.indexOf(path) !== -1) {
-            return this.ctx.proto.computed[path].apply(this.ctx.proto)
+        if (this.computed[path]) {
+            return this.computed[path].call({ data: this })
         }
         const seq = this.parseExpr(path)
         let data = this.data

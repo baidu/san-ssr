@@ -108,7 +108,7 @@ export class ElementCompiler {
                     sourceBuffer.joinString(' ' + prop.name)
                 } else {
                     sourceBuffer.joinRaw(
-                        'boolAttrFilter("' + prop.name + '", ' +
+                        '_.boolAttrFilter("' + prop.name + '", ' +
                         compileExprSource.expr(prop.expr) +
                         ')'
                     )
@@ -123,7 +123,7 @@ export class ElementCompiler {
                     if (valueProp) {
                         switch (propsIndex['type'].raw) {
                         case 'checkbox':
-                            sourceBuffer.addRaw('if (contains(' +
+                            sourceBuffer.addRaw('if (_.contains(' +
                                     compileExprSource.expr(prop.expr) +
                                     ', ' +
                                     valueCode +
@@ -150,7 +150,7 @@ export class ElementCompiler {
 
             default:
                 const onlyOneAccessor = prop.expr.type === ExprType.ACCESSOR
-                sourceBuffer.joinRaw('attrFilter("' + prop.name + '", ' +
+                sourceBuffer.joinRaw('_.attrFilter("' + prop.name + '", ' +
                     compileExprSource.expr(prop.expr) +
                     (prop.x || onlyOneAccessor ? ', true' : '') +
                     ')'
@@ -178,10 +178,10 @@ export class ElementCompiler {
             'case "disabled":\n' +
             'case "multiple":\n' +
             'case "checked":\n' +
-            'html += boolAttrFilter($key, $value);\n' +
+            'html += _.boolAttrFilter($key, $value);\n' +
             'break;\n' +
             'default:\n' +
-            'html += attrFilter($key, $value, true);' +
+            'html += _.attrFilter($key, $value, true);' +
             '}'
             )
 
@@ -236,7 +236,7 @@ export class ElementCompiler {
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodePropByName(aNode, 'value')
             if (valueProp) {
-                sourceBuffer.joinRaw('escapeHTML(' +
+                sourceBuffer.joinRaw('_.escapeHTML(' +
                 compileExprSource.expr(valueProp.expr) +
                 ')'
                 )

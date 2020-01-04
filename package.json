@@ -28,7 +28,7 @@
     "build-integration": "node -e \"require('./dist/target-js/utils/case').compileAll()\"",
     "integration": "npm run build-integration && jest test/integration.spec.js",
     "perf": "node ./test/perf/index.js",
-    "test": "npm run unit && npm run build && npm run integration",
+    "test": "npm run build && npm run unit && npm run integration",
     "coveralls": "jest test/unit --coverage && cat coverage/lcov.info | coveralls",
     "version": "npm run build && npm run docs",
     "semantic-release": "semantic-release"

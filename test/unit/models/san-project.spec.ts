@@ -1,4 +1,4 @@
-import { SanProject } from '../../../src/models/san-project'
+import { SanProject } from '../../../dist/models/san-project'
 import { defineComponent } from 'san'
 import { resolve } from 'path'
 

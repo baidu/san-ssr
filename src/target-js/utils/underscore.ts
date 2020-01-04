@@ -165,8 +165,14 @@ function defaultStyleFilter (source) {
     return source
 }
 
+function createFromPrototype (proto) {
+    function Creator () {}
+    Creator.prototype = proto
+    return new Creator()
+}
+
 // TODO
 // 重命名：现在已经封装在 _ 下，不再需要避免名字冲突
 export const _ = {
-    escapeHTML, defaultStyleFilter, callFilter, boolAttrFilter, attrFilter, sortedStringify, extend, contains, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter
+    escapeHTML, defaultStyleFilter, callFilter, boolAttrFilter, attrFilter, sortedStringify, extend, contains, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype
 }

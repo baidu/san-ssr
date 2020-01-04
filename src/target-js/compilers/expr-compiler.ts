@@ -262,7 +262,7 @@ export class ExpressionCompiler {
     }
 
     private toEvaluator (body: string): ExpressionEvaluator {
-        const fn = new Function('componentCtx', '_', body)   // eslint-disable-line
+        const fn = new Function('componentCtx', '_', body) // eslint-disable-line no-new-func
         return (ctx: CompileContext) => fn(ctx, _)
     }
 

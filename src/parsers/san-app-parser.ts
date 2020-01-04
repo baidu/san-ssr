@@ -1,4 +1,5 @@
 import { getComponentClassIdentifier, isChildClassOf } from '../utils/ast-util'
+import { SanComponent } from '../models/component'
 import { resolve } from 'path'
 import { ComponentClassFinder } from './component-class-finder'
 import { CommonJS, Modules } from '../loaders/common-js'
@@ -9,7 +10,6 @@ import { Project, SourceFile, ClassDeclaration } from 'ts-morph'
 import { getDefaultTSConfigPath } from './tsconfig'
 import { getDependenciesRecursively } from './dependency-resolver'
 import { SanApp } from '../models/san-app'
-import { Component } from 'san'
 import { SourceFileType, getSourceFileTypeOrThrow } from '../models/source-file-type'
 import debugFactory from 'debug'
 
@@ -42,9 +42,11 @@ export class SanAppParser {
         return SanAppParser.createUsingTsconfig(getDefaultTSConfigPath())
     }
 
-    public parseSanAppFromComponentClass (componentClass: typeof Component) {
+    public parseSanAppFromComponentClass (ComponentClass: typeof SanComponent) {
         const sourceFile = SanSourceFile.createVirtualSourceFile()
-        return new SanApp(sourceFile, this.projectFiles, [componentClass as any])
+        const componentClasses = new ComponentClassFinder(ComponentClass).find()
+        this.normalizeJavaScriptComponents(componentClasses)
+        return new SanApp(sourceFile, this.projectFiles, componentClasses)
     }
 
     public parseSanApp (entryFilePath: string, modules: Modules = {}): SanApp {
@@ -67,14 +69,17 @@ export class SanAppParser {
 
         const entryClass = this.evaluateFile(entrySourceFile, modules)
         const componentClasses = new ComponentClassFinder(entryClass).find()
-
         if (entrySourceFile.fileType === SourceFileType.js) {
-            for (let i = 0; i < componentClasses.length; i++) {
-                const ComponentClass = componentClasses[i]
-                ComponentClass.sanssrCid = i
-            }
+            this.normalizeJavaScriptComponents(componentClasses)
         }
         return new SanApp(entrySourceFile, this.projectFiles, componentClasses)
+    }
+
+    private normalizeJavaScriptComponents (componentClasses: typeof SanComponent[]) {
+        for (let i = 0; i < componentClasses.length; i++) {
+            const ComponentClass = componentClasses[i]
+            ComponentClass.sanssrCid = i
+        }
     }
 
     private evaluateFile (sourceFile: SanSourceFile, modules: Modules) {

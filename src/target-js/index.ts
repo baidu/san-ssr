@@ -11,7 +11,11 @@ import { RendererCompiler } from './compilers/renderer-compiler'
 
 const debug = debugFactory('target-js')
 
-export type ToJSCompilerOptions = {
+export type ToJSCompileOptions = {
+    noTemplateOutput?: boolean
+}
+
+export type ToJSConstructOptions = {
     project: Project
 }
 
@@ -20,7 +24,7 @@ export default class ToJSCompiler implements Compiler {
 
     constructor ({
         project
-    }: ToJSCompilerOptions) {
+    }: ToJSConstructOptions) {
         this.project = project
     }
 
@@ -53,12 +57,12 @@ export default class ToJSCompiler implements Compiler {
 
     public compileToRenderer (sanApp: SanApp, {
         noTemplateOutput = false
-    }): Renderer {
+    }: ToJSCompileOptions = {}): Renderer {
         const sanssrRuntime = { _, SanData }
 
         for (const ComponentClass of sanApp.componentClasses) {
             const cc = new RendererCompiler(ComponentClass, noTemplateOutput)
-            sanssrRuntime[`prototype${ComponentClass.sanssrCid}`] = cc.compileComponentRenderer()
+            sanssrRuntime[`prototype${ComponentClass.sanssrCid}`] = cc.component
             sanssrRuntime[`renderer${ComponentClass.sanssrCid}`] = cc.compileComponentRenderer()
         }
         const entryComponentId = sanApp.getEntryComponentClassOrThrow().sanssrCid

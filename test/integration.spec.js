@@ -3,7 +3,7 @@ const { resolve, join } = require('path')
 const { parseSanHTML, execCommandSync } = require('../dist/index')
 const caseRoot = resolve(__dirname, 'cases')
 const files = readdirSync(caseRoot)
-const renderBin = resolve(__dirname, `../bin/render.js`)
+const renderBin = resolve(__dirname, `../bin/render-by-source.js`)
 
 jest.setTimeout(10000)
 

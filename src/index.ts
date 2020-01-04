@@ -34,7 +34,7 @@ export function compileToSource (ComponentClass: typeof Component): string {
  * Legacy API: compile a ComponentClass to a function string and eval that function
  */
 export function compileToRenderer (ComponentClass: typeof Component): Renderer {
-    const proj = new SanProject()
-    const targetCode = proj.compileToRenderer(ComponentClass)
-    return targetCode
+    const proj = new SanProject({ tsConfigFilePath: null })
+    const renderer = proj.compileToRenderer(ComponentClass)
+    return renderer
 }

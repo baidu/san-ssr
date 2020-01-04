@@ -1,4 +1,6 @@
 import { JSEmitter } from './emitters/emitter'
+import { _ } from './utils/underscore'
+import { SanData } from '../models/san-data'
 import { Renderer } from '../models/renderer'
 import { Project } from 'ts-morph'
 import debugFactory from 'debug'
@@ -32,19 +34,19 @@ export default class ToJSCompiler implements Compiler {
         }
         emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => {
             emitRuntime(emitter, 'sanssrRuntime')
-            for (const componentClass of sanApp.componentClasses) {
-                const cc = new RendererCompiler(componentClass, noTemplateOutput)
-                emitter.writeBlock(`sanssrRuntime.instance${componentClass.sanssrCid} =`, () => {
-                    cc.compileComponentInstanceSource(emitter)
-                })
+            for (const ComponentClass of sanApp.componentClasses) {
+                const cc = new RendererCompiler(ComponentClass, noTemplateOutput)
 
-                emitter.nextLine(`sanssrRuntime.renderer${componentClass.sanssrCid} = `)
+                emitter.writeBlock(`sanssrRuntime.prototype${ComponentClass.sanssrCid} =`, () => {
+                    cc.compileComponentPrototypeSource(emitter)
+                })
+                emitter.nextLine(`sanssrRuntime.renderer${ComponentClass.sanssrCid} = `)
                 emitter.indent()
-                cc.compileComponentRendererSource(emitter)
+                cc.compileComponentSource(emitter)
                 emitter.unindent()
             }
             const funcName = 'sanssrRuntime.renderer' + sanApp.getEntryComponentClassOrThrow().sanssrCid
-            emitter.writeLine(`return ${funcName}(sanssrRuntime, data, noDataOutput)`)
+            emitter.writeLine(`return ${funcName}(data, noDataOutput, sanssrRuntime)`)
         })
         return emitter.fullText()
     }
@@ -52,14 +54,17 @@ export default class ToJSCompiler implements Compiler {
     public compileToRenderer (sanApp: SanApp, {
         noTemplateOutput = false
     }): Renderer {
-        const renderers: Map<number, Renderer> = new Map()
+        const sanssrRuntime = { _, SanData }
 
-        for (const componentClass of sanApp.componentClasses) {
-            const renderCompiler = new RendererCompiler(componentClass, noTemplateOutput, renderers)
-            const componentRenderer = renderCompiler.compileComponentRenderer()
-            // renderers.set(componentClass.sanssrCid, componentRenderer)
+        for (const ComponentClass of sanApp.componentClasses) {
+            const cc = new RendererCompiler(ComponentClass, noTemplateOutput)
+            sanssrRuntime[`prototype${ComponentClass.sanssrCid}`] = cc.compileComponentRenderer()
+            sanssrRuntime[`renderer${ComponentClass.sanssrCid}`] = cc.compileComponentRenderer()
         }
         const entryComponentId = sanApp.getEntryComponentClassOrThrow().sanssrCid
-        return renderers.get(entryComponentId)
+        return (data: any, noDataOutput: boolean) => {
+            const func = sanssrRuntime[`renderer${entryComponentId}`]
+            return func(data, noDataOutput, sanssrRuntime)
+        }
     }
 }

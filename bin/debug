@@ -26,9 +26,8 @@ const got1 = execCommandSync(resolve(__dirname, `./render-by-source.js`), [caseN
 const pass1 = assertSanHTMLEqual(got1, expected)
 console.log(chalk[pass1 ? 'green' : 'red'](`[ SOURCE ] ${caseName}`), got1)
 
-// const got2 = execCommandSync(resolve(__dirname, `./render-onthefly.js`), [caseName])
-// const pass2 = assertSanHTMLEqual(got2, expected)
-// console.log(chalk[pass2 ? 'green' : 'red'](`[ RENDER ] ${caseName}`), got2)
+const got2 = execCommandSync(resolve(__dirname, `./render-onthefly.js`), [caseName])
+const pass2 = assertSanHTMLEqual(got2, expected)
+console.log(chalk[pass2 ? 'green' : 'red'](`[ RENDER ] ${caseName}`), got2)
 
-if (!pass1) process.exit(1)
-// if (!pass1 || !pass2) process.exit(1)
+if (!pass1 || !pass2) process.exit(1)

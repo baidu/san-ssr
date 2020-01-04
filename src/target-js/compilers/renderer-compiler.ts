@@ -1,13 +1,16 @@
 import { isFunction, noop } from 'lodash'
 import { JSEmitter } from '../emitters/emitter'
-import { SanData } from '../../models/san-data'
 import { CompileSourceBuffer } from '../source-buffer'
 import { Renderer } from '../../models/renderer'
-import { compileExprSource, ExpressionCompiler } from './expr-compiler'
+import { compileExprSource } from './expr-compiler'
 import { stringifier } from './stringifier'
 import { ElementCompiler } from './element-compiler'
 import { ANodeCompiler } from './anode-compiler'
 import { COMPONENT_RESERVED_MEMBERS, SanComponent } from '../../models/component'
+
+// * 参数列表用于 toSource 和 toRender 两处，anode-compiler 中递归时要与此保持一致
+// * 前两个参数是为了保持和最终的 renderer 兼容，如此就不需要包装
+const RENDERER_ARGS = ['data', 'noDataOutput', 'sanssrRuntime', 'parentCtx', 'tagName', 'sourceSlots']
 
 export type ExpressionEvaluator = (ctx: CompileContext) => any
 
@@ -38,85 +41,41 @@ export class RendererCompiler<T> {
     private elementSourceCompiler
     private ComponentClass: typeof SanComponent
     private component: SanComponent
-    private renderers: Map<number, Renderer>
+    private cid: number
 
-    constructor (ComponentClass: typeof SanComponent, noTemplateOutput, renderers?: Map<number, Renderer>) {
-        this.renderers = renderers
+    constructor (ComponentClass: typeof SanComponent, noTemplateOutput) {
         this.elementSourceCompiler = new ElementCompiler(
             (...args) => this.aNodeCompiler.compile(...args),
             noTemplateOutput
         )
         this.component = this.createComponentInstance(ComponentClass)
         this.ComponentClass = ComponentClass
+        this.cid = ComponentClass.sanssrCid
         this.aNodeCompiler = new ANodeCompiler(
             this.elementSourceCompiler,
             this.component
         )
     }
 
-    public compileComponentRendererSource (emitter: JSEmitter = new JSEmitter()) {
-        // TODO replace sourcebuffer with emitter
-        const sourceBuffer = new CompileSourceBuffer()
-        sourceBuffer.addRaw(`function (sanssrRuntime, data, noDataOutput, parentCtx, tagName, sourceSlots) {`)
-
-        sourceBuffer.addRaw('var _ = sanssrRuntime._;')
-        sourceBuffer.addRaw('var SanData = sanssrRuntime.SanData;')
-        sourceBuffer.addRaw('var html = "";')
-
-        sourceBuffer.addRaw(this.genComponentContextCode())
-
-        // init data
-        const defaultData = (this.component.initData && this.component.initData()) || {}
-        Object.keys(defaultData).forEach(function (key) {
-            sourceBuffer.addRaw('componentCtx.data["' + key + '"] = componentCtx.data["' + key + '"] || ' +
-            stringifier.any(defaultData[key]) + ';')
+    public compileComponentSource (emitter: JSEmitter = new JSEmitter()) {
+        emitter.writeAnonymousFunction(RENDERER_ARGS, () => {
+            this.compileComponentRendererBody(emitter)
         })
-        sourceBuffer.addRaw('componentCtx.instance.data = new SanData(componentCtx.data, componentCtx.instance.computed)')
-
-        // call inited
-        if (typeof this.component.inited === 'function') {
-            sourceBuffer.addRaw('componentCtx.instance.inited()')
-        }
-
-        // calc computed
-        sourceBuffer.addRaw('var computedNames = componentCtx.computedNames;')
-        sourceBuffer.addRaw('for (var $i = 0; $i < computedNames.length; $i++) {')
-        sourceBuffer.addRaw('  var $computedName = computedNames[$i];')
-        sourceBuffer.addRaw('  data[$computedName] = componentCtx.instance.computed[$computedName].apply(componentCtx.instance);')
-        sourceBuffer.addRaw('}')
-
-        const ifDirective = this.component.aNode.directives['if'] // eslint-disable-line dot-notation
-        if (ifDirective) {
-            sourceBuffer.addRaw('if (' + compileExprSource.expr(ifDirective.value) + ') {')
-        }
-
-        this.elementSourceCompiler.tagStart(sourceBuffer, this.component.aNode, 'tagName')
-
-        sourceBuffer.addRaw('if (!noDataOutput) {')
-        sourceBuffer.joinDataStringify()
-        sourceBuffer.addRaw('}')
-
-        this.elementSourceCompiler.inner(sourceBuffer, this.component.aNode, this.component)
-        this.elementSourceCompiler.tagEnd(sourceBuffer, this.component.aNode, 'tagName')
-
-        if (ifDirective) {
-            sourceBuffer.addRaw('}')
-        }
-
-        sourceBuffer.addRaw('return html;')
-        sourceBuffer.addRaw('};')
-        emitter.writeLines(sourceBuffer.toCode())
         return emitter.fullText()
     }
 
-    public compileComponentInstanceSource (emitter: JSEmitter) {
+    public compileComponentRenderer () {
+        const body = this.compileComponentRendererBody()
+        console.error(this.cid, this.ComponentClass.sanssrCid)
+        return new Function(...RENDERER_ARGS, body) // eslint-disable-line no-new-func
+    }
+
+    public compileComponentPrototypeSource (emitter: JSEmitter) {
         const component = this.component
-
-        // members for call expr
         const ComponentProto = component.constructor.prototype
-
         const builtinKeys = ['components', '_cmptReady', 'aNode', 'constructor']
 
+        // members for call expr
         Object.getOwnPropertyNames(ComponentProto).forEach(function (protoMemberKey) {
             if (builtinKeys.includes(protoMemberKey)) return
 
@@ -189,9 +148,56 @@ export class RendererCompiler<T> {
         emitter.writeLine('tagName: "' + component.tagName + '"')
     }
 
-    public compileComponentRenderer () {
-        // const proto = this.genComponentProto()
-        // const function this.compileComponentRendererSource()
+    public compileComponentRendererBody (emitter: JSEmitter = new JSEmitter()) {
+        // TODO replace sourcebuffer with emitter
+        const sourceBuffer = new CompileSourceBuffer()
+        sourceBuffer.addRaw('var _ = sanssrRuntime._;')
+        sourceBuffer.addRaw('var SanData = sanssrRuntime.SanData;')
+        sourceBuffer.addRaw('var html = "";')
+
+        sourceBuffer.addRaw(this.genComponentContextCode())
+
+        // init data
+        const defaultData = (this.component.initData && this.component.initData()) || {}
+        Object.keys(defaultData).forEach(function (key) {
+            sourceBuffer.addRaw('componentCtx.data["' + key + '"] = componentCtx.data["' + key + '"] || ' +
+            stringifier.any(defaultData[key]) + ';')
+        })
+        sourceBuffer.addRaw('componentCtx.instance.data = new SanData(componentCtx.data, componentCtx.instance.computed)')
+
+        // call inited
+        if (typeof this.component.inited === 'function') {
+            sourceBuffer.addRaw('componentCtx.instance.inited()')
+        }
+
+        // calc computed
+        sourceBuffer.addRaw('var computedNames = componentCtx.computedNames;')
+        sourceBuffer.addRaw('for (var $i = 0; $i < computedNames.length; $i++) {')
+        sourceBuffer.addRaw('  var $computedName = computedNames[$i];')
+        sourceBuffer.addRaw('  data[$computedName] = componentCtx.instance.computed[$computedName].apply(componentCtx.instance);')
+        sourceBuffer.addRaw('}')
+
+        const ifDirective = this.component.aNode.directives['if'] // eslint-disable-line dot-notation
+        if (ifDirective) {
+            sourceBuffer.addRaw('if (' + compileExprSource.expr(ifDirective.value) + ') {')
+        }
+
+        this.elementSourceCompiler.tagStart(sourceBuffer, this.component.aNode, 'tagName')
+
+        sourceBuffer.addRaw('if (!noDataOutput) {')
+        sourceBuffer.joinDataStringify()
+        sourceBuffer.addRaw('}')
+
+        this.elementSourceCompiler.inner(sourceBuffer, this.component.aNode, this.component)
+        this.elementSourceCompiler.tagEnd(sourceBuffer, this.component.aNode, 'tagName')
+
+        if (ifDirective) {
+            sourceBuffer.addRaw('}')
+        }
+
+        sourceBuffer.addRaw('return html;')
+        emitter.writeLines(sourceBuffer.toCode())
+        return emitter.fullText()
     }
 
     /**
@@ -201,7 +207,7 @@ export class RendererCompiler<T> {
         const code = ['var componentCtx = {']
 
         // instance
-        code.push(`instance: sanssrRuntime.instance${this.ComponentClass.sanssrCid},`)
+        code.push(`instance: _.createFromPrototype(sanssrRuntime.prototype${this.cid}),`)
 
         // sourceSlots
         code.push('sourceSlots: sourceSlots,')
@@ -226,24 +232,7 @@ export class RendererCompiler<T> {
         return code.join('\n')
     }
 
-    private genComponentContext (data, proto, parentCtx, instance, sourceSlots): CompileContext {
-        return {
-            instance: this.createInstanceFromPrototype(proto),
-            sourceSlots,
-            data: data || this.component.data.get(),
-            owner: parentCtx,
-            computedNames: Object.keys(this.component.computed),
-            slotRenderers: {}
-        }
-    }
-
-    private createInstanceFromPrototype (proto: any) {
-        function Creator () {}
-        Creator.prototype = proto
-        return new Creator()
-    }
-
-    private genComponentProto (): Partial<SanComponent> {
+    private genComponentProto (): SanComponent {
         const ComponentProto = this.ComponentClass.prototype
         const builtinKeys = ['components', '_cmptReady', 'aNode', 'constructor']
         const proto: Partial<typeof SanComponent> = {}
@@ -259,7 +248,7 @@ export class RendererCompiler<T> {
         if (this.ComponentClass.filters) {
             proto.filters = this.ComponentClass.filters
         }
-        return proto
+        return this.component
     }
 
     private createComponentInstance (ComponentClass: typeof SanComponent) {

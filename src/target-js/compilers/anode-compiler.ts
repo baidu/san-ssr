@@ -311,8 +311,8 @@ export class ANodeCompiler {
         }
 
         const funcName = 'sanssrRuntime.renderer' + extra.ComponentClass.sanssrCid
-        sourceBuffer.addRaw(`html += ${funcName}(sanssrRuntime, `)
-        sourceBuffer.addRaw(dataLiteral + ', true, componentCtx, ' +
+        sourceBuffer.addRaw(`html += ${funcName}(`)
+        sourceBuffer.addRaw(dataLiteral + ', true, sanssrRuntime, componentCtx, ' +
         stringifier.str(aNode.tagName) + ', $sourceSlots);')
         sourceBuffer.addRaw('$sourceSlots = null;')
     }

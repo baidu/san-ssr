@@ -70,8 +70,8 @@ export class SanAppParser {
 
         if (entrySourceFile.fileType === SourceFileType.js) {
             for (let i = 0; i < componentClasses.length; i++) {
-                const componentClass = componentClasses[i]
-                componentClass.sanssrCid = i
+                const ComponentClass = componentClasses[i]
+                ComponentClass.sanssrCid = i
             }
         }
         return new SanApp(entrySourceFile, this.projectFiles, componentClasses)

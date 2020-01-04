@@ -34,10 +34,16 @@ export default class ToJSCompiler implements Compiler {
             emitRuntime(emitter, 'sanssrRuntime')
             for (const componentClass of sanApp.componentClasses) {
                 const cc = new RendererCompiler(componentClass, noTemplateOutput)
-                cc.compileComponentInstanceSource(emitter)
+                emitter.writeBlock(`sanssrRuntime.instance${componentClass.sanssrCid} =`, () => {
+                    cc.compileComponentInstanceSource(emitter)
+                })
+
+                emitter.nextLine(`sanssrRuntime.renderer${componentClass.sanssrCid} = `)
+                emitter.indent()
                 cc.compileComponentRendererSource(emitter)
+                emitter.unindent()
             }
-            const funcName = 'sanssrRenderer' + sanApp.getEntryComponentClassOrThrow().sanssrCid
+            const funcName = 'sanssrRuntime.renderer' + sanApp.getEntryComponentClassOrThrow().sanssrCid
             emitter.writeLine(`return ${funcName}(sanssrRuntime, data, noDataOutput)`)
         })
         return emitter.fullText()
@@ -46,12 +52,12 @@ export default class ToJSCompiler implements Compiler {
     public compileToRenderer (sanApp: SanApp, {
         noTemplateOutput = false
     }): Renderer {
-        const renderers = new Map()
-        // const renderers: Map<number, Renderer> = new Map()
+        const renderers: Map<number, Renderer> = new Map()
+
         for (const componentClass of sanApp.componentClasses) {
             const renderCompiler = new RendererCompiler(componentClass, noTemplateOutput, renderers)
             const componentRenderer = renderCompiler.compileComponentRenderer()
-            renderers.set(componentClass.sanssrCid, componentRenderer)
+            // renderers.set(componentClass.sanssrCid, componentRenderer)
         }
         const entryComponentId = sanApp.getEntryComponentClassOrThrow().sanssrCid
         return renderers.get(entryComponentId)

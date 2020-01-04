@@ -11,7 +11,7 @@ export function emitRuntime (emitter: Emitter, name: string) {
     emitter.writeLine(`var ${name} = {};`)
 
     for (const file of files) {
-        emitter.writeLine(`!(function (exports){`)
+        emitter.writeLine(`!(function (exports) {`)
         emitter.indent()
         emitter.writeLines(readStringSync(file))
         emitter.unindent()

@@ -39,7 +39,6 @@ export class RendererCompiler<T> {
     private ComponentClass: typeof SanComponent
     private component: SanComponent
     private renderers: Map<number, Renderer>
-    private funcName: string
 
     constructor (ComponentClass: typeof SanComponent, noTemplateOutput, renderers?: Map<number, Renderer>) {
         this.renderers = renderers
@@ -47,7 +46,6 @@ export class RendererCompiler<T> {
             (...args) => this.aNodeCompiler.compile(...args),
             noTemplateOutput
         )
-        this.funcName = 'sanssrRenderer' + ComponentClass.sanssrCid
         this.component = this.createComponentInstance(ComponentClass)
         this.ComponentClass = ComponentClass
         this.aNodeCompiler = new ANodeCompiler(
@@ -59,13 +57,13 @@ export class RendererCompiler<T> {
     public compileComponentRendererSource (emitter: JSEmitter = new JSEmitter()) {
         // TODO replace sourcebuffer with emitter
         const sourceBuffer = new CompileSourceBuffer()
-        sourceBuffer.addRaw(`function ${this.funcName}(sanssrRuntime, data, noDataOutput, parentCtx, tagName, sourceSlots) {`)
+        sourceBuffer.addRaw(`function (sanssrRuntime, data, noDataOutput, parentCtx, tagName, sourceSlots) {`)
 
         sourceBuffer.addRaw('var _ = sanssrRuntime._;')
         sourceBuffer.addRaw('var SanData = sanssrRuntime.SanData;')
         sourceBuffer.addRaw('var html = "";')
 
-        sourceBuffer.addRaw(this.genComponentContextCode(this.funcName))
+        sourceBuffer.addRaw(this.genComponentContextCode())
 
         // init data
         const defaultData = (this.component.initData && this.component.initData()) || {}
@@ -113,8 +111,6 @@ export class RendererCompiler<T> {
 
     public compileComponentInstanceSource (emitter: JSEmitter) {
         const component = this.component
-        emitter.writeLine(`var ${this.funcName}Instance = {`)
-        emitter.indent()
 
         // members for call expr
         const ComponentProto = component.constructor.prototype
@@ -191,54 +187,21 @@ export class RendererCompiler<T> {
 
         // tagName
         emitter.writeLine('tagName: "' + component.tagName + '"')
-
-        emitter.unindent()
-        emitter.writeLine('};')
     }
 
     public compileComponentRenderer () {
-        const proto = this.genComponentProto()
-        const exprCompiler = new ExpressionCompiler(proto)
-        const defaultData = (this.component.initData && this.component.initData()) || {}
-
-        const ifDirective = this.component.aNode.directives['if']
-        const conditionExpr = ifDirective ? exprCompiler.expr(ifDirective.value) : null
-
-        return function (data, noDataOutput, parentCtx: CompileContext, tagName, sourceSlots) {
-            const ctx = this.genComponentContext(data, proto, parentCtx, proto, sourceSlots)
-
-            // init data
-            Object.keys(defaultData).forEach(function (key) {
-                ctx.data[key] = ctx.data[key] || defaultData[key]
-            })
-            ctx.instance.data = new SanData(ctx.data, proto.computed)
-
-            // call inited
-            if (typeof this.component.inited === 'function') {
-                ctx.instance.inited()
-            }
-
-            // calc computed
-            const computedNames = ctx.computedNames
-            for (let i = 0; i < computedNames.length; i++) {
-                const computedName = computedNames[i]
-                data[computedName] = ctx.instance.computed[computedName].call(ctx.instance)
-            }
-
-            // wrapped by if
-            if (conditionExpr && !conditionExpr(ctx)) return ''
-            return ''
-        }
+        // const proto = this.genComponentProto()
+        // const function this.compileComponentRendererSource()
     }
 
     /**
     * 生成组件 renderer 时 ctx 对象构建的代码
     */
-    private genComponentContextCode (componentIdInContext: string) {
+    private genComponentContextCode () {
         const code = ['var componentCtx = {']
 
         // instance
-        code.push('instance: ' + componentIdInContext + 'Instance,')
+        code.push(`instance: sanssrRuntime.instance${this.ComponentClass.sanssrCid},`)
 
         // sourceSlots
         code.push('sourceSlots: sourceSlots,')

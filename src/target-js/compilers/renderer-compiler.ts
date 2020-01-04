@@ -37,10 +37,10 @@ export interface CompileContext {
  * Each ComponentClass is compiled to a render function
  */
 export class RendererCompiler<T> {
+    public component: SanComponent
     private aNodeCompiler
     private elementSourceCompiler
     private ComponentClass: typeof SanComponent
-    private component: SanComponent
     private cid: number
 
     constructor (ComponentClass: typeof SanComponent, noTemplateOutput) {
@@ -66,7 +66,6 @@ export class RendererCompiler<T> {
 
     public compileComponentRenderer () {
         const body = this.compileComponentRendererBody()
-        console.error(this.cid, this.ComponentClass.sanssrCid)
         return new Function(...RENDERER_ARGS, body) // eslint-disable-line no-new-func
     }
 
@@ -230,25 +229,6 @@ export class RendererCompiler<T> {
         code.push('};')
 
         return code.join('\n')
-    }
-
-    private genComponentProto (): SanComponent {
-        const ComponentProto = this.ComponentClass.prototype
-        const builtinKeys = ['components', '_cmptReady', 'aNode', 'constructor']
-        const proto: Partial<typeof SanComponent> = {}
-
-        Object.getOwnPropertyNames(ComponentProto).forEach(function (protoMemberKey) {
-            if (builtinKeys.includes(protoMemberKey)) return
-            if (COMPONENT_RESERVED_MEMBERS.has(protoMemberKey)) return
-            proto[protoMemberKey] = ComponentProto[protoMemberKey]
-        })
-        if (this.ComponentClass.computed) {
-            proto.computed = this.ComponentClass.computed
-        }
-        if (this.ComponentClass.filters) {
-            proto.filters = this.ComponentClass.filters
-        }
-        return this.component
     }
 
     private createComponentInstance (ComponentClass: typeof SanComponent) {

@@ -1,6 +1,7 @@
 import { SanProject } from './models/san-project'
 import { Renderer } from './models/renderer'
-import { Component } from 'san'
+import { SanComponent as Component } from './models/component'
+import { ToJSCompileOptions } from './target-js/index'
 
 // util functions
 export { parseSanHTML, assertSanHTMLEqual } from './utils/case'
@@ -33,8 +34,8 @@ export function compileToSource (ComponentClass: typeof Component): string {
 /**
  * Legacy API: compile a ComponentClass to a function string and eval that function
  */
-export function compileToRenderer (ComponentClass: typeof Component): Renderer {
+export function compileToRenderer (ComponentClass: typeof Component, options: ToJSCompileOptions): Renderer {
     const proj = new SanProject({ tsConfigFilePath: null })
-    const renderer = proj.compileToRenderer(ComponentClass)
+    const renderer = proj.compileToRenderer(ComponentClass, options)
     return renderer
 }

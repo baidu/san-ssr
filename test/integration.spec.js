@@ -3,7 +3,8 @@ const { resolve, join } = require('path')
 const { parseSanHTML, execCommandSync } = require('../dist/index')
 const caseRoot = resolve(__dirname, 'cases')
 const files = readdirSync(caseRoot)
-const renderBin = resolve(__dirname, `../bin/render-by-source.js`)
+const renderBySource = resolve(__dirname, `../bin/render-by-source.js`)
+const renderOnthefly = resolve(__dirname, `../bin/render-onthefly.js`)
 
 jest.setTimeout(10000)
 
@@ -15,10 +16,16 @@ for (const caseName of files) {
     const [expectedData, expectedHtml] = parseSanHTML(readFileSync(htmlPath, 'utf8'))
 
     it(caseName, async function () {
-        const got = execCommandSync(renderBin, [caseName])
-        const [data, html] = parseSanHTML(got)
+        const got1 = execCommandSync(renderBySource, [caseName])
+        const [data1, html1] = parseSanHTML(got1)
 
-        expect(data).toEqual(expectedData)
-        expect(html).toEqual(expectedHtml)
+        expect(data1).toEqual(expectedData)
+        expect(html1).toEqual(expectedHtml)
+
+        const got2 = execCommandSync(renderOnthefly, [caseName])
+        const [data2, html2] = parseSanHTML(got2)
+
+        expect(data2).toEqual(expectedData)
+        expect(html2).toEqual(expectedHtml)
     })
 }

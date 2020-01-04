@@ -19,7 +19,12 @@ export function parseSanHTML (str: string) {
 export function assertSanHTMLEqual (expected, got) {
     const [data0, html0] = parseSanHTML(expected)
     const [data1, html1] = parseSanHTML(got)
-    return deepEqual(data0, data1) && html0 === html1
+    if (!deepEqual(data0, data1)) {
+        throw new Error('data not qual')
+    }
+    if (html0 !== html1) {
+        throw new Error('html not qual')
+    }
 }
 
 function deepEqual (lhs, rhs) {

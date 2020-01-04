@@ -1,6 +1,7 @@
 import { sep } from 'path'
+import { ToJSCompileOptions } from '../target-js/index'
 import { Renderer } from './renderer'
-import { Component } from 'san'
+import { SanComponent as Component } from '../models/component'
 import { getDefaultTSConfigPath } from '../parsers/tsconfig'
 import { cwd } from 'process'
 import { Compiler } from '../models/compiler'
@@ -40,7 +41,9 @@ export class SanProject {
             ? tsConfigFilePath.split(sep).slice(0, -1).join(sep)
             : cwd()
         this.tsConfigFilePath = tsConfigFilePath
-        this.tsProject = new Project({ tsConfigFilePath })
+        if (tsConfigFilePath !== null) {
+            this.tsProject = new Project({ tsConfigFilePath })
+        }
         this.modules = modules
     }
 
@@ -81,7 +84,7 @@ export class SanProject {
      */
     public compileToRenderer (
         filepathOrComponentClass: string | typeof Component,
-        options: CompileOptions = {}
+        options: ToJSCompileOptions
     ): Renderer {
         const sanApp = this.parseSanApp(filepathOrComponentClass)
         const compiler = this.getOrCreateCompilerInstance('js')

@@ -21,13 +21,23 @@ const htmlPath = resolve(root, caseName, 'expected.html')
 const expected = readFileSync(htmlPath, 'utf8')
 console.log(chalk.cyan(`[EXPECTED] ${caseName}`), expected)
 
-compile(caseName)
-const got1 = execCommandSync(resolve(__dirname, `./render-by-source.js`), [caseName])
-const pass1 = assertSanHTMLEqual(got1, expected)
-console.log(chalk[pass1 ? 'green' : 'red'](`[ SOURCE ] ${caseName}`), got1)
+let got1
+try {
+    compile(caseName)
+    got1 = execCommandSync(resolve(__dirname, `./render-by-source.js`), [caseName])
+    assertSanHTMLEqual(got1, expected)
+    console.log(chalk.green(`[ SOURCE ] ${caseName}`), got1)
+} catch (err) {
+    console.log(chalk.red(`[ SOURCE ] ${caseName}`), got1)
+    console.error(err)
+}
 
-const got2 = execCommandSync(resolve(__dirname, `./render-onthefly.js`), [caseName])
-const pass2 = assertSanHTMLEqual(got2, expected)
-console.log(chalk[pass2 ? 'green' : 'red'](`[ RENDER ] ${caseName}`), got2)
-
-if (!pass1 || !pass2) process.exit(1)
+let got2
+try {
+    got2 = execCommandSync(resolve(__dirname, `./render-onthefly.js`), [caseName])
+    assertSanHTMLEqual(got2, expected)
+    console.log(chalk.green(`[ RENDER ] ${caseName}`), got2)
+} catch (err) {
+    console.log(chalk.red(`[ RENDER ] ${caseName}`), got2)
+    console.error(err)
+}

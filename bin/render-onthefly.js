@@ -25,5 +25,7 @@ function getData () {
 
 function getRender () {
     const ComponentClass = require(join(caseDir, 'component.js'))
-    return require('../dist/index.js').compileToRenderer(ComponentClass)
+    return require('../dist/index.js').compileToRenderer(ComponentClass, {
+        noTemplateOutput: caseDir.indexOf('notpl') > -1
+    })
 }

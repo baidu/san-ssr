@@ -27,7 +27,7 @@ export function compile (caseName) {
     const jsFile = resolve(caseDir, 'component.js')
     const noTemplateOutput = caseName.indexOf('notpl') > -1
     const targetCode = sanProject.compile(
-        existsSync(jsFile) ? jsFile : tsFile,
+        existsSync(tsFile) ? tsFile : jsFile,
         ToJSCompiler, {
             noTemplateOutput
         }

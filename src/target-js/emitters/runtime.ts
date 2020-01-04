@@ -18,6 +18,4 @@ export function emitRuntime (emitter: Emitter) {
     emitter.writeLines(readStringSync(sandata))
     emitter.unindent()
     emitter.writeLine('})(sanssrRuntime);')
-
-    emitter.writeLine('var _ = sanssrRuntime._;')
 }

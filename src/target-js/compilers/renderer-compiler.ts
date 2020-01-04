@@ -73,7 +73,10 @@ export class RendererCompiler<T> {
         this.compileComponentRendererSource(sourceBuffer)
         return sourceBuffer.toCode()
     }
+
     private compileComponentRendererSource (sourceBuffer) {
+        sourceBuffer.addRaw('var _ = sanssrRuntime._;')
+        sourceBuffer.addRaw('var SanData = sanssrRuntime.SanData;')
         sourceBuffer.addRaw('var html = "";')
 
         sourceBuffer.addRaw(this.genComponentContextCode(this.funcName))
@@ -84,7 +87,7 @@ export class RendererCompiler<T> {
             sourceBuffer.addRaw('componentCtx.data["' + key + '"] = componentCtx.data["' + key + '"] || ' +
             stringifier.any(defaultData[key]) + ';')
         })
-        sourceBuffer.addRaw('componentCtx.instance.data = new sanssrRuntime.SanData(componentCtx.data, componentCtx.instance.computed)')
+        sourceBuffer.addRaw('componentCtx.instance.data = new SanData(componentCtx.data, componentCtx.instance.computed)')
 
         // call inited
         if (typeof this.component.inited === 'function') {

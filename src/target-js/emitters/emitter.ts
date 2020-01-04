@@ -18,4 +18,12 @@ export class JSEmitter extends Emitter {
     public writeAnonymousFunction (args = [], body: Function = () => null) {
         return this.writeFunction('', args, body)
     }
+
+    public writeBlock (expr: string, cb: Function = () => null) {
+        this.writeLine(`${expr ? expr + ' ' : ''}{`)
+        this.indent()
+        cb()
+        this.unindent()
+        this.writeLine(`}`)
+    }
 }

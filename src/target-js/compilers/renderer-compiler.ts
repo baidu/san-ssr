@@ -1,4 +1,5 @@
-import { noop } from 'lodash'
+import { isFunction, noop } from 'lodash'
+import { JSEmitter } from '../emitters/emitter'
 import { SanData } from '../../models/san-data'
 import { CompileSourceBuffer } from '../source-buffer'
 import { Renderer } from '../../models/renderer'
@@ -55,26 +56,11 @@ export class RendererCompiler<T> {
         )
     }
 
-    /**
-    * 生成组件构建的代码
-    *
-    * @inner
-    * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
-    * @param {Function} ComponentClass 组件类
-    * @param {string} contextId 构建render环境的id
-    * @return {string} 组件在当前环境下的方法标识
-    */
-    public compileComponentSource () {
-        const funcName = this.funcName
+    public compileComponentRendererSource (emitter: JSEmitter = new JSEmitter()) {
+        // TODO replace sourcebuffer with emitter
         const sourceBuffer = new CompileSourceBuffer()
-        // 先初始化个实例，让模板编译成 ANode，并且能获得初始化数据
-        sourceBuffer.addRaw(`var ${funcName}Instance = ` + this.genComponentInstanceCode(this.component))
-        sourceBuffer.addRaw(`function ${funcName}(sanssrRuntime, data, noDataOutput, parentCtx, tagName, sourceSlots) {`)
-        this.compileComponentRendererSource(sourceBuffer)
-        return sourceBuffer.toCode()
-    }
+        sourceBuffer.addRaw(`function ${this.funcName}(sanssrRuntime, data, noDataOutput, parentCtx, tagName, sourceSlots) {`)
 
-    private compileComponentRendererSource (sourceBuffer) {
         sourceBuffer.addRaw('var _ = sanssrRuntime._;')
         sourceBuffer.addRaw('var SanData = sanssrRuntime.SanData;')
         sourceBuffer.addRaw('var html = "";')
@@ -121,6 +107,93 @@ export class RendererCompiler<T> {
 
         sourceBuffer.addRaw('return html;')
         sourceBuffer.addRaw('};')
+        emitter.writeLines(sourceBuffer.toCode())
+        return emitter.fullText()
+    }
+
+    public compileComponentInstanceSource (emitter: JSEmitter) {
+        const component = this.component
+        emitter.writeLine(`var ${this.funcName}Instance = {`)
+        emitter.indent()
+
+        // members for call expr
+        const ComponentProto = component.constructor.prototype
+
+        const builtinKeys = ['components', '_cmptReady', 'aNode', 'constructor']
+
+        Object.getOwnPropertyNames(ComponentProto).forEach(function (protoMemberKey) {
+            if (builtinKeys.includes(protoMemberKey)) return
+
+            const protoMember = ComponentProto[protoMemberKey]
+            if (COMPONENT_RESERVED_MEMBERS.has(protoMemberKey) || !protoMember) {
+                return
+            }
+
+            switch (typeof protoMember) {
+            case 'function':
+                const funcString = functionString(protoMember)
+                emitter.writeLine(protoMemberKey + ': ' + funcString + ',')
+                break
+
+            case 'object':
+                emitter.writeLine(protoMemberKey + ':')
+
+                if (protoMember instanceof Array) {
+                    emitter.writeLine('[')
+                    const lines = protoMember.map(item => isFunction(item) ? functionString(item) : '').join(', ')
+                    emitter.writeLines(lines + ',')
+                } else {
+                    emitter.writeLine('{')
+                    emitter.indent()
+                    const members = Object.getOwnPropertyNames(protoMember).filter(key => isFunction(protoMember[key]))
+                    members.forEach(function (itemKey) {
+                        const item = protoMember[itemKey]
+                        emitter.writeLine(itemKey + ':' + functionString(item) + ',')
+                    })
+                    emitter.unindent()
+                    emitter.writeLine('},')
+                }
+            }
+        })
+
+        // filters
+        emitter.writeLine('filters: {')
+        const filterCode = []
+        for (const key in component.filters) {
+            if (component.filters.hasOwnProperty(key)) {
+                const filter = component.filters[key]
+
+                if (typeof filter === 'function') {
+                    filterCode.push(key + ': ' + functionString(filter))
+                }
+            }
+        }
+        emitter.writeLines(filterCode.join(','))
+        emitter.writeLine('},')
+
+        // computed obj
+        emitter.writeLine('computed: {')
+        emitter.indent()
+        const computedCode = []
+        for (const key in component.computed) {
+            if (component.computed.hasOwnProperty(key)) {
+                const computed = component.computed[key]
+
+                if (typeof computed === 'function') {
+                    const fn = functionString(computed)
+                    computedCode.push(key + ': ' + fn)
+                }
+            }
+        }
+        emitter.writeLines(computedCode.join(','))
+        emitter.unindent()
+        emitter.writeLine('},')
+
+        // tagName
+        emitter.writeLine('tagName: "' + component.tagName + '"')
+
+        emitter.unindent()
+        emitter.writeLine('};')
     }
 
     public compileComponentRenderer () {
@@ -199,93 +272,6 @@ export class RendererCompiler<T> {
             computedNames: Object.keys(this.component.computed),
             slotRenderers: {}
         }
-    }
-
-    private genComponentInstanceCode (component) {
-        const code = ['{']
-
-        // members for call expr
-        const ComponentProto = component.constructor.prototype
-
-        const builtinKeys = ['components', '_cmptReady', 'aNode', 'constructor']
-
-        Object.getOwnPropertyNames(ComponentProto).forEach(function (protoMemberKey) {
-            if (builtinKeys.includes(protoMemberKey)) return
-
-            const protoMember = ComponentProto[protoMemberKey]
-            if (COMPONENT_RESERVED_MEMBERS.has(protoMemberKey) || !protoMember) {
-                return
-            }
-
-            switch (typeof protoMember) {
-            case 'function':
-                const funcString = functionString(protoMember)
-                code.push(protoMemberKey + ': ' + funcString + ',')
-                break
-
-            case 'object':
-                code.push(protoMemberKey + ':')
-
-                if (protoMember instanceof Array) {
-                    code.push('[')
-                    protoMember.forEach(function (item) {
-                        code.push(typeof item === 'function' ? functionString(item) : '' + ',')
-                    })
-                    code.push(']')
-                } else {
-                    code.push('{')
-
-                    Object.getOwnPropertyNames(protoMember).forEach(function (itemKey) {
-                        const item = protoMember[itemKey]
-                        if (typeof item === 'function') {
-                            code.push(itemKey + ':' + functionString(item) + ',')
-                        }
-                    })
-                    code.push('}')
-                }
-
-                code.push(',')
-            }
-        })
-
-        // filters
-        code.push('filters: {')
-        const filterCode = []
-        for (const key in component.filters) {
-            if (component.filters.hasOwnProperty(key)) {
-                const filter = component.filters[key]
-
-                if (typeof filter === 'function') {
-                    filterCode.push(key + ': ' + functionString(filter))
-                }
-            }
-        }
-        code.push(filterCode.join(','))
-        code.push('},')
-
-        /* eslint-disable no-redeclare */
-        // computed obj
-        code.push('computed: {')
-        const computedCode = []
-        for (const key in component.computed) {
-            if (component.computed.hasOwnProperty(key)) {
-                const computed = component.computed[key]
-
-                if (typeof computed === 'function') {
-                    const fn = functionString(computed)
-                    computedCode.push(key + ': ' + fn)
-                }
-            }
-        }
-        code.push(computedCode.join(','))
-        code.push('},')
-
-        // tagName
-        code.push('tagName: "' + component.tagName + '"')
-
-        code.push('};')
-
-        return code.join('\n')
     }
 
     private createInstanceFromPrototype (proto: any) {

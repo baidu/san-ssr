@@ -33,8 +33,9 @@ export default class ToJSCompiler implements Compiler {
         emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => {
             emitRuntime(emitter, 'sanssrRuntime')
             for (const componentClass of sanApp.componentClasses) {
-                const renderCompiler = new RendererCompiler(componentClass, noTemplateOutput)
-                emitter.writeLines(renderCompiler.compileComponentSource())
+                const cc = new RendererCompiler(componentClass, noTemplateOutput)
+                cc.compileComponentInstanceSource(emitter)
+                cc.compileComponentRendererSource(emitter)
             }
             const funcName = 'sanssrRenderer' + sanApp.getEntryComponentClassOrThrow().sanssrCid
             emitter.writeLine(`return ${funcName}(sanssrRuntime, data, noDataOutput)`)

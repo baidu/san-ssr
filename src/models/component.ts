@@ -24,6 +24,7 @@ export class SanComponent extends OriginSanComponent {
     data: SanData
     components?: Components
     aNode: ANode
+    tagName: string;
     getComponentType?: (aNode: ANode) => typeof SanComponent;
     initData?(): any;
     inited?(): any;

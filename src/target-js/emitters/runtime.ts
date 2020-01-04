@@ -6,10 +6,18 @@ export function emitRuntime (emitter: Emitter) {
     emitter.writeLine('var sanssrRuntime = {};')
 
     const underscore = resolve(__dirname, '../utils/underscore.js')
-    emitter.writeLines(`!(function (exports){${readStringSync(underscore)}})(sanssrRuntime);`)
+    emitter.writeLine(`!(function (exports){`)
+    emitter.indent()
+    emitter.writeLines(readStringSync(underscore))
+    emitter.unindent()
+    emitter.writeLine('})(sanssrRuntime);')
 
     const sandata = resolve(__dirname, '../../models/san-data.js')
-    emitter.writeLines(`!(function (exports){${readStringSync(sandata)}})(sanssrRuntime);`)
+    emitter.writeLine(`!(function (exports){`)
+    emitter.indent()
+    emitter.writeLines(readStringSync(sandata))
+    emitter.unindent()
+    emitter.writeLine('})(sanssrRuntime);')
 
     emitter.writeLine('var _ = sanssrRuntime._;')
 }

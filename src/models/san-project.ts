@@ -83,12 +83,9 @@ export class SanProject {
         filepathOrComponentClass: string | typeof Component,
         options: CompileOptions = {}
     ): Renderer {
-        const targetCode = this.compile(filepathOrComponentClass, 'js', {
-            ...options,
-            bareFunction: true
-        })
-        const renderer = (new Function('return ' + targetCode))() // eslint-disable-line
-        return renderer
+        const sanApp = this.parseSanApp(filepathOrComponentClass)
+        const compiler = this.getOrCreateCompilerInstance('js')
+        return compiler.compileToRenderer(sanApp, options)
     }
 
     private getOrCreateCompilerInstance (target: string | CompilerClass) {

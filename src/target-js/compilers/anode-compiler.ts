@@ -206,10 +206,10 @@ export class ANodeCompiler {
         sourceBuffer.addRaw('var $slotCtx = $isInserted ? componentCtx.owner : componentCtx;')
 
         if (aNode.vars || aNode.directives.bind) {
-            sourceBuffer.addRaw('$slotCtx = {data: extend({}, $slotCtx.data), proto: $slotCtx.proto, owner: $slotCtx.owner};')
+            sourceBuffer.addRaw('$slotCtx = {data: _.extend({}, $slotCtx.data), proto: $slotCtx.proto, owner: $slotCtx.owner};')
 
             if (aNode.directives.bind) {
-                sourceBuffer.addRaw('extend($slotCtx.data, ' + compileExprSource.expr(aNode.directives.bind.value) + ');')
+                sourceBuffer.addRaw('_.extend($slotCtx.data, ' + compileExprSource.expr(aNode.directives.bind.value) + ');')
             }
 
             for (const varItem of aNode.vars) {
@@ -303,7 +303,7 @@ export class ANodeCompiler {
 
         dataLiteral = '{' + givenData.join(',\n') + '}'
         if (aNode.directives.bind) {
-            dataLiteral = 'extend(' +
+            dataLiteral = '_.extend(' +
             compileExprSource.expr(aNode.directives.bind.value) +
             ', ' +
             dataLiteral +

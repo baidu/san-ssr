@@ -1,10 +1,34 @@
 import { noop } from 'lodash'
+import { SanData } from '../../models/san-data'
 import { CompileSourceBuffer } from '../source-buffer'
-import { compileExprSource } from './expr-compiler'
+import { Renderer } from '../../models/renderer'
+import { compileExprSource, ExpressionCompiler } from './expr-compiler'
 import { stringifier } from './stringifier'
 import { ElementCompiler } from './element-compiler'
 import { ANodeCompiler } from './anode-compiler'
 import { COMPONENT_RESERVED_MEMBERS, SanComponent } from '../../models/component'
+
+export type ExpressionEvaluator = (ctx: CompileContext) => any
+
+export interface Data {
+    [key: string]: any
+}
+
+export interface ComponentRender {
+    (data: Data, noDataOutput: boolean, parentCtx: CompileContext, tagName: string, sourceSlots: SourceSlot[]): string
+}
+
+export type SourceSlot = any
+
+export interface CompileContext {
+    proto: Partial<SanComponent>
+    instance: SanComponent
+    sourceSlots: SourceSlot[]
+    data: any,
+    owner: CompileContext,
+    computedNames: string[],
+    slotRenderers: {[key: string]: Renderer}
+}
 
 /**
  * Each ComponentClass is compiled to a render function
@@ -12,21 +36,26 @@ import { COMPONENT_RESERVED_MEMBERS, SanComponent } from '../../models/component
 export class RendererCompiler<T> {
     private aNodeCompiler
     private elementSourceCompiler
+    private ComponentClass: typeof SanComponent
     private component: SanComponent
+    private renderers: Map<number, Renderer>
     private funcName: string
 
-    constructor (ComponentClass: typeof SanComponent, noTemplateOutput) {
+    constructor (ComponentClass: typeof SanComponent, noTemplateOutput, renderers?: Map<number, Renderer>) {
+        this.renderers = renderers
         this.elementSourceCompiler = new ElementCompiler(
             (...args) => this.aNodeCompiler.compile(...args),
             noTemplateOutput
         )
         this.funcName = 'sanssrRenderer' + ComponentClass.sanssrCid
         this.component = this.createComponentInstance(ComponentClass)
+        this.ComponentClass = ComponentClass
         this.aNodeCompiler = new ANodeCompiler(
             this.elementSourceCompiler,
             this.component
         )
     }
+
     /**
     * 生成组件构建的代码
     *
@@ -42,9 +71,13 @@ export class RendererCompiler<T> {
         // 先初始化个实例，让模板编译成 ANode，并且能获得初始化数据
         sourceBuffer.addRaw(`var ${funcName}Proto = ` + this.genComponentProtoCode(this.component))
         sourceBuffer.addRaw(`function ${funcName}(data, noDataOutput, parentCtx, tagName, sourceSlots) {`)
+        this.compileComponentRendererSource(sourceBuffer)
+        return sourceBuffer.toCode()
+    }
+    private compileComponentRendererSource (sourceBuffer) {
         sourceBuffer.addRaw('var html = "";')
 
-        sourceBuffer.addRaw(this.genComponentContextCode(funcName))
+        sourceBuffer.addRaw(this.genComponentContextCode(this.funcName))
 
         // init data
         const defaultData = (this.component.initData && this.component.initData()) || {}
@@ -52,7 +85,7 @@ export class RendererCompiler<T> {
             sourceBuffer.addRaw('componentCtx.data["' + key + '"] = componentCtx.data["' + key + '"] || ' +
             stringifier.any(defaultData[key]) + ';')
         })
-        sourceBuffer.addRaw('componentCtx.proto.data = new SanData(componentCtx)')
+        sourceBuffer.addRaw('componentCtx.proto.data = new sanssrRuntime.SanData(componentCtx.data, componentCtx.proto.computed)')
 
         // call inited
         if (typeof this.component.inited === 'function') {
@@ -86,7 +119,41 @@ export class RendererCompiler<T> {
 
         sourceBuffer.addRaw('return html;')
         sourceBuffer.addRaw('};')
-        return sourceBuffer.toCode()
+    }
+
+    public compileComponentRenderer () {
+        const proto = this.genComponentProto()
+        const exprCompiler = new ExpressionCompiler(proto)
+        const defaultData = (this.component.initData && this.component.initData()) || {}
+
+        const ifDirective = this.component.aNode.directives['if']
+        const conditionExpr = ifDirective ? exprCompiler.expr(ifDirective.value) : null
+
+        return function (data, noDataOutput, parentCtx: CompileContext, tagName, sourceSlots) {
+            const ctx = this.genComponentContext(data, parentCtx, proto, sourceSlots)
+
+            // init data
+            Object.keys(defaultData).forEach(function (key) {
+                ctx.data[key] = ctx.data[key] || defaultData[key]
+            })
+            ctx.proto.data = new SanData(ctx.data, proto.computed)
+
+            // call inited
+            if (typeof this.component.inited === 'function') {
+                ctx.proto.inited()
+            }
+
+            // calc computed
+            const computedNames = ctx.computedNames
+            for (let i = 0; i < computedNames.length; i++) {
+                const computedName = computedNames[i]
+                data[computedName] = ctx.proto.computed[computedName].call(proto)
+            }
+
+            // wrapped by if
+            if (conditionExpr && !conditionExpr(ctx)) return ''
+            return ''
+        }
     }
 
     /**
@@ -119,6 +186,19 @@ export class RendererCompiler<T> {
         code.push('};')
 
         return code.join('\n')
+    }
+
+    // TODO refactor: rename `proto` into `instance`
+    private genComponentContext (data, parentCtx, proto, sourceSlots): CompileContext {
+        return {
+            proto,
+            instance: this.createInstanceFromPrototype(proto),
+            sourceSlots,
+            data: data || this.component.data.get(),
+            owner: parentCtx,
+            computedNames: Object.keys(this.component.computed),
+            slotRenderers: {}
+        }
     }
 
     /**
@@ -210,6 +290,32 @@ export class RendererCompiler<T> {
 
         return code.join('\n')
     }
+
+    private createInstanceFromPrototype (proto: any) {
+        function Creator () {}
+        Creator.prototype = proto
+        return new Creator()
+    }
+
+    private genComponentProto (): Partial<SanComponent> {
+        const ComponentProto = this.ComponentClass.prototype
+        const builtinKeys = ['components', '_cmptReady', 'aNode', 'constructor']
+        const proto: Partial<typeof SanComponent> = {}
+
+        Object.getOwnPropertyNames(ComponentProto).forEach(function (protoMemberKey) {
+            if (builtinKeys.includes(protoMemberKey)) return
+            if (COMPONENT_RESERVED_MEMBERS.has(protoMemberKey)) return
+            proto[protoMemberKey] = ComponentProto[protoMemberKey]
+        })
+        if (this.ComponentClass.computed) {
+            proto.computed = this.ComponentClass.computed
+        }
+        if (this.ComponentClass.filters) {
+            proto.filters = this.ComponentClass.filters
+        }
+        return proto
+    }
+
     private createComponentInstance (ComponentClass: typeof SanComponent) {
         // TODO Do not `new Component` during SSR,
         // see https://github.com/searchfe/san-ssr/issues/42

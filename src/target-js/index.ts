@@ -1,4 +1,5 @@
 import { JSEmitter } from './emitters/emitter'
+import { Renderer } from '../models/renderer'
 import { Project } from 'ts-morph'
 import debugFactory from 'debug'
 import { Compiler } from '../models/compiler'
@@ -39,5 +40,19 @@ export default class ToJSCompiler implements Compiler {
             emitter.writeLine(`return ${funcName}(data, noDataOutput)`)
         })
         return emitter.fullText()
+    }
+
+    public compileToRenderer (sanApp: SanApp, {
+        noTemplateOutput = false
+    }): Renderer {
+        const renderers = new Map()
+        // const renderers: Map<number, Renderer> = new Map()
+        for (const componentClass of sanApp.componentClasses) {
+            const renderCompiler = new RendererCompiler(componentClass, noTemplateOutput, renderers)
+            const componentRenderer = renderCompiler.compileComponentRenderer()
+            renderers.set(componentClass.sanssrCid, componentRenderer)
+        }
+        const entryComponentId = sanApp.getEntryComponentClassOrThrow().sanssrCid
+        return renderers.get(entryComponentId)
     }
 }

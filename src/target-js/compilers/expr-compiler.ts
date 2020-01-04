@@ -1,10 +1,14 @@
 import { Expression } from '../../models/expression'
+import { _ } from '../utils/underscore'
+import { ExpressionEvaluator, CompileContext } from './renderer-compiler'
+import { SanComponent } from '../../models/component'
 
 /**
-* 编译源码的 helper 方法集合对象
-*/
+ * 编译源码的 helper 方法集合对象
+ *
+ * TODO 把这个常量搞成对象
+ */
 export const compileExprSource = {
-
     /**
      * 字符串字面化
      */
@@ -91,12 +95,12 @@ export const compileExprSource = {
             switch (filterName) {
             case '_style':
             case '_class':
-                code = filterName + 'Filter(' + code + ')'
+                code = '_.' + filterName + 'Filter(' + code + ')'
                 break
 
             case '_xstyle':
             case '_xclass':
-                code = filterName + 'Filter(' + code + ', ' + compileExprSource.expr(filter.args[0]) + ')'
+                code = '_.' + filterName + 'Filter(' + code + ', ' + compileExprSource.expr(filter.args[0]) + ')'
                 break
 
             case 'url':
@@ -104,7 +108,7 @@ export const compileExprSource = {
                 break
 
             default:
-                code = 'callFilter(componentCtx, "' + filterName + '", [' + code
+                code = '_.callFilter(componentCtx, "' + filterName + '", [' + code
                 for (const arg of filter.args) {
                     code += ', ' + compileExprSource.expr(arg)
                 }
@@ -113,7 +117,7 @@ export const compileExprSource = {
         }
 
         if (!interpExpr.original) {
-            return 'escapeHTML(' + code + ')'
+            return '_.escapeHTML(' + code + ')'
         }
 
         return code
@@ -246,5 +250,43 @@ export const compileExprSource = {
         case 13:
             return 'null'
         }
+    }
+}
+
+export class ExpressionCompiler {
+    // 组件原型。静态的、不变的那部分
+    proto: Partial<SanComponent>
+
+    constructor (proto: Partial<SanComponent>) {
+        this.proto = proto
+    }
+
+    private toEvaluator (body: string): ExpressionEvaluator {
+        const fn = new Function('componentCtx', '_', body)   // eslint-disable-line
+        return (ctx: CompileContext) => fn(ctx, _)
+    }
+
+    dataAccess (expr?: Expression): ExpressionEvaluator {
+        return this.toEvaluator(compileExprSource.dataAccess(expr))
+    }
+
+    callExpr (expr: Expression): ExpressionEvaluator {
+        return this.toEvaluator(compileExprSource.callExpr(expr))
+    }
+
+    text (expr: Expression): ExpressionEvaluator {
+        return this.toEvaluator(compileExprSource.text(expr))
+    }
+
+    array (expr: Expression): ExpressionEvaluator {
+        return this.toEvaluator(compileExprSource.array(expr))
+    }
+
+    object (expr: Expression): ExpressionEvaluator {
+        return this.toEvaluator(compileExprSource.object(expr))
+    }
+
+    expr (expr: Expression): ExpressionEvaluator {
+        return this.toEvaluator(compileExprSource.expr(expr))
     }
 }

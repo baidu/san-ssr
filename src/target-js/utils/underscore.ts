@@ -1,5 +1,3 @@
-/* eslint @typescript-eslint/no-unused-vars: "off" */
-const $version = '3.7.7'
 const BASE_PROPS = {
     'class': 1,
     'style': 1,
@@ -165,4 +163,10 @@ function defaultStyleFilter (source) {
     }
 
     return source
+}
+
+// TODO
+// 重命名：现在已经封装在 _ 下，不再需要避免名字冲突
+export const _ = {
+    escapeHTML, defaultStyleFilter, callFilter, boolAttrFilter, attrFilter, sortedStringify, extend, contains, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter
 }

@@ -31,13 +31,13 @@ export default class ToJSCompiler implements Compiler {
             emitter.write('exports = module.exports = ')
         }
         emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => {
-            emitRuntime(emitter)
+            emitRuntime(emitter, 'sanssrRuntime')
             for (const componentClass of sanApp.componentClasses) {
                 const renderCompiler = new RendererCompiler(componentClass, noTemplateOutput)
                 emitter.writeLines(renderCompiler.compileComponentSource())
             }
             const funcName = 'sanssrRenderer' + sanApp.getEntryComponentClassOrThrow().sanssrCid
-            emitter.writeLine(`return ${funcName}(data, noDataOutput)`)
+            emitter.writeLine(`return ${funcName}(sanssrRuntime, data, noDataOutput)`)
         })
         return emitter.fullText()
     }

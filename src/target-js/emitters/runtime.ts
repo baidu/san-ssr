@@ -2,20 +2,19 @@ import { readStringSync } from '../utils/fs'
 import { Emitter } from '../../utils/emitter'
 import { resolve } from 'path'
 
-export function emitRuntime (emitter: Emitter) {
-    emitter.writeLine('var sanssrRuntime = {};')
+const files = [
+    resolve(__dirname, '../utils/underscore.js'),
+    resolve(__dirname, '../../models/san-data.js')
+]
 
-    const underscore = resolve(__dirname, '../utils/underscore.js')
-    emitter.writeLine(`!(function (exports){`)
-    emitter.indent()
-    emitter.writeLines(readStringSync(underscore))
-    emitter.unindent()
-    emitter.writeLine('})(sanssrRuntime);')
+export function emitRuntime (emitter: Emitter, name: string) {
+    emitter.writeLine(`var ${name} = {};`)
 
-    const sandata = resolve(__dirname, '../../models/san-data.js')
-    emitter.writeLine(`!(function (exports){`)
-    emitter.indent()
-    emitter.writeLines(readStringSync(sandata))
-    emitter.unindent()
-    emitter.writeLine('})(sanssrRuntime);')
+    for (const file of files) {
+        emitter.writeLine(`!(function (exports){`)
+        emitter.indent()
+        emitter.writeLines(readStringSync(file))
+        emitter.unindent()
+        emitter.writeLine(`})(${name});`)
+    }
 }

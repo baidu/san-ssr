@@ -22,8 +22,12 @@ const expected = readFileSync(htmlPath, 'utf8')
 console.log(chalk.cyan(`[EXPECTED] ${caseName}`), expected)
 
 compile(caseName)
-const got = execCommandSync(resolve(__dirname, `./render.js`), [caseName])
-const pass = assertSanHTMLEqual(got, expected)
-console.log(chalk[pass ? 'green' : 'red'](`[ SSR JS ] ${caseName}`), got)
+const got1 = execCommandSync(resolve(__dirname, `./render-by-source.js`), [caseName])
+const pass1 = assertSanHTMLEqual(got1, expected)
+console.log(chalk[pass1 ? 'green' : 'red'](`[ SOURCE ] ${caseName}`), got1)
 
-if (!pass) process.exit(1)
+const got2 = execCommandSync(resolve(__dirname, `./render-onthefly.js`), [caseName])
+const pass2 = assertSanHTMLEqual(got2, expected)
+console.log(chalk[pass2 ? 'green' : 'red'](`[ RENDER ] ${caseName}`), got2)
+
+if (!pass1 || !pass2) process.exit(1)

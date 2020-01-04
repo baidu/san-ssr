@@ -143,7 +143,7 @@ function boolAttrFilter (name, value) {
 }
 
 function callFilter (ctx, name, args) {
-    const filter = ctx.proto.filters[name]
+    const filter = ctx.instance.filters[name]
     if (typeof filter === 'function') {
         return filter.apply(ctx, args)
     }

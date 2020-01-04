@@ -21,7 +21,6 @@ export interface ComponentRender {
 export type SourceSlot = any
 
 export interface CompileContext {
-    proto: Partial<SanComponent>
     instance: SanComponent
     sourceSlots: SourceSlot[]
     data: any,
@@ -69,7 +68,7 @@ export class RendererCompiler<T> {
         const funcName = this.funcName
         const sourceBuffer = new CompileSourceBuffer()
         // 先初始化个实例，让模板编译成 ANode，并且能获得初始化数据
-        sourceBuffer.addRaw(`var ${funcName}Proto = ` + this.genComponentProtoCode(this.component))
+        sourceBuffer.addRaw(`var ${funcName}Instance = ` + this.genComponentInstanceCode(this.component))
         sourceBuffer.addRaw(`function ${funcName}(data, noDataOutput, parentCtx, tagName, sourceSlots) {`)
         this.compileComponentRendererSource(sourceBuffer)
         return sourceBuffer.toCode()
@@ -85,18 +84,18 @@ export class RendererCompiler<T> {
             sourceBuffer.addRaw('componentCtx.data["' + key + '"] = componentCtx.data["' + key + '"] || ' +
             stringifier.any(defaultData[key]) + ';')
         })
-        sourceBuffer.addRaw('componentCtx.proto.data = new sanssrRuntime.SanData(componentCtx.data, componentCtx.proto.computed)')
+        sourceBuffer.addRaw('componentCtx.instance.data = new sanssrRuntime.SanData(componentCtx.data, componentCtx.instance.computed)')
 
         // call inited
         if (typeof this.component.inited === 'function') {
-            sourceBuffer.addRaw('componentCtx.proto.inited()')
+            sourceBuffer.addRaw('componentCtx.instance.inited()')
         }
 
         // calc computed
         sourceBuffer.addRaw('var computedNames = componentCtx.computedNames;')
         sourceBuffer.addRaw('for (var $i = 0; $i < computedNames.length; $i++) {')
         sourceBuffer.addRaw('  var $computedName = computedNames[$i];')
-        sourceBuffer.addRaw('  data[$computedName] = componentCtx.proto.computed[$computedName].apply(componentCtx.proto);')
+        sourceBuffer.addRaw('  data[$computedName] = componentCtx.instance.computed[$computedName].apply(componentCtx.instance);')
         sourceBuffer.addRaw('}')
 
         const ifDirective = this.component.aNode.directives['if'] // eslint-disable-line dot-notation
@@ -130,24 +129,24 @@ export class RendererCompiler<T> {
         const conditionExpr = ifDirective ? exprCompiler.expr(ifDirective.value) : null
 
         return function (data, noDataOutput, parentCtx: CompileContext, tagName, sourceSlots) {
-            const ctx = this.genComponentContext(data, parentCtx, proto, sourceSlots)
+            const ctx = this.genComponentContext(data, proto, parentCtx, proto, sourceSlots)
 
             // init data
             Object.keys(defaultData).forEach(function (key) {
                 ctx.data[key] = ctx.data[key] || defaultData[key]
             })
-            ctx.proto.data = new SanData(ctx.data, proto.computed)
+            ctx.instance.data = new SanData(ctx.data, proto.computed)
 
             // call inited
             if (typeof this.component.inited === 'function') {
-                ctx.proto.inited()
+                ctx.instance.inited()
             }
 
             // calc computed
             const computedNames = ctx.computedNames
             for (let i = 0; i < computedNames.length; i++) {
                 const computedName = computedNames[i]
-                data[computedName] = ctx.proto.computed[computedName].call(proto)
+                data[computedName] = ctx.instance.computed[computedName].call(ctx.instance)
             }
 
             // wrapped by if
@@ -162,8 +161,8 @@ export class RendererCompiler<T> {
     private genComponentContextCode (componentIdInContext: string) {
         const code = ['var componentCtx = {']
 
-        // proto
-        code.push('proto: ' + componentIdInContext + 'Proto,')
+        // instance
+        code.push('instance: ' + componentIdInContext + 'Instance,')
 
         // sourceSlots
         code.push('sourceSlots: sourceSlots,')
@@ -188,10 +187,8 @@ export class RendererCompiler<T> {
         return code.join('\n')
     }
 
-    // TODO refactor: rename `proto` into `instance`
-    private genComponentContext (data, parentCtx, proto, sourceSlots): CompileContext {
+    private genComponentContext (data, proto, parentCtx, instance, sourceSlots): CompileContext {
         return {
-            proto,
             instance: this.createInstanceFromPrototype(proto),
             sourceSlots,
             data: data || this.component.data.get(),
@@ -201,10 +198,7 @@ export class RendererCompiler<T> {
         }
     }
 
-    /**
-    * 生成组件 proto 对象构建的代码
-    */
-    private genComponentProtoCode (component) {
+    private genComponentInstanceCode (component) {
         const code = ['{']
 
         // members for call expr

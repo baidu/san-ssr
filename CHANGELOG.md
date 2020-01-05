@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/searchfe/san-ssr/compare/v1.7.1...v1.8.0) (2020-01-05)
+
+
+### Features
+
+* compile to renderer ([a2383a1](https://github.com/searchfe/san-ssr/commit/a2383a192cb991e7432f56f9497c06315f6e2fbe))
+
 ## [1.7.1](https://github.com/searchfe/san-ssr/compare/v1.7.0...v1.7.1) (2020-01-02)
 
 

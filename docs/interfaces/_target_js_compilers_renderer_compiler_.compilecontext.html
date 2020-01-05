@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Module | san-ssr</title>
+	<title>CompileContext | san-ssr</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_loaders_common_js_.html">&quot;loaders/common-js&quot;</a>
+					<a href="../modules/_target_js_compilers_renderer_compiler_.html">&quot;target-js/compilers/renderer-compiler&quot;</a>
 				</li>
 				<li>
-					<a href="_loaders_common_js_.module.html">Module</a>
+					<a href="_target_js_compilers_renderer_compiler_.compilecontext.html">CompileContext</a>
 				</li>
 			</ul>
-			<h1>Class Module</h1>
+			<h1>Interface CompileContext</h1>
 		</div>
 	</div>
 </header>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">Module</span>
+						<span class="target">CompileContext</span>
 					</li>
 				</ul>
 			</section>
@@ -82,85 +82,86 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Constructors</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_loaders_common_js_.module.html#constructor" class="tsd-kind-icon">constructor</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_loaders_common_js_.module.html#content" class="tsd-kind-icon">content</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_loaders_common_js_.module.html#exports" class="tsd-kind-icon">exports</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_loaders_common_js_.module.html#filepath" class="tsd-kind-icon">filepath</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_target_js_compilers_renderer_compiler_.compilecontext.html#computednames" class="tsd-kind-icon">computed<wbr>Names</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_target_js_compilers_renderer_compiler_.compilecontext.html#data" class="tsd-kind-icon">data</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_target_js_compilers_renderer_compiler_.compilecontext.html#instance" class="tsd-kind-icon">instance</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_target_js_compilers_renderer_compiler_.compilecontext.html#owner" class="tsd-kind-icon">owner</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_target_js_compilers_renderer_compiler_.compilecontext.html#slotrenderers" class="tsd-kind-icon">slot<wbr>Renderers</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_target_js_compilers_renderer_compiler_.compilecontext.html#sourceslots" class="tsd-kind-icon">source<wbr>Slots</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
-					<a name="constructor" class="tsd-anchor"></a>
-					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Module<span class="tsd-signature-symbol">(</span>filepath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, content<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_loaders_common_js_.module.html" class="tsd-signature-type">Module</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/7884d74/src/loaders/common-js.ts#L15">loaders/common-js.ts:15</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>filepath: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>content: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_loaders_common_js_.module.html" class="tsd-signature-type">Module</a></h4>
-						</li>
-					</ul>
-				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="content" class="tsd-anchor"></a>
-					<h3>content</h3>
-					<div class="tsd-signature tsd-kind-icon">content<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="computednames" class="tsd-anchor"></a>
+					<h3>computed<wbr>Names</h3>
+					<div class="tsd-signature tsd-kind-icon">computed<wbr>Names<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/7884d74/src/loaders/common-js.ts#L14">loaders/common-js.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/7884d74/src/target-js/compilers/renderer-compiler.ts#L32">target-js/compilers/renderer-compiler.ts:32</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="exports" class="tsd-anchor"></a>
-					<h3>exports</h3>
-					<div class="tsd-signature tsd-kind-icon">exports<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="data" class="tsd-anchor"></a>
+					<h3>data</h3>
+					<div class="tsd-signature tsd-kind-icon">data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/7884d74/src/loaders/common-js.ts#L15">loaders/common-js.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/7884d74/src/target-js/compilers/renderer-compiler.ts#L30">target-js/compilers/renderer-compiler.ts:30</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="instance" class="tsd-anchor"></a>
+					<h3>instance</h3>
+					<div class="tsd-signature tsd-kind-icon">instance<span class="tsd-signature-symbol">:</span> <a href="../classes/_models_component_.sancomponent.html" class="tsd-signature-type">SanComponent</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/7884d74/src/target-js/compilers/renderer-compiler.ts#L28">target-js/compilers/renderer-compiler.ts:28</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="owner" class="tsd-anchor"></a>
+					<h3>owner</h3>
+					<div class="tsd-signature tsd-kind-icon">owner<span class="tsd-signature-symbol">:</span> <a href="_target_js_compilers_renderer_compiler_.compilecontext.html" class="tsd-signature-type">CompileContext</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/7884d74/src/target-js/compilers/renderer-compiler.ts#L31">target-js/compilers/renderer-compiler.ts:31</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="slotrenderers" class="tsd-anchor"></a>
+					<h3>slot<wbr>Renderers</h3>
+					<div class="tsd-signature tsd-kind-icon">slot<wbr>Renderers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/7884d74/src/target-js/compilers/renderer-compiler.ts#L33">target-js/compilers/renderer-compiler.ts:33</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-type-declaration">
 						<h4>Type declaration</h4>
 						<ul class="tsd-parameters">
+							<li class="tsd-parameter-index-signature">
+								<h5><span class="tsd-signature-symbol">[</span>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><a href="_models_renderer_.renderer.html" class="tsd-signature-type">Renderer</a></h5>
+							</li>
 						</ul>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="filepath" class="tsd-anchor"></a>
-					<h3>filepath</h3>
-					<div class="tsd-signature tsd-kind-icon">filepath<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="sourceslots" class="tsd-anchor"></a>
+					<h3>source<wbr>Slots</h3>
+					<div class="tsd-signature tsd-kind-icon">source<wbr>Slots<span class="tsd-signature-symbol">:</span> <a href="../modules/_target_js_compilers_renderer_compiler_.html#sourceslot" class="tsd-signature-type">SourceSlot</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/7884d74/src/loaders/common-js.ts#L13">loaders/common-js.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/searchfe/san-ssr/blob/7884d74/src/target-js/compilers/renderer-compiler.ts#L29">target-js/compilers/renderer-compiler.ts:29</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -173,50 +174,59 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_loaders_common_js_.html">"loaders/common-<wbr>js"</a>
+						<a href="../modules/_target_js_compilers_renderer_compiler_.html">"target-<wbr>js/compilers/renderer-<wbr>compiler"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_loaders_common_js_.commonjs.html" class="tsd-kind-icon">CommonJS</a>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="../classes/_target_js_compilers_renderer_compiler_.renderercompiler.html" class="tsd-kind-icon">Renderer<wbr>Compiler</a>
 					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_loaders_common_js_.module.html" class="tsd-kind-icon">Module</a>
+					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_target_js_compilers_renderer_compiler_.compilecontext.html" class="tsd-kind-icon">Compile<wbr>Context</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_loaders_common_js_.module.html#constructor" class="tsd-kind-icon">constructor</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_target_js_compilers_renderer_compiler_.compilecontext.html#computednames" class="tsd-kind-icon">computed<wbr>Names</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_loaders_common_js_.module.html#content" class="tsd-kind-icon">content</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_target_js_compilers_renderer_compiler_.compilecontext.html#data" class="tsd-kind-icon">data</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_loaders_common_js_.module.html#exports" class="tsd-kind-icon">exports</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_target_js_compilers_renderer_compiler_.compilecontext.html#instance" class="tsd-kind-icon">instance</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_loaders_common_js_.module.html#filepath" class="tsd-kind-icon">filepath</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_target_js_compilers_renderer_compiler_.compilecontext.html#owner" class="tsd-kind-icon">owner</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_target_js_compilers_renderer_compiler_.compilecontext.html#slotrenderers" class="tsd-kind-icon">slot<wbr>Renderers</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_target_js_compilers_renderer_compiler_.compilecontext.html#sourceslots" class="tsd-kind-icon">source<wbr>Slots</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_loaders_common_js_.html#fileloader" class="tsd-kind-icon">File<wbr>Loader</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_target_js_compilers_renderer_compiler_.componentrender.html" class="tsd-kind-icon">Component<wbr>Render</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_target_js_compilers_renderer_compiler_.data.html" class="tsd-kind-icon">Data</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
-						<a href="../modules/_loaders_common_js_.html#modules" class="tsd-kind-icon">Modules</a>
+						<a href="../modules/_target_js_compilers_renderer_compiler_.html#expressionevaluator" class="tsd-kind-icon">Expression<wbr>Evaluator</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
+						<a href="../modules/_target_js_compilers_renderer_compiler_.html#sourceslot" class="tsd-kind-icon">Source<wbr>Slot</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_loaders_common_js_.html#debug" class="tsd-kind-icon">debug</a>
+						<a href="../modules/_target_js_compilers_renderer_compiler_.html#renderer_args" class="tsd-kind-icon">RENDERER_<wbr>ARGS</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_loaders_common_js_.html#defaultfileloader" class="tsd-kind-icon">default<wbr>File<wbr>Loader</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_loaders_common_js_.html#getmodulespecifier" class="tsd-kind-icon">get<wbr>Module<wbr>Specifier</a>
+						<a href="../modules/_target_js_compilers_renderer_compiler_.html#functionstring" class="tsd-kind-icon">function<wbr>String</a>
 					</li>
 				</ul>
 			</nav>

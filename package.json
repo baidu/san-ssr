@@ -29,7 +29,8 @@
     "integration": "npm run build-integration && jest test/integration.spec.js",
     "perf": "node ./test/perf/index.js",
     "test": "npm run build && npm run unit && npm run integration",
-    "coveralls": "jest test/unit --coverage && cat coverage/lcov.info | coveralls",
+    "coveralls": "npm run build && jest test/unit --coverage && cat coverage/lcov.info | coveralls",
+    "coverage": "jest test/unit --coverage",
     "version": "npm run build && npm run docs",
     "semantic-release": "semantic-release"
   },

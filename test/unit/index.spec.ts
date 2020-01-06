@@ -27,4 +27,14 @@ describe('compileToRenderer', function () {
         expect(render).toBeInstanceOf(Function)
         expect(render({ name: 'Harttle' }, true)).toEqual('<span>name: Harttle</span>')
     })
+
+    it('should run inited only in run time', function () {
+        const inited = jest.fn()
+        const ComponentClass = defineComponent({ inited, template: '<div>a</div>' })
+        const render = compileToRenderer(ComponentClass)
+
+        expect(inited).not.toBeCalled()
+        expect(render({}, true)).toEqual('<div>a</div>')
+        expect(inited).toBeCalledTimes(1)
+    })
 })

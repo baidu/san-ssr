@@ -84,7 +84,7 @@ export class SanProject {
      */
     public compileToRenderer (
         filepathOrComponentClass: string | typeof Component,
-        options: ToJSCompileOptions
+        options?: ToJSCompileOptions
     ): Renderer {
         const sanApp = this.parseSanApp(filepathOrComponentClass)
         const compiler = this.getOrCreateCompilerInstance('js')

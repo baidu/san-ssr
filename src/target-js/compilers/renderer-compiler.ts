@@ -236,8 +236,11 @@ export class RendererCompiler<T> {
         // see https://github.com/searchfe/san-ssr/issues/42
         const proto = ComponentClass.prototype['__proto__']    // eslint-disable-line
         const calcComputed = proto['_calcComputed']
+        const inited = ComponentClass.prototype.inited
         proto['_calcComputed'] = noop
+        ComponentClass.prototype.inited = undefined
         const instance = new ComponentClass()
+        ComponentClass.prototype.inited = inited
         proto['_calcComputed'] = calcComputed
         return instance
     }

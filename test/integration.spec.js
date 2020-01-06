@@ -15,17 +15,19 @@ for (const caseName of files) {
     const htmlPath = join(caseDir, 'expected.html')
     const [expectedData, expectedHtml] = parseSanHTML(readFileSync(htmlPath, 'utf8'))
 
-    it(caseName, async function () {
-        const got1 = execCommandSync(renderBySource, [caseName])
-        const [data1, html1] = parseSanHTML(got1)
+    it('render to source: ' + caseName, async function () {
+        const got = execCommandSync(renderBySource, [caseName])
+        const [data, html] = parseSanHTML(got)
 
-        expect(data1).toEqual(expectedData)
-        expect(html1).toEqual(expectedHtml)
+        expect(data).toEqual(expectedData)
+        expect(html).toEqual(expectedHtml)
+    })
 
-        const got2 = execCommandSync(renderOnthefly, [caseName])
-        const [data2, html2] = parseSanHTML(got2)
+    it('render to renderer: ' + caseName, async function () {
+        const got = execCommandSync(renderOnthefly, [caseName])
+        const [data, html] = parseSanHTML(got)
 
-        expect(data2).toEqual(expectedData)
-        expect(html2).toEqual(expectedHtml)
+        expect(data).toEqual(expectedData)
+        expect(html).toEqual(expectedHtml)
     })
 }

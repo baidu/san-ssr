@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/searchfe/san-ssr/compare/v1.8.0...v1.8.1) (2020-01-06)
+
+
+### Bug Fixes
+
+* not call inited in compile time, see [#41](https://github.com/searchfe/san-ssr/issues/41) ([8801964](https://github.com/searchfe/san-ssr/commit/8801964cbbdeb0279266e2a9450ba0096542c661))
+
 # [1.8.0](https://github.com/searchfe/san-ssr/compare/v1.7.1...v1.8.0) (2020-01-05)
 
 

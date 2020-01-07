@@ -19,7 +19,7 @@ export class ElementCompiler {
     /**
      * 编译元素标签头
      *
-     * @param {emitter} sourceBuffer 编译源码的中间buffer
+     * @param {JSEmitter} emitter 编译源码的中间buffer
      * @param {ANode} aNode 抽象节点
      * @param {string=} tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
@@ -187,7 +187,7 @@ export class ElementCompiler {
     /**
      * 编译元素闭合
      *
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {JSEmitter} emitter 编译源码的中间buffer
      * @param {ANode} aNode 抽象节点
      * @param {string=} tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
@@ -218,7 +218,7 @@ export class ElementCompiler {
     /**
      * 编译元素内容
      *
-     * @param {CompileSourceBuffer} emitter 编译源码的中间buffer
+     * @param {JSEmitter} emitter 编译源码的中间buffer
      */
     inner (emitter, aNode: ANode) {
         // inner content

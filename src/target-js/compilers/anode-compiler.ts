@@ -68,7 +68,6 @@ export class ANodeCompiler {
         if (aNode.textExpr.value != null) {
             emitter.bufferHTMLLiteral(aNode.textExpr.segs[0].literal)
         } else {
-            // sourceBuffer.joinExpr(aNode.textExpr)
             emitter.writeHTML(compileExprSource.expr(aNode.textExpr))
         }
 
@@ -97,7 +96,6 @@ export class ANodeCompiler {
         // output main if
         const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
         emitter.writeIf(compileExprSource.expr(ifDirective.value), () => {
-            // emitter.writeLine(this.compile(aNode.ifRinsed, emitter))
             this.compile(aNode.ifRinsed, emitter)
         })
 
@@ -110,7 +108,6 @@ export class ANodeCompiler {
                 emitter.writeLine('else {')
             }
             emitter.indent()
-            // emitter.writeLine(this.compile(elseANode, emitter))
             this.compile(elseANode, emitter)
             emitter.unindent()
             emitter.writeLine('}')
@@ -138,15 +135,14 @@ export class ANodeCompiler {
         const indexName = forDirective.index || this.nextID()
         const listName = this.nextID()
 
-        emitter.writeLine('var ' + listName + ' = ' + compileExprSource.expr(forDirective.value) + '')
+        emitter.writeLine('var ' + listName + ' = ' + compileExprSource.expr(forDirective.value) + ';')
         emitter.writeIf(listName + ' instanceof Array', () => {
             // for array
             emitter.writeFor('var ' + indexName + ' = 0; ' +
             indexName + ' < ' + listName + '.length; ' +
             indexName + '++', () => {
-                emitter.writeLine('componentCtx.data.' + indexName + '=' + indexName)
-                emitter.writeLine('componentCtx.data.' + itemName + '= ' + listName + '[' + indexName + ']')
-                // emitter.writeLine(this.compile(forElementANode, emitter))
+                emitter.writeLine('componentCtx.data.' + indexName + '=' + indexName + ';')
+                emitter.writeLine('componentCtx.data.' + itemName + '= ' + listName + '[' + indexName + '];')
                 this.compile(forElementANode, emitter)
             })
         })
@@ -155,8 +151,8 @@ export class ANodeCompiler {
         emitter.beginElseIf('typeof ' + listName + ' === "object"')
         emitter.writeFor('var ' + indexName + ' in ' + listName, () => {
             emitter.writeIf(listName + '[' + indexName + '] != null', () => {
-                emitter.writeLine('componentCtx.data.' + indexName + '=' + indexName + '')
-                emitter.writeLine('componentCtx.data.' + itemName + '= ' + listName + '[' + indexName + ']')
+                emitter.writeLine('componentCtx.data.' + indexName + '=' + indexName + ';')
+                emitter.writeLine('componentCtx.data.' + itemName + '= ' + listName + '[' + indexName + '];')
                 this.compile(forElementANode, emitter)
             })
         })
@@ -179,7 +175,6 @@ export class ANodeCompiler {
         emitter.writeFunction('$defaultSlotRender', ['componentCtx'], () => {
             emitter.writeLine('var html = "";')
             for (const aNodeChild of aNode.children) {
-                // emitter.writeLine(this.compile(aNodeChild, emitter))
                 this.compile(aNodeChild, emitter)
             }
             emitter.writeLine('return html;')
@@ -292,9 +287,6 @@ export class ANodeCompiler {
                 emitter.writeLine('$sourceSlots.push([function (componentCtx) {')
                 emitter.indent()
                 emitter.writeLine('var html = "";')
-                // emitter.writeLine(sourceSlotCode.children.forEach((child) => {
-                //     this.compile(child, emitter)
-                // }))
                 sourceSlotCode.children.forEach((child) => {
                     this.compile(child, emitter)
                 })

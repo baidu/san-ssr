@@ -19,24 +19,24 @@ export class ElementCompiler {
     /**
      * 编译元素标签头
      *
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {emitter} sourceBuffer 编译源码的中间buffer
      * @param {ANode} aNode 抽象节点
      * @param {string=} tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
-    tagStart (sourceBuffer, aNode, tagNameVariable?) {
+    tagStart (emitter, aNode, tagNameVariable?) {
         const props = aNode.props
         const bindDirective = aNode.directives.bind
         const tagName = aNode.tagName
 
         if (tagName) {
-            sourceBuffer.joinString('<' + tagName)
+            emitter.bufferHTMLLiteral('<' + tagName)
         } else if (this.noTemplateOutput) {
             return
         } else if (tagNameVariable) {
-            sourceBuffer.joinString('<')
-            sourceBuffer.joinRaw(tagNameVariable + ' || "div"')
+            emitter.bufferHTMLLiteral('<')
+            emitter.writeHTML(tagNameVariable + ' || "div"')
         } else {
-            sourceBuffer.joinString('<div')
+            emitter.bufferHTMLLiteral('<div')
         }
 
         // index list
@@ -47,17 +47,17 @@ export class ElementCompiler {
             if (prop.name !== 'slot') {
                 switch (prop.expr.type) {
                 case ExprType.BOOL:
-                    sourceBuffer.joinString(' ' + prop.name)
+                    emitter.bufferHTMLLiteral(' ' + prop.name)
                     break
 
                 case ExprType.STRING:
-                    sourceBuffer.joinString(' ' + prop.name + '="' +
+                    emitter.bufferHTMLLiteral(' ' + prop.name + '="' +
                         prop.expr.literal + '"')
                     break
 
                 default:
                     if (prop.expr.value != null) {
-                        sourceBuffer.joinString(' ' + prop.name + '="' +
+                        emitter.bufferHTMLLiteral(' ' + prop.name + '="' +
                             compileExprSource.expr(prop.expr) + '"')
                     }
                     break
@@ -76,26 +76,26 @@ export class ElementCompiler {
                     continue
 
                 case 'select':
-                    sourceBuffer.addRaw('$selectValue = ' +
+                    emitter.writeLine('$selectValue = ' +
                         compileExprSource.expr(prop.expr) +
                         ' || "";'
                     )
                     continue
 
                 case 'option':
-                    sourceBuffer.addRaw('$optionValue = ' +
+                    emitter.writeLine('$optionValue = ' +
                         compileExprSource.expr(prop.expr) +
                         ';'
                     )
                     // value
-                    sourceBuffer.addRaw('if ($optionValue != null) {')
-                    sourceBuffer.joinRaw('" value=\\"" + $optionValue + "\\""')
-                    sourceBuffer.addRaw('}')
+                    emitter.writeIf('$optionValue != null', () => {
+                        emitter.writeHTML('" value=\\"" + $optionValue + "\\""')
+                    })
 
                     // selected
-                    sourceBuffer.addRaw('if ($optionValue === $selectValue) {')
-                    sourceBuffer.joinString(' selected')
-                    sourceBuffer.addRaw('}')
+                    emitter.writeIf('$optionValue === $selectValue', () => {
+                        emitter.bufferHTMLLiteral(' selected')
+                    })
                     continue
                 }
             }
@@ -105,9 +105,9 @@ export class ElementCompiler {
             case 'disabled':
             case 'multiple':
                 if (prop.raw == null) {
-                    sourceBuffer.joinString(' ' + prop.name)
+                    emitter.bufferHTMLLiteral(' ' + prop.name)
                 } else {
-                    sourceBuffer.joinRaw(
+                    emitter.writeHTML(
                         '_.boolAttrFilter("' + prop.name + '", ' +
                         compileExprSource.expr(prop.expr) +
                         ')'
@@ -123,25 +123,15 @@ export class ElementCompiler {
                     if (valueProp) {
                         switch (propsIndex['type'].raw) {
                         case 'checkbox':
-                            sourceBuffer.addRaw('if (_.contains(' +
-                                    compileExprSource.expr(prop.expr) +
-                                    ', ' +
-                                    valueCode +
-                                    ')) {'
-                            )
-                            sourceBuffer.joinString(' checked')
-                            sourceBuffer.addRaw('}')
+                            emitter.writeIf(`_.contains(${compileExprSource.expr(prop.expr)}, ${valueCode})`, () => {
+                                emitter.bufferHTMLLiteral(' checked')
+                            })
                             break
 
                         case 'radio':
-                            sourceBuffer.addRaw('if (' +
-                                    compileExprSource.expr(prop.expr) +
-                                    ' === ' +
-                                    valueCode +
-                                    ') {'
-                            )
-                            sourceBuffer.joinString(' checked')
-                            sourceBuffer.addRaw('}')
+                            emitter.writeIf(`${compileExprSource.expr(prop.expr)} === ${valueCode}`, () => {
+                                emitter.bufferHTMLLiteral(' checked')
+                            })
                             break
                         }
                     }
@@ -150,7 +140,7 @@ export class ElementCompiler {
 
             default:
                 const onlyOneAccessor = prop.expr.type === ExprType.ACCESSOR
-                sourceBuffer.joinRaw('_.attrFilter("' + prop.name + '", ' +
+                emitter.writeHTML('_.attrFilter("' + prop.name + '", ' +
                     compileExprSource.expr(prop.expr) +
                     (prop.x || onlyOneAccessor ? ', true' : '') +
                     ')'
@@ -160,39 +150,38 @@ export class ElementCompiler {
         }
 
         if (bindDirective) {
-            sourceBuffer.addRaw(
-                '(function ($bindObj) {for (var $key in $bindObj) {' +
-            'var $value = $bindObj[$key];'
-            )
+            // start function
+            emitter.writeLine('(function ($bindObj) {')
+            emitter.indent()
 
-            if (tagName === 'textarea') {
-                sourceBuffer.addRaw(
-                    'if ($key === "value") {' +
-                'continue;' +
-                '}'
-                )
-            }
+            emitter.writeFor('var $key in $bindObj', () => {
+                emitter.writeLine('var $value = $bindObj[$key]')
 
-            sourceBuffer.addRaw('switch ($key) {\n' +
-            'case "readonly":\n' +
-            'case "disabled":\n' +
-            'case "multiple":\n' +
-            'case "checked":\n' +
-            'html += _.boolAttrFilter($key, $value);\n' +
-            'break;\n' +
-            'default:\n' +
-            'html += _.attrFilter($key, $value, true);' +
-            '}'
-            )
+                if (tagName === 'textarea') {
+                    emitter.writeIf('$key === "value"', () => {
+                        emitter.writeLine('continue')
+                    })
+                }
 
-            sourceBuffer.addRaw(
-                '}})(' +
-            compileExprSource.expr(bindDirective.value) +
-            ');'
-            )
+                emitter.writeSwitch('$key', () => {
+                    emitter.writeCase('"readonly"')
+                    emitter.writeCase('"disabled"')
+                    emitter.writeCase('"multiple"')
+                    emitter.writeCase('"checked"', () => {
+                        emitter.writeHTML('_.boolAttrFilter($key, $value)')
+                        emitter.writeBreak()
+                    })
+                    emitter.writeDefault(() => {
+                        emitter.writeHTML('_.attrFilter($key, $value, true)')
+                    })
+                })
+            })
+            // end function
+            emitter.unindent()
+            emitter.writeLine(`})(${compileExprSource.expr(bindDirective.value)})`)
         }
 
-        sourceBuffer.joinString('>')
+        emitter.bufferHTMLLiteral('>')
     }
 
     /**
@@ -202,41 +191,41 @@ export class ElementCompiler {
      * @param {ANode} aNode 抽象节点
      * @param {string=} tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
-    tagEnd (sourceBuffer, aNode, tagNameVariable?) {
+    tagEnd (emitter, aNode, tagNameVariable?) {
         const tagName = aNode.tagName
 
         if (tagName) {
             if (!autoCloseTags.has(tagName)) {
-                sourceBuffer.joinString('</' + tagName + '>')
+                emitter.bufferHTMLLiteral('</' + tagName + '>')
             }
 
             if (tagName === 'select') {
-                sourceBuffer.addRaw('$selectValue = null;')
+                emitter.writeLine('$selectValue = null;')
             }
 
             if (tagName === 'option') {
-                sourceBuffer.addRaw('$optionValue = null;')
+                emitter.writeLine('$optionValue = null;')
             }
         } else if (this.noTemplateOutput) {
             // noop
         } else {
-            sourceBuffer.joinString('</')
-            sourceBuffer.joinRaw(tagNameVariable + ' || "div"')
-            sourceBuffer.joinString('>')
+            emitter.bufferHTMLLiteral('</')
+            emitter.writeHTML(tagNameVariable + ' || "div"')
+            emitter.bufferHTMLLiteral('>')
         }
     }
 
     /**
      * 编译元素内容
      *
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {CompileSourceBuffer} emitter 编译源码的中间buffer
      */
-    inner (sourceBuffer, aNode: ANode) {
+    inner (emitter, aNode: ANode) {
         // inner content
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodePropByName(aNode, 'value')
             if (valueProp) {
-                sourceBuffer.joinRaw('_.escapeHTML(' +
+                emitter.writeHTML('_.escapeHTML(' +
                 compileExprSource.expr(valueProp.expr) +
                 ')'
                 )
@@ -246,10 +235,10 @@ export class ElementCompiler {
 
         const htmlDirective = aNode.directives.html
         if (htmlDirective) {
-            sourceBuffer.joinExpr(htmlDirective.value)
+            emitter.writeHTML(compileExprSource.expr(htmlDirective.value))
         } else {
             for (const aNodeChild of aNode.children) {
-                this.compileAnode(aNodeChild, sourceBuffer)
+                this.compileAnode(aNodeChild, emitter)
             }
         }
     }

@@ -1,8 +1,58 @@
 import { Emitter } from '../../utils/emitter'
+import { compileExprSource } from '../compilers/expr-compiler'
 
 export class JSEmitter extends Emitter {
+    buffer: string = ''
+
     public write (str: string) {
+        this.clearStringLiteralBuffer()
+
         return this.defaultWrite(str)
+    }
+
+    public writeHTML (code: string) {
+        this.writeLine(`html += ${code};`)
+    }
+
+    public writeDataComment () {
+        this.writeHTML('"<!--s-data:" + JSON.stringify(' + compileExprSource.dataAccess() + ') + "-->"')
+    }
+
+    public bufferHTMLLiteral (str: string) {
+        this.buffer += str
+    }
+
+    public clearStringLiteralBuffer () {
+        if (this.buffer === '') return
+        const buffer = this.buffer
+        this.buffer = ''
+        this.writeHTML(compileExprSource.stringLiteralize(buffer))
+    }
+
+    public writeSwitch (expr: string, body: Function) {
+        this.writeLine(`switch (${expr}) {`)
+        this.indent()
+        body()
+        this.unindent()
+        this.writeLine('}')
+    }
+
+    public writeCase (expr: string, body: Function = () => null) {
+        this.writeLine(`case ${expr}:`)
+        this.indent()
+        body()
+        this.unindent()
+    }
+
+    public writeBreak () {
+        this.writeLine('break;')
+    }
+
+    public writeDefault (body: Function = () => null) {
+        this.writeLine('default:')
+        this.indent()
+        body()
+        this.unindent()
     }
 
     public writeFunction (name = '', args = [], body: Function = () => null) {
@@ -15,14 +65,58 @@ export class JSEmitter extends Emitter {
         this.nextLine('}')
     }
 
+    public writeFunctionCall (name: string, args: string[]) {
+        this.write(`${name}(${args.join(', ')})`)
+    }
+
     public writeAnonymousFunction (args = [], body: Function = () => null) {
         return this.writeFunction('', args, body)
     }
 
+    public writeIf (expr: string, cb: Function) {
+        this.beginIf(expr)
+        cb()
+        this.endIf()
+    }
+    public beginIf (expr: string) {
+        this.beginBlock(`if (${expr})`)
+    }
+    public beginElseIf (expr: string) {
+        this.beginBlock(`else if (${expr})`)
+    }
+    public beginElse () {
+        this.beginBlock(`else`)
+    }
+    public endIf () {
+        this.endBlock()
+    }
+
+    public writeFor (expr: string, cb: Function) {
+        this.beginFor(expr)
+        cb()
+        this.endFor()
+    }
+    public beginFor (expr: string) {
+        this.beginBlock(`for (${expr})`)
+    }
+    public endFor () {
+        this.endBlock()
+    }
+    public writeContinue () {
+        this.writeLine('continue;')
+    }
+
     public writeBlock (expr: string, cb: Function = () => null) {
+        this.beginBlock(expr)
+        cb()
+        this.endBlock()
+    }
+    public beginBlock (expr: string) {
         this.writeLine(`${expr ? expr + ' ' : ''}{`)
         this.indent()
-        cb()
+    }
+    public endBlock () {
+        this.clearStringLiteralBuffer()
         this.unindent()
         this.writeLine(`}`)
     }

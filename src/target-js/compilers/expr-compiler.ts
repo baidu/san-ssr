@@ -136,11 +136,11 @@ export const compileExprSource = {
      * 生成数组字面量代码
      */
     array: function (arrayExpr: Expression): string {
-        return '[\n' +
+        return '[' +
             arrayExpr.items
                 .map(expr => (expr.spread ? '...' : '') + compileExprSource.expr(expr.expr))
-                .join(',\n') +
-            '\n]'
+                .join(',') +
+            ']'
     },
 
     /**

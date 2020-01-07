@@ -1,6 +1,5 @@
 import { isFunction, noop } from 'lodash'
 import { JSEmitter } from '../emitters/emitter'
-import { CompileSourceBuffer } from '../source-buffer'
 import { Renderer } from '../../models/renderer'
 import { compileExprSource } from './expr-compiler'
 import { stringifier } from './stringifier'
@@ -149,86 +148,73 @@ export class RendererCompiler<T> {
 
     public compileComponentRendererBody (emitter: JSEmitter = new JSEmitter()) {
         // TODO replace sourcebuffer with emitter
-        const sourceBuffer = new CompileSourceBuffer()
-        sourceBuffer.addRaw('var _ = sanssrRuntime._;')
-        sourceBuffer.addRaw('var SanData = sanssrRuntime.SanData;')
-        sourceBuffer.addRaw('var html = "";')
+        emitter.writeLine('var _ = sanssrRuntime._;')
+        emitter.writeLine('var SanData = sanssrRuntime.SanData;')
+        emitter.writeLine('var html = "";')
 
-        sourceBuffer.addRaw(this.genComponentContextCode())
+        this.genComponentContextCode(emitter)
 
         // init data
         const defaultData = (this.component.initData && this.component.initData()) || {}
         Object.keys(defaultData).forEach(function (key) {
-            sourceBuffer.addRaw('componentCtx.data["' + key + '"] = componentCtx.data["' + key + '"] || ' +
+            emitter.writeLine('componentCtx.data["' + key + '"] = componentCtx.data["' + key + '"] || ' +
             stringifier.any(defaultData[key]) + ';')
         })
-        sourceBuffer.addRaw('componentCtx.instance.data = new SanData(componentCtx.data, componentCtx.instance.computed)')
+        emitter.writeLine('componentCtx.instance.data = new SanData(componentCtx.data, componentCtx.instance.computed)')
 
         // call inited
         if (typeof this.component.inited === 'function') {
-            sourceBuffer.addRaw('componentCtx.instance.inited()')
+            emitter.writeLine('componentCtx.instance.inited()')
         }
 
         // calc computed
-        sourceBuffer.addRaw('var computedNames = componentCtx.computedNames;')
-        sourceBuffer.addRaw('for (var $i = 0; $i < computedNames.length; $i++) {')
-        sourceBuffer.addRaw('  var $computedName = computedNames[$i];')
-        sourceBuffer.addRaw('  data[$computedName] = componentCtx.instance.computed[$computedName].apply(componentCtx.instance);')
-        sourceBuffer.addRaw('}')
+        emitter.writeLine('var computedNames = componentCtx.computedNames;')
+        emitter.writeFor('var $i = 0; $i < computedNames.length; $i++', () => {
+            emitter.writeLine('var $computedName = computedNames[$i];')
+            emitter.writeLine('data[$computedName] = componentCtx.instance.computed[$computedName].apply(componentCtx.instance);')
+        })
 
         const ifDirective = this.component.aNode.directives['if'] // eslint-disable-line dot-notation
         if (ifDirective) {
-            sourceBuffer.addRaw('if (' + compileExprSource.expr(ifDirective.value) + ') {')
+            emitter.writeLine('if (' + compileExprSource.expr(ifDirective.value) + ') {')
         }
 
-        this.elementSourceCompiler.tagStart(sourceBuffer, this.component.aNode, 'tagName')
+        this.elementSourceCompiler.tagStart(emitter, this.component.aNode, 'tagName')
 
-        sourceBuffer.addRaw('if (!noDataOutput) {')
-        sourceBuffer.joinDataStringify()
-        sourceBuffer.addRaw('}')
+        emitter.writeIf('!noDataOutput', () => {
+            emitter.writeDataComment()
+        })
 
-        this.elementSourceCompiler.inner(sourceBuffer, this.component.aNode, this.component)
-        this.elementSourceCompiler.tagEnd(sourceBuffer, this.component.aNode, 'tagName')
+        this.elementSourceCompiler.inner(emitter, this.component.aNode, this.component)
+        this.elementSourceCompiler.tagEnd(emitter, this.component.aNode, 'tagName')
 
         if (ifDirective) {
-            sourceBuffer.addRaw('}')
+            emitter.writeLine('}')
         }
 
-        sourceBuffer.addRaw('return html;')
-        emitter.writeLines(sourceBuffer.toCode())
+        emitter.writeLine('return html;')
         return emitter.fullText()
     }
 
     /**
     * 生成组件 renderer 时 ctx 对象构建的代码
     */
-    private genComponentContextCode () {
-        const code = ['var componentCtx = {']
+    private genComponentContextCode (emitter: JSEmitter) {
+        emitter.writeBlock('var componentCtx =', () => {
+            emitter.writeLine(`instance: _.createFromPrototype(sanssrRuntime.prototype${this.cid}),`)
+            emitter.writeLine('sourceSlots: sourceSlots,')
 
-        // instance
-        code.push(`instance: _.createFromPrototype(sanssrRuntime.prototype${this.cid}),`)
+            const defaultData = this.component.data.get()
+            emitter.writeLine('data: data || ' + stringifier.any(defaultData) + ',')
+            emitter.writeLine('owner: parentCtx,')
 
-        // sourceSlots
-        code.push('sourceSlots: sourceSlots,')
+            // computedNames
+            emitter.writeLine('computedNames: [')
+            emitter.writeLine(Object.keys(this.component.computed).map(x => `'${x}'`).join(','))
+            emitter.writeLine('],')
 
-        // data
-        const defaultData = this.component.data.get()
-        code.push('data: data || ' + stringifier.any(defaultData) + ',')
-
-        // parentCtx
-        code.push('owner: parentCtx,')
-
-        // computedNames
-        code.push('computedNames: [')
-        code.push(Object.keys(this.component.computed).map(x => `'${x}'`).join(','))
-        code.push('],')
-
-        // slotRenderers
-        code.push('slotRenderers: {}')
-
-        code.push('};')
-
-        return code.join('\n')
+            emitter.writeLine('slotRenderers: {}')
+        })
     }
 
     private createComponentInstance (ComponentClass: typeof SanComponent) {

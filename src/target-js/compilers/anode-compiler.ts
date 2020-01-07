@@ -20,10 +20,10 @@ export class ANodeCompiler {
     /**
      * 编译节点
      *
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {JSEmitter} emitter 编译源码的中间buffer
      * @param {Object} extra 编译所需的一些额外信息
      */
-    compile (aNode: ANode, sourceBuffer, extra = {}) {
+    compile (aNode: ANode, emitter, extra = {}) {
         let compileMethod = 'compileElement'
 
         if (aNode.textExpr) {
@@ -50,75 +50,79 @@ export class ANodeCompiler {
                 }
             }
         }
-        this[compileMethod](aNode, sourceBuffer, extra)
+        this[compileMethod](aNode, emitter, extra)
     }
 
     /**
      * 编译文本节点
      *
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {JSEmitter} emitter 编译源码的中间buffer
      */
-    compileText (aNode: ANode, sourceBuffer) {
+    compileText (aNode: ANode, emitter) {
         if (aNode.textExpr.original) {
-            sourceBuffer.addRaw('if (!noDataOutput) {')
-            sourceBuffer.joinString('<!--s-text-->')
-            sourceBuffer.addRaw('}')
+            emitter.writeIf('!noDataOutput', () => {
+                emitter.bufferHTMLLiteral('<!--s-text-->')
+            })
         }
 
         if (aNode.textExpr.value != null) {
-            sourceBuffer.joinString(aNode.textExpr.segs[0].literal)
+            emitter.bufferHTMLLiteral(aNode.textExpr.segs[0].literal)
         } else {
-            sourceBuffer.joinExpr(aNode.textExpr)
+            // sourceBuffer.joinExpr(aNode.textExpr)
+            emitter.writeHTML(compileExprSource.expr(aNode.textExpr))
         }
 
         if (aNode.textExpr.original) {
-            sourceBuffer.addRaw('if (!noDataOutput) {')
-            sourceBuffer.joinString('<!--/s-text-->')
-            sourceBuffer.addRaw('}')
+            emitter.writeIf('!noDataOutput', () => {
+                emitter.bufferHTMLLiteral('<!--/s-text-->')
+            })
         }
     }
 
     /**
      * 编译template节点
      *
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {JSEmitter} emitter 编译源码的中间buffer
      */
-    compileTemplate (aNode: ANode, sourceBuffer) {
-        this.elementSourceCompiler.inner(sourceBuffer, aNode)
+    compileTemplate (aNode: ANode, emitter) {
+        this.elementSourceCompiler.inner(emitter, aNode)
     }
 
     /**
      * 编译 if 节点
      *
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {JSEmitter} emitter 编译源码的中间buffer
      */
-    compileIf (aNode: ANode, sourceBuffer) {
+    compileIf (aNode: ANode, emitter) {
         // output main if
         const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
-        sourceBuffer.addRaw('if (' + compileExprSource.expr(ifDirective.value) + ') {')
-        sourceBuffer.addRaw(this.compile(aNode.ifRinsed, sourceBuffer))
-        sourceBuffer.addRaw('}')
+        emitter.writeIf(compileExprSource.expr(ifDirective.value), () => {
+            // emitter.writeLine(this.compile(aNode.ifRinsed, emitter))
+            this.compile(aNode.ifRinsed, emitter)
+        })
 
         // output elif and else
         for (const elseANode of aNode.elses || []) {
             const elifDirective = elseANode.directives.elif
             if (elifDirective) {
-                sourceBuffer.addRaw('else if (' + compileExprSource.expr(elifDirective.value) + ') {')
+                emitter.writeLine('else if (' + compileExprSource.expr(elifDirective.value) + ') {')
             } else {
-                sourceBuffer.addRaw('else {')
+                emitter.writeLine('else {')
             }
-
-            sourceBuffer.addRaw(this.compile(elseANode, sourceBuffer))
-            sourceBuffer.addRaw('}')
+            emitter.indent()
+            // emitter.writeLine(this.compile(elseANode, emitter))
+            this.compile(elseANode, emitter)
+            emitter.unindent()
+            emitter.writeLine('}')
         }
     }
 
     /**
      * 编译 for 节点
      *
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {JSEmitter} emitter 编译源码的中间buffer
      */
-    compileFor (aNode: ANode, sourceBuffer) {
+    compileFor (aNode: ANode, emitter) {
         const forElementANode = {
             children: aNode.children,
             props: aNode.props,
@@ -134,86 +138,86 @@ export class ANodeCompiler {
         const indexName = forDirective.index || this.nextID()
         const listName = this.nextID()
 
-        sourceBuffer.addRaw('var ' + listName + ' = ' + compileExprSource.expr(forDirective.value) + ';')
-        sourceBuffer.addRaw('if (' + listName + ' instanceof Array) {')
-
-        // for array
-        sourceBuffer.addRaw('for (' +
-        'var ' + indexName + ' = 0; ' +
-        indexName + ' < ' + listName + '.length; ' +
-        indexName + '++) {'
-        )
-        sourceBuffer.addRaw('componentCtx.data.' + indexName + '=' + indexName + ';')
-        sourceBuffer.addRaw('componentCtx.data.' + itemName + '= ' + listName + '[' + indexName + '];')
-        sourceBuffer.addRaw(this.compile(forElementANode, sourceBuffer))
-        sourceBuffer.addRaw('}')
-
-        sourceBuffer.addRaw('} else if (typeof ' + listName + ' === "object") {')
+        emitter.writeLine('var ' + listName + ' = ' + compileExprSource.expr(forDirective.value) + '')
+        emitter.writeIf(listName + ' instanceof Array', () => {
+            // for array
+            emitter.writeFor('var ' + indexName + ' = 0; ' +
+            indexName + ' < ' + listName + '.length; ' +
+            indexName + '++', () => {
+                emitter.writeLine('componentCtx.data.' + indexName + '=' + indexName)
+                emitter.writeLine('componentCtx.data.' + itemName + '= ' + listName + '[' + indexName + ']')
+                // emitter.writeLine(this.compile(forElementANode, emitter))
+                this.compile(forElementANode, emitter)
+            })
+        })
 
         // for object
-        sourceBuffer.addRaw('for (var ' + indexName + ' in ' + listName + ') {')
-        sourceBuffer.addRaw('if (' + listName + '[' + indexName + '] != null) {')
-        sourceBuffer.addRaw('componentCtx.data.' + indexName + '=' + indexName + ';')
-        sourceBuffer.addRaw('componentCtx.data.' + itemName + '= ' + listName + '[' + indexName + '];')
-        sourceBuffer.addRaw(this.compile(forElementANode, sourceBuffer))
-        sourceBuffer.addRaw('}')
-        sourceBuffer.addRaw('}')
-
-        sourceBuffer.addRaw('}')
+        emitter.beginElseIf('typeof ' + listName + ' === "object"')
+        emitter.writeFor('var ' + indexName + ' in ' + listName, () => {
+            emitter.writeIf(listName + '[' + indexName + '] != null', () => {
+                emitter.writeLine('componentCtx.data.' + indexName + '=' + indexName + '')
+                emitter.writeLine('componentCtx.data.' + itemName + '= ' + listName + '[' + indexName + ']')
+                this.compile(forElementANode, emitter)
+            })
+        })
+        emitter.endIf()
     }
 
     /**
      * 编译 slot 节点
      *
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {JSEmitter} emitter 编译源码的中间buffer
      */
-    compileSlot (aNode: ANode, sourceBuffer) {
+    compileSlot (aNode: ANode, emitter) {
         const rendererId = this.nextID()
 
-        sourceBuffer.addRaw('componentCtx.slotRenderers.' + rendererId +
+        emitter.writeLine('componentCtx.slotRenderers.' + rendererId +
         ' = componentCtx.slotRenderers.' + rendererId + ' || function () {')
+        emitter.indent()
 
-        sourceBuffer.addRaw('function $defaultSlotRender(componentCtx) {')
-        sourceBuffer.addRaw('  var html = "";')
-        for (const aNodeChild of aNode.children) {
-            sourceBuffer.addRaw(this.compile(aNodeChild, sourceBuffer))
-        }
-        sourceBuffer.addRaw('  return html;')
-        sourceBuffer.addRaw('}')
+        emitter.nextLine('')
+        emitter.writeFunction('$defaultSlotRender', ['componentCtx'], () => {
+            emitter.writeLine('var html = "";')
+            for (const aNodeChild of aNode.children) {
+                // emitter.writeLine(this.compile(aNodeChild, emitter))
+                this.compile(aNodeChild, emitter)
+            }
+            emitter.writeLine('return html;')
+        })
 
-        sourceBuffer.addRaw('var $isInserted = false;')
-        sourceBuffer.addRaw('var $ctxSourceSlots = componentCtx.sourceSlots;')
-        sourceBuffer.addRaw('var $mySourceSlots = [];')
+        emitter.writeLine('var $isInserted = false;')
+        emitter.writeLine('var $ctxSourceSlots = componentCtx.sourceSlots;')
+        emitter.writeLine('var $mySourceSlots = [];')
 
         const nameProp = getANodePropByName(aNode, 'name')
         if (nameProp) {
-            sourceBuffer.addRaw('var $slotName = ' + compileExprSource.expr(nameProp.expr) + ';')
+            emitter.writeLine('var $slotName = ' + compileExprSource.expr(nameProp.expr) + ';')
 
-            sourceBuffer.addRaw('for (var $i = 0; $i < $ctxSourceSlots.length; $i++) {')
-            sourceBuffer.addRaw('  if ($ctxSourceSlots[$i][1] == $slotName) {')
-            sourceBuffer.addRaw('    $mySourceSlots.push($ctxSourceSlots[$i][0]);')
-            sourceBuffer.addRaw('    $isInserted = true;')
-            sourceBuffer.addRaw('  }')
-            sourceBuffer.addRaw('}')
+            emitter.writeFor('var $i = 0; $i < $ctxSourceSlots.length; $i++', () => {
+                emitter.writeIf('$ctxSourceSlots[$i][1] == $slotName', () => {
+                    emitter.writeLine('$mySourceSlots.push($ctxSourceSlots[$i][0]);')
+                    emitter.writeLine('$isInserted = true;')
+                })
+            })
         } else {
-            sourceBuffer.addRaw('if ($ctxSourceSlots[0] && $ctxSourceSlots[0][1] == null) {')
-            sourceBuffer.addRaw('  $mySourceSlots.push($ctxSourceSlots[0][0]);')
-            sourceBuffer.addRaw('  $isInserted = true;')
-            sourceBuffer.addRaw('}')
+            emitter.writeIf('$ctxSourceSlots[0] && $ctxSourceSlots[0][1] == null', () => {
+                emitter.writeLine('$mySourceSlots.push($ctxSourceSlots[0][0]);')
+                emitter.writeLine('$isInserted = true;')
+            })
         }
 
-        sourceBuffer.addRaw('if (!$isInserted) { $mySourceSlots.push($defaultSlotRender); }')
-        sourceBuffer.addRaw('var $slotCtx = $isInserted ? componentCtx.owner : componentCtx;')
+        emitter.writeLine('if (!$isInserted) { $mySourceSlots.push($defaultSlotRender); }')
+        emitter.writeLine('var $slotCtx = $isInserted ? componentCtx.owner : componentCtx;')
 
         if (aNode.vars || aNode.directives.bind) {
-            sourceBuffer.addRaw('$slotCtx = {data: _.extend({}, $slotCtx.data), instance: $slotCtx.instance, owner: $slotCtx.owner};')
+            emitter.writeLine('$slotCtx = {data: _.extend({}, $slotCtx.data), instance: $slotCtx.instance, owner: $slotCtx.owner};')
 
             if (aNode.directives.bind) {
-                sourceBuffer.addRaw('_.extend($slotCtx.data, ' + compileExprSource.expr(aNode.directives.bind.value) + ');')
+                emitter.writeLine('_.extend($slotCtx.data, ' + compileExprSource.expr(aNode.directives.bind.value) + ');')
             }
 
             for (const varItem of aNode.vars) {
-                sourceBuffer.addRaw(
+                emitter.writeLine(
                     '$slotCtx.data["' + varItem.name + '"] = ' +
                     compileExprSource.expr(varItem.expr) +
                     ';'
@@ -221,37 +225,38 @@ export class ANodeCompiler {
             }
         }
 
-        sourceBuffer.addRaw('for (var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++) {')
-        sourceBuffer.addRaw('  html += $mySourceSlots[$renderIndex]($slotCtx);')
-        sourceBuffer.addRaw('}')
+        emitter.writeFor('var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++', () => {
+            emitter.writeLine('html += $mySourceSlots[$renderIndex]($slotCtx);')
+        })
 
-        sourceBuffer.addRaw('};')
-        sourceBuffer.addRaw('componentCtx.slotRenderers.' + rendererId + '();')
+        emitter.unindent()
+        emitter.writeLine('};')
+        emitter.writeLine('componentCtx.slotRenderers.' + rendererId + '();')
     }
 
     /**
      * 编译普通节点
      *
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {JSEmitter} emitter 编译源码的中间buffer
      * @param {Object} extra 编译所需的一些额外信息
      */
-    compileElement (aNode: ANode, sourceBuffer) {
-        this.elementSourceCompiler.tagStart(sourceBuffer, aNode)
-        this.elementSourceCompiler.inner(sourceBuffer, aNode)
-        this.elementSourceCompiler.tagEnd(sourceBuffer, aNode)
+    compileElement (aNode: ANode, emitter) {
+        this.elementSourceCompiler.tagStart(emitter, aNode)
+        this.elementSourceCompiler.inner(emitter, aNode)
+        this.elementSourceCompiler.tagEnd(emitter, aNode)
     }
 
     /**
      * 编译组件节点
      *
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {JSEmitter} emitter 编译源码的中间buffer
      * @param {Object} extra 编译所需的一些额外信息
      * @param {Function} extra.ComponentClass 对应组件类
      */
-    compileComponent (aNode: ANode, sourceBuffer, extra) {
+    compileComponent (aNode: ANode, emitter, extra) {
         let dataLiteral = '{}'
 
-        sourceBuffer.addRaw('var $sourceSlots = [];')
+        emitter.writeLine('var $sourceSlots = [];')
         if (aNode.children) {
             const defaultSourceSlots = []
             const sourceSlotCodes = {}
@@ -273,22 +278,29 @@ export class ANodeCompiler {
             }
 
             if (defaultSourceSlots.length) {
-                sourceBuffer.addRaw('$sourceSlots.push([function (componentCtx) {')
-                sourceBuffer.addRaw('  var html = "";')
-                defaultSourceSlots.forEach(child => this.compile(child, sourceBuffer))
-                sourceBuffer.addRaw('  return html;')
-                sourceBuffer.addRaw('}]);')
+                emitter.writeLine('$sourceSlots.push([function (componentCtx) {')
+                emitter.indent()
+                emitter.writeLine('var html = "";')
+                defaultSourceSlots.forEach(child => this.compile(child, emitter))
+                emitter.writeLine('return html;')
+                emitter.unindent()
+                emitter.writeLine('}]);')
             }
 
             for (const key in sourceSlotCodes) {
                 const sourceSlotCode = sourceSlotCodes[key]
-                sourceBuffer.addRaw('$sourceSlots.push([function (componentCtx) {')
-                sourceBuffer.addRaw('  var html = "";')
-                sourceBuffer.addRaw(sourceSlotCode.children.forEach((child) => {
-                    this.compile(child, sourceBuffer)
-                }))
-                sourceBuffer.addRaw('  return html;')
-                sourceBuffer.addRaw('}, ' + compileExprSource.expr(sourceSlotCode.prop.expr) + ']);')
+                emitter.writeLine('$sourceSlots.push([function (componentCtx) {')
+                emitter.indent()
+                emitter.writeLine('var html = "";')
+                // emitter.writeLine(sourceSlotCode.children.forEach((child) => {
+                //     this.compile(child, emitter)
+                // }))
+                sourceSlotCode.children.forEach((child) => {
+                    this.compile(child, emitter)
+                })
+                emitter.writeLine('return html;')
+                emitter.unindent()
+                emitter.writeLine('}, ' + compileExprSource.expr(sourceSlotCode.prop.expr) + ']);')
             }
         }
 
@@ -311,23 +323,23 @@ export class ANodeCompiler {
         }
 
         const funcName = 'sanssrRuntime.renderer' + extra.ComponentClass.sanssrCid
-        sourceBuffer.addRaw(`html += ${funcName}(`)
-        sourceBuffer.addRaw(dataLiteral + ', true, sanssrRuntime, componentCtx, ' +
+        emitter.nextLine(`html += ${funcName}(`)
+        emitter.write(dataLiteral + ', true, sanssrRuntime, componentCtx, ' +
         stringifier.str(aNode.tagName) + ', $sourceSlots);')
-        sourceBuffer.addRaw('$sourceSlots = null;')
+        emitter.writeLine('$sourceSlots = null;')
     }
 
     /**
      * 编译组件加载器节点
      *
-     * @param {CompileSourceBuffer} sourceBuffer 编译源码的中间buffer
+     * @param {JSEmitter} emitter 编译源码的中间buffer
      * @param {Object} extra 编译所需的一些额外信息
      * @param {Function} extra.ComponentClass 对应类
      */
-    compileComponentLoader (aNode: ANode, sourceBuffer, extra) {
+    compileComponentLoader (aNode: ANode, emitter, extra) {
         const LoadingComponent = extra.ComponentClass.placeholder
         if (typeof LoadingComponent === 'function') {
-            this.compileComponent(aNode, sourceBuffer, {
+            this.compileComponent(aNode, emitter, {
                 ComponentClass: LoadingComponent
             })
         }

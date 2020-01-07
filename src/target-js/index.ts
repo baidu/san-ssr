@@ -45,9 +45,9 @@ export default class ToJSCompiler implements Compiler {
                     cc.compileComponentPrototypeSource(emitter)
                 })
                 emitter.nextLine(`sanssrRuntime.renderer${ComponentClass.sanssrCid} = `)
-                emitter.indent()
+                // emitter.indent()
                 cc.compileComponentSource(emitter)
-                emitter.unindent()
+                // emitter.unindent()
             }
             const funcName = 'sanssrRuntime.renderer' + sanApp.getEntryComponentClassOrThrow().sanssrCid
             emitter.writeLine(`return ${funcName}(data, noDataOutput, sanssrRuntime)`)

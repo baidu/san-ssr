@@ -145,7 +145,7 @@ function boolAttrFilter (name, value) {
 function callFilter (ctx, name, args) {
     const filter = ctx.instance.filters[name]
     if (typeof filter === 'function') {
-        return filter.apply(ctx, args)
+        return filter.apply(ctx.instance, args)
     }
 }
 

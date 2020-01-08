@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/searchfe/san-ssr/compare/v1.8.1...v1.9.0) (2020-01-08)
+
+
+### Features
+
+* filters#this point to component instance ([034c295](https://github.com/searchfe/san-ssr/commit/034c2957c72368519ef225e975713ac4dd7093f6))
+
 ## [1.8.1](https://github.com/searchfe/san-ssr/compare/v1.8.0...v1.8.1) (2020-01-06)
 
 

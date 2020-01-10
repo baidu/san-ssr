@@ -1,4 +1,6 @@
 import { Expression } from '../../models/expression'
+import { isString } from 'lodash'
+import { isValidIdentifier } from '../../utils/lang'
 
 /**
  * 编译源码的 helper 方法集合对象
@@ -21,25 +23,16 @@ export const compileExprSource = {
      */
     dataAccess: function (accessorExpr?: Expression): string {
         let code = 'componentCtx.data'
-        if (accessorExpr) {
-            for (const path of accessorExpr.paths) {
-                if (path.type === 4) {
-                    code += '[' + compileExprSource.dataAccess(path) + ']'
-                    continue
-                }
-
-                switch (typeof path.value) {
-                case 'string':
-                    code += '.' + path.value
-                    continue
-
-                case 'number':
-                    code += '[' + path.value + ']'
-                    continue
-                }
+        if (!accessorExpr) return code
+        for (const path of accessorExpr.paths) {
+            if (path.type === 4) {
+                code += '[' + compileExprSource.dataAccess(path) + ']'
+            } else if (isString(path.value) && isValidIdentifier(path.value)) {
+                code += '.' + path.value
+            } else {
+                code += '[' + path.value + ']'
             }
         }
-
         return code
     },
 

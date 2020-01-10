@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/searchfe/san-ssr/compare/v1.9.0...v1.9.1) (2020-01-10)
+
+
+### Bug Fixes
+
+* ensure data access with valid identifier ([8284ddb](https://github.com/searchfe/san-ssr/commit/8284ddb756acc2c46266bbbcfdaa057ee5f8778e))
+
 # [1.9.0](https://github.com/searchfe/san-ssr/compare/v1.8.1...v1.9.0) (2020-01-08)
 
 

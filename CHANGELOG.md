@@ -1,3 +1,10 @@
+## [1.9.2](https://github.com/baidu/san-ssr/compare/v1.9.1...v1.9.2) (2020-01-14)
+
+
+### Bug Fixes
+
+* url in package.json ([bd4ef00](https://github.com/baidu/san-ssr/commit/bd4ef003b051d46d66a22c0e0208ada7acbb0259))
+
 ## [1.9.1](https://github.com/baidu/san-ssr/compare/v1.9.0...v1.9.1) (2020-01-10)
 
 

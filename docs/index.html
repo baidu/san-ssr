@@ -69,7 +69,7 @@
 				</a>
 				<p><a href="https://www.npmjs.org/package/san-ssr"><img src="https://img.shields.io/npm/v/san-ssr.svg" alt="npm version"></a>
 					<a href="https://www.npmjs.org/package/san-ssr"><img src="https://img.shields.io/npm/dm/san-ssr.svg" alt="downloads"></a>
-					<a href="https://travis-ci.com/baidu/san-ssr"><img src="https://travis-ci.com/baidu/san-ssr.svg?branch=master" alt="Build Status"></a>
+					<a href="https://travis-ci.org/baidu/san-ssr"><img src="https://travis-ci.org/baidu/san-ssr.svg?branch=master" alt="Build Status"></a>
 					<a href="https://coveralls.io/github/baidu/san-ssr?branch=master"><img src="https://img.shields.io/coveralls/baidu/san-ssr.svg" alt="Coveralls"></a>
 					<a href="https://david-dm.org/baidu/san-ssr"><img src="https://img.shields.io/david/baidu/san-ssr.svg" alt="dependencies"></a>
 					<a href="https://github.com/baidu/san-ssr"><img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg" alt="semantic-release"></a>
@@ -156,7 +156,7 @@ writeFileSync(<span class="hljs-string">'ssr.js'</span>, targetCode)</code></pre
 				具体的代码生成抽象为 <a href="https://github.com/baidu/san-ssr/blob/809fc8eb710253f6e5aa3bd1afc0b7f615ef572e/src/models/compiler.ts#L3">Compiler 接口</a>，目前有 JS 和 PHP 两个实现，其中 san-ssr-target-js 内置在本仓库中：</p>
 				<ul>
 					<li><a href="https://github.com/baidu/san-ssr/tree/master/src/target-js">san-ssr-target-js</a></li>
-					<li><a href="https://github.com/baidu/san-ssr-target-php">san-ssr-target-php</a></li>
+					<li><a href="https://github.com/searchfe/san-ssr-target-php">san-ssr-target-php</a></li>
 				</ul>
 				<p>CLI 参数 <code>--target</code> 参数用来选择目标代码，默认为 <code>js</code>：</p>
 				<pre><code class="language-bash">san-ssr --target js ./component.js &gt; ssr.js</code></pre>

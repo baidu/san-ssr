@@ -219,7 +219,7 @@ export class RendererCompiler<T> {
 
     private createComponentInstance (ComponentClass: typeof SanComponent) {
         // TODO Do not `new Component` during SSR,
-        // see https://github.com/searchfe/san-ssr/issues/42
+        // see https://github.com/baidu/san-ssr/issues/42
         const proto = ComponentClass.prototype['__proto__']    // eslint-disable-line
         const calcComputed = proto['_calcComputed']
         const inited = ComponentClass.prototype.inited

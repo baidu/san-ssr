@@ -69,20 +69,20 @@
 				</a>
 				<p><a href="https://www.npmjs.org/package/san-ssr"><img src="https://img.shields.io/npm/v/san-ssr.svg" alt="npm version"></a>
 					<a href="https://www.npmjs.org/package/san-ssr"><img src="https://img.shields.io/npm/dm/san-ssr.svg" alt="downloads"></a>
-					<a href="https://travis-ci.com/searchfe/san-ssr"><img src="https://travis-ci.com/searchfe/san-ssr.svg?branch=master" alt="Build Status"></a>
-					<a href="https://coveralls.io/github/searchfe/san-ssr?branch=master"><img src="https://img.shields.io/coveralls/searchfe/san-ssr.svg" alt="Coveralls"></a>
-					<a href="https://david-dm.org/searchfe/san-ssr"><img src="https://img.shields.io/david/searchfe/san-ssr.svg" alt="dependencies"></a>
-					<a href="https://github.com/searchfe/san-ssr"><img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg" alt="semantic-release"></a>
-					<a href="https://github.com/searchfe/san-ssr/issues"><img src="https://img.shields.io/github/issues-closed/searchfe/san-ssr.svg" alt="GitHub issues"></a>
-					<a href="https://david-dm.org/searchfe/san-ssr"><img src="https://img.shields.io/david/searchfe/san-ssr.svg" alt="David"></a>
-					<a href="https://david-dm.org/searchfe/san-ssr?type=dev"><img src="https://img.shields.io/david/dev/searchfe/san-ssr.svg" alt="David Dev"></a>
-					<a href="https://github.com/searchfe/san-ssr/blob/master/LICENSE"><img src="https://img.shields.io/dub/l/vibe-d.svg" alt="DUB license"></a>
+					<a href="https://travis-ci.com/baidu/san-ssr"><img src="https://travis-ci.com/baidu/san-ssr.svg?branch=master" alt="Build Status"></a>
+					<a href="https://coveralls.io/github/baidu/san-ssr?branch=master"><img src="https://img.shields.io/coveralls/baidu/san-ssr.svg" alt="Coveralls"></a>
+					<a href="https://david-dm.org/baidu/san-ssr"><img src="https://img.shields.io/david/baidu/san-ssr.svg" alt="dependencies"></a>
+					<a href="https://github.com/baidu/san-ssr"><img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg" alt="semantic-release"></a>
+					<a href="https://github.com/baidu/san-ssr/issues"><img src="https://img.shields.io/github/issues-closed/baidu/san-ssr.svg" alt="GitHub issues"></a>
+					<a href="https://david-dm.org/baidu/san-ssr"><img src="https://img.shields.io/david/baidu/san-ssr.svg" alt="David"></a>
+					<a href="https://david-dm.org/baidu/san-ssr?type=dev"><img src="https://img.shields.io/david/dev/baidu/san-ssr.svg" alt="David Dev"></a>
+					<a href="https://github.com/baidu/san-ssr/blob/master/LICENSE"><img src="https://img.shields.io/dub/l/vibe-d.svg" alt="DUB license"></a>
 				<a href="https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commits"><img src="https://img.shields.io/badge/commitizen-friendly-brightgreen.svg" alt="Commitizen friendly"></a></p>
 				<p>本仓库的 <strong>目的</strong> 是为 <a href="https://github.com/baidu/san">san</a>  提供一个 SSR 代码框架和工具，以及内置了 JavaScript 的代码生成。</p>
 				<ul>
-					<li><a href="https://github.com/searchfe/san-ssr/blob/master/README.en.md">English</a></li>
-					<li>SSR 代码迁移：<a href="https://github.com/searchfe/san-ssr/wiki/%E4%BB%8E-san-%E8%BF%81%E7%A7%BB%E5%88%B0-san-ssr">从 san 到 san-ssr</a></li>
-					<li>Demo：<a href="https://github.com/searchfe/san-ssr/tree/master/demo">demo/</a></li>
+					<li><a href="https://github.com/baidu/san-ssr/blob/master/README.en.md">English</a></li>
+					<li>SSR 代码迁移：<a href="https://github.com/baidu/san-ssr/wiki/%E4%BB%8E-san-%E8%BF%81%E7%A7%BB%E5%88%B0-san-ssr">从 san 到 san-ssr</a></li>
+					<li>Demo：<a href="https://github.com/baidu/san-ssr/tree/master/demo">demo/</a></li>
 				</ul>
 				<a href="#安装" id="安装" style="color: inherit; text-decoration: none;">
 					<h2>安装</h2>
@@ -119,7 +119,7 @@ Options:
 				<a href="#编程接口" id="编程接口" style="color: inherit; text-decoration: none;">
 					<h2>编程接口</h2>
 				</a>
-				<p><a href="https://searchfe.github.io/san-ssr/classes/_models_san_project_.sanproject.html">SanProject 类</a> 提供了你会用到的所有接口：</p>
+				<p><a href="https://baidu.github.io/san-ssr/classes/_models_san_project_.sanproject.html">SanProject 类</a> 提供了你会用到的所有接口：</p>
 				<ul>
 					<li>输入可以是组件对象，也可以是组件文件，这个文件可以是 JavaScript 文件，也可以是 TypeScript 文件。</li>
 					<li>输出可以是 CommonJS 代码，也可以一个 render 函数。</li>
@@ -148,15 +148,15 @@ writeFileSync(<span class="hljs-string">'ssr.js'</span>, targetCode)</code></pre
 <span class="hljs-keyword">const</span> render = project.compileToRenderer(<span class="hljs-string">'src/component.ts'</span>)
 
 <span class="hljs-built_in">console</span>.log(render({name: <span class="hljs-string">'harttle'</span>}))</code></pre>
-				<p>Compile 还支持目标平台、编译参数，详细请参考 API 文档：<a href="https://searchfe.github.io/san-ssr/classes/_models_san_project_.sanproject.html#compile">SanProject#compile(filepath, target, options)</a>。</p>
+				<p>Compile 还支持目标平台、编译参数，详细请参考 API 文档：<a href="https://baidu.github.io/san-ssr/classes/_models_san_project_.sanproject.html#compile">SanProject#compile(filepath, target, options)</a>。</p>
 				<a href="#其他目标平台" id="其他目标平台" style="color: inherit; text-decoration: none;">
 					<h2>其他目标平台</h2>
 				</a>
 				<p>san-ssr 提供了 San 组件的静态分析，提供了项目文件集合和 San 组件树，以及二者的对应关系。
-				具体的代码生成抽象为 <a href="https://github.com/searchfe/san-ssr/blob/809fc8eb710253f6e5aa3bd1afc0b7f615ef572e/src/models/compiler.ts#L3">Compiler 接口</a>，目前有 JS 和 PHP 两个实现，其中 san-ssr-target-js 内置在本仓库中：</p>
+				具体的代码生成抽象为 <a href="https://github.com/baidu/san-ssr/blob/809fc8eb710253f6e5aa3bd1afc0b7f615ef572e/src/models/compiler.ts#L3">Compiler 接口</a>，目前有 JS 和 PHP 两个实现，其中 san-ssr-target-js 内置在本仓库中：</p>
 				<ul>
-					<li><a href="https://github.com/searchfe/san-ssr/tree/master/src/target-js">san-ssr-target-js</a></li>
-					<li><a href="https://github.com/searchfe/san-ssr-target-php">san-ssr-target-php</a></li>
+					<li><a href="https://github.com/baidu/san-ssr/tree/master/src/target-js">san-ssr-target-js</a></li>
+					<li><a href="https://github.com/baidu/san-ssr-target-php">san-ssr-target-php</a></li>
 				</ul>
 				<p>CLI 参数 <code>--target</code> 参数用来选择目标代码，默认为 <code>js</code>：</p>
 				<pre><code class="language-bash">san-ssr --target js ./component.js &gt; ssr.js</code></pre>

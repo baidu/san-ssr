@@ -1,197 +1,197 @@
-## [1.9.1](https://github.com/searchfe/san-ssr/compare/v1.9.0...v1.9.1) (2020-01-10)
+## [1.9.1](https://github.com/baidu/san-ssr/compare/v1.9.0...v1.9.1) (2020-01-10)
 
 
 ### Bug Fixes
 
-* ensure data access with valid identifier ([8284ddb](https://github.com/searchfe/san-ssr/commit/8284ddb756acc2c46266bbbcfdaa057ee5f8778e))
+* ensure data access with valid identifier ([8284ddb](https://github.com/baidu/san-ssr/commit/8284ddb756acc2c46266bbbcfdaa057ee5f8778e))
 
-# [1.9.0](https://github.com/searchfe/san-ssr/compare/v1.8.1...v1.9.0) (2020-01-08)
+# [1.9.0](https://github.com/baidu/san-ssr/compare/v1.8.1...v1.9.0) (2020-01-08)
 
 
 ### Features
 
-* filters#this point to component instance ([034c295](https://github.com/searchfe/san-ssr/commit/034c2957c72368519ef225e975713ac4dd7093f6))
+* filters#this point to component instance ([034c295](https://github.com/baidu/san-ssr/commit/034c2957c72368519ef225e975713ac4dd7093f6))
 
-## [1.8.1](https://github.com/searchfe/san-ssr/compare/v1.8.0...v1.8.1) (2020-01-06)
+## [1.8.1](https://github.com/baidu/san-ssr/compare/v1.8.0...v1.8.1) (2020-01-06)
 
 
 ### Bug Fixes
 
-* not call inited in compile time, see [#41](https://github.com/searchfe/san-ssr/issues/41) ([8801964](https://github.com/searchfe/san-ssr/commit/8801964cbbdeb0279266e2a9450ba0096542c661))
+* not call inited in compile time, see [#41](https://github.com/baidu/san-ssr/issues/41) ([8801964](https://github.com/baidu/san-ssr/commit/8801964cbbdeb0279266e2a9450ba0096542c661))
 
-# [1.8.0](https://github.com/searchfe/san-ssr/compare/v1.7.1...v1.8.0) (2020-01-05)
+# [1.8.0](https://github.com/baidu/san-ssr/compare/v1.7.1...v1.8.0) (2020-01-05)
 
 
 ### Features
 
-* compile to renderer ([a2383a1](https://github.com/searchfe/san-ssr/commit/a2383a192cb991e7432f56f9497c06315f6e2fbe))
+* compile to renderer ([a2383a1](https://github.com/baidu/san-ssr/commit/a2383a192cb991e7432f56f9497c06315f6e2fbe))
 
-## [1.7.1](https://github.com/searchfe/san-ssr/compare/v1.7.0...v1.7.1) (2020-01-02)
+## [1.7.1](https://github.com/baidu/san-ssr/compare/v1.7.0...v1.7.1) (2020-01-02)
 
 
 ### Bug Fixes
 
-* type for initData() ([92c99a4](https://github.com/searchfe/san-ssr/commit/92c99a46b617c817e04f10b5f3f939b71a7e760d))
+* type for initData() ([92c99a4](https://github.com/baidu/san-ssr/commit/92c99a46b617c817e04f10b5f3f939b71a7e760d))
 
-# [1.7.0](https://github.com/searchfe/san-ssr/compare/v1.6.0...v1.7.0) (2020-01-02)
+# [1.7.0](https://github.com/baidu/san-ssr/compare/v1.6.0...v1.7.0) (2020-01-02)
 
 
 ### Features
 
-* not to calculate computed in compile time, see [#42](https://github.com/searchfe/san-ssr/issues/42) ([c0f4875](https://github.com/searchfe/san-ssr/commit/c0f48750816b4f19e9a86f8c0d3805acee2a9d4c))
-* SanProject#parseSanApp() ([e628ab1](https://github.com/searchfe/san-ssr/commit/e628ab1c024bf8540ee2b153ee17cb43a11928fd))
+* not to calculate computed in compile time, see [#42](https://github.com/baidu/san-ssr/issues/42) ([c0f4875](https://github.com/baidu/san-ssr/commit/c0f48750816b4f19e9a86f8c0d3805acee2a9d4c))
+* SanProject#parseSanApp() ([e628ab1](https://github.com/baidu/san-ssr/commit/e628ab1c024bf8540ee2b153ee17cb43a11928fd))
 
-# [1.6.0](https://github.com/searchfe/san-ssr/compare/v1.5.3...v1.6.0) (2020-01-02)
-
-
-### Features
-
-* call inited() in runtime, fixes [#41](https://github.com/searchfe/san-ssr/issues/41) ([4da4dfe](https://github.com/searchfe/san-ssr/commit/4da4dfe15737cae0c4ee7dbbe3fec20a48d55091))
-
-## [1.5.3](https://github.com/searchfe/san-ssr/compare/v1.5.2...v1.5.3) (2019-12-26)
-
-
-### Bug Fixes
-
-* remove requiring test case impl on start ([930c323](https://github.com/searchfe/san-ssr/commit/930c323bf8affa6d8b1420d861d0b4d89bc839e6))
-
-## [1.5.2](https://github.com/searchfe/san-ssr/compare/v1.5.1...v1.5.2) (2019-12-26)
-
-
-### Bug Fixes
-
-* don't throw when tsconfig not specified ([08aaa10](https://github.com/searchfe/san-ssr/commit/08aaa10dc315f396553f6c708c0c4389c72480ff))
-
-## [1.5.1](https://github.com/searchfe/san-ssr/compare/v1.5.0...v1.5.1) (2019-12-26)
-
-
-### Bug Fixes
-
-* Renderer signature ([1e0ce6e](https://github.com/searchfe/san-ssr/commit/1e0ce6ef9573a3d60f8e5489c5915922bb6a311d))
-
-# [1.5.0](https://github.com/searchfe/san-ssr/compare/v1.4.0...v1.5.0) (2019-12-25)
+# [1.6.0](https://github.com/baidu/san-ssr/compare/v1.5.3...v1.6.0) (2020-01-02)
 
 
 ### Features
 
-* compileToSource, compileToRenderer, see [#1](https://github.com/searchfe/san-ssr/issues/1) ([b404dfa](https://github.com/searchfe/san-ssr/commit/b404dfa6937228011f65dd175ee5bca8fae3351f))
+* call inited() in runtime, fixes [#41](https://github.com/baidu/san-ssr/issues/41) ([4da4dfe](https://github.com/baidu/san-ssr/commit/4da4dfe15737cae0c4ee7dbbe3fec20a48d55091))
 
-# [1.4.0](https://github.com/searchfe/san-ssr/compare/v1.3.11...v1.4.0) (2019-12-25)
+## [1.5.3](https://github.com/baidu/san-ssr/compare/v1.5.2...v1.5.3) (2019-12-26)
+
+
+### Bug Fixes
+
+* remove requiring test case impl on start ([930c323](https://github.com/baidu/san-ssr/commit/930c323bf8affa6d8b1420d861d0b4d89bc839e6))
+
+## [1.5.2](https://github.com/baidu/san-ssr/compare/v1.5.1...v1.5.2) (2019-12-26)
+
+
+### Bug Fixes
+
+* don't throw when tsconfig not specified ([08aaa10](https://github.com/baidu/san-ssr/commit/08aaa10dc315f396553f6c708c0c4389c72480ff))
+
+## [1.5.1](https://github.com/baidu/san-ssr/compare/v1.5.0...v1.5.1) (2019-12-26)
+
+
+### Bug Fixes
+
+* Renderer signature ([1e0ce6e](https://github.com/baidu/san-ssr/commit/1e0ce6ef9573a3d60f8e5489c5915922bb6a311d))
+
+# [1.5.0](https://github.com/baidu/san-ssr/compare/v1.4.0...v1.5.0) (2019-12-25)
 
 
 ### Features
 
-* noTemplateOutput, see [#34](https://github.com/searchfe/san-ssr/issues/34) ([6038a0a](https://github.com/searchfe/san-ssr/commit/6038a0a1bce60f1370092393dddba3e3a7b70fac))
+* compileToSource, compileToRenderer, see [#1](https://github.com/baidu/san-ssr/issues/1) ([b404dfa](https://github.com/baidu/san-ssr/commit/b404dfa6937228011f65dd175ee5bca8fae3351f))
 
-## [1.3.11](https://github.com/searchfe/san-ssr/compare/v1.3.10...v1.3.11) (2019-12-23)
-
-
-### Bug Fixes
-
-* common-js not caching the actual file path ([aee90ea](https://github.com/searchfe/san-ssr/commit/aee90ea43a7c01ad2aef23a0e5ae0344e9b3f276))
-
-## [1.3.10](https://github.com/searchfe/san-ssr/compare/v1.3.9...v1.3.10) (2019-11-26)
-
-
-### Bug Fixes
-
-* add sourcefile before parseSanApp() ([4ad19ed](https://github.com/searchfe/san-ssr/commit/4ad19ed8e1d3eb2d4b7ec427dd398f00b6ce4baf))
-
-## [1.3.9](https://github.com/searchfe/san-ssr/compare/v1.3.8...v1.3.9) (2019-11-21)
-
-
-### Bug Fixes
-
-* remove console.log ([6488873](https://github.com/searchfe/san-ssr/commit/64888731d59577c6087bbe333364d2776447709f))
-
-## [1.3.8](https://github.com/searchfe/san-ssr/compare/v1.3.7...v1.3.8) (2019-11-21)
-
-
-### Bug Fixes
-
-* multiple parses for the same project ([60424d1](https://github.com/searchfe/san-ssr/commit/60424d113f18d0e2ad1b99aef735bd9d3aff3bb4))
-
-## [1.3.7](https://github.com/searchfe/san-ssr/compare/v1.3.6...v1.3.7) (2019-11-19)
-
-
-### Bug Fixes
-
-* not throw when tsconfig not defined ([9ec8a18](https://github.com/searchfe/san-ssr/commit/9ec8a18cf84158da6757f1e47a32eb0a2989d6b0))
-
-## [1.3.6](https://github.com/searchfe/san-ssr/compare/v1.3.5...v1.3.6) (2019-11-19)
-
-
-### Bug Fixes
-
-* dependencies ([b8f7828](https://github.com/searchfe/san-ssr/commit/b8f78289fb114c43d4f6941da359d9703eb47a3c))
-
-## [1.3.5](https://github.com/searchfe/san-ssr/compare/v1.3.4...v1.3.5) (2019-11-15)
-
-
-### Bug Fixes
-
-* $ in php string ([fd252f4](https://github.com/searchfe/san-ssr/commit/fd252f48152328b69fd4435049f4f6868d01f0e6))
-
-## [1.3.4](https://github.com/searchfe/san-ssr/compare/v1.3.3...v1.3.4) (2019-11-14)
-
-
-### Bug Fixes
-
-* format compilerOptions for ts2php, fixes [#19](https://github.com/searchfe/san-ssr/issues/19) ([cb2329d](https://github.com/searchfe/san-ssr/commit/cb2329da1c0dc091f57cbef53300a55bc851c34e))
-* remove <!--s-text--><!--/s-text--> when noDataOutput is true, fixes [#21](https://github.com/searchfe/san-ssr/issues/21) ([c05ef7d](https://github.com/searchfe/san-ssr/commit/c05ef7db664a62781c74228e7f0bf4c0117b69ea))
-
-## [1.3.3](https://github.com/searchfe/san-ssr/compare/v1.3.2...v1.3.3) (2019-11-13)
-
-
-### Bug Fixes
-
-* remove <!--s-text--><!--/s-text--> when noDataOutput is true, fixes [#21](https://github.com/searchfe/san-ssr/issues/21) ([4f5132c](https://github.com/searchfe/san-ssr/commit/4f5132c2c90e9caa927ca74e68741050f94d46fb))
-
-## [1.3.2](https://github.com/searchfe/san-ssr/compare/v1.3.1...v1.3.2) (2019-11-09)
-
-
-### Bug Fixes
-
-* format compilerOptions for ts2php, fixes [#19](https://github.com/searchfe/san-ssr/issues/19) ([279769a](https://github.com/searchfe/san-ssr/commit/279769a82c440f2b957f89a23bdb7ffc70fa9bb4))
-
-## [1.3.1](https://github.com/searchfe/san-ssr/compare/v1.3.0...v1.3.1) (2019-11-08)
-
-
-### Bug Fixes
-
-* temp fix for data.set call in method ([e60a0ad](https://github.com/searchfe/san-ssr/commit/e60a0adee020997e40f788ee5cd83186c9a2ef17))
-
-# [1.3.0](https://github.com/searchfe/san-ssr/compare/v1.2.1...v1.3.0) (2019-11-08)
+# [1.4.0](https://github.com/baidu/san-ssr/compare/v1.3.11...v1.4.0) (2019-12-25)
 
 
 ### Features
 
-* configuable module content for CommonJS loader, fixes [#12](https://github.com/searchfe/san-ssr/issues/12) ([92e6b16](https://github.com/searchfe/san-ssr/commit/92e6b1696d8742b252b4f84bdc02d6e556e0f09f))
+* noTemplateOutput, see [#34](https://github.com/baidu/san-ssr/issues/34) ([6038a0a](https://github.com/baidu/san-ssr/commit/6038a0a1bce60f1370092393dddba3e3a7b70fac))
 
-## [1.2.1](https://github.com/searchfe/san-ssr/compare/v1.2.0...v1.2.1) (2019-11-07)
+## [1.3.11](https://github.com/baidu/san-ssr/compare/v1.3.10...v1.3.11) (2019-12-23)
 
 
 ### Bug Fixes
 
-* refactor non-constant property initializer for php, fixes [#16](https://github.com/searchfe/san-ssr/issues/16) ([b112ed5](https://github.com/searchfe/san-ssr/commit/b112ed53929400e252aae088ce8a696833e0cd01))
+* common-js not caching the actual file path ([aee90ea](https://github.com/baidu/san-ssr/commit/aee90ea43a7c01ad2aef23a0e5ae0344e9b3f276))
 
-# [1.2.0](https://github.com/searchfe/san-ssr/compare/v1.1.2...v1.2.0) (2019-11-07)
+## [1.3.10](https://github.com/baidu/san-ssr/compare/v1.3.9...v1.3.10) (2019-11-26)
+
+
+### Bug Fixes
+
+* add sourcefile before parseSanApp() ([4ad19ed](https://github.com/baidu/san-ssr/commit/4ad19ed8e1d3eb2d4b7ec427dd398f00b6ce4baf))
+
+## [1.3.9](https://github.com/baidu/san-ssr/compare/v1.3.8...v1.3.9) (2019-11-21)
+
+
+### Bug Fixes
+
+* remove console.log ([6488873](https://github.com/baidu/san-ssr/commit/64888731d59577c6087bbe333364d2776447709f))
+
+## [1.3.8](https://github.com/baidu/san-ssr/compare/v1.3.7...v1.3.8) (2019-11-21)
+
+
+### Bug Fixes
+
+* multiple parses for the same project ([60424d1](https://github.com/baidu/san-ssr/commit/60424d113f18d0e2ad1b99aef735bd9d3aff3bb4))
+
+## [1.3.7](https://github.com/baidu/san-ssr/compare/v1.3.6...v1.3.7) (2019-11-19)
+
+
+### Bug Fixes
+
+* not throw when tsconfig not defined ([9ec8a18](https://github.com/baidu/san-ssr/commit/9ec8a18cf84158da6757f1e47a32eb0a2989d6b0))
+
+## [1.3.6](https://github.com/baidu/san-ssr/compare/v1.3.5...v1.3.6) (2019-11-19)
+
+
+### Bug Fixes
+
+* dependencies ([b8f7828](https://github.com/baidu/san-ssr/commit/b8f78289fb114c43d4f6941da359d9703eb47a3c))
+
+## [1.3.5](https://github.com/baidu/san-ssr/compare/v1.3.4...v1.3.5) (2019-11-15)
+
+
+### Bug Fixes
+
+* `$` in php string ([fd252f4](https://github.com/baidu/san-ssr/commit/fd252f48152328b69fd4435049f4f6868d01f0e6))
+
+## [1.3.4](https://github.com/baidu/san-ssr/compare/v1.3.3...v1.3.4) (2019-11-14)
+
+
+### Bug Fixes
+
+* format compilerOptions for ts2php, fixes [#19](https://github.com/baidu/san-ssr/issues/19) ([cb2329d](https://github.com/baidu/san-ssr/commit/cb2329da1c0dc091f57cbef53300a55bc851c34e))
+* remove <!--s-text--><!--/s-text--> when noDataOutput is true, fixes [#21](https://github.com/baidu/san-ssr/issues/21) ([c05ef7d](https://github.com/baidu/san-ssr/commit/c05ef7db664a62781c74228e7f0bf4c0117b69ea))
+
+## [1.3.3](https://github.com/baidu/san-ssr/compare/v1.3.2...v1.3.3) (2019-11-13)
+
+
+### Bug Fixes
+
+* remove <!--s-text--><!--/s-text--> when noDataOutput is true, fixes [#21](https://github.com/baidu/san-ssr/issues/21) ([4f5132c](https://github.com/baidu/san-ssr/commit/4f5132c2c90e9caa927ca74e68741050f94d46fb))
+
+## [1.3.2](https://github.com/baidu/san-ssr/compare/v1.3.1...v1.3.2) (2019-11-09)
+
+
+### Bug Fixes
+
+* format compilerOptions for ts2php, fixes [#19](https://github.com/baidu/san-ssr/issues/19) ([279769a](https://github.com/baidu/san-ssr/commit/279769a82c440f2b957f89a23bdb7ffc70fa9bb4))
+
+## [1.3.1](https://github.com/baidu/san-ssr/compare/v1.3.0...v1.3.1) (2019-11-08)
+
+
+### Bug Fixes
+
+* temp fix for data.set call in method ([e60a0ad](https://github.com/baidu/san-ssr/commit/e60a0adee020997e40f788ee5cd83186c9a2ef17))
+
+# [1.3.0](https://github.com/baidu/san-ssr/compare/v1.2.1...v1.3.0) (2019-11-08)
 
 
 ### Features
 
-* emit runtime/components/renderer only when targeted to php, close [#2](https://github.com/searchfe/san-ssr/issues/2) ([859966b](https://github.com/searchfe/san-ssr/commit/859966b84de63bedfa3a85fcf3f6632557071327))
+* configuable module content for CommonJS loader, fixes [#12](https://github.com/baidu/san-ssr/issues/12) ([92e6b16](https://github.com/baidu/san-ssr/commit/92e6b1696d8742b252b4f84bdc02d6e556e0f09f))
 
-## [1.1.2](https://github.com/searchfe/san-ssr/compare/v1.1.1...v1.1.2) (2019-11-06)
-
-
-### Bug Fixes
-
-* method in San Component, [#10](https://github.com/searchfe/san-ssr/issues/10), [#11](https://github.com/searchfe/san-ssr/issues/11) ([80ab41a](https://github.com/searchfe/san-ssr/commit/80ab41a820321cb207f876064f3da8b4a5c52ecb))
-
-## [1.1.1](https://github.com/searchfe/san-ssr/compare/v1.1.0...v1.1.1) (2019-11-05)
+## [1.2.1](https://github.com/baidu/san-ssr/compare/v1.2.0...v1.2.1) (2019-11-07)
 
 
 ### Bug Fixes
 
-* remove IIFE for compatibility issues, see [#9](https://github.com/searchfe/san-ssr/issues/9) ([b3707c2](https://github.com/searchfe/san-ssr/commit/b3707c2e2b6baf74e271cd55457d5544005dccc0))
+* refactor non-constant property initializer for php, fixes [#16](https://github.com/baidu/san-ssr/issues/16) ([b112ed5](https://github.com/baidu/san-ssr/commit/b112ed53929400e252aae088ce8a696833e0cd01))
+
+# [1.2.0](https://github.com/baidu/san-ssr/compare/v1.1.2...v1.2.0) (2019-11-07)
+
+
+### Features
+
+* emit runtime/components/renderer only when targeted to php, close [#2](https://github.com/baidu/san-ssr/issues/2) ([859966b](https://github.com/baidu/san-ssr/commit/859966b84de63bedfa3a85fcf3f6632557071327))
+
+## [1.1.2](https://github.com/baidu/san-ssr/compare/v1.1.1...v1.1.2) (2019-11-06)
+
+
+### Bug Fixes
+
+* method in San Component, [#10](https://github.com/baidu/san-ssr/issues/10), [#11](https://github.com/baidu/san-ssr/issues/11) ([80ab41a](https://github.com/baidu/san-ssr/commit/80ab41a820321cb207f876064f3da8b4a5c52ecb))
+
+## [1.1.1](https://github.com/baidu/san-ssr/compare/v1.1.0...v1.1.1) (2019-11-05)
+
+
+### Bug Fixes
+
+* remove IIFE for compatibility issues, see [#9](https://github.com/baidu/san-ssr/issues/9) ([b3707c2](https://github.com/baidu/san-ssr/commit/b3707c2e2b6baf74e271cd55457d5544005dccc0))

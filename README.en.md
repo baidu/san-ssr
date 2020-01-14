@@ -1,21 +1,21 @@
 # San SSR
 [![npm version](https://img.shields.io/npm/v/san-ssr.svg)](https://www.npmjs.org/package/san-ssr)
 [![downloads](https://img.shields.io/npm/dm/san-ssr.svg)](https://www.npmjs.org/package/san-ssr)
-[![Build Status](https://travis-ci.com/searchfe/san-ssr.svg?branch=master)](https://travis-ci.com/searchfe/san-ssr)
-[![Coveralls](https://img.shields.io/coveralls/searchfe/san-ssr.svg)](https://coveralls.io/github/searchfe/san-ssr?branch=master)
-[![dependencies](https://img.shields.io/david/searchfe/san-ssr.svg)](https://david-dm.org/searchfe/san-ssr)
-[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/searchfe/san-ssr)
-[![GitHub issues](https://img.shields.io/github/issues-closed/searchfe/san-ssr.svg)](https://github.com/searchfe/san-ssr/issues)
-[![David](https://img.shields.io/david/searchfe/san-ssr.svg)](https://david-dm.org/searchfe/san-ssr)
-[![David Dev](https://img.shields.io/david/dev/searchfe/san-ssr.svg)](https://david-dm.org/searchfe/san-ssr?type=dev)
-[![DUB license](https://img.shields.io/dub/l/vibe-d.svg)](https://github.com/searchfe/san-ssr/blob/master/LICENSE)
+[![Build Status](https://travis-ci.com/baidu/san-ssr.svg?branch=master)](https://travis-ci.com/baidu/san-ssr)
+[![Coveralls](https://img.shields.io/coveralls/baidu/san-ssr.svg)](https://coveralls.io/github/baidu/san-ssr?branch=master)
+[![dependencies](https://img.shields.io/david/baidu/san-ssr.svg)](https://david-dm.org/baidu/san-ssr)
+[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/baidu/san-ssr)
+[![GitHub issues](https://img.shields.io/github/issues-closed/baidu/san-ssr.svg)](https://github.com/baidu/san-ssr/issues)
+[![David](https://img.shields.io/david/baidu/san-ssr.svg)](https://david-dm.org/baidu/san-ssr)
+[![David Dev](https://img.shields.io/david/dev/baidu/san-ssr.svg)](https://david-dm.org/baidu/san-ssr?type=dev)
+[![DUB license](https://img.shields.io/dub/l/vibe-d.svg)](https://github.com/baidu/san-ssr/blob/master/LICENSE)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](https://github.com/angular/angular.js/blob/master/DEVELOPERS.md#commits)
 
 **The purpurse of this repo** is to provide an SSR framework and utils for the [san][san] components.
 
-* [中文](https://github.com/searchfe/san-ssr/blob/master/README.md)
-* SSR migration：[from san to san-ssr](https://github.com/searchfe/san-ssr/wiki/%E4%BB%8E-san-%E8%BF%81%E7%A7%BB%E5%88%B0-san-ssr)
-* Demo：[demo/](https://github.com/searchfe/san-ssr/tree/master/demo)
+* [中文](https://github.com/baidu/san-ssr/blob/master/README.md)
+* SSR migration：[from san to san-ssr](https://github.com/baidu/san-ssr/wiki/%E4%BB%8E-san-%E8%BF%81%E7%A7%BB%E5%88%B0-san-ssr)
+* Demo：[demo/](https://github.com/baidu/san-ssr/tree/master/demo)
 
 ## Work with San
 
@@ -27,8 +27,8 @@ Note: As described in [baidu/san/issues/441](https://github.com/baidu/san/issues
 
 san-ssr provides static analysis for San components and generates abstract component tree, while code generation is a separated process, which is provided by specific implementations:
 
-* [san-ssr-target-js](https://github.com/searchfe/san-ssr/tree/master/src/target-js)
-* [san-ssr-target-php](https://github.com/searchfe/san-ssr-target-php)
+* [san-ssr-target-js](https://github.com/baidu/san-ssr/tree/master/src/target-js)
+* [san-ssr-target-php](https://github.com/baidu/san-ssr-target-php)
 
 ## CLI Usage
 
@@ -86,6 +86,6 @@ directly to the target code generator's [compile(sanApp, options)][target-compil
 
 
 [san]: https://github.com/baidu/san
-[sanproject]: https://searchfe.github.io/san-ssr/classes/_models_san_project_.sanproject.html
-[compile]: https://searchfe.github.io/san-ssr/classes/_models_san_project_.sanproject.html#compile
-[target-compile]: https://searchfe.github.io/san-ssr/interfaces/_models_compiler_.compiler.html#compile
+[sanproject]: https://baidu.github.io/san-ssr/classes/_models_san_project_.sanproject.html
+[compile]: https://baidu.github.io/san-ssr/classes/_models_san_project_.sanproject.html#compile
+[target-compile]: https://baidu.github.io/san-ssr/interfaces/_models_compiler_.compiler.html#compile

@@ -36,14 +36,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/searchfe/san-ssr.git"
+    "url": "https://github.com/baidu/san-ssr.git"
   },
   "author": "harttle <yangjvn@126.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/searchfe/san-ssr/issues"
+    "url": "https://github.com/baidu/san-ssr/issues"
   },
-  "homepage": "https://github.com/searchfe/san-ssr#readme",
+  "homepage": "https://github.com/baidu/san-ssr#readme",
   "devDependencies": {
     "@babel/core": "^7.6.0",
     "@babel/preset-env": "^7.6.0",

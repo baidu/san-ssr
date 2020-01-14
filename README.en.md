@@ -1,7 +1,7 @@
 # San SSR
 [![npm version](https://img.shields.io/npm/v/san-ssr.svg)](https://www.npmjs.org/package/san-ssr)
 [![downloads](https://img.shields.io/npm/dm/san-ssr.svg)](https://www.npmjs.org/package/san-ssr)
-[![Build Status](https://travis-ci.com/baidu/san-ssr.svg?branch=master)](https://travis-ci.com/baidu/san-ssr)
+[![Build Status](https://travis-ci.org/baidu/san-ssr.svg?branch=master)](https://travis-ci.org/baidu/san-ssr)
 [![Coveralls](https://img.shields.io/coveralls/baidu/san-ssr.svg)](https://coveralls.io/github/baidu/san-ssr?branch=master)
 [![dependencies](https://img.shields.io/david/baidu/san-ssr.svg)](https://david-dm.org/baidu/san-ssr)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/baidu/san-ssr)

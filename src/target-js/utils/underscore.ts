@@ -160,8 +160,6 @@ function createFromPrototype (proto) {
     return new Creator()
 }
 
-// TODO
-// 重命名：现在已经封装在 _ 下，不再需要避免名字冲突
 export const _ = {
     escapeHTML, defaultStyleFilter, callFilter, boolAttrFilter, attrFilter, extend, contains, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype
 }

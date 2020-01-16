@@ -1,4 +1,5 @@
-import { compileExprSource } from './expr-compiler'
+import { stringLiteralize, expr } from './expr-compiler'
+import { JSEmitter } from '../emitters/emitter'
 import { ElementCompiler } from './element-compiler'
 import { stringifier } from './stringifier'
 import { SanComponent, isComponentLoader } from '../../models/component'
@@ -19,11 +20,8 @@ export class ANodeCompiler {
     }
     /**
      * 编译节点
-     *
-     * @param {JSEmitter} emitter 编译源码的中间buffer
-     * @param {Object} extra 编译所需的一些额外信息
      */
-    compile (aNode: ANode, emitter, extra = {}) {
+    compile (aNode: ANode, emitter: JSEmitter, extra = {}) {
         let compileMethod = 'compileElement'
 
         if (aNode.textExpr) {
@@ -68,7 +66,7 @@ export class ANodeCompiler {
         if (aNode.textExpr.value != null) {
             emitter.bufferHTMLLiteral(aNode.textExpr.segs[0].literal)
         } else {
-            emitter.writeHTML(compileExprSource.expr(aNode.textExpr))
+            emitter.writeHTML(expr(aNode.textExpr))
         }
 
         if (aNode.textExpr.original) {
@@ -95,7 +93,7 @@ export class ANodeCompiler {
     compileIf (aNode: ANode, emitter) {
         // output main if
         const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
-        emitter.writeIf(compileExprSource.expr(ifDirective.value), () => {
+        emitter.writeIf(expr(ifDirective.value), () => {
             this.compile(aNode.ifRinsed, emitter)
         })
 
@@ -103,7 +101,7 @@ export class ANodeCompiler {
         for (const elseANode of aNode.elses || []) {
             const elifDirective = elseANode.directives.elif
             if (elifDirective) {
-                emitter.writeLine('else if (' + compileExprSource.expr(elifDirective.value) + ') {')
+                emitter.writeLine('else if (' + expr(elifDirective.value) + ') {')
             } else {
                 emitter.writeLine('else {')
             }
@@ -135,7 +133,7 @@ export class ANodeCompiler {
         const indexName = forDirective.index || this.nextID()
         const listName = this.nextID()
 
-        emitter.writeLine('var ' + listName + ' = ' + compileExprSource.expr(forDirective.value) + ';')
+        emitter.writeLine('var ' + listName + ' = ' + expr(forDirective.value) + ';')
         emitter.writeIf(listName + ' instanceof Array', () => {
             // for array
             emitter.writeFor('var ' + indexName + ' = 0; ' +
@@ -186,7 +184,7 @@ export class ANodeCompiler {
 
         const nameProp = getANodePropByName(aNode, 'name')
         if (nameProp) {
-            emitter.writeLine('var $slotName = ' + compileExprSource.expr(nameProp.expr) + ';')
+            emitter.writeLine('var $slotName = ' + expr(nameProp.expr) + ';')
 
             emitter.writeFor('var $i = 0; $i < $ctxSourceSlots.length; $i++', () => {
                 emitter.writeIf('$ctxSourceSlots[$i][1] == $slotName', () => {
@@ -208,13 +206,13 @@ export class ANodeCompiler {
             emitter.writeLine('$slotCtx = {data: _.extend({}, $slotCtx.data), instance: $slotCtx.instance, owner: $slotCtx.owner};')
 
             if (aNode.directives.bind) {
-                emitter.writeLine('_.extend($slotCtx.data, ' + compileExprSource.expr(aNode.directives.bind.value) + ');')
+                emitter.writeLine('_.extend($slotCtx.data, ' + expr(aNode.directives.bind.value) + ');')
             }
 
             for (const varItem of aNode.vars) {
                 emitter.writeLine(
                     '$slotCtx.data["' + varItem.name + '"] = ' +
-                    compileExprSource.expr(varItem.expr) +
+                    expr(varItem.expr) +
                     ';'
                 )
             }
@@ -292,23 +290,23 @@ export class ANodeCompiler {
                 })
                 emitter.writeLine('return html;')
                 emitter.unindent()
-                emitter.writeLine('}, ' + compileExprSource.expr(sourceSlotCode.prop.expr) + ']);')
+                emitter.writeLine('}, ' + expr(sourceSlotCode.prop.expr) + ']);')
             }
         }
 
         const givenData = []
         for (const prop of getANodeProps(aNode)) {
             givenData.push(
-                compileExprSource.stringLiteralize(prop.name) +
+                stringLiteralize(prop.name) +
                 ':' +
-                compileExprSource.expr(prop.expr)
+                expr(prop.expr)
             )
         }
 
         dataLiteral = '{' + givenData.join(',\n') + '}'
         if (aNode.directives.bind) {
             dataLiteral = '_.extend(' +
-            compileExprSource.expr(aNode.directives.bind.value) +
+            expr(aNode.directives.bind.value) +
             ', ' +
             dataLiteral +
             ')'
@@ -324,11 +322,12 @@ export class ANodeCompiler {
     /**
      * 编译组件加载器节点
      *
-     * @param {JSEmitter} emitter 编译源码的中间buffer
-     * @param {Object} extra 编译所需的一些额外信息
+     * @param aNode 要编译的 ANode
+     * @param emitter 编译源码的中间buffer
+     * @param extra 编译所需的一些额外信息
      * @param {Function} extra.ComponentClass 对应类
      */
-    compileComponentLoader (aNode: ANode, emitter, extra) {
+    compileComponentLoader (aNode: ANode, emitter: JSEmitter, extra) {
         const LoadingComponent = extra.ComponentClass.placeholder
         if (typeof LoadingComponent === 'function') {
             this.compileComponent(aNode, emitter, {

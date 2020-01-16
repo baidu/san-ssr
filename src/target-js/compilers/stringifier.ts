@@ -1,4 +1,4 @@
-import { compileExprSource } from './expr-compiler'
+import { stringLiteralize } from './expr-compiler'
 
 export const stringifier = {
     obj: function (source) {
@@ -15,7 +15,7 @@ export const stringifier = {
             }
             prefixComma = 1
 
-            result += compileExprSource.stringLiteralize(key) + ':' + stringifier.any(source[key])
+            result += stringLiteralize(key) + ':' + stringifier.any(source[key])
         }
 
         return result + '}'
@@ -38,7 +38,7 @@ export const stringifier = {
     },
 
     str: function (source) {
-        return compileExprSource.stringLiteralize(source)
+        return stringLiteralize(source)
     },
 
     date: function (source) {

@@ -1,4 +1,4 @@
-import { compileExprSource } from './expr-compiler'
+import { expr } from './expr-compiler'
 import { JSEmitter } from '../emitters/emitter'
 import { ANode } from '../../models/anode'
 import { getANodePropByName } from '../../utils/anode'
@@ -52,16 +52,12 @@ export class ElementCompiler {
                     break
 
                 case ExprType.STRING:
-                    emitter.bufferHTMLLiteral(' ' + prop.name + '="' +
-                        prop.expr.literal + '"')
+                    emitter.bufferHTMLLiteral(` ${prop.name}="${prop.expr.literal}"`)
                     break
 
                 default:
-                    if (prop.expr.value != null) {
-                        emitter.bufferHTMLLiteral(' ' + prop.name + '="' +
-                            compileExprSource.expr(prop.expr) + '"')
-                    }
-                    break
+                    if (prop.expr.value == null) break
+                    emitter.bufferHTMLLiteral(` ${prop.name}="${expr(prop.expr)}"`)
                 }
             }
         }
@@ -78,14 +74,14 @@ export class ElementCompiler {
 
                 case 'select':
                     emitter.writeLine('$selectValue = ' +
-                        compileExprSource.expr(prop.expr) +
+                        expr(prop.expr) +
                         ' || "";'
                     )
                     continue
 
                 case 'option':
                     emitter.writeLine('$optionValue = ' +
-                        compileExprSource.expr(prop.expr) +
+                        expr(prop.expr) +
                         ';'
                     )
                     // value
@@ -110,7 +106,7 @@ export class ElementCompiler {
                 } else {
                     emitter.writeHTML(
                         '_.boolAttrFilter("' + prop.name + '", ' +
-                        compileExprSource.expr(prop.expr) +
+                        expr(prop.expr) +
                         ')'
                     )
                 }
@@ -119,18 +115,18 @@ export class ElementCompiler {
             case 'checked':
                 if (tagName === 'input') {
                     const valueProp = propsIndex['value']
-                    const valueCode = compileExprSource.expr(valueProp.expr)
+                    const valueCode = expr(valueProp.expr)
 
                     if (valueProp) {
                         switch (propsIndex['type'].raw) {
                         case 'checkbox':
-                            emitter.writeIf(`_.contains(${compileExprSource.expr(prop.expr)}, ${valueCode})`, () => {
+                            emitter.writeIf(`_.contains(${expr(prop.expr)}, ${valueCode})`, () => {
                                 emitter.bufferHTMLLiteral(' checked')
                             })
                             break
 
                         case 'radio':
-                            emitter.writeIf(`${compileExprSource.expr(prop.expr)} === ${valueCode}`, () => {
+                            emitter.writeIf(`${expr(prop.expr)} === ${valueCode}`, () => {
                                 emitter.bufferHTMLLiteral(' checked')
                             })
                             break
@@ -142,7 +138,7 @@ export class ElementCompiler {
             default:
                 const onlyOneAccessor = prop.expr.type === ExprType.ACCESSOR
                 emitter.writeHTML('_.attrFilter("' + prop.name + '", ' +
-                    compileExprSource.expr(prop.expr) +
+                    expr(prop.expr) +
                     (prop.x || onlyOneAccessor ? ', true' : '') +
                     ')'
                 )
@@ -179,7 +175,7 @@ export class ElementCompiler {
             })
             // end function
             emitter.unindent()
-            emitter.writeLine(`})(${compileExprSource.expr(bindDirective.value)})`)
+            emitter.writeLine(`})(${expr(bindDirective.value)})`)
         }
 
         emitter.bufferHTMLLiteral('>')
@@ -225,7 +221,7 @@ export class ElementCompiler {
             const valueProp = getANodePropByName(aNode, 'value')
             if (valueProp) {
                 emitter.writeHTML('_.escapeHTML(' +
-                compileExprSource.expr(valueProp.expr) +
+                expr(valueProp.expr) +
                 ')'
                 )
             }
@@ -234,7 +230,7 @@ export class ElementCompiler {
 
         const htmlDirective = aNode.directives.html
         if (htmlDirective) {
-            emitter.writeHTML(compileExprSource.expr(htmlDirective.value))
+            emitter.writeHTML(expr(htmlDirective.value))
         } else {
             for (const aNodeChild of aNode.children) {
                 this.compileAnode(aNodeChild, emitter)

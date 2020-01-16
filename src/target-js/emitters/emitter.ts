@@ -1,5 +1,5 @@
 import { Emitter } from '../../utils/emitter'
-import { compileExprSource } from '../compilers/expr-compiler'
+import { stringLiteralize, dataAccess } from '../compilers/expr-compiler'
 
 export class JSEmitter extends Emitter {
     buffer: string = ''
@@ -15,7 +15,7 @@ export class JSEmitter extends Emitter {
     }
 
     public writeDataComment () {
-        this.writeHTML('"<!--s-data:" + JSON.stringify(' + compileExprSource.dataAccess() + ') + "-->"')
+        this.writeHTML('"<!--s-data:" + JSON.stringify(' + dataAccess() + ') + "-->"')
     }
 
     public bufferHTMLLiteral (str: string) {
@@ -26,7 +26,7 @@ export class JSEmitter extends Emitter {
         if (this.buffer === '') return
         const buffer = this.buffer
         this.buffer = ''
-        this.writeHTML(compileExprSource.stringLiteralize(buffer))
+        this.writeHTML(stringLiteralize(buffer))
     }
 
     public writeSwitch (expr: string, body: Function) {

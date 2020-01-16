@@ -1,7 +1,7 @@
 import { isFunction, noop } from 'lodash'
 import { JSEmitter } from '../emitters/emitter'
 import { Renderer } from '../../models/renderer'
-import { compileExprSource } from './expr-compiler'
+import { expr } from './expr-compiler'
 import { stringifier } from './stringifier'
 import { ElementCompiler } from './element-compiler'
 import { ANodeCompiler } from './anode-compiler'
@@ -176,7 +176,7 @@ export class RendererCompiler<T> {
 
         const ifDirective = this.component.aNode.directives['if'] // eslint-disable-line dot-notation
         if (ifDirective) {
-            emitter.writeLine('if (' + compileExprSource.expr(ifDirective.value) + ') {')
+            emitter.writeLine('if (' + expr(ifDirective.value) + ') {')
         }
 
         this.elementSourceCompiler.tagStart(emitter, this.component.aNode, 'tagName')

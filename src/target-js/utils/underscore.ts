@@ -4,17 +4,6 @@ const BASE_PROPS = {
     'id': 1
 }
 
-function sortedStringify (obj) {
-    if (typeof obj !== 'object') {
-        return obj + ''
-    }
-    const props = []
-    for (const key of Object.keys(obj).sort()) {
-        props.push(`"${key}":${sortedStringify(obj[key])}`)
-    }
-    return `{${props.join(',')}}`
-}
-
 function extend (target, source) {
     if (source) {
         Object.keys(source).forEach(function (key) {
@@ -174,5 +163,5 @@ function createFromPrototype (proto) {
 // TODO
 // 重命名：现在已经封装在 _ 下，不再需要避免名字冲突
 export const _ = {
-    escapeHTML, defaultStyleFilter, callFilter, boolAttrFilter, attrFilter, sortedStringify, extend, contains, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype
+    escapeHTML, defaultStyleFilter, callFilter, boolAttrFilter, attrFilter, extend, contains, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype
 }

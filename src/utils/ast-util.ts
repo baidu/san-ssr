@@ -3,7 +3,7 @@ import debugFactory from 'debug'
 
 const debug = debugFactory('ast-util')
 
-export function getSanImportDeclaration (sourceFile: SourceFile): ImportDeclaration {
+export function getSanImportDeclaration (sourceFile: SourceFile): ImportDeclaration | undefined {
     return sourceFile.getImportDeclaration(
         node => node.getModuleSpecifierValue() === 'san'
     )

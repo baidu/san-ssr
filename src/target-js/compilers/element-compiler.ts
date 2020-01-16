@@ -1,4 +1,5 @@
 import { compileExprSource } from './expr-compiler'
+import { JSEmitter } from '../emitters/emitter'
 import { ANode } from '../../models/anode'
 import { getANodePropByName } from '../../utils/anode'
 import { autoCloseTags } from '../../utils/element'
@@ -8,10 +9,10 @@ import { ExprType } from 'san'
 * element 的编译方法集合对象
 */
 export class ElementCompiler {
-    private compileAnode
+    private compileAnode: (aNode: ANode, emitter: JSEmitter) => void
     private noTemplateOutput: boolean
 
-    constructor (compileAnode, noTemplateOutput) {
+    constructor (compileAnode: (aNode: ANode, emitter: JSEmitter) => void, noTemplateOutput: boolean) {
         this.compileAnode = compileAnode
         this.noTemplateOutput = noTemplateOutput
     }
@@ -19,11 +20,11 @@ export class ElementCompiler {
     /**
      * 编译元素标签头
      *
-     * @param {JSEmitter} emitter 编译源码的中间buffer
-     * @param {ANode} aNode 抽象节点
-     * @param {string=} tagNameVariable 组件标签为外部动态传入时的标签变量名
+     * @param emitter 编译源码的中间buffer
+     * @param aNode 抽象节点
+     * @param tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
-    tagStart (emitter, aNode, tagNameVariable?) {
+    tagStart (emitter: JSEmitter, aNode: ANode, tagNameVariable?: string) {
         const props = aNode.props
         const bindDirective = aNode.directives.bind
         const tagName = aNode.tagName
@@ -187,11 +188,11 @@ export class ElementCompiler {
     /**
      * 编译元素闭合
      *
-     * @param {JSEmitter} emitter 编译源码的中间buffer
-     * @param {ANode} aNode 抽象节点
-     * @param {string=} tagNameVariable 组件标签为外部动态传入时的标签变量名
+     * @param emitter 编译源码的中间buffer
+     * @param aNode 抽象节点
+     * @param tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
-    tagEnd (emitter, aNode, tagNameVariable?) {
+    tagEnd (emitter: JSEmitter, aNode: ANode, tagNameVariable?: string) {
         const tagName = aNode.tagName
 
         if (tagName) {
@@ -217,10 +218,8 @@ export class ElementCompiler {
 
     /**
      * 编译元素内容
-     *
-     * @param {JSEmitter} emitter 编译源码的中间buffer
      */
-    inner (emitter, aNode: ANode) {
+    inner (emitter: JSEmitter, aNode: ANode) {
         // inner content
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodePropByName(aNode, 'value')

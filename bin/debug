@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
+require('source-map-support/register')
 const { execCommandSync, assertSanHTMLEqual } = require('../dist/index')
 const chalk = require('chalk')
 const { readFileSync, readdirSync } = require('fs')
 const { resolve } = require('path')
-const { compile } = require('../dist/target-js/utils/case')
 const root = resolve(__dirname, '../test/cases')
+const { compile } = require('../dist/fixtures/case')
 
 const caseName = process.argv[2]
 if (!caseName) {

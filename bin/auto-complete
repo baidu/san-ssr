@@ -9,11 +9,8 @@
 # 3. Input `./bin/test.ts` and press <Tab>
 
 compdef _test debug
-compdef _test scat
-compdef _test render.ts
-compdef _test compile-to-js.ts
-compdef _test compile-to-php.ts
-compdef _test render.php
+compdef _test render-by-source.js
+compdef _test render-onthefly.js
 
 function _test {
     local line

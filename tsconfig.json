@@ -11,6 +11,7 @@
     "resolveJsonModule": true,
     "downlevelIteration": true,
     "strict": false,
+    "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true
   },
   "include": [ "src" ]

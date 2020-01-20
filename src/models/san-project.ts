@@ -32,6 +32,7 @@ export class SanProject {
     private root: string
     private compilers: Map<CompilerClass, Compiler> = new Map()
     private modules: Modules
+    private parser: SanAppParser
 
     constructor ({
         tsConfigFilePath = getDefaultTSConfigPath(),
@@ -45,6 +46,7 @@ export class SanProject {
             this.tsProject = new Project({ tsConfigFilePath })
         }
         this.modules = modules
+        this.parser = new SanAppParser(this.tsProject)
     }
 
     /**
@@ -69,10 +71,9 @@ export class SanProject {
     public parseSanApp (
         filepathOrComponentClass: string | typeof SanComponent
     ) {
-        const parser = this.getParser()
         const sanApp = typeof filepathOrComponentClass === 'string'
-            ? parser.parseSanApp(filepathOrComponentClass, this.modules)
-            : parser.parseSanAppFromComponentClass(filepathOrComponentClass)
+            ? this.parser.parseSanApp(filepathOrComponentClass, this.modules)
+            : this.parser.parseSanAppFromComponentClass(filepathOrComponentClass)
         return sanApp
     }
 
@@ -98,10 +99,6 @@ export class SanProject {
             this.compilers.set(CompilerClass, new CompilerClass(this))
         }
         return this.compilers.get(CompilerClass)
-    }
-
-    private getParser () {
-        return new SanAppParser(this.tsProject)
     }
 
     private loadCompilerClass (target: string | CompilerClass) {

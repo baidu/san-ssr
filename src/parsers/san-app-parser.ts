@@ -15,7 +15,6 @@ import debugFactory from 'debug'
 
 const debug = debugFactory('component-parser')
 
-// TODO 封装进 SanApp.create()，不再暴露给上层
 export class SanAppParser {
     public project: Project
     private root: string

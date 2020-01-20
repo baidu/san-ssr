@@ -7,7 +7,7 @@ export function * getInlineDeclarations (sourceFile: SourceFile) {
 }
 
 export function * getInlineDependencies (sourceFile: SourceFile) {
-    for (const decl of getInlineDeclarations(sourceFile)) yield decl.getModuleSpecifierSourceFile()
+    for (const decl of getInlineDeclarations(sourceFile)) yield decl.getModuleSpecifierSourceFileOrThrow()
 }
 
 export function * getInlineDependencyLiterals (sourceFile: SourceFile) {

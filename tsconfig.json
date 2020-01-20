@@ -10,7 +10,7 @@
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "downlevelIteration": true,
-    "strict": false,
+    "strict": true,
     "sourceMap": true,
     "suppressImplicitAnyIndexErrors": true
   },

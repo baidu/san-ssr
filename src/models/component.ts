@@ -3,7 +3,7 @@ import { SanData as OriginSanData, SanComponent, ComponentConstructor } from 'sa
 import { CompiledComponent } from './compiled-component'
 
 export interface Computed {
-    [k: string]: (this: { data: SanData }) => any
+    [k: string]: (this: { data: Partial<SanData> }) => any
 }
 
 export interface Filters {
@@ -22,6 +22,11 @@ export const COMPONENT_RESERVED_MEMBERS = new Set(
 
 export function isComponentLoader (cmpt: any): cmpt is {placeholder: ComponentConstructor<{}, {}>} {
     return cmpt && cmpt.hasOwnProperty('load') && cmpt.hasOwnProperty('placeholder')
+}
+
+export function isComponentClass (clazz: any): clazz is typeof SanComponent {
+    return typeof clazz === 'function' &&
+        (typeof clazz.template === 'string' || typeof clazz.prototype.template === 'string')
 }
 
 interface SanData extends OriginSanData<{}>, PHPClass {

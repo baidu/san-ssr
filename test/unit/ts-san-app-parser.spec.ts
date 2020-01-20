@@ -1,13 +1,13 @@
-import { SanAppParser } from '../../src/parsers/san-app-parser'
+import { TSSanAppParser } from '../../src/parsers/ts-san-app-parser'
 import { Project } from 'ts-morph'
 import { resolve } from 'path'
 
-describe('SanAppParser', function () {
+describe('TSSanAppParser', function () {
     const tsConfigFilePath = resolve(__dirname, '../tsconfig.json')
     const project = new Project({ tsConfigFilePath })
 
     it('should add sanssrCid static property', function () {
-        const parser = new SanAppParser(project)
+        const parser = new TSSanAppParser(project)
         const filepath = resolve(__dirname, '../stub/a.comp.ts')
         const sanApp = parser.parseSanApp(filepath)
 
@@ -16,16 +16,15 @@ describe('SanAppParser', function () {
     })
 
     it('should eval component classes', function () {
-        const parser = new SanAppParser(project)
+        const parser = new TSSanAppParser(project)
         const filepath = resolve(__dirname, '../stub/a.comp.ts')
         const sanApp = parser.parseSanApp(filepath)
 
-        expect(sanApp.componentClasses).toHaveLength(1)
-        expect(sanApp.componentClasses[0]).toHaveProperty('sanssrCid', 0)
+        expect(sanApp.getEntryComponentClass()).toHaveProperty('sanssrCid', 0)
     })
 
-    it('should compile a single component', function () {
-        const parser = new SanAppParser(project)
+    it('should throw for invalid component', function () {
+        const parser = new TSSanAppParser(project)
         const filepath = resolve(__dirname, '../stub/foo.ts')
 
         expect(() => parser.parseSanApp(filepath))

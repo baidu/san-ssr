@@ -1,4 +1,4 @@
-import { isFunction } from 'lodash'
+import { isFunction, map } from 'lodash'
 import { ComponentTree } from '../../models/component-tree'
 import { ComponentInfo } from '../../models/component-info'
 import { JSEmitter } from '../emitters/emitter'
@@ -119,24 +119,18 @@ export class RendererCompiler {
 
         // filters
         emitter.writeLine('filters: {')
-        const filterCode = []
-        for (const key of Object.keys(this.componentInfo.filters)) {
-            const filter = this.componentInfo.filters[key]
-            filterCode.push(key + ': ' + functionString(filter))
-        }
-        emitter.writeLines(filterCode.join(','))
+        emitter.writeIndentedLines(map(
+            this.componentInfo.filters,
+            (fn, key) => `${key}: ${functionString(fn)}`
+        ).join(', '))
         emitter.writeLine('},')
 
         // computed obj
         emitter.writeLine('computed: {')
-        emitter.indent()
-        const computedCode = []
-        for (const key of Object.keys(this.componentInfo.computed)) {
-            const computed = this.componentInfo.computed[key]
-            computedCode.push(key + ': ' + functionString(computed))
-        }
-        emitter.writeLines(computedCode.join(','))
-        emitter.unindent()
+        emitter.writeIndentedLines(map(
+            this.componentInfo.computed,
+            (fn, key) => `${key}: ${functionString(fn)}`
+        ).join(', '))
         emitter.writeLine('},')
 
         // tagName

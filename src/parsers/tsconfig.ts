@@ -11,3 +11,9 @@ export function getDefaultTSConfigPath () {
         dir = dirname(dir)
     }
 }
+
+export function getDefaultTSConfigPathOrThrow () {
+    const configFile = getDefaultTSConfigPath()
+    if (!configFile) throw new Error('tsconfig.json not found')
+    return configFile
+}

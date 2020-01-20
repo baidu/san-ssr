@@ -2,11 +2,12 @@ import { stringLiteralize, expr } from './expr-compiler'
 import { CompiledComponent } from '../../models/compiled-component'
 import { isComponentLoader } from '../../models/component'
 import { JSEmitter } from '../emitters/emitter'
-import { ComponentConstructor } from 'san'
+import { ANode, ComponentConstructor, ExprStringNode, AIfNode, AForNode, ASlotNode, ATemplateNode, ATextNode } from 'san'
 import { ComponentInfo } from '../../models/component-info'
 import { ElementCompiler } from './element-compiler'
 import { stringifier } from './stringifier'
-import { ANode, getANodeProps, getANodePropByName } from '../../models/anode'
+import { getANodeProps, getANodePropByName } from '../../utils/anode-util'
+import * as TypeGuards from '../../utils/type-guards'
 
 /**
 * ANode 的编译方法集合对象
@@ -30,11 +31,11 @@ export class ANodeCompiler {
      * 编译节点
      */
     compile (aNode: ANode, emitter: JSEmitter) {
-        if (aNode.textExpr) return this.compileText(aNode, emitter)
-        if (aNode.directives['if']) return this.compileIf(aNode, emitter)
-        if (aNode.directives['for']) return this.compileFor(aNode, emitter)
-        if (aNode.tagName === 'slot') return this.compileSlot(aNode, emitter)
-        if (aNode.tagName === 'template') return this.compileTemplate(aNode, emitter)
+        if (TypeGuards.isATextNode(aNode)) return this.compileText(aNode, emitter)
+        if (TypeGuards.isAIfNode(aNode)) return this.compileIf(aNode, emitter)
+        if (TypeGuards.isAForNode(aNode)) return this.compileFor(aNode, emitter)
+        if (TypeGuards.isASlotNode(aNode)) return this.compileSlot(aNode, emitter)
+        if (TypeGuards.isATemplateNode(aNode)) return this.compileTemplate(aNode, emitter)
 
         let ComponentClass = this.component.getComponentType
             ? this.component.getComponentType(aNode)
@@ -55,7 +56,7 @@ export class ANodeCompiler {
      *
      * @param {JSEmitter} emitter 编译源码的中间buffer
      */
-    compileText (aNode: ANode, emitter) {
+    compileText (aNode: ATextNode, emitter) {
         if (aNode.textExpr.original) {
             emitter.writeIf('!noDataOutput', () => {
                 emitter.bufferHTMLLiteral('<!--s-text-->')
@@ -63,7 +64,7 @@ export class ANodeCompiler {
         }
 
         if (aNode.textExpr.value != null) {
-            emitter.bufferHTMLLiteral(aNode.textExpr.segs[0].literal)
+            emitter.bufferHTMLLiteral((aNode.textExpr.segs[0] as ExprStringNode).literal)
         } else {
             emitter.writeHTML(expr(aNode.textExpr))
         }
@@ -78,14 +79,14 @@ export class ANodeCompiler {
     /**
      * 编译template节点
      */
-    compileTemplate (aNode: ANode, emitter: JSEmitter) {
+    compileTemplate (aNode: ATemplateNode, emitter: JSEmitter) {
         this.elementSourceCompiler.inner(emitter, aNode)
     }
 
     /**
      * 编译 if 节点
      */
-    compileIf (aNode: ANode, emitter: JSEmitter) {
+    compileIf (aNode: AIfNode, emitter: JSEmitter) {
         // output main if
         const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
         emitter.writeIf(expr(ifDirective.value), () => {
@@ -110,16 +111,15 @@ export class ANodeCompiler {
     /**
      * 编译 for 节点
      */
-    compileFor (aNode: ANode, emitter: JSEmitter) {
+    compileFor (aNode: AForNode, emitter: JSEmitter) {
         const forElementANode = {
             children: aNode.children,
             props: aNode.props,
             events: aNode.events,
             tagName: aNode.tagName,
-            directives: { ...aNode.directives },
-            hotspot: aNode.hotspot
+            directives: { ...aNode.directives }
         }
-        forElementANode.directives['for'] = null
+        delete forElementANode.directives['for']
 
         const forDirective = aNode.directives['for'] // eslint-disable-line dot-notation
         const itemName = forDirective.item
@@ -153,7 +153,7 @@ export class ANodeCompiler {
     /**
      * 编译 slot 节点
      */
-    compileSlot (aNode: ANode, emitter: JSEmitter) {
+    compileSlot (aNode: ASlotNode, emitter: JSEmitter) {
         const rendererId = this.nextID()
 
         emitter.writeLine('componentCtx.slotRenderers.' + rendererId +
@@ -163,7 +163,7 @@ export class ANodeCompiler {
         emitter.nextLine('')
         emitter.writeFunction('$defaultSlotRender', ['componentCtx'], () => {
             emitter.writeLine('var html = "";')
-            for (const aNodeChild of aNode.children) {
+            for (const aNodeChild of aNode.children || []) {
                 this.compile(aNodeChild, emitter)
             }
             emitter.writeLine('return html;')
@@ -200,7 +200,7 @@ export class ANodeCompiler {
                 emitter.writeLine('_.extend($slotCtx.data, ' + expr(aNode.directives.bind.value) + ');')
             }
 
-            for (const varItem of aNode.vars) {
+            for (const varItem of aNode.vars || []) {
                 emitter.writeLine(
                     '$slotCtx.data["' + varItem.name + '"] = ' +
                     expr(varItem.expr) +
@@ -230,12 +230,12 @@ export class ANodeCompiler {
     /**
      * 编译组件节点
      */
-    compileComponent (aNode: ANode, emitter: JSEmitter, info?: ComponentInfo) {
+    private compileComponent (aNode: ANode, emitter: JSEmitter, info: ComponentInfo) {
         let dataLiteral = '{}'
 
         emitter.writeLine('var $sourceSlots = [];')
         if (aNode.children) {
-            const defaultSourceSlots = []
+            const defaultSourceSlots: ANode[] = []
             const sourceSlotCodes = {}
 
             for (const child of aNode.children) {
@@ -278,14 +278,11 @@ export class ANodeCompiler {
             }
         }
 
-        const givenData = []
-        for (const prop of getANodeProps(aNode)) {
-            givenData.push(
-                stringLiteralize(prop.name) +
-                ':' +
-                expr(prop.expr)
-            )
-        }
+        const givenData = getANodeProps(aNode).map(prop => {
+            const key = stringLiteralize(prop.name)
+            const val = expr(prop.expr)
+            return `${key}: ${val}`
+        })
 
         dataLiteral = '{' + givenData.join(',\n') + '}'
         if (aNode.directives.bind) {

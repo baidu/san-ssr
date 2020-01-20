@@ -1,9 +1,9 @@
 /**
  * 编译源码的 helper 方法集合对象
  */
-import { Expression } from '../../models/expression'
-import { isString } from 'lodash'
+import { ExprAccessorNode, ExprCallNode, ExprTextNode, ExprNode, ExprObjectNode, ExprArrayNode } from 'san'
 import { isValidIdentifier } from '../../utils/lang'
+import * as TypeGuards from '../../utils/type-guards'
 
 /**
  * 字符串字面化
@@ -20,17 +20,12 @@ export function stringLiteralize (source: string) {
 /**
  * 生成数据访问表达式代码
  */
-export function dataAccess (accessorExpr?: Expression): string {
+export function dataAccess (accessorExpr?: ExprAccessorNode): string {
     let code = 'componentCtx.data'
     if (!accessorExpr) return code
     for (const path of accessorExpr.paths) {
-        if (path.type === 4) {
-            code += '[' + dataAccess(path) + ']'
-        } else if (isString(path.value) && isValidIdentifier(path.value)) {
-            code += '.' + path.value
-        } else {
-            code += '[' + path.value + ']'
-        }
+        const prop = expr(path)
+        code += isValidIdentifier(prop) ? `.${prop}` : `[${prop}]`
     }
     return code
 }
@@ -38,25 +33,12 @@ export function dataAccess (accessorExpr?: Expression): string {
 /**
  * 生成调用表达式代码
  */
-export function callExpr (callExpr: Expression): string {
+export function callExpr (callExpr: ExprCallNode): string {
     const paths = callExpr.name.paths
-    let code = 'componentCtx.instance.' + paths[0].value
-
-    for (let i = 1; i < paths.length; i++) {
-        const path = paths[i]
-
-        switch (path.type) {
-        case 1:
-            code += '.' + path.value
-            break
-
-        case 2:
-            code += '[' + path.value + ']'
-            break
-
-        default:
-            code += '[' + expr(path) + ']'
-        }
+    let code = 'componentCtx.instance'
+    for (const path of paths) {
+        const prop = expr(path)
+        code += isValidIdentifier(prop) ? `.${prop}` : `[${prop}]`
     }
 
     code += '('
@@ -107,7 +89,7 @@ export function interp (interpExpr): string {
 /**
  * 生成文本片段代码
  */
-export function text (textExpr: Expression): string {
+export function text (textExpr: ExprTextNode): string {
     if (textExpr.segs.length === 0) return '""'
 
     return textExpr.segs
@@ -119,7 +101,7 @@ export function text (textExpr: Expression): string {
 /**
  * 生成数组字面量代码
  */
-export function array (arrayExpr: Expression): string {
+export function array (arrayExpr: ExprArrayNode): string {
     return '[' +
         arrayExpr.items
             .map(e => (e.spread ? '...' : '') + expr(e.expr))
@@ -130,7 +112,7 @@ export function array (arrayExpr: Expression): string {
 /**
  * 生成对象字面量代码
  */
-export function object (objExpr: Expression): string {
+export function object (objExpr: ExprObjectNode): string {
     const code: string[] = []
 
     for (const item of objExpr.items) {
@@ -167,20 +149,19 @@ export const binaryOp = {
 /**
  * 生成表达式代码
  */
-export function expr (expr: Expression): string {
-    if (expr.parenthesized) {
-        return '(' + _expr(expr) + ')'
+export function expr (e: ExprNode): string {
+    if (e.parenthesized) {
+        return '(' + _expr(e) + ')'
     }
 
-    return _expr(expr)
+    return _expr(e)
 }
 
 /**
  * 根据表达式类型进行生成代码函数的中转分发
  */
-export function _expr (e: Expression): string {
-    switch (e.type) {
-    case 9:
+export function _expr (e: ExprNode): string {
+    if (TypeGuards.isExprUnaryNode(e)) {
         switch (e.operator) {
         case 33:
             return '!' + expr(e.expr)
@@ -188,34 +169,26 @@ export function _expr (e: Expression): string {
             return '-' + expr(e.expr)
         }
         return ''
-    case 8:
+    }
+    if (TypeGuards.isExprBinaryNode(e)) {
         return expr(e.segs[0]) +
             binaryOp[e.operator] +
             expr(e.segs[1])
-    case 10:
+    }
+    if (TypeGuards.isExprTertiaryNode(e)) {
         return expr(e.segs[0]) +
             '?' + expr(e.segs[1]) +
             ':' + expr(e.segs[2])
-    case 1:
-        return stringLiteralize(e.literal || e.value)
-    case 2:
-        return e.value
-    case 3:
-        return e.value ? 'true' : 'false'
-    case 4:
-        return dataAccess(e)
-    case 5:
-        return interp(e)
-    case 7:
-        return text(e)
-    case 12:
-        return array(e)
-    case 11:
-        return object(e)
-    case 6:
-        return callExpr(e)
-    case 13:
-        return 'null'
     }
+    if (TypeGuards.isExprStringNode(e)) return stringLiteralize(e.literal || e.value)
+    if (TypeGuards.isExprNumberNode(e)) return '' + e.value
+    if (TypeGuards.isExprBoolNode(e)) return e.value ? 'true' : 'false'
+    if (TypeGuards.isExprAccessorNode(e)) return dataAccess(e)
+    if (TypeGuards.isExprInterpNode(e)) return interp(e)
+    if (TypeGuards.isExprTextNode(e)) return text(e)
+    if (TypeGuards.isExprArrayNode(e)) return array(e)
+    if (TypeGuards.isExprObjectNode(e)) return object(e)
+    if (TypeGuards.isExprCallNode(e)) return callExpr(e)
+    if (TypeGuards.isExprNullNode(e)) return 'null'
     throw new Error(`unexpected expression ${e}`)
 }

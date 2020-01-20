@@ -14,7 +14,7 @@ export function * getInlineDependencyLiterals (sourceFile: SourceFile) {
     for (const decl of getInlineDeclarations(sourceFile)) yield decl.getModuleSpecifierValue()
 }
 
-export function getDependenciesRecursively (sourceFile: SourceFile, result = new Map()) {
+export function getDependenciesRecursively (sourceFile: SourceFile, result: Map<string, SourceFile> = new Map()) {
     for (const dep of getInlineDependencies(sourceFile)) {
         if (result.has(dep.getFilePath())) continue
         result.set(dep.getFilePath(), dep)

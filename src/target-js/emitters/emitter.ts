@@ -55,7 +55,7 @@ export class JSEmitter extends Emitter {
         this.unindent()
     }
 
-    public writeFunction (name = '', args = [], body: Function = () => null) {
+    public writeFunction (name = '', args: string[] = [], body: Function = () => null) {
         const nameStr = name ? `${name} ` : ''
         const argsStr = args.join(', ')
         this.feedLine(`function ${nameStr}(${argsStr}) {`)
@@ -69,7 +69,7 @@ export class JSEmitter extends Emitter {
         this.write(`${name}(${args.join(', ')})`)
     }
 
-    public writeAnonymousFunction (args = [], body: Function = () => null) {
+    public writeAnonymousFunction (args: string[] = [], body: Function = () => null) {
         return this.writeFunction('', args, body)
     }
 

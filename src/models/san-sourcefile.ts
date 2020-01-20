@@ -1,13 +1,13 @@
 import { SourceFile, ClassDeclaration, PropertyDeclaration } from 'ts-morph'
 import { SourceFileType } from '../models/source-file-type'
-import { SanComponent } from './component'
+import { ComponentInfo } from '../models/component-info'
 
 export class SanSourceFile {
     public tsSourceFile: SourceFile
     public componentClassIdentifier: string
     public fakeProperties: PropertyDeclaration[] = []
     public componentClassDeclarations: Map<number, ClassDeclaration> = new Map()
-    public componentClasses: Map<number, typeof SanComponent> = new Map()
+    public componentInfos: Map<number, ComponentInfo> = new Map()
     public fileType: SourceFileType
 
     private filepath: string

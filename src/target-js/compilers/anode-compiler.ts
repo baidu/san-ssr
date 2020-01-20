@@ -1,54 +1,53 @@
 import { stringLiteralize, expr } from './expr-compiler'
+import { CompiledComponent } from '../../models/compiled-component'
+import { isComponentLoader } from '../../models/component'
 import { JSEmitter } from '../emitters/emitter'
+import { ComponentConstructor } from 'san'
+import { ComponentInfo } from '../../models/component-info'
 import { ElementCompiler } from './element-compiler'
 import { stringifier } from './stringifier'
-import { SanComponent, isComponentLoader } from '../../models/component'
-import { ANode } from '../../models/anode'
-import { getANodeProps, getANodePropByName } from '../../utils/anode'
+import { ANode, getANodeProps, getANodePropByName } from '../../models/anode'
 
 /**
 * ANode 的编译方法集合对象
 */
 export class ANodeCompiler {
+    public component: CompiledComponent<{}>
     private elementSourceCompiler: ElementCompiler
     private ssrIndex = 0
-    private component: SanComponent
+    private getComponentInfoByClass: (CompilerClass: ComponentConstructor<{}, {}>) => ComponentInfo
 
-    constructor (elemencompiler: ElementCompiler, component: SanComponent) {
+    constructor (
+        component: CompiledComponent<{}>,
+        elemencompiler: ElementCompiler,
+        getComponentByANode: (ComponentClass: ComponentConstructor<{}, {}>) => ComponentInfo
+    ) {
         this.component = component
         this.elementSourceCompiler = elemencompiler
+        this.getComponentInfoByClass = getComponentByANode
     }
     /**
      * 编译节点
      */
-    compile (aNode: ANode, emitter: JSEmitter, extra = {}) {
-        let compileMethod = 'compileElement'
+    compile (aNode: ANode, emitter: JSEmitter) {
+        if (aNode.textExpr) return this.compileText(aNode, emitter)
+        if (aNode.directives['if']) return this.compileIf(aNode, emitter)
+        if (aNode.directives['for']) return this.compileFor(aNode, emitter)
+        if (aNode.tagName === 'slot') return this.compileSlot(aNode, emitter)
+        if (aNode.tagName === 'template') return this.compileTemplate(aNode, emitter)
 
-        if (aNode.textExpr) {
-            compileMethod = 'compileText'
-        } else if (aNode.directives['if']) { // eslint-disable-line dot-notation
-            compileMethod = 'compileIf'
-        } else if (aNode.directives['for']) { // eslint-disable-line dot-notation
-            compileMethod = 'compileFor'
-        } else if (aNode.tagName === 'slot') {
-            compileMethod = 'compileSlot'
-        } else if (aNode.tagName === 'template') {
-            compileMethod = 'compileTemplate'
-        } else {
-            const ComponentType = this.component.getComponentType
-                ? this.component.getComponentType(aNode)
-                : this.component.components[aNode.tagName]
-
-            if (ComponentType) {
-                compileMethod = 'compileComponent'
-                extra['ComponentClass'] = ComponentType
-
-                if (isComponentLoader(ComponentType)) {
-                    compileMethod = 'compileComponentLoader'
-                }
+        let ComponentClass = this.component.getComponentType
+            ? this.component.getComponentType(aNode)
+            : this.component.components[aNode.tagName]
+        if (ComponentClass) {
+            if (isComponentLoader(ComponentClass)) {
+                ComponentClass = ComponentClass.placeholder
+                if (!ComponentClass) return // output nothing if placeholder undefined
             }
+            const info = this.getComponentInfoByClass(ComponentClass)
+            return this.compileComponent(aNode, emitter, info)
         }
-        this[compileMethod](aNode, emitter, extra)
+        return this.compileElement(aNode, emitter)
     }
 
     /**
@@ -78,19 +77,15 @@ export class ANodeCompiler {
 
     /**
      * 编译template节点
-     *
-     * @param {JSEmitter} emitter 编译源码的中间buffer
      */
-    compileTemplate (aNode: ANode, emitter) {
+    compileTemplate (aNode: ANode, emitter: JSEmitter) {
         this.elementSourceCompiler.inner(emitter, aNode)
     }
 
     /**
      * 编译 if 节点
-     *
-     * @param {JSEmitter} emitter 编译源码的中间buffer
      */
-    compileIf (aNode: ANode, emitter) {
+    compileIf (aNode: ANode, emitter: JSEmitter) {
         // output main if
         const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
         emitter.writeIf(expr(ifDirective.value), () => {
@@ -114,10 +109,8 @@ export class ANodeCompiler {
 
     /**
      * 编译 for 节点
-     *
-     * @param {JSEmitter} emitter 编译源码的中间buffer
      */
-    compileFor (aNode: ANode, emitter) {
+    compileFor (aNode: ANode, emitter: JSEmitter) {
         const forElementANode = {
             children: aNode.children,
             props: aNode.props,
@@ -159,10 +152,8 @@ export class ANodeCompiler {
 
     /**
      * 编译 slot 节点
-     *
-     * @param {JSEmitter} emitter 编译源码的中间buffer
      */
-    compileSlot (aNode: ANode, emitter) {
+    compileSlot (aNode: ANode, emitter: JSEmitter) {
         const rendererId = this.nextID()
 
         emitter.writeLine('componentCtx.slotRenderers.' + rendererId +
@@ -229,11 +220,8 @@ export class ANodeCompiler {
 
     /**
      * 编译普通节点
-     *
-     * @param {JSEmitter} emitter 编译源码的中间buffer
-     * @param {Object} extra 编译所需的一些额外信息
      */
-    compileElement (aNode: ANode, emitter) {
+    compileElement (aNode: ANode, emitter: JSEmitter) {
         this.elementSourceCompiler.tagStart(emitter, aNode)
         this.elementSourceCompiler.inner(emitter, aNode)
         this.elementSourceCompiler.tagEnd(emitter, aNode)
@@ -241,12 +229,8 @@ export class ANodeCompiler {
 
     /**
      * 编译组件节点
-     *
-     * @param {JSEmitter} emitter 编译源码的中间buffer
-     * @param {Object} extra 编译所需的一些额外信息
-     * @param {Function} extra.ComponentClass 对应组件类
      */
-    compileComponent (aNode: ANode, emitter, extra) {
+    compileComponent (aNode: ANode, emitter: JSEmitter, info?: ComponentInfo) {
         let dataLiteral = '{}'
 
         emitter.writeLine('var $sourceSlots = [];')
@@ -312,28 +296,11 @@ export class ANodeCompiler {
             ')'
         }
 
-        const funcName = 'sanssrRuntime.renderer' + extra.ComponentClass.sanssrCid
+        const funcName = 'sanssrRuntime.renderer' + info.cid
         emitter.nextLine(`html += ${funcName}(`)
         emitter.write(dataLiteral + ', true, sanssrRuntime, componentCtx, ' +
         stringifier.str(aNode.tagName) + ', $sourceSlots);')
         emitter.writeLine('$sourceSlots = null;')
-    }
-
-    /**
-     * 编译组件加载器节点
-     *
-     * @param aNode 要编译的 ANode
-     * @param emitter 编译源码的中间buffer
-     * @param extra 编译所需的一些额外信息
-     * @param {Function} extra.ComponentClass 对应类
-     */
-    compileComponentLoader (aNode: ANode, emitter: JSEmitter, extra) {
-        const LoadingComponent = extra.ComponentClass.placeholder
-        if (typeof LoadingComponent === 'function') {
-            this.compileComponent(aNode, emitter, {
-                ComponentClass: LoadingComponent
-            })
-        }
     }
 
     private nextID () {

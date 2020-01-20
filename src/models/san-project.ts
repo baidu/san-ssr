@@ -1,7 +1,7 @@
 import { sep } from 'path'
 import { ToJSCompileOptions } from '../target-js/index'
 import { Renderer } from './renderer'
-import { SanComponent as Component } from '../models/component'
+import { Component as SanComponent } from 'san'
 import { getDefaultTSConfigPath } from '../parsers/tsconfig'
 import { cwd } from 'process'
 import { Compiler } from '../models/compiler'
@@ -26,8 +26,8 @@ type CompilerClass = Partial<{ new(): Compiler}>
  * which is is a set of source files in a directory using one tsconfig.json.
  */
 export class SanProject {
-    public tsProject: Project
-    public tsConfigFilePath: string
+    public tsProject?: Project
+    public tsConfigFilePath?: string
 
     private root: string
     private compilers: Map<CompilerClass, Compiler> = new Map()
@@ -51,14 +51,14 @@ export class SanProject {
      * @alias SanProject.compileToSource
      */
     public compile (
-        filepathOrComponentClass: string | typeof Component,
+        filepathOrComponentClass: string | typeof SanComponent,
         target: string | CompilerClass = 'js',
         options: CompileOptions = {}
     ) {
         return this.compileToSource(filepathOrComponentClass, target, options)
     }
     public compileToSource (
-        filepathOrComponentClass: string | typeof Component,
+        filepathOrComponentClass: string | typeof SanComponent,
         target: string | CompilerClass = 'js',
         options: CompileOptions = {}
     ) {
@@ -67,7 +67,7 @@ export class SanProject {
         return compiler.compile(sanApp, options)
     }
     public parseSanApp (
-        filepathOrComponentClass: string | typeof Component
+        filepathOrComponentClass: string | typeof SanComponent
     ) {
         const parser = this.getParser()
         const sanApp = typeof filepathOrComponentClass === 'string'
@@ -83,7 +83,7 @@ export class SanProject {
      *  * `options.bareFunction` is fixed to true
      */
     public compileToRenderer (
-        filepathOrComponentClass: string | typeof Component,
+        filepathOrComponentClass: string | typeof SanComponent,
         options?: ToJSCompileOptions
     ): Renderer {
         const sanApp = this.parseSanApp(filepathOrComponentClass)

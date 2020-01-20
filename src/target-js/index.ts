@@ -38,16 +38,17 @@ export default class ToJSCompiler implements Compiler {
         }
         emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => {
             emitRuntime(emitter, 'sanssrRuntime')
-            for (const ComponentClass of sanApp.componentClasses) {
-                const cc = new RendererCompiler(ComponentClass, noTemplateOutput)
+            for (const info of sanApp.componentTree.preOrder()) {
+                const { cid } = info
+                const cc = new RendererCompiler(info, noTemplateOutput, sanApp.componentTree)
 
-                emitter.writeBlock(`sanssrRuntime.prototype${ComponentClass.sanssrCid} =`, () => {
+                emitter.writeBlock(`sanssrRuntime.prototype${cid} =`, () => {
                     cc.compileComponentPrototypeSource(emitter)
                 })
-                emitter.nextLine(`sanssrRuntime.renderer${ComponentClass.sanssrCid} = `)
+                emitter.nextLine(`sanssrRuntime.renderer${cid} = `)
                 cc.compileComponentSource(emitter)
             }
-            const funcName = 'sanssrRuntime.renderer' + sanApp.getEntryComponentClassOrThrow().sanssrCid
+            const funcName = 'sanssrRuntime.renderer' + sanApp.componentTree.root.cid
             emitter.writeLine(`return ${funcName}(data, noDataOutput, sanssrRuntime)`)
         })
         return emitter.fullText()
@@ -58,15 +59,16 @@ export default class ToJSCompiler implements Compiler {
     }: ToJSCompileOptions = {}): Renderer {
         const sanssrRuntime = { _, SanData }
 
-        for (const ComponentClass of sanApp.componentClasses) {
-            const cc = new RendererCompiler(ComponentClass, noTemplateOutput)
-            sanssrRuntime[`prototype${ComponentClass.sanssrCid}`] = cc.component
-            sanssrRuntime[`renderer${ComponentClass.sanssrCid}`] = cc.compileComponentRenderer()
+        for (const info of sanApp.componentTree.preOrder()) {
+            const { cid } = info
+            const cc = new RendererCompiler(info, noTemplateOutput, sanApp.componentTree)
+            sanssrRuntime[`prototype${cid}`] = cc.component
+            sanssrRuntime[`renderer${cid}`] = cc.compileComponentRenderer()
         }
-        const entryComponentId = sanApp.getEntryComponentClassOrThrow().sanssrCid
-        return (data: any, noDataOutput: boolean) => {
-            const func = sanssrRuntime[`renderer${entryComponentId}`]
-            return func(data, noDataOutput, sanssrRuntime)
+        const entryComponentId = sanApp.componentTree.root.cid
+        return (data: any, noDataOutput: boolean = false) => {
+            const render = sanssrRuntime[`renderer${entryComponentId}`]
+            return render(data, noDataOutput, sanssrRuntime)
         }
     }
 }

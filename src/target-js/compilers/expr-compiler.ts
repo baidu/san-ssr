@@ -76,11 +76,10 @@ export function interp (interpExpr): string {
     for (const filter of interpExpr.filters) {
         const filterName = filter.name.paths[0].value
 
-        // TODO replace case break with return
         switch (filterName) {
         case '_style':
         case '_class':
-            code = '_.' + filterName + 'Filter(' + code + ')'
+            code = `_.${filterName}Filter(${code})`
             break
 
         case '_xstyle':

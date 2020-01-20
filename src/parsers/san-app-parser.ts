@@ -1,7 +1,7 @@
 import { getComponentClassIdentifier, isChildClassOf } from '../utils/ast-util'
-import { SanComponent } from '../models/component'
+import { ComponentTree } from '../models/component-tree'
+import { ComponentConstructor } from 'san'
 import { resolve } from 'path'
-import { ComponentClassFinder } from './component-class-finder'
 import { CommonJS, Modules } from '../loaders/common-js'
 import { tsSourceFile2js } from '../transpilers/ts2js'
 import { normalizeComponentClass } from './normalize-component'
@@ -15,6 +15,7 @@ import debugFactory from 'debug'
 
 const debug = debugFactory('component-parser')
 
+// TODO 封装进 SanApp.create()，不再暴露给上层
 export class SanAppParser {
     public project: Project
     private root: string
@@ -42,11 +43,10 @@ export class SanAppParser {
         return SanAppParser.createUsingTsconfig(getDefaultTSConfigPath())
     }
 
-    public parseSanAppFromComponentClass (ComponentClass: typeof SanComponent) {
+    public parseSanAppFromComponentClass (ComponentClass: ComponentConstructor<{}, {}>): SanApp {
         const sourceFile = SanSourceFile.createVirtualSourceFile()
-        const componentClasses = new ComponentClassFinder(ComponentClass).find()
-        this.normalizeJavaScriptComponents(componentClasses)
-        return new SanApp(sourceFile, this.projectFiles, componentClasses)
+        const componentTree = new ComponentTree(ComponentClass)
+        return new SanApp(sourceFile, this.projectFiles, componentTree)
     }
 
     public parseSanApp (entryFilePath: string, modules: Modules = {}): SanApp {
@@ -68,18 +68,8 @@ export class SanAppParser {
         }
 
         const entryClass = this.evaluateFile(entrySourceFile, modules)
-        const componentClasses = new ComponentClassFinder(entryClass).find()
-        if (entrySourceFile.fileType === SourceFileType.js) {
-            this.normalizeJavaScriptComponents(componentClasses)
-        }
-        return new SanApp(entrySourceFile, this.projectFiles, componentClasses)
-    }
-
-    private normalizeJavaScriptComponents (componentClasses: typeof SanComponent[]) {
-        for (let i = 0; i < componentClasses.length; i++) {
-            const ComponentClass = componentClasses[i]
-            ComponentClass.sanssrCid = i
-        }
+        const componentTree = new ComponentTree(entryClass)
+        return new SanApp(entrySourceFile, this.projectFiles, componentTree)
     }
 
     private evaluateFile (sourceFile: SanSourceFile, modules: Modules) {

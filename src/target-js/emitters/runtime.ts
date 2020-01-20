@@ -3,8 +3,8 @@ import { Emitter } from '../../utils/emitter'
 import { resolve } from 'path'
 
 const files = [
-    resolve(__dirname, '../utils/underscore.js'),
-    resolve(__dirname, '../../models/san-data.js')
+    resolve(__dirname, '../../../dist/target-js/utils/underscore.js'),
+    resolve(__dirname, '../../../dist/models/san-data.js')
 ]
 
 export function emitRuntime (emitter: Emitter, name: string) {

@@ -1,13 +1,13 @@
 import { SanProject } from './models/san-project'
 import { Renderer } from './models/renderer'
-import { SanComponent as Component } from './models/component'
+import { SanComponent } from 'san'
 import { ToJSCompileOptions } from './target-js/index'
 
 // util functions
 export { parseSanHTML, assertSanHTMLEqual } from './utils/case'
 export { getInlineDeclarations } from './parsers/dependency-resolver'
 export { autoCloseTags } from './utils/element'
-export { getANodeProps, getANodePropByName } from './utils/anode'
+export { getANodeProps, getANodePropByName } from './models/anode'
 export { Emitter } from './utils/emitter'
 export { execCommandSync } from './loaders/exec'
 
@@ -16,14 +16,14 @@ export { SanSourceFile } from './models/san-sourcefile'
 export { SanApp } from './models/san-app'
 export { SanProject } from './models/san-project'
 export { Compiler } from './models/compiler'
-export { SanComponent, SanSSRFiltersDeclarations, SanSSRComputedDeclarations, isComponentLoader, COMPONENT_RESERVED_MEMBERS } from './models/component'
+export { SanSSRFiltersDeclarations, SanSSRComputedDeclarations, isComponentLoader, COMPONENT_RESERVED_MEMBERS } from './models/component'
 export { Expression } from './models/expression'
 export { ANode } from './models/anode'
 
 /**
  * Legacy API: compile a ComponentClass to a renderer function body
  */
-export function compileToSource (ComponentClass: typeof Component): string {
+export function compileToSource (ComponentClass: typeof SanComponent): string {
     const proj = new SanProject()
     const targetCode = proj.compileToSource(ComponentClass, 'js', {
         bareFunction: true
@@ -34,7 +34,7 @@ export function compileToSource (ComponentClass: typeof Component): string {
 /**
  * Legacy API: compile a ComponentClass to a function string and eval that function
  */
-export function compileToRenderer (ComponentClass: typeof Component, options?: ToJSCompileOptions): Renderer {
+export function compileToRenderer (ComponentClass: typeof SanComponent, options?: ToJSCompileOptions): Renderer {
     const proj = new SanProject({ tsConfigFilePath: null })
     const renderer = proj.compileToRenderer(ComponentClass, options)
     return renderer

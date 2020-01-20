@@ -1,5 +1,4 @@
 import debugFactory from 'debug'
-import 'source-map-support/register'
 
 const debug = debugFactory('case')
 

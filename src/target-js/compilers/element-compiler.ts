@@ -1,7 +1,6 @@
 import { expr } from './expr-compiler'
 import { JSEmitter } from '../emitters/emitter'
-import { ANode } from '../../models/anode'
-import { getANodePropByName } from '../../utils/anode'
+import { ANode, getANodePropByName } from '../../models/anode'
 import { autoCloseTags } from '../../utils/element'
 import { ExprType } from 'san'
 

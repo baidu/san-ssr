@@ -1,11 +1,15 @@
-import { isFunction, noop } from 'lodash'
+import { isFunction } from 'lodash'
+import { ComponentTree } from '../../models/component-tree'
+import { ComponentInfo } from '../../models/component-info'
 import { JSEmitter } from '../emitters/emitter'
 import { Renderer } from '../../models/renderer'
 import { expr } from './expr-compiler'
 import { stringifier } from './stringifier'
 import { ElementCompiler } from './element-compiler'
 import { ANodeCompiler } from './anode-compiler'
-import { COMPONENT_RESERVED_MEMBERS, SanComponent } from '../../models/component'
+import { COMPONENT_RESERVED_MEMBERS } from '../../models/component'
+import { CompiledComponent } from '../../models/compiled-component'
+import { SanComponent, ComponentConstructor } from 'san'
 
 // * 参数列表用于 toSource 和 toRender 两处，anode-compiler 中递归时要与此保持一致
 // * 前两个参数是为了保持和最终的 renderer 兼容，如此就不需要包装
@@ -24,7 +28,7 @@ export interface ComponentRender {
 export type SourceSlot = any
 
 export interface CompileContext {
-    instance: SanComponent
+    instance: SanComponent<{}>
     sourceSlots: SourceSlot[]
     data: any,
     owner: CompileContext,
@@ -35,24 +39,28 @@ export interface CompileContext {
 /**
  * Each ComponentClass is compiled to a render function
  */
-export class RendererCompiler<T> {
-    public component: SanComponent
+export class RendererCompiler {
+    public component: CompiledComponent<{}>
     private aNodeCompiler
     private elementSourceCompiler
-    private ComponentClass: typeof SanComponent
-    private cid: number
+    private componentInfo: ComponentInfo
+    private componentTree: ComponentTree
 
-    constructor (ComponentClass: typeof SanComponent, noTemplateOutput) {
+    constructor (componentInfo: ComponentInfo, noTemplateOutput, componentTree: ComponentTree) {
+        this.componentTree = componentTree
         this.elementSourceCompiler = new ElementCompiler(
             (...args) => this.aNodeCompiler.compile(...args),
             noTemplateOutput
         )
-        this.component = this.createComponentInstance(ComponentClass)
-        this.ComponentClass = ComponentClass
-        this.cid = ComponentClass.sanssrCid
+        this.component = componentInfo.createComponentInstance()
+        this.componentInfo = componentInfo
         this.aNodeCompiler = new ANodeCompiler(
+            this.component,
             this.elementSourceCompiler,
-            this.component
+            // TODO 从编译时移到运行时，见：https://github.com/baidu/san-ssr/issues/46
+            (ComponentClass: ComponentConstructor<{}, {}>) => {
+                return this.componentTree.addComponentClass(ComponentClass)
+            }
         )
     }
 
@@ -112,14 +120,9 @@ export class RendererCompiler<T> {
         // filters
         emitter.writeLine('filters: {')
         const filterCode = []
-        for (const key in component.filters) {
-            if (component.filters.hasOwnProperty(key)) {
-                const filter = component.filters[key]
-
-                if (typeof filter === 'function') {
-                    filterCode.push(key + ': ' + functionString(filter))
-                }
-            }
+        for (const key of Object.keys(this.componentInfo.filters)) {
+            const filter = this.componentInfo.filters[key]
+            filterCode.push(key + ': ' + functionString(filter))
         }
         emitter.writeLines(filterCode.join(','))
         emitter.writeLine('},')
@@ -128,26 +131,19 @@ export class RendererCompiler<T> {
         emitter.writeLine('computed: {')
         emitter.indent()
         const computedCode = []
-        for (const key in component.computed) {
-            if (component.computed.hasOwnProperty(key)) {
-                const computed = component.computed[key]
-
-                if (typeof computed === 'function') {
-                    const fn = functionString(computed)
-                    computedCode.push(key + ': ' + fn)
-                }
-            }
+        for (const key of Object.keys(this.componentInfo.computed)) {
+            const computed = this.componentInfo.computed[key]
+            computedCode.push(key + ': ' + functionString(computed))
         }
         emitter.writeLines(computedCode.join(','))
         emitter.unindent()
         emitter.writeLine('},')
 
         // tagName
-        emitter.writeLine('tagName: "' + component.tagName + '"')
+        emitter.writeLine('tagName: "' + component.aNode.tagName + '"')
     }
 
     public compileComponentRendererBody (emitter: JSEmitter = new JSEmitter()) {
-        // TODO replace sourcebuffer with emitter
         emitter.writeLine('var _ = sanssrRuntime._;')
         emitter.writeLine('var SanData = sanssrRuntime.SanData;')
         emitter.writeLine('var html = "";')
@@ -201,7 +197,7 @@ export class RendererCompiler<T> {
     */
     private genComponentContextCode (emitter: JSEmitter) {
         emitter.writeBlock('var componentCtx =', () => {
-            emitter.writeLine(`instance: _.createFromPrototype(sanssrRuntime.prototype${this.cid}),`)
+            emitter.writeLine(`instance: _.createFromPrototype(sanssrRuntime.prototype${this.componentInfo.cid}),`)
             emitter.writeLine('sourceSlots: sourceSlots,')
 
             const defaultData = this.component.data.get()
@@ -210,32 +206,17 @@ export class RendererCompiler<T> {
 
             // computedNames
             emitter.writeLine('computedNames: [')
-            emitter.writeLine(Object.keys(this.component.computed).map(x => `'${x}'`).join(','))
+            emitter.writeLine(Object.keys(this.componentInfo.computed).map(x => `'${x}'`).join(','))
             emitter.writeLine('],')
 
             emitter.writeLine('slotRenderers: {}')
         })
     }
-
-    private createComponentInstance (ComponentClass: typeof SanComponent) {
-        // TODO Do not `new Component` during SSR,
-        // see https://github.com/baidu/san-ssr/issues/42
-        const proto = ComponentClass.prototype['__proto__']    // eslint-disable-line
-        const calcComputed = proto['_calcComputed']
-        const inited = ComponentClass.prototype.inited
-        proto['_calcComputed'] = noop
-        ComponentClass.prototype.inited = undefined
-        const instance = new ComponentClass()
-        ComponentClass.prototype.inited = inited
-        proto['_calcComputed'] = calcComputed
-        return instance
-    }
 }
 
-// TODO refactor to function instance
 function functionString (fn) {
     let str = fn.toString()
-    if (!/^function /.test(fn)) { // es6 method
+    if (!/^function /.test(fn)) { // es6 method syntax
         str = 'function ' + str
     }
     return str

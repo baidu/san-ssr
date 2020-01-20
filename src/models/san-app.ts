@@ -1,38 +1,22 @@
 import { SanSourceFile } from '../models/san-sourcefile'
-import { SanComponent as Component, isComponentClass } from './component'
+import { ComponentTree } from './component-tree'
 
 export class SanApp {
     public readonly entrySourceFile: SanSourceFile
     public readonly projectFiles: Map<string, SanSourceFile>
-    public readonly componentClasses: typeof Component[]
+    public readonly componentTree: ComponentTree
 
     constructor (
         entrySourceFile: SanSourceFile,
         projectFiles: Map<string, SanSourceFile>,
-        componentClasses: typeof Component[]
+        componentTree: ComponentTree
     ) {
-        for (const clazz of componentClasses) {
-            this.validateComponentClass(clazz)
-        }
-
         this.entrySourceFile = entrySourceFile
         this.projectFiles = projectFiles
-        this.componentClasses = componentClasses
+        this.componentTree = componentTree
     }
 
     public getEntryComponentClass () {
-        return this.componentClasses[0]
-    }
-
-    public getEntryComponentClassOrThrow () {
-        if (!this.componentClasses.length) {
-            throw new Error('entry ComponentClass not found')
-        }
-        return this.componentClasses[0]
-    }
-
-    private validateComponentClass (clazz: any) {
-        if (isComponentClass(clazz)) return
-        throw new Error('the input class is not likely a San Component')
+        return this.componentTree.root.ComponentClass
     }
 }

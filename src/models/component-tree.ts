@@ -17,7 +17,7 @@ export class ComponentTree {
 
     addComponentClass (ComponentClass: ComponentConstructor<{}, {}>): ComponentInfo {
         if (this.nodes.has(ComponentClass)) {
-            return this.nodes.get(ComponentClass)
+            return this.nodes.get(ComponentClass)!
         }
         const info = this.parser.parseComponent(ComponentClass)
         this.nodes.set(ComponentClass, info)

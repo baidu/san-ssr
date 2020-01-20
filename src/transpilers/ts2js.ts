@@ -1,10 +1,10 @@
 import { transpileModule } from 'typescript'
-import { SourceFile } from 'ts-morph'
 import debugFactory from 'debug'
+import { SanSourceFile } from '../models/san-sourcefile'
 
 const debug = debugFactory('san-ssr:ts2js')
 
-export function tsSourceFile2js (sourceFile: SourceFile, compilerOptions) {
+export function tsSourceFile2js (sourceFile: SanSourceFile, compilerOptions) {
     debug('compile', sourceFile.getFilePath(), 'with options:', compilerOptions)
     return tsCode2js(sourceFile.getFullText(), compilerOptions)
 }

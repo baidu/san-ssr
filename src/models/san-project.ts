@@ -1,17 +1,16 @@
-import { sep } from 'path'
 import { ToJSCompileOptions } from '../target-js/index'
+import { TSSanAppParser } from '../parsers/ts-san-app-parser'
 import { Renderer } from './renderer'
 import { Component as SanComponent } from 'san'
 import { getDefaultTSConfigPath } from '../parsers/tsconfig'
-import { cwd } from 'process'
 import { Compiler } from '../models/compiler'
-import { SanAppParser } from '../parsers/san-app-parser'
+import { JSSanAppParser } from '../parsers/js-san-app-parser'
 import { Project } from 'ts-morph'
 import { Modules } from '../loaders/common-js'
 import { loadCompilerClassByTarget } from '../loaders/target'
 
 export interface SanProjectOptions {
-    tsConfigFilePath?: string,
+    tsConfigFilePath?: string | null,
     modules?: Modules
 }
 
@@ -19,7 +18,7 @@ interface CompileOptions {
     [key: string]: any
 }
 
-type CompilerClass = Partial<{ new(): Compiler}>
+type CompilerClass = { new({ project: SanProject }): Compiler }
 
 /**
  * A SanProject corresponds to a TypeScript project,
@@ -27,26 +26,21 @@ type CompilerClass = Partial<{ new(): Compiler}>
  */
 export class SanProject {
     public tsProject?: Project
-    public tsConfigFilePath?: string
+    public tsConfigFilePath?: string | null
 
-    private root: string
     private compilers: Map<CompilerClass, Compiler> = new Map()
     private modules: Modules
-    private parser: SanAppParser
 
     constructor ({
         tsConfigFilePath = getDefaultTSConfigPath(),
         modules = {}
     }: SanProjectOptions = {}) {
-        this.root = tsConfigFilePath
-            ? tsConfigFilePath.split(sep).slice(0, -1).join(sep)
-            : cwd()
+        if (tsConfigFilePath) {}
         this.tsConfigFilePath = tsConfigFilePath
         if (tsConfigFilePath !== null) {
             this.tsProject = new Project({ tsConfigFilePath })
         }
         this.modules = modules
-        this.parser = new SanAppParser(this.tsProject)
     }
 
     /**
@@ -71,9 +65,10 @@ export class SanProject {
     public parseSanApp (
         filepathOrComponentClass: string | typeof SanComponent
     ) {
+        const parser = this.getParser()
         const sanApp = typeof filepathOrComponentClass === 'string'
-            ? this.parser.parseSanApp(filepathOrComponentClass, this.modules)
-            : this.parser.parseSanAppFromComponentClass(filepathOrComponentClass)
+            ? parser.parseSanApp(filepathOrComponentClass, this.modules)
+            : parser.parseSanAppFromComponentClass(filepathOrComponentClass)
         return sanApp
     }
 
@@ -89,16 +84,20 @@ export class SanProject {
     ): Renderer {
         const sanApp = this.parseSanApp(filepathOrComponentClass)
         const compiler = this.getOrCreateCompilerInstance('js')
-        return compiler.compileToRenderer(sanApp, options)
+        return compiler.compileToRenderer!(sanApp, options)
     }
 
-    private getOrCreateCompilerInstance (target: string | CompilerClass) {
+    private getParser () {
+        return this.tsProject ? new TSSanAppParser(this.tsProject) : new JSSanAppParser()
+    }
+
+    private getOrCreateCompilerInstance (target: string | CompilerClass): Compiler {
         const CompilerClass = this.loadCompilerClass(target)
 
         if (!this.compilers.has(CompilerClass)) {
             this.compilers.set(CompilerClass, new CompilerClass(this))
         }
-        return this.compilers.get(CompilerClass)
+        return this.compilers.get(CompilerClass)!
     }
 
     private loadCompilerClass (target: string | CompilerClass) {

@@ -20,7 +20,7 @@ export class Module {
     }
 }
 
-type FileLoader = ((filepath: string) => string) | ({ [key:string]: string });
+type FileLoader = ((filepath: string) => string | undefined) | ({ [key:string]: string });
 
 const defaultFileLoader = filepath => readFileSync(filepath, 'utf8')
 

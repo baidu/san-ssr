@@ -1,8 +1,9 @@
 import { expr } from './expr-compiler'
 import { JSEmitter } from '../emitters/emitter'
-import { ANode, getANodePropByName } from '../../models/anode'
-import { autoCloseTags } from '../../utils/element'
-import { ExprType } from 'san'
+import { getANodePropByName } from '../../utils/anode-util'
+import { autoCloseTags } from '../../utils/dom-util'
+import { ExprType, ANode } from 'san'
+import * as TypeGuards from '../../utils/type-guards'
 
 /*
 * element 的编译方法集合对象
@@ -45,17 +46,11 @@ export class ElementCompiler {
             propsIndex[prop.name] = prop
 
             if (prop.name !== 'slot') {
-                switch (prop.expr.type) {
-                case ExprType.BOOL:
+                if (TypeGuards.isExprBoolNode(prop.expr)) {
                     emitter.bufferHTMLLiteral(' ' + prop.name)
-                    break
-
-                case ExprType.STRING:
+                } else if (TypeGuards.isExprStringNode(prop.expr)) {
                     emitter.bufferHTMLLiteral(` ${prop.name}="${prop.expr.literal}"`)
-                    break
-
-                default:
-                    if (prop.expr.value == null) break
+                } else if (prop.expr.value != null) {
                     emitter.bufferHTMLLiteral(` ${prop.name}="${expr(prop.expr)}"`)
                 }
             }
@@ -231,7 +226,7 @@ export class ElementCompiler {
         if (htmlDirective) {
             emitter.writeHTML(expr(htmlDirective.value))
         } else {
-            for (const aNodeChild of aNode.children) {
+            for (const aNodeChild of aNode.children || []) {
                 this.compileAnode(aNodeChild, emitter)
             }
         }

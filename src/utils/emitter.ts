@@ -40,6 +40,11 @@ export abstract class Emitter {
             this.writeNewLine()
         }
     }
+    public writeIndentedLines (str: string) {
+        this.indent()
+        this.writeLines(str)
+        this.unindent()
+    }
     public carriageReturn () {
         if (!this.atLineBegin()) this.writeNewLine()
         for (let i = 0; i < this.indentLevel * this.shiftWidth; i++) {

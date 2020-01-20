@@ -1,8 +1,6 @@
-import { SanComponent, ComponentConstructor } from 'san'
-import { ANode } from './anode'
+import { ANode, SanComponent, ComponentConstructor } from 'san'
 
-export class CompiledComponent<T> extends SanComponent<T> {
-    tagName: string
+export interface CompiledComponent<T> extends SanComponent<T> {
     aNode: ANode
     initData?(): T
     inited?(): void

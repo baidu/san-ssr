@@ -6,8 +6,8 @@ import { ToJSCompileOptions } from './target-js/index'
 // util functions
 export { parseSanHTML, assertSanHTMLEqual } from './utils/case'
 export { getInlineDeclarations } from './parsers/dependency-resolver'
-export { autoCloseTags } from './utils/element'
-export { getANodeProps, getANodePropByName } from './models/anode'
+export { autoCloseTags, booleanAttributes } from './utils/dom-util'
+export { getANodeProps, getANodePropByName } from './utils/anode-util'
 export { Emitter } from './utils/emitter'
 export { execCommandSync } from './loaders/exec'
 
@@ -17,8 +17,6 @@ export { SanApp } from './models/san-app'
 export { SanProject } from './models/san-project'
 export { Compiler } from './models/compiler'
 export { SanSSRFiltersDeclarations, SanSSRComputedDeclarations, isComponentLoader, COMPONENT_RESERVED_MEMBERS } from './models/component'
-export { Expression } from './models/expression'
-export { ANode } from './models/anode'
 
 /**
  * Legacy API: compile a ComponentClass to a renderer function body

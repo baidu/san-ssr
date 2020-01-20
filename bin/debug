@@ -20,16 +20,16 @@ if (!caseName) {
 
 const htmlPath = resolve(root, caseName, 'expected.html')
 const expected = readFileSync(htmlPath, 'utf8')
-console.log(chalk.cyan(`[EXPECTED] ${caseName}`), expected)
+console.log(chalk.cyan(`[EXPECT] ${caseName}`), expected)
 
 let got1
 try {
     compile(caseName)
     got1 = execCommandSync(resolve(__dirname, `./render-by-source.js`), [caseName])
     assertSanHTMLEqual(got1, expected)
-    console.log(chalk.green(`[ SOURCE ] ${caseName}`), got1)
+    console.log(chalk.green(`[SOURCE] ${caseName}`), got1)
 } catch (err) {
-    console.log(chalk.red(`[ SOURCE ] ${caseName}`), got1)
+    console.log(chalk.red(`[SOURCE] ${caseName}`), got1)
     console.error(err)
 }
 
@@ -37,8 +37,8 @@ let got2
 try {
     got2 = execCommandSync(resolve(__dirname, `./render-onthefly.js`), [caseName])
     assertSanHTMLEqual(got2, expected)
-    console.log(chalk.green(`[ RENDER ] ${caseName}`), got2)
+    console.log(chalk.green(`[RENDER] ${caseName}`), got2)
 } catch (err) {
-    console.log(chalk.red(`[ RENDER ] ${caseName}`), got2)
+    console.log(chalk.red(`[RENDER] ${caseName}`), got2)
     console.error(err)
 }

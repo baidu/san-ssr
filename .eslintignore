@@ -4,3 +4,4 @@ coverage
 test/e2e.spec.js
 ssr.php
 ssr.js
+src/types

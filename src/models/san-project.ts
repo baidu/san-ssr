@@ -1,11 +1,11 @@
+import { Component as SanComponent } from 'san'
+import { Project } from 'ts-morph'
 import { ToJSCompileOptions } from '../target-js/index'
 import { TSSanAppParser } from '../parsers/ts-san-app-parser'
 import { Renderer } from './renderer'
-import { Component as SanComponent } from 'san'
 import { getDefaultTSConfigPath } from '../parsers/tsconfig'
 import { Compiler } from '../models/compiler'
 import { JSSanAppParser } from '../parsers/js-san-app-parser'
-import { Project } from 'ts-morph'
 import { Modules } from '../loaders/common-js'
 import { loadCompilerClassByTarget } from '../loaders/target'
 

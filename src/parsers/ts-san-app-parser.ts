@@ -1,18 +1,18 @@
-import { getComponentClassIdentifier, isChildClassOf } from '../utils/ast-util'
-import { ComponentTree } from '../models/component-tree'
+import { Project, SourceFile, ClassDeclaration } from 'ts-morph'
+import debugFactory from 'debug'
 import { ComponentConstructor } from 'san'
 import { resolve } from 'path'
+import { getComponentClassIdentifier, isChildClassOf } from '../utils/ast-util'
+import { ComponentTree } from '../models/component-tree'
 import { CommonJS, Modules } from '../loaders/common-js'
 import { tsSourceFile2js } from '../transpilers/ts2js'
 import { normalizeComponentClass } from './normalize-component'
 import { SanSourceFile } from '../models/san-sourcefile'
-import { Project, SourceFile, ClassDeclaration } from 'ts-morph'
 import { getDefaultTSConfigPathOrThrow } from './tsconfig'
 import { getDependenciesRecursively } from './dependency-resolver'
 import { SanApp } from '../models/san-app'
 import { SourceFileType, getSourceFileTypeOrThrow } from '../models/source-file-type'
 import { SanAppParser } from './san-app-parser'
-import debugFactory from 'debug'
 
 const debug = debugFactory('ts-component-parser')
 

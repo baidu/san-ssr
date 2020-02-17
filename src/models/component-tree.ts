@@ -4,7 +4,8 @@ import { ComponentConstructor } from 'san'
 import { ComponentParser } from '../parsers/component-parser'
 
 /**
- * 解析并维护组件树
+ * 解析并维护组件树：
+ * 对 Component 实例的树进行了包装，并给出遍历的方式
  */
 export class ComponentTree {
     readonly root: ComponentInfo

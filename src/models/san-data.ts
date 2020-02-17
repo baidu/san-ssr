@@ -1,7 +1,7 @@
 import { Computed } from './component'
 
 /**
- * SSR 期间的 Data
+ * SSR 期间的 Data 实现
  */
 export class SanData {
     data: any

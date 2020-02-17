@@ -1,4 +1,4 @@
-import { readStringSync } from '../utils/fs'
+import { readStringSync } from '../../utils/fs'
 import { Emitter } from '../../utils/emitter'
 import { resolve } from 'path'
 

@@ -1,13 +1,44 @@
 /**
- * 编译源码的 helper 方法集合对象
+ * 编译源码的 helper 方法集合
  */
-import { ExprInterpNode, ExprAccessorNode, ExprCallNode, ExprTextNode, ExprNode, ExprObjectNode, ExprArrayNode } from 'san'
+import { ExprNode, ExprTertiaryNode, ExprBinaryNode, ExprUnaryNode, ExprInterpNode, ExprAccessorNode, ExprCallNode, ExprTextNode, ExprObjectNode, ExprArrayNode } from 'san'
 import { isValidIdentifier } from '../../utils/lang'
 import * as TypeGuards from '../../utils/type-guards'
 
-/**
- * 字符串字面化
- */
+// 二元表达式操作符映射表
+const binaryOp = {
+    43: '+',
+    45: '-',
+    42: '*',
+    47: '/',
+    60: '<',
+    62: '>',
+    76: '&&',
+    94: '!=',
+    121: '<=',
+    122: '==',
+    123: '>=',
+    155: '!==',
+    183: '===',
+    248: '||'
+}
+
+function unary (e: ExprUnaryNode) {
+    if (e.operator === 33) return '!' + expr(e.expr)
+    if (e.operator === 45) return '-' + expr(e.expr)
+    return ''
+}
+function binary (e: ExprBinaryNode) {
+    return expr(e.segs[0]) +
+        binaryOp[e.operator] +
+        expr(e.segs[1])
+}
+function tertiary (e: ExprTertiaryNode) {
+    return expr(e.segs[0]) +
+        '?' + expr(e.segs[1]) +
+        ':' + expr(e.segs[2])
+}
+// 字符串字面化
 export function stringLiteralize (source: string) {
     return '"' + source
         .replace(/\x5C/g, '\\\\')
@@ -17,9 +48,7 @@ export function stringLiteralize (source: string) {
         .replace(/\r/g, '\\r') + '"'
 }
 
-/**
- * 生成数据访问表达式代码
- */
+// 生成数据访问表达式代码
 export function dataAccess (accessorExpr?: ExprAccessorNode): string {
     let code = 'componentCtx.data'
     if (!accessorExpr) return code
@@ -30,10 +59,8 @@ export function dataAccess (accessorExpr?: ExprAccessorNode): string {
     return code
 }
 
-/**
- * 生成调用表达式代码
- */
-export function callExpr (callExpr: ExprCallNode): string {
+// 生成调用表达式代码
+function callExpr (callExpr: ExprCallNode): string {
     const paths = callExpr.name.paths
     let code = 'componentCtx.instance'
     for (const path of paths) {
@@ -49,10 +76,8 @@ export function callExpr (callExpr: ExprCallNode): string {
     return code
 }
 
-/**
- * 生成插值代码
- */
-export function interp (interpExpr: ExprInterpNode): string {
+// 生成插值代码
+function interp (interpExpr: ExprInterpNode): string {
     let code = expr(interpExpr.expr)
 
     for (const filter of interpExpr.filters) {
@@ -86,10 +111,8 @@ export function interp (interpExpr: ExprInterpNode): string {
     return code
 }
 
-/**
- * 生成文本片段代码
- */
-export function text (textExpr: ExprTextNode): string {
+// 生成文本片段代码
+function text (textExpr: ExprTextNode): string {
     if (textExpr.segs.length === 0) return '""'
 
     return textExpr.segs
@@ -98,21 +121,17 @@ export function text (textExpr: ExprTextNode): string {
         .join(' + ')
 }
 
-/**
- * 生成数组字面量代码
- */
-export function array (arrayExpr: ExprArrayNode): string {
+// 生成数组字面量代码
+function array (arrayExpr: ExprArrayNode): string {
     return '[' +
-        arrayExpr.items
-            .map(e => (e.spread ? '...' : '') + expr(e.expr))
-            .join(',') +
-        ']'
+            arrayExpr.items
+                .map(e => (e.spread ? '...' : '') + expr(e.expr))
+                .join(',') +
+            ']'
 }
 
-/**
- * 生成对象字面量代码
- */
-export function object (objExpr: ExprObjectNode): string {
+// 生成对象字面量代码
+function object (objExpr: ExprObjectNode): string {
     const code: string[] = []
 
     for (const item of objExpr.items) {
@@ -126,60 +145,16 @@ export function object (objExpr: ExprObjectNode): string {
     return '{\n' + code.join(',\n') + '\n}'
 }
 
-/**
- * 二元表达式操作符映射表
- */
-export const binaryOp = {
-    43: '+',
-    45: '-',
-    42: '*',
-    47: '/',
-    60: '<',
-    62: '>',
-    76: '&&',
-    94: '!=',
-    121: '<=',
-    122: '==',
-    123: '>=',
-    155: '!==',
-    183: '===',
-    248: '||'
-}
-
-/**
- * 生成表达式代码
- */
 export function expr (e: ExprNode): string {
-    if (e.parenthesized) {
-        return '(' + _expr(e) + ')'
-    }
-
-    return _expr(e)
+    const str = dispatch(e)
+    return e.parenthesized ? `(${str})` : str
 }
 
-/**
- * 根据表达式类型进行生成代码函数的中转分发
- */
-export function _expr (e: ExprNode): string {
-    if (TypeGuards.isExprUnaryNode(e)) {
-        switch (e.operator) {
-        case 33:
-            return '!' + expr(e.expr)
-        case 45:
-            return '-' + expr(e.expr)
-        }
-        return ''
-    }
-    if (TypeGuards.isExprBinaryNode(e)) {
-        return expr(e.segs[0]) +
-            binaryOp[e.operator] +
-            expr(e.segs[1])
-    }
-    if (TypeGuards.isExprTertiaryNode(e)) {
-        return expr(e.segs[0]) +
-            '?' + expr(e.segs[1]) +
-            ':' + expr(e.segs[2])
-    }
+// 根据表达式类型进行生成代码函数的中转分发
+function dispatch (e: ExprNode): string {
+    if (TypeGuards.isExprUnaryNode(e)) return unary(e)
+    if (TypeGuards.isExprBinaryNode(e)) return binary(e)
+    if (TypeGuards.isExprTertiaryNode(e)) return tertiary(e)
     if (TypeGuards.isExprStringNode(e)) return stringLiteralize(e.literal || e.value)
     if (TypeGuards.isExprNumberNode(e)) return '' + e.value
     if (TypeGuards.isExprBoolNode(e)) return e.value ? 'true' : 'false'

@@ -3,7 +3,7 @@ import { Emitter } from '../../utils/emitter'
 import { resolve } from 'path'
 
 const files = [
-    resolve(__dirname, '../../../dist/target-js/utils/underscore.js'),
+    resolve(__dirname, '../../../dist/utils/underscore.js'),
     resolve(__dirname, '../../../dist/models/san-data.js')
 ]
 

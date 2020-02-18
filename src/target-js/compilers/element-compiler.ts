@@ -184,6 +184,7 @@ export class ElementCompiler {
      */
     tagEnd (emitter: JSEmitter, aNode: ANode, tagNameVariable?: string) {
         const tagName = aNode.tagName
+        console.log('tagName', tagName, 'variable', tagNameVariable)
 
         if (tagName) {
             if (!autoCloseTags.has(tagName)) {

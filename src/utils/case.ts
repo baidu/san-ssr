@@ -16,18 +16,28 @@ export function parseSanHTML (str: string) {
     return [data, html]
 }
 
-export function assertSanHTMLEqual (expected, got) {
-    const [data0, html0] = parseSanHTML(expected)
-    const [data1, html1] = parseSanHTML(got)
-    if (!deepEqual(data0, data1)) {
-        throw new Error('data not qual')
-    }
-    if (html0 !== html1) {
-        throw new Error('html not qual')
+export function assertSanHTMLEqual (expected: string, got: string) {
+    const result = compareSanHTML(expected, got)
+    if (result) {
+        throw new Error(result)
     }
 }
 
-function deepEqual (lhs, rhs) {
+/*
+ * San HTML 数据和 DOM 部分比较（不依赖 Object key 顺序）
+ */
+export function compareSanHTML (expected: string, got: string) {
+    const [data0, html0] = parseSanHTML(expected)
+    const [data1, html1] = parseSanHTML(got)
+    if (!deepEqual(data0, data1)) {
+        return 'data not qual'
+    }
+    if (html0 !== html1) {
+        return 'html not qual'
+    }
+}
+
+function deepEqual (lhs: any, rhs: any) {
     if (typeof lhs === 'object' && lhs !== null) {
         const keys = new Set([...Object.keys(lhs), ...Object.keys(rhs)])
         for (const key of keys) {

@@ -22,11 +22,11 @@ export class Module {
 
 type FileLoader = ((filepath: string) => string | undefined) | ({ [key:string]: string });
 
-const defaultFileLoader = filepath => readFileSync(filepath, 'utf8')
+const defaultFileLoader = (filepath: string) => readFileSync(filepath, 'utf8')
 
 export class CommonJS {
-    private readFileImpl
-    private modules
+    private readFileImpl: (filepath: string, specifier?: string) => string | undefined
+    private modules: { [key: string]: any }
     public cache = new Map()
 
     constructor (modules: Modules = {}, readFile: FileLoader = defaultFileLoader) {
@@ -47,7 +47,7 @@ export class CommonJS {
             const mod = new Module(filepath, fileContent)
             const fn = new Function('module', 'exports', 'require', mod.content) // eslint-disable-line
 
-            fn(mod, mod.exports, path => {
+            fn(mod, mod.exports, (path: string) => {
                 debug('local require called with', path)
                 if (isRelativePath(path)) {
                     return this.require(resolve(dirname(filepath), path), path)

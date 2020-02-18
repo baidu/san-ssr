@@ -1,7 +1,7 @@
 import { stringLiteralize } from './expr-compiler'
 
 export const stringifier = {
-    obj: function (source) {
+    obj: function (source: object) {
         let prefixComma
         let result = '{'
 
@@ -21,7 +21,7 @@ export const stringifier = {
         return result + '}'
     },
 
-    arr: function (source) {
+    arr: function (source: any[]) {
         let prefixComma
         let result = '['
 
@@ -37,15 +37,15 @@ export const stringifier = {
         return result + ']'
     },
 
-    str: function (source) {
+    str: function (source: string) {
         return stringLiteralize(source)
     },
 
-    date: function (source) {
+    date: function (source: Date) {
         return 'new Date(' + source.getTime() + ')'
     },
 
-    any: function (source) {
+    any: function (source: any) {
         switch (typeof source) {
         case 'string':
             return stringifier.str(source)

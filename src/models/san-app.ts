@@ -17,6 +17,6 @@ export class SanApp {
     }
 
     public getEntryComponentClass () {
-        return this.componentTree.root.ComponentClass
+        return this.componentTree.root.componentClass
     }
 }

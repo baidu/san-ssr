@@ -1,4 +1,4 @@
-import { Project } from 'ts-morph'
+import { SanProject } from '../models/san-project'
 import debugFactory from 'debug'
 import { JSEmitter } from './emitters/emitter'
 import { _ } from '../utils/underscore'
@@ -16,11 +16,11 @@ export type ToJSCompileOptions = {
 }
 
 export type ToJSConstructOptions = {
-    project: Project
+    project: SanProject
 }
 
 export default class ToJSCompiler implements Compiler {
-    private project: Project
+    private project: SanProject
 
     constructor ({
         project

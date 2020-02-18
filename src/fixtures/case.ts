@@ -22,7 +22,7 @@ export function readExpected (caseName: string) {
     return readFileSync(htmlPath, 'utf8')
 }
 
-export function compile (caseName) {
+export function compile (caseName: string) {
     debug('compile', caseName)
     const caseDir = join(caseRoot, caseName)
     if (caseDir) {

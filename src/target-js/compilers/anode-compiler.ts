@@ -27,9 +27,7 @@ export class ANodeCompiler {
         this.elementSourceCompiler = elemencompiler
         this.getComponentInfoByClass = getComponentByANode
     }
-    /**
-     * 编译节点
-     */
+
     compile (aNode: ANode, emitter: JSEmitter) {
         if (TypeGuards.isATextNode(aNode)) return this.compileText(aNode, emitter)
         if (TypeGuards.isAIfNode(aNode)) return this.compileIf(aNode, emitter)
@@ -51,12 +49,7 @@ export class ANodeCompiler {
         return this.compileElement(aNode, emitter)
     }
 
-    /**
-     * 编译文本节点
-     *
-     * @param {JSEmitter} emitter 编译源码的中间buffer
-     */
-    compileText (aNode: ATextNode, emitter) {
+    compileText (aNode: ATextNode, emitter: JSEmitter) {
         if (aNode.textExpr.original) {
             emitter.writeIf('!noDataOutput', () => {
                 emitter.bufferHTMLLiteral('<!--s-text-->')
@@ -64,7 +57,7 @@ export class ANodeCompiler {
         }
 
         if (aNode.textExpr.value != null) {
-            emitter.bufferHTMLLiteral((aNode.textExpr.segs[0] as ExprStringNode).literal)
+            emitter.bufferHTMLLiteral((aNode.textExpr.segs[0] as ExprStringNode).literal!)
         } else {
             emitter.writeHTML(expr(aNode.textExpr))
         }
@@ -76,18 +69,12 @@ export class ANodeCompiler {
         }
     }
 
-    /**
-     * 编译template节点
-     */
     compileTemplate (aNode: ATemplateNode, emitter: JSEmitter) {
         this.elementSourceCompiler.inner(emitter, aNode)
     }
 
-    /**
-     * 编译 if 节点
-     */
     compileIf (aNode: AIfNode, emitter: JSEmitter) {
-        // output main if
+        // output if
         const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
         emitter.writeIf(expr(ifDirective.value), () => {
             this.compile(aNode.ifRinsed, emitter)
@@ -108,9 +95,6 @@ export class ANodeCompiler {
         }
     }
 
-    /**
-     * 编译 for 节点
-     */
     compileFor (aNode: AForNode, emitter: JSEmitter) {
         const forElementANode = {
             children: aNode.children,
@@ -119,9 +103,9 @@ export class ANodeCompiler {
             tagName: aNode.tagName,
             directives: { ...aNode.directives }
         }
-        delete forElementANode.directives['for']
+        delete forElementANode.directives.for
 
-        const forDirective = aNode.directives['for'] // eslint-disable-line dot-notation
+        const forDirective = aNode.directives.for
         const itemName = forDirective.item
         const indexName = forDirective.index || this.nextID()
         const listName = this.nextID()
@@ -218,18 +202,13 @@ export class ANodeCompiler {
         emitter.writeLine('componentCtx.slotRenderers.' + rendererId + '();')
     }
 
-    /**
-     * 编译普通节点
-     */
     compileElement (aNode: ANode, emitter: JSEmitter) {
+        console.log('compileElement', aNode.tagName)
         this.elementSourceCompiler.tagStart(emitter, aNode)
         this.elementSourceCompiler.inner(emitter, aNode)
         this.elementSourceCompiler.tagEnd(emitter, aNode)
     }
 
-    /**
-     * 编译组件节点
-     */
     private compileComponent (aNode: ANode, emitter: JSEmitter, info: ComponentInfo) {
         let dataLiteral = '{}'
 
@@ -269,7 +248,7 @@ export class ANodeCompiler {
                 emitter.writeLine('$sourceSlots.push([function (componentCtx) {')
                 emitter.indent()
                 emitter.writeLine('var html = "";')
-                sourceSlotCode.children.forEach((child) => {
+                sourceSlotCode.children.forEach((child: ANode) => {
                     this.compile(child, emitter)
                 })
                 emitter.writeLine('return html;')

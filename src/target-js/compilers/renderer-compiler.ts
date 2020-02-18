@@ -41,14 +41,14 @@ export interface CompileContext {
  */
 export class RendererCompiler {
     public component: CompiledComponent<{}>
-    private aNodeCompiler
-    private elementSourceCompiler
+    private aNodeCompiler: ANodeCompiler
+    private elementCompiler: ElementCompiler
     private componentInfo: ComponentInfo
     private componentTree: ComponentTree
 
-    constructor (componentInfo: ComponentInfo, noTemplateOutput, componentTree: ComponentTree) {
+    constructor (componentInfo: ComponentInfo, noTemplateOutput: boolean, componentTree: ComponentTree) {
         this.componentTree = componentTree
-        this.elementSourceCompiler = new ElementCompiler(
+        this.elementCompiler = new ElementCompiler(
             (...args) => this.aNodeCompiler.compile(...args),
             noTemplateOutput
         )
@@ -56,7 +56,7 @@ export class RendererCompiler {
         this.componentInfo = componentInfo
         this.aNodeCompiler = new ANodeCompiler(
             this.component,
-            this.elementSourceCompiler,
+            this.elementCompiler,
             // TODO 从编译时移到运行时，见：https://github.com/baidu/san-ssr/issues/46
             (ComponentClass: ComponentConstructor<{}, {}>) => {
                 return this.componentTree.addComponentClass(ComponentClass)
@@ -169,14 +169,14 @@ export class RendererCompiler {
             emitter.writeLine('if (' + expr(ifDirective.value) + ') {')
         }
 
-        this.elementSourceCompiler.tagStart(emitter, this.component.aNode, 'tagName')
+        this.elementCompiler.tagStart(emitter, this.component.aNode, 'tagName')
 
         emitter.writeIf('!noDataOutput', () => {
             emitter.writeDataComment()
         })
 
-        this.elementSourceCompiler.inner(emitter, this.component.aNode, this.component)
-        this.elementSourceCompiler.tagEnd(emitter, this.component.aNode, 'tagName')
+        this.elementCompiler.inner(emitter, this.component.aNode)
+        this.elementCompiler.tagEnd(emitter, this.component.aNode, 'tagName')
 
         if (ifDirective) {
             emitter.writeLine('}')
@@ -208,9 +208,9 @@ export class RendererCompiler {
     }
 }
 
-function functionString (fn) {
+function functionString (fn: Function) {
     let str = fn.toString()
-    if (!/^function /.test(fn)) { // es6 method syntax
+    if (!/^function /.test(str)) { // es6 method syntax
         str = 'function ' + str
     }
     return str

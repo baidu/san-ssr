@@ -15,7 +15,7 @@ export function loadCompilerClassByTarget (target: string) {
     return plugin.default || plugin
 }
 
-export function resolve (moduleName) {
+export function resolve (moduleName: string) {
     try {
         return require.resolve(moduleName)
     } catch (e) {

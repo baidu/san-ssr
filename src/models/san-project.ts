@@ -18,7 +18,7 @@ interface CompileOptions {
     [key: string]: any
 }
 
-type CompilerClass = { new({ project: SanProject }): Compiler }
+type CompilerClass = { new(options: { project: SanProject }): Compiler }
 
 /**
  * A SanProject corresponds to a TypeScript project,

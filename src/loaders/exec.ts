@@ -1,6 +1,6 @@
 import { spawn, spawnSync } from 'child_process'
 
-export function exec (bin, args) {
+export function exec (bin: string, args: string[]) {
     const proc = spawn(bin, args)
 
     return new Promise((resolve, reject) => {
@@ -23,7 +23,7 @@ export function exec (bin, args) {
     })
 }
 
-export function execCommandSync (bin, args) {
+export function execCommandSync (bin: string, args: string[]) {
     const proc = spawnSync(bin, args)
     if (proc.error || proc.stderr.length) {
         throw proc.error || new Error(proc.stderr.toString() + '\nSTDOUT:\n' + proc.stdout.toString() + '\n')

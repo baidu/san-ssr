@@ -1,7 +1,7 @@
 /**
  * 编译源码的 helper 方法集合对象
  */
-import { ExprAccessorNode, ExprCallNode, ExprTextNode, ExprNode, ExprObjectNode, ExprArrayNode } from 'san'
+import { ExprInterpNode, ExprAccessorNode, ExprCallNode, ExprTextNode, ExprNode, ExprObjectNode, ExprArrayNode } from 'san'
 import { isValidIdentifier } from '../../utils/lang'
 import * as TypeGuards from '../../utils/type-guards'
 
@@ -52,7 +52,7 @@ export function callExpr (callExpr: ExprCallNode): string {
 /**
  * 生成插值代码
  */
-export function interp (interpExpr): string {
+export function interp (interpExpr: ExprInterpNode): string {
     let code = expr(interpExpr.expr)
 
     for (const filter of interpExpr.filters) {
@@ -74,7 +74,7 @@ export function interp (interpExpr): string {
             break
 
         default:
-            const args = filter.args.map(arg => expr(arg))
+            const args = filter.args.map((arg: any) => expr(arg))
             code = `_.callFilter(componentCtx, "${filterName}", [${code}, ${args.join(', ')}])`
         }
     }

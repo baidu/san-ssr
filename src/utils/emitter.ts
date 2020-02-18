@@ -1,13 +1,13 @@
 export abstract class Emitter {
     private indentLevel = 0
-    private shiftWidth
+    private shiftWidth: number
     protected code = ''
 
     constructor (shiftWidth = 4) {
         this.shiftWidth = shiftWidth
     }
 
-    public abstract write (str: string)
+    public abstract write (str: string): void
     public fullText () {
         return this.code
     }

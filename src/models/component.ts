@@ -10,8 +10,10 @@ export interface Filters {
     [k: string]: (this: CompiledComponent<{}>, ...args: any[]) => any
 }
 
+export type ComponentClass = ComponentConstructor<{}, {}>
+
 export interface Components {
-    [key: string]: typeof SanComponent
+    [key: string]: ComponentClass | { load: any, placeholder: ComponentClass }
 }
 
 export const COMPONENT_RESERVED_MEMBERS = new Set(
@@ -20,7 +22,7 @@ export const COMPONENT_RESERVED_MEMBERS = new Set(
     'detached,disposed,compiled'.split(',')
 )
 
-export function isComponentLoader (cmpt: any): cmpt is {placeholder: ComponentConstructor<{}, {}>} {
+export function isComponentLoader (cmpt: any): cmpt is {placeholder: ComponentClass} {
     return cmpt && cmpt.hasOwnProperty('load') && cmpt.hasOwnProperty('placeholder')
 }
 

@@ -1,7 +1,18 @@
 import { noop } from 'lodash'
-import { ComponentConstructor, SanComponent } from 'san'
+import { ComponentConstructor } from 'san'
 import { CompiledComponent } from './compiled-component'
 import { Filters, Computed } from './component'
+import { Components, ComponentClass } from '../models/component'
+
+interface ComponentInfoOptions {
+    filters: Filters
+    computed: Computed
+    template?: string
+    cid: number
+    children?: ComponentInfo[]
+    componentClass: ComponentClass
+    childComponentClasses: Components
+}
 
 /**
  * 提供一个组件信息封装
@@ -15,28 +26,28 @@ import { Filters, Computed } from './component'
 export class ComponentInfo {
     public readonly filters: Filters
     public readonly computed: Computed
-    public readonly template: string
+    public readonly template?: string
     public readonly cid: number
-    public readonly ComponentClass: typeof SanComponent
+    public readonly componentClass: ComponentConstructor<{}, {}>
     // child Component Info nodes
     public readonly children: ComponentInfo[]
     // Raw components
-    public readonly components: ComponentConstructor<{}, {}>
+    public readonly childComponentClasses: Components
 
-    constructor ({ filters, computed, template, cid, ComponentClass, children = [], components }) {
+    constructor ({ filters, computed, template, cid, componentClass, children = [], childComponentClasses }: ComponentInfoOptions) {
         this.filters = filters
         this.computed = computed
         this.template = template
         this.cid = cid
-        this.ComponentClass = ComponentClass
+        this.componentClass = componentClass
         this.children = children
-        this.components = components
+        this.childComponentClasses = childComponentClasses
     }
 
     createComponentInstance (): CompiledComponent<{}> {
         // TODO Do not `new Component` during SSR,
         // see https://github.com/baidu/san-ssr/issues/42
-        const ComponentClass = this.ComponentClass
+        const ComponentClass = this.componentClass
         const proto = ComponentClass.prototype['__proto__']    // eslint-disable-line
         const calcComputed = proto['_calcComputed']
         const inited = ComponentClass.prototype['inited']

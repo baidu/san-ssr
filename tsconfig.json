@@ -2,17 +2,15 @@
   "compilerOptions": {
     "target": "es6",
     "declaration": true,
-    "skipLibCheck": true,
     "module": "CommonJS",
     "outDir": "dist",
-    "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "Node",
     "resolveJsonModule": true,
     "downlevelIteration": true,
     "strict": true,
     "sourceMap": true,
-    "baseUrl": "src",
+    "baseUrl": ".",
     "paths": {
       "san": ["types/san"]
     },

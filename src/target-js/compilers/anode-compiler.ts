@@ -203,7 +203,6 @@ export class ANodeCompiler {
     }
 
     compileElement (aNode: ANode, emitter: JSEmitter) {
-        console.log('compileElement', aNode.tagName)
         this.elementSourceCompiler.tagStart(emitter, aNode)
         this.elementSourceCompiler.inner(emitter, aNode)
         this.elementSourceCompiler.tagEnd(emitter, aNode)

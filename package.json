@@ -1,6 +1,6 @@
 {
   "name": "san-ssr",
-  "version": "1.9.2",
+  "version": "1.9.3",
   "description": "San server-side-render framework and utils",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

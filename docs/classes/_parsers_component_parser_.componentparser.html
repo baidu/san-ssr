@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;utils/anode&quot; | san-ssr</title>
+	<title>ComponentParser | san-ssr</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,122 +56,136 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="_utils_anode_.html">&quot;utils/anode&quot;</a>
+					<a href="../modules/_parsers_component_parser_.html">&quot;parsers/component-parser&quot;</a>
+				</li>
+				<li>
+					<a href="_parsers_component_parser_.componentparser.html">ComponentParser</a>
 				</li>
 			</ul>
-			<h1>External module &quot;utils/anode&quot;</h1>
+			<h1>Class ComponentParser</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>组件解析器，创建并维护组件树</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">ComponentParser</span>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
-							<h3>Functions</h3>
+						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
+							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_utils_anode_.html#getanodepropbyname" class="tsd-kind-icon">getANode<wbr>Prop<wbr>ByName</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_utils_anode_.html#getanodeprops" class="tsd-kind-icon">getANode<wbr>Props</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_utils_anode_.html#postprop" class="tsd-kind-icon">post<wbr>Prop</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_parsers_component_parser_.componentparser.html#id" class="tsd-kind-icon">id</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_parsers_component_parser_.componentparser.html#parsecomponent" class="tsd-kind-icon">parse<wbr>Component</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_parsers_component_parser_.componentparser.html#parsecomputed" class="tsd-kind-icon">parse<wbr>Computed</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_parsers_component_parser_.componentparser.html#parsefilters" class="tsd-kind-icon">parse<wbr>Filters</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="id" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> id</h3>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;1</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/parsers/component-parser.ts#L11">parsers/component-parser.ts:11</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Functions</h2>
-				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="getanodepropbyname" class="tsd-anchor"></a>
-					<h3>getANode<wbr>Prop<wbr>ByName</h3>
-					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">getANode<wbr>Prop<wbr>ByName<span class="tsd-signature-symbol">(</span>aNode<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_anode_.anode.html" class="tsd-signature-type">ANode</a>, name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_anode_.anodeprop.html" class="tsd-signature-type">ANodeProp</a></li>
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="parsecomponent" class="tsd-anchor"></a>
+					<h3>parse<wbr>Component</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">parse<wbr>Component<span class="tsd-signature-symbol">(</span>componentClass<span class="tsd-signature-symbol">: </span><a href="../modules/_models_component_.html#componentclass" class="tsd-signature-type">ComponentClass</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/bd4ef00/src/utils/anode.ts#L7">utils/anode.ts:7</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/parsers/component-parser.ts#L13">parsers/component-parser.ts:13</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>获取 ANode props 数组中相应 name 的项</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>aNode: <a href="../interfaces/_models_anode_.anode.html" class="tsd-signature-type">ANode</a></h5>
-								</li>
-								<li>
-									<h5>name: <span class="tsd-signature-type">string</span></h5>
+									<h5>componentClass: <a href="../modules/_models_component_.html#componentclass" class="tsd-signature-type">ComponentClass</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_models_anode_.anodeprop.html" class="tsd-signature-type">ANodeProp</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="getanodeprops" class="tsd-anchor"></a>
-					<h3>getANode<wbr>Props</h3>
-					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">getANode<wbr>Props<span class="tsd-signature-symbol">(</span>aNode<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_anode_.anode.html" class="tsd-signature-type">ANode</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">[]</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="parsecomputed" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> parse<wbr>Computed</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">parse<wbr>Computed<span class="tsd-signature-symbol">(</span>filters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_component_.computed.html" class="tsd-signature-type">Computed</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/bd4ef00/src/utils/anode.ts#L14">utils/anode.ts:14</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/parsers/component-parser.ts#L38">parsers/component-parser.ts:38</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>aNode: <a href="../interfaces/_models_anode_.anode.html" class="tsd-signature-type">ANode</a></h5>
+									<h5>filters: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">[]</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_models_component_.computed.html" class="tsd-signature-type">Computed</a></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="postprop" class="tsd-anchor"></a>
-					<h3>post<wbr>Prop</h3>
-					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">post<wbr>Prop<span class="tsd-signature-symbol">(</span>prop<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_anode_.anodeprop.html" class="tsd-signature-type">ANodeProp</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="parsefilters" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> parse<wbr>Filters</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">parse<wbr>Filters<span class="tsd-signature-symbol">(</span>filters<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_component_.filters.html" class="tsd-signature-type">Filters</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/bd4ef00/src/utils/anode.ts#L36">utils/anode.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/parsers/component-parser.ts#L29">parsers/component-parser.ts:29</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>对属性信息进行处理
-									对组件的 binds 或者特殊的属性（比如 input 的 checked）需要处理</p>
-								</div>
-								<p>扁平化：
-									当 text 解析只有一项时，要么就是 string，要么就是 interp
-									interp 有可能是绑定到组件属性的表达式，不希望被 eval text 成 string
-								所以这里做个处理，只有一项时直接抽出来</p>
-								<p>bool属性：
-								当绑定项没有值时，默认为true</p>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>prop: <a href="../interfaces/_models_anode_.anodeprop.html" class="tsd-signature-type">ANodeProp</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>属性对象</p>
-									</div>
+									<h5>filters: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_models_component_.filters.html" class="tsd-signature-type">Filters</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -184,21 +198,33 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="_utils_anode_.html">"utils/anode"</a>
+						<a href="../modules/_parsers_component_parser_.html">"parsers/component-<wbr>parser"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="_utils_anode_.html#getanodepropbyname" class="tsd-kind-icon">getANode<wbr>Prop<wbr>ByName</a>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_parsers_component_parser_.componentparser.html" class="tsd-kind-icon">Component<wbr>Parser</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_parsers_component_parser_.componentparser.html#id" class="tsd-kind-icon">id</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_parsers_component_parser_.componentparser.html#parsecomponent" class="tsd-kind-icon">parse<wbr>Component</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_parsers_component_parser_.componentparser.html#parsecomputed" class="tsd-kind-icon">parse<wbr>Computed</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_parsers_component_parser_.componentparser.html#parsefilters" class="tsd-kind-icon">parse<wbr>Filters</a>
+							</li>
+						</ul>
 					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="_utils_anode_.html#getanodeprops" class="tsd-kind-icon">getANode<wbr>Props</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_utils_anode_.html#postprop" class="tsd-kind-icon">post<wbr>Prop</a>
-					</li>
+				</ul>
+				<ul class="after-current">
 				</ul>
 			</nav>
 		</div>

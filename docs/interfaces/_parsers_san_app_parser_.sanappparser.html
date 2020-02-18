@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>SanProjectOptions | san-ssr</title>
+	<title>SanAppParser | san-ssr</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_models_san_project_.html">&quot;models/san-project&quot;</a>
+					<a href="../modules/_parsers_san_app_parser_.html">&quot;parsers/san-app-parser&quot;</a>
 				</li>
 				<li>
-					<a href="_models_san_project_.sanprojectoptions.html">SanProjectOptions</a>
+					<a href="_parsers_san_app_parser_.sanappparser.html">SanAppParser</a>
 				</li>
 			</ul>
-			<h1>Interface SanProjectOptions</h1>
+			<h1>Interface SanAppParser</h1>
 		</div>
 	</div>
 </header>
@@ -73,8 +73,15 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">SanProjectOptions</span>
+						<span class="target">SanAppParser</span>
 					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implemented by</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../classes/_parsers_js_san_app_parser_.jssanappparser.html" class="tsd-signature-type">JSSanAppParser</a></li>
+					<li><a href="../classes/_parsers_ts_san_app_parser_.tssanappparser.html" class="tsd-signature-type">TSSanAppParser</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -82,36 +89,62 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_models_san_project_.sanprojectoptions.html#modules" class="tsd-kind-icon">modules</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_models_san_project_.sanprojectoptions.html#tsconfigfilepath" class="tsd-kind-icon">ts<wbr>Config<wbr>File<wbr>Path</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_parsers_san_app_parser_.sanappparser.html#parsesanapp" class="tsd-kind-icon">parse<wbr>San<wbr>App</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_parsers_san_app_parser_.sanappparser.html#parsesanappfromcomponentclass" class="tsd-kind-icon">parse<wbr>San<wbr>App<wbr>From<wbr>Component<wbr>Class</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="modules" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> modules</h3>
-					<div class="tsd-signature tsd-kind-icon">modules<span class="tsd-signature-symbol">:</span> <a href="../modules/_loaders_common_js_.html#modules" class="tsd-signature-type">Modules</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/models/san-project.ts#L14">models/san-project.ts:14</a></li>
-						</ul>
-					</aside>
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="parsesanapp" class="tsd-anchor"></a>
+					<h3>parse<wbr>San<wbr>App</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">parse<wbr>San<wbr>App<span class="tsd-signature-symbol">(</span>entryFilePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_models_san_app_.sanapp.html" class="tsd-signature-type">SanApp</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/parsers/san-app-parser.ts#L9">parsers/san-app-parser.ts:9</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>entryFilePath: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/_models_san_app_.sanapp.html" class="tsd-signature-type">SanApp</a></h4>
+						</li>
+					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="tsconfigfilepath" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> ts<wbr>Config<wbr>File<wbr>Path</h3>
-					<div class="tsd-signature tsd-kind-icon">ts<wbr>Config<wbr>File<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/models/san-project.ts#L13">models/san-project.ts:13</a></li>
-						</ul>
-					</aside>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="parsesanappfromcomponentclass" class="tsd-anchor"></a>
+					<h3>parse<wbr>San<wbr>App<wbr>From<wbr>Component<wbr>Class</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">parse<wbr>San<wbr>App<wbr>From<wbr>Component<wbr>Class<span class="tsd-signature-symbol">(</span>ComponentClass<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_models_san_app_.sanapp.html" class="tsd-signature-type">SanApp</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/parsers/san-app-parser.ts#L8">parsers/san-app-parser.ts:8</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ComponentClass: <span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../classes/_models_san_app_.sanapp.html" class="tsd-signature-type">SanApp</a></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -122,35 +155,29 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_models_san_project_.html">"models/san-<wbr>project"</a>
+						<a href="../modules/_parsers_san_app_parser_.html">"parsers/san-<wbr>app-<wbr>parser"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/_models_san_project_.sanproject.html" class="tsd-kind-icon">San<wbr>Project</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_models_san_project_.compileoptions.html" class="tsd-kind-icon">Compile<wbr>Options</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_models_san_project_.sanprojectoptions.html" class="tsd-kind-icon">San<wbr>Project<wbr>Options</a>
+						<a href="_parsers_san_app_parser_.sanappparser.html" class="tsd-kind-icon">San<wbr>App<wbr>Parser</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_models_san_project_.sanprojectoptions.html#modules" class="tsd-kind-icon">modules</a>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="_parsers_san_app_parser_.sanappparser.html#parsesanapp" class="tsd-kind-icon">parse<wbr>San<wbr>App</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_models_san_project_.sanprojectoptions.html#tsconfigfilepath" class="tsd-kind-icon">ts<wbr>Config<wbr>File<wbr>Path</a>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="_parsers_san_app_parser_.sanappparser.html#parsesanappfromcomponentclass" class="tsd-kind-icon">parse<wbr>San<wbr>App<wbr>From<wbr>Component<wbr>Class</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_models_san_project_.html#compilerclass" class="tsd-kind-icon">Compiler<wbr>Class</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_parsers_san_app_parser_.html#debug" class="tsd-kind-icon">debug</a>
 					</li>
 				</ul>
 			</nav>

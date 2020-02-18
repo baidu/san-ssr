@@ -1,3 +1,11 @@
+## [1.9.3](https://github.com/baidu/san-ssr/compare/v1.9.2...v1.9.3) (2020-02-18)
+
+
+### Bug Fixes
+
+* remove console.log ([a9393b6](https://github.com/baidu/san-ssr/commit/a9393b6ed491872802b0939f87902cb691a29c5a))
+* utils path in runtime emitter ([6bf432e](https://github.com/baidu/san-ssr/commit/6bf432e563cacc5b82e756222f61ef18a6f676ec))
+
 ## [1.9.2](https://github.com/baidu/san-ssr/compare/v1.9.1...v1.9.2) (2020-01-14)
 
 

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>SanApp | san-ssr</title>
+	<title>ComponentTree | san-ssr</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,24 +56,32 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_models_san_app_.html">&quot;models/san-app&quot;</a>
+					<a href="../modules/_models_component_tree_.html">&quot;models/component-tree&quot;</a>
 				</li>
 				<li>
-					<a href="_models_san_app_.sanapp.html">SanApp</a>
+					<a href="_models_component_tree_.componenttree.html">ComponentTree</a>
 				</li>
 			</ul>
-			<h1>Class SanApp</h1>
+			<h1>Class ComponentTree</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>解析并维护组件树：
+						对 Component 实例的树进行了包装，并给出遍历的方式</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">SanApp</span>
+						<span class="target">ComponentTree</span>
 					</li>
 				</ul>
 			</section>
@@ -84,21 +92,22 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_models_san_app_.sanapp.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_models_component_tree_.componenttree.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_san_app_.sanapp.html#componenttree" class="tsd-kind-icon">component<wbr>Tree</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_san_app_.sanapp.html#entrysourcefile" class="tsd-kind-icon">entry<wbr>Source<wbr>File</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_san_app_.sanapp.html#projectfiles" class="tsd-kind-icon">project<wbr>Files</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_models_component_tree_.componenttree.html#nodes" class="tsd-kind-icon">nodes</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_models_component_tree_.componenttree.html#parser" class="tsd-kind-icon">parser</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_component_tree_.componenttree.html#root" class="tsd-kind-icon">root</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_models_san_app_.sanapp.html#getentrycomponentclass" class="tsd-kind-icon">get<wbr>Entry<wbr>Component<wbr>Class</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_models_component_tree_.componenttree.html#addcomponentclass" class="tsd-kind-icon">add<wbr>Component<wbr>Class</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_models_component_tree_.componenttree.html#preorder" class="tsd-kind-icon">pre<wbr>Order</a></li>
 							</ul>
 						</section>
 					</div>
@@ -110,61 +119,55 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>San<wbr>App<span class="tsd-signature-symbol">(</span>entrySourceFile<span class="tsd-signature-symbol">: </span><a href="_models_san_sourcefile_.sansourcefile.html" class="tsd-signature-type">SanSourceFile</a>, projectFiles<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="_models_san_sourcefile_.sansourcefile.html" class="tsd-signature-type">SanSourceFile</a><span class="tsd-signature-symbol">&gt;</span>, componentTree<span class="tsd-signature-symbol">: </span><a href="_models_component_tree_.componenttree.html" class="tsd-signature-type">ComponentTree</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_models_san_app_.sanapp.html" class="tsd-signature-type">SanApp</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Component<wbr>Tree<span class="tsd-signature-symbol">(</span>ComponentClass<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_models_component_tree_.componenttree.html" class="tsd-signature-type">ComponentTree</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/models/san-app.ts#L7">models/san-app.ts:7</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/models/component-tree.ts#L13">models/component-tree.ts:13</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>entrySourceFile: <a href="_models_san_sourcefile_.sansourcefile.html" class="tsd-signature-type">SanSourceFile</a></h5>
-								</li>
-								<li>
-									<h5>projectFiles: <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="_models_san_sourcefile_.sansourcefile.html" class="tsd-signature-type">SanSourceFile</a><span class="tsd-signature-symbol">&gt;</span></h5>
-								</li>
-								<li>
-									<h5>componentTree: <a href="_models_component_tree_.componenttree.html" class="tsd-signature-type">ComponentTree</a></h5>
+									<h5>ComponentClass: <span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_models_san_app_.sanapp.html" class="tsd-signature-type">SanApp</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_models_component_tree_.componenttree.html" class="tsd-signature-type">ComponentTree</a></h4>
 						</li>
 					</ul>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="componenttree" class="tsd-anchor"></a>
-					<h3>component<wbr>Tree</h3>
-					<div class="tsd-signature tsd-kind-icon">component<wbr>Tree<span class="tsd-signature-symbol">:</span> <a href="_models_component_tree_.componenttree.html" class="tsd-signature-type">ComponentTree</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="nodes" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> nodes</h3>
+					<div class="tsd-signature tsd-kind-icon">nodes<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">, </span><a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Map&lt;ComponentConstructor&lt;{}, {}&gt;, ComponentInfo&gt;()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/models/san-app.ts#L7">models/san-app.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/models/component-tree.ts#L12">models/component-tree.ts:12</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="parser" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> parser</h3>
+					<div class="tsd-signature tsd-kind-icon">parser<span class="tsd-signature-symbol">:</span> <a href="_parsers_component_parser_.componentparser.html" class="tsd-signature-type">ComponentParser</a><span class="tsd-signature-symbol"> =&nbsp;new ComponentParser()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/models/component-tree.ts#L13">models/component-tree.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="entrysourcefile" class="tsd-anchor"></a>
-					<h3>entry<wbr>Source<wbr>File</h3>
-					<div class="tsd-signature tsd-kind-icon">entry<wbr>Source<wbr>File<span class="tsd-signature-symbol">:</span> <a href="_models_san_sourcefile_.sansourcefile.html" class="tsd-signature-type">SanSourceFile</a></div>
+					<a name="root" class="tsd-anchor"></a>
+					<h3>root</h3>
+					<div class="tsd-signature tsd-kind-icon">root<span class="tsd-signature-symbol">:</span> <a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/models/san-app.ts#L5">models/san-app.ts:5</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="projectfiles" class="tsd-anchor"></a>
-					<h3>project<wbr>Files</h3>
-					<div class="tsd-signature tsd-kind-icon">project<wbr>Files<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><a href="_models_san_sourcefile_.sansourcefile.html" class="tsd-signature-type">SanSourceFile</a><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/models/san-app.ts#L6">models/san-app.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/models/component-tree.ts#L11">models/component-tree.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -172,19 +175,51 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="getentrycomponentclass" class="tsd-anchor"></a>
-					<h3>get<wbr>Entry<wbr>Component<wbr>Class</h3>
+					<a name="addcomponentclass" class="tsd-anchor"></a>
+					<h3>add<wbr>Component<wbr>Class</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Entry<wbr>Component<wbr>Class<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Component<wbr>Class<span class="tsd-signature-symbol">(</span>ComponentClass<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/models/san-app.ts#L19">models/san-app.ts:19</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/models/component-tree.ts#L19">models/component-tree.ts:19</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ComponentClass: <span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="preorder" class="tsd-anchor"></a>
+					<h3>pre<wbr>Order</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">pre<wbr>Order<span class="tsd-signature-symbol">(</span>root<span class="tsd-signature-symbol">?: </span><a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a>, visited<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IterableIterator</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/6bf432e/src/models/component-tree.ts#L36">models/component-tree.ts:36</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> root: <a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a><span class="tsd-signature-symbol"> =&nbsp;this.root</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> visited: <span class="tsd-signature-type">Set</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Set()</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IterableIterator</span><span class="tsd-signature-symbol">&lt;</span><a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -197,7 +232,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_models_san_app_.html">"models/san-<wbr>app"</a>
+						<a href="../modules/_models_component_tree_.html">"models/component-<wbr>tree"</a>
 					</li>
 				</ul>
 			</nav>
@@ -206,22 +241,25 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_models_san_app_.sanapp.html" class="tsd-kind-icon">San<wbr>App</a>
+						<a href="_models_component_tree_.componenttree.html" class="tsd-kind-icon">Component<wbr>Tree</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_models_san_app_.sanapp.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_models_component_tree_.componenttree.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_models_component_tree_.componenttree.html#nodes" class="tsd-kind-icon">nodes</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_models_component_tree_.componenttree.html#parser" class="tsd-kind-icon">parser</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_models_san_app_.sanapp.html#componenttree" class="tsd-kind-icon">component<wbr>Tree</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_models_san_app_.sanapp.html#entrysourcefile" class="tsd-kind-icon">entry<wbr>Source<wbr>File</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_models_san_app_.sanapp.html#projectfiles" class="tsd-kind-icon">project<wbr>Files</a>
+								<a href="_models_component_tree_.componenttree.html#root" class="tsd-kind-icon">root</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_models_san_app_.sanapp.html#getentrycomponentclass" class="tsd-kind-icon">get<wbr>Entry<wbr>Component<wbr>Class</a>
+								<a href="_models_component_tree_.componenttree.html#addcomponentclass" class="tsd-kind-icon">add<wbr>Component<wbr>Class</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_models_component_tree_.componenttree.html#preorder" class="tsd-kind-icon">pre<wbr>Order</a>
 							</li>
 						</ul>
 					</li>

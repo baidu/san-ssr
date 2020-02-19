@@ -1,3 +1,10 @@
+## [1.9.4](https://github.com/baidu/san-ssr/compare/v1.9.3...v1.9.4) (2020-02-19)
+
+
+### Bug Fixes
+
+* add /types in package.json#files ([59d2c4f](https://github.com/baidu/san-ssr/commit/59d2c4f22bde43ad2e6958ff225569bec9c16983))
+
 ## [1.9.3](https://github.com/baidu/san-ssr/compare/v1.9.2...v1.9.3) (2020-02-18)
 
 

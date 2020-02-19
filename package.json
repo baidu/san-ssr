@@ -12,7 +12,7 @@
     "runtime",
     "bin",
     "dist",
-    "index.d.ts",
+    "types",
     "*.json",
     "*.md"
   ],

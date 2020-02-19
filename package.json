@@ -86,7 +86,6 @@
     "lodash": "^4.17.15",
     "snake-case": "^2.1.0",
     "ts-morph": "^4.0.1",
-    "ts2php": "^0.14.0",
     "typescript": "^3.4.5",
     "yargs": "^14.2.0"
   },

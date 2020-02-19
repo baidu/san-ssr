@@ -10,10 +10,7 @@
     "downlevelIteration": true,
     "strict": true,
     "sourceMap": true,
-    "baseUrl": ".",
-    "paths": {
-      "san": ["types/san"]
-    },
+    "baseUrl": "types",
     "suppressImplicitAnyIndexErrors": true
   },
   "include": [ "src" ]

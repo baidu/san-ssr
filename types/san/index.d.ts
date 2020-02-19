@@ -402,31 +402,3 @@ declare namespace San {
 }
 
 export = San;
-
-interface SanStaticGlobal {
-
-    Component: San.ComponentConstructor<{}, {}>;
-    Data: San.SanData<{}>;
-
-    defineComponent<T, D>(config: San.SanComponentConfig<T, D> & D): San.ComponentConstructor<T, D>;
-    createComponentLoader<T, D>(options: San.SanComponentLoaderOption<T, D> | San.SanComponentLoaderOption<T, D>['load']): San.SanComponentLoader<T, D>;
-    compileComponent<T extends San.SanComponent<{}>>(component: T): void;
-
-    parseExpr(template: string): San.ExprNode;
-    evalExpr<T, D extends San.SanComponent<{}>>(expr: San.ExprNode, data: San.SanData<T>, owner?: D): any;
-    parseTemplate(template: string, options?: San.ParseTemplateOption): San.ANode;
-    inherits(childClazz: (...args: any[]) => void, parentClazz: San.ComponentConstructor<{}, {}>): void;
-    nextTick(doNextTick: () => any): void;
-
-    ExprType: typeof San.ExprType;
-    DataTypes: typeof San.DataTypes;
-    NodeType: typeof San.NodeType;
-    LifeCycle: typeof San.LifeCycle;
-
-    debug: boolean;
-    version: string;
-}
-
-declare global {
-    const san: SanStaticGlobal;
-}

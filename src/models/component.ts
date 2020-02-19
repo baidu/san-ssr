@@ -1,9 +1,9 @@
-import { PHPClass } from 'ts2php'
-import { SanData as OriginSanData, SanComponent, ComponentConstructor } from 'san'
+import { SanComponent, ComponentConstructor } from 'san'
 import { CompiledComponent } from './compiled-component'
+import { SanData } from './san-data'
 
 export interface Computed {
-    [k: string]: (this: { data: Partial<SanData> }) => any
+    [k: string]: (this: { data: SanData }) => any
 }
 
 export interface Filters {
@@ -29,11 +29,6 @@ export function isComponentLoader (cmpt: any): cmpt is {placeholder: ComponentCl
 export function isComponentClass (clazz: any): clazz is typeof SanComponent {
     return typeof clazz === 'function' &&
         (typeof clazz.template === 'string' || typeof clazz.prototype.template === 'string')
-}
-
-interface SanData extends OriginSanData<{}>, PHPClass {
-    get (path?: string): any
-    set (path: string, value: any): any
 }
 
 export class SanSSRFiltersDeclarations {

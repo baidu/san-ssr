@@ -1,3 +1,10 @@
+## [1.9.5](https://github.com/baidu/san-ssr/compare/v1.9.4...v1.9.5) (2020-02-20)
+
+
+### Bug Fixes
+
+* remove dependency `ts2php` ([f930199](https://github.com/baidu/san-ssr/commit/f930199ca124031eb51cbbaf8e5a8c7fd23d90ed))
+
 ## [1.9.4](https://github.com/baidu/san-ssr/compare/v1.9.3...v1.9.4) (2020-02-19)
 
 

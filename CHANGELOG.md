@@ -1,3 +1,10 @@
+## [1.9.6](https://github.com/baidu/san-ssr/compare/v1.9.5...v1.9.6) (2020-02-20)
+
+
+### Bug Fixes
+
+* fixed ts-morph version ([bcbc3e3](https://github.com/baidu/san-ssr/commit/bcbc3e380cc8fa775a0dc26f5e4e6dadef029e09))
+
 ## [1.9.5](https://github.com/baidu/san-ssr/compare/v1.9.4...v1.9.5) (2020-02-20)
 
 

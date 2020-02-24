@@ -23,12 +23,12 @@ export class ComponentTree {
         const info = this.parser.parseComponent(ComponentClass)
         this.nodes.set(ComponentClass, info)
 
-        for (let component of Object.values(info.childComponentClasses)) {
-            if (isComponentLoader(component)) {
-                component = component.placeholder
+        for (let childComponentClass of Object.values(info.childComponentClasses)) {
+            if (isComponentLoader(childComponentClass)) {
+                childComponentClass = childComponentClass.placeholder
             }
-            if (!component) continue
-            info.children.push(this.addComponentClass(component))
+            if (!childComponentClass) continue
+            info.children.push(this.addComponentClass(childComponentClass))
         }
         return info
     }

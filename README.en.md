@@ -17,75 +17,35 @@
 * SSR migration：[from san to san-ssr](https://github.com/baidu/san-ssr/wiki/%E4%BB%8E-san-%E8%BF%81%E7%A7%BB%E5%88%B0-san-ssr)
 * Demo：[demo/](https://github.com/baidu/san-ssr/tree/master/demo)
 
-## Work with San
+## Usage
+
+The [SanProject class][sanproject] is used to compile component files into ssr render function.
+
+```javascript
+const { SanProject } = require('san-ssr')
+const app = require('src/component.js')
+
+const project = new SanProject()
+const render = project.compileToRenderer(app)
+
+console.log(render({name: 'harttle'}))
+```
+
+See API doc [SanProject][sanproject] for details, or refer to the demo project in /demo directory.
+
+## Working with San
 
 Supported san versions for each release are specified by `peerDependencies`, that means you'll need both `san` and `san-ssr` installed in case you need server side rendering. And it's considered compatible as long as you don't see any `UNMET` warning.
 
 Note: As described in [baidu/san/issues/441](https://github.com/baidu/san/issues/441#issuecomment-550260372), a minor version in san implies possible BREAKING CHANGES, thus the peerDependency is specified via [tilde version](https://docs.npmjs.com/misc/semver#tilde-ranges-123-12-1).
 
-## Target Platforms
+## Other Target Platforms
 
 san-ssr provides static analysis for San components and generates abstract component tree, while code generation is a separated process, which is provided by specific implementations:
 
 * [san-ssr-target-js](https://github.com/baidu/san-ssr/tree/master/src/target-js)
 * [san-ssr-target-php](https://github.com/baidu/san-ssr-target-php)
 
-## CLI Usage
-
-Command line interface:
-
-```none
-> san-ssr
-san-ssr -o <OUT_FILE> [OPTION]... <FILE>
-
-Options:
-  --help                Show help                                           [boolean]
-  --version             Show version number                                 [boolean]
-  --output, -o          output file path, output to STDOUT if not specified
-  --target, -t          target SSR file                                     [string]
-  --targetOptions, -j   options for target compiler in JSON format          [string]
-  --tsconfig, -c        tsconfig path, will auto resolve if not specified
-```
-
-san-ssr will lookup `san-ssr-target-${target}` from package from CWD for target code transpiler. The `san-ssr-target-js` is builtin san-ssr by default.
-
-```bash
-san-ssr ./component.js > ssr.js
-```
-
-## Programmatic Interface
-
-The [SanProject class][sanproject] is used to compile component files into ssr code string.
-
-TypeScript:
-
-```typescript
-import { Target, SanProject } from 'san-project'
-import { writeFileSync } from 'fs'
-
-const project = new SanProject()
-const targetCode = project.compile('src/component.ts', Target.js)
-
-writeFileSync('ssr.js', targetCode)
-```
-
-Or in JavaScript:
-
-```typescript
-const { SanProject } = require('san-project')
-import { writeFileSync } from 'fs'
-
-const project = new SanProject()
-const targetCode = project.compile('src/component.js', 'js')
-
-writeFileSync('ssr.js', targetCode)
-```
-
-The [SanProject#compile(filepath, target, options)][compile] has a third parameter `options`, which is passed
-directly to the target code generator's [compile(sanApp, options)][target-compile] as the second parameter.
-
-
 [san]: https://github.com/baidu/san
 [sanproject]: https://baidu.github.io/san-ssr/classes/_models_san_project_.sanproject.html
-[compile]: https://baidu.github.io/san-ssr/classes/_models_san_project_.sanproject.html#compile
 [target-compile]: https://baidu.github.io/san-ssr/interfaces/_models_compiler_.compiler.html#compile

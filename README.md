@@ -31,78 +31,24 @@ san-ssr 支持的 san 版本声明在 `peerDependencies` 里，因此只要能�
 
 更多讨论请参考：[baidu/san/issues/441](https://github.com/baidu/san/issues/441#issuecomment-550260372)
 
-## 命令行工具
-
-san-ssr 提供了命令行工具来编译 san 组件到 SSR 代码。
-
-```none
-> san-ssr
-san-ssr -o <OUT_FILE> [OPTION]... <FILE>
-
-Options:
-  --help                Show help                                           [boolean]
-  --version             Show version number                                 [boolean]
-  --output, -o          output file path, output to STDOUT if not specified
-  --target, -t          target SSR file                                     [string]
-  --targetOptions, -j   options for target compiler in JSON format          [string]
-  --tsconfig, -c        tsconfig path, will auto resolve if not specified
-```
-
-输入文件需要把 ComponentClass 作为默认导出。对于
-
-* TypeScript 是 `export default ComponentClass`
-* CommonJS 是 `exports = module.exports = ComponentClass`
-
-把 component.js 编译到 ssr.js：
-
-```bash
-san-ssr ./component.js > ssr.js
-```
-
-## 编程接口
+## 使用
 
 [SanProject 类][sanproject] 提供了你会用到的所有接口：
 
-* 输入可以是组件对象，也可以是组件文件，这个文件可以是 JavaScript 文件，也可以是 TypeScript 文件。
-* 输出可以是 CommonJS 代码，也可以一个 render 函数。
-
-TypeScript 编写的 San 组件:
-
-```typescript
-import { SanProject } from 'san-ssr'
-import { writeFileSync } from 'fs'
-
-const project = new SanProject()
-const targetCode = project.compile('src/component.ts')
-
-writeFileSync('ssr.js', targetCode)
-```
-
-JavaScript 编写的 San 组件:
+* 输入是组件对象。
+* 输出是一个 render 函数。该函数接受数据对象作为参数，返回 HTML 字符串。
 
 ```javascript
 const { SanProject } = require('san-ssr')
-import { writeFileSync } from 'fs'
+const app = require('src/component.js')
 
 const project = new SanProject()
-const targetCode = project.compile('src/component.js')
-
-writeFileSync('ssr.js', targetCode)
-```
-
-输出到 render 函数：
-
-```typescript
-import { SanProject } from 'san-ssr'
-import { writeFileSync } from 'fs'
-
-const project = new SanProject()
-const render = project.compileToRenderer('src/component.ts')
+const render = project.compileToRenderer(app)
 
 console.log(render({name: 'harttle'}))
 ```
 
-Compile 还支持目标平台、编译参数，详细请参考 API 文档：[SanProject#compile(filepath, target, options)][compile]。
+详细请参考 API 文档：[SanProject][sanproject]，或 /demo 下的示例项目。
 
 ## 其他目标平台
 
@@ -138,6 +84,5 @@ npm i san-ssr san-ssr-target-php
 
 [san]: https://github.com/baidu/san
 [sanproject]: https://baidu.github.io/san-ssr/classes/_models_san_project_.sanproject.html
-[compile]: https://baidu.github.io/san-ssr/classes/_models_san_project_.sanproject.html#compile
 [target-compile]: https://baidu.github.io/san-ssr/interfaces/_models_compiler_.compiler.html#compile
 [compiler]: https://github.com/baidu/san-ssr/blob/809fc8eb710253f6e5aa3bd1afc0b7f615ef572e/src/models/compiler.ts#L3

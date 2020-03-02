@@ -17,19 +17,11 @@ export class SanData {
     }
 
     get (path: string): any {
-        if (this.computed[path]) {
-            return this.computed[path].call({ data: this })
-        }
-        const seq = this.parseExpr(path)
-        let data = this.data
-        seq.forEach((name: string) => {
-            if (data[name] !== undefined && data[name] !== null) {
-                data = data[name]
-            } else {
-                return null
-            }
-        })
-        return data
+        if (this.computed[path]) return this.computed[path].call({ data: this })
+        return this.parseExpr(path).reduce(
+            (val: any, name: string) => val == null ? val : val[name],
+            this.data
+        )
     }
     set (path: string, value: string) {
         const seq = this.parseExpr(path)

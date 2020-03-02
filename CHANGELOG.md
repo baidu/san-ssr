@@ -1,3 +1,10 @@
+## [1.9.7](https://github.com/baidu/san-ssr/compare/v1.9.6...v1.9.7) (2020-03-02)
+
+
+### Bug Fixes
+
+* SanData#get() return undefined when not found ([a54918f](https://github.com/baidu/san-ssr/commit/a54918fb66d40c30b1240605a64cd853c66fb318))
+
 ## [1.9.6](https://github.com/baidu/san-ssr/compare/v1.9.5...v1.9.6) (2020-02-20)
 
 

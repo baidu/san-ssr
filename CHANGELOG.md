@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/baidu/san-ssr/compare/v1.9.7...v1.10.0) (2020-03-04)
+
+
+### Features
+
+* data.removeAt() during SSR ([30c929e](https://github.com/baidu/san-ssr/commit/30c929ec102e57a76310ae79b68d46c6764e8e34))
+
 ## [1.9.7](https://github.com/baidu/san-ssr/compare/v1.9.6...v1.9.7) (2020-03-02)
 
 

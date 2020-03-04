@@ -5,7 +5,10 @@ interface DataObject {
 }
 
 /**
- * SSR 期间的 Data 实现
+ * SSR 期间的 Data 实现，替代 import('san').SanData
+ *
+ * * 不涉及视图更新
+ * * 便于编译期优化
  */
 export class SanData {
     data: DataObject
@@ -36,6 +39,10 @@ export class SanData {
         }
         parent[seq.pop()!] = value
         return value
+    }
+    removeAt (path: string, index: number) {
+        const value: any[] = this.get(path)
+        if (value && value.splice) value.splice(index, 1)
     }
     parseExpr (expr: string): string[] {
         return expr.split('.')

@@ -135,7 +135,7 @@ function boolAttrFilter (name: string, value: string) {
 }
 
 function callFilter (ctx: CompileContext, name: string, args: any[]) {
-    const filter = ctx.instance['filters'][name]
+    const filter = ctx.instance.filters[name]
     if (typeof filter === 'function') {
         return filter.apply(ctx.instance, args)
     }

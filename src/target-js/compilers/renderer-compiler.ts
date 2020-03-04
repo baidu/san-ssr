@@ -2,6 +2,7 @@ import { isFunction, map } from 'lodash'
 import { ComponentTree } from '../../models/component-tree'
 import { ComponentInfo } from '../../models/component-info'
 import { JSEmitter } from '../emitters/emitter'
+import { SanData } from '../../models/san-data'
 import { Renderer } from '../../models/renderer'
 import { expr } from './expr-compiler'
 import { stringifier } from './stringifier'
@@ -9,11 +10,11 @@ import { ElementCompiler } from './element-compiler'
 import { ANodeCompiler } from './anode-compiler'
 import { COMPONENT_RESERVED_MEMBERS } from '../../models/component'
 import { CompiledComponent } from '../../models/compiled-component'
-import { SanComponent, ComponentConstructor } from 'san'
+import { ComponentConstructor } from 'san'
 
 // * 参数列表用于 toSource 和 toRender 两处，anode-compiler 中递归时要与此保持一致
 // * 前两个参数是为了保持和最终的 renderer 兼容，如此就不需要包装
-const RENDERER_ARGS = ['data', 'noDataOutput', 'sanssrRuntime', 'parentCtx', 'tagName', 'sourceSlots']
+const RENDERER_ARGS = ['data = {}', 'noDataOutput', 'sanssrRuntime', 'parentCtx', 'tagName', 'sourceSlots']
 
 export type ExpressionEvaluator = (ctx: CompileContext) => any
 
@@ -27,8 +28,19 @@ export interface ComponentRender {
 
 export type SourceSlot = any
 
+interface SanSSRComponent {
+    filters: {
+        [k: string]: (this: SanSSRComponent, ...args: any[]) => any
+    }
+    computed: {
+        [k: string]: (this: { data: SanData }) => any
+    }
+    tagName: string
+    data: SanData
+}
+
 export interface CompileContext {
-    instance: SanComponent<{}>
+    instance: SanSSRComponent
     sourceSlots: SourceSlot[]
     data: any,
     owner: CompileContext,
@@ -193,15 +205,13 @@ export class RendererCompiler {
         emitter.writeBlock('var componentCtx =', () => {
             emitter.writeLine(`instance: _.createFromPrototype(sanssrRuntime.prototype${this.componentInfo.cid}),`)
             emitter.writeLine('sourceSlots: sourceSlots,')
-
-            const defaultData = this.component.data.get()
-            emitter.writeLine('data: data || ' + stringifier.any(defaultData) + ',')
+            emitter.writeLine('data: data,')
             emitter.writeLine('owner: parentCtx,')
 
             // computedNames
-            emitter.writeLine('computedNames: [')
-            emitter.writeLine(Object.keys(this.componentInfo.computed).map(x => `'${x}'`).join(','))
-            emitter.writeLine('],')
+            emitter.nextLine('computedNames: [')
+            emitter.write(Object.keys(this.componentInfo.computed).map(x => `'${x}'`).join(', '))
+            emitter.feedLine('],')
 
             emitter.writeLine('slotRenderers: {}')
         })

@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
 require('source-map-support/register')
-const { renderBySource } = require('../dist/fixtures/case')
+const { getRenderArguments } = require('../dist/fixtures/case')
 
 const caseName = process.argv[2]
-const html = renderBySource(caseName)
+const render = require(`../test/cases/${caseName}/ssr.js`)
+const html = render(...getRenderArguments(caseName))
 
 process.stdout.write(html)

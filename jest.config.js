@@ -9,6 +9,9 @@ module.exports = {
     transform: {
         '^.+\\.ts$': 'babel-jest'
     },
+    collectCoverageFrom: [
+        'src/**/*.ts'
+    ],
     globals: {
         tsConfig: {
             skipLibCheck: true,

@@ -1,6 +1,5 @@
 import * as TypeGuards from './type-guards'
 import { camelCase } from 'lodash'
-// import { booleanAttributes } from './dom-util'
 import { ANode, ExprType, ANodeProperty } from 'san'
 
 /**
@@ -39,8 +38,6 @@ function postProp (prop: ANodeProperty) {
     if (!TypeGuards.isExprTextNode(expr)) return
 
     if (expr.segs.length === 0) {
-        // TODO 支持新的 boolean 属性逻辑
-        // if (booleanAttributes.has(prop.name)) {
         if (prop.raw == null) {
             prop.expr = {
                 type: ExprType.BOOL,

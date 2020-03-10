@@ -30,13 +30,19 @@ export default class ToJSCompiler implements Compiler {
 
     public compile (sanApp: SanApp, {
         noTemplateOutput = false,
-        bareFunction = false
+        bareFunction = false,
+        bareFunctionBody = false
     }) {
         const emitter = new JSEmitter()
-        if (!bareFunction) {
+        if (bareFunctionBody) emitFunctionBody()
+        else if (bareFunction) {
+            emitter.writeAnonymousFunction(['data', 'noDataOutput'], emitFunctionBody)
+        } else {
             emitter.write('exports = module.exports = ')
+            emitter.writeAnonymousFunction(['data', 'noDataOutput'], emitFunctionBody)
         }
-        emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => {
+
+        function emitFunctionBody () {
             emitRuntime(emitter, 'sanssrRuntime')
             for (const info of sanApp.componentTree.preOrder()) {
                 const { cid } = info
@@ -50,7 +56,8 @@ export default class ToJSCompiler implements Compiler {
             }
             const funcName = 'sanssrRuntime.renderer' + sanApp.componentTree.root.cid
             emitter.writeLine(`return ${funcName}(data, noDataOutput, sanssrRuntime)`)
-        })
+        }
+
         return emitter.fullText()
     }
 

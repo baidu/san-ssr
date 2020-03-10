@@ -1,4 +1,4 @@
-import { compileToSource, compileToRenderer } from '../../dist/index'
+import { compileToSource, compileToRenderer } from '../../src/index'
 import { defineComponent } from 'san'
 
 describe('compileToSource', function () {

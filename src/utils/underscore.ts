@@ -56,24 +56,15 @@ function htmlFilterReplacer (c: string) {
 }
 
 function escapeHTML (source: any) {
-    if (source == null) {
-        return ''
-    }
-
+    if (source == null) return ''
     if (typeof source === 'string') {
         return source ? source.replace(/[&<>"']/g, htmlFilterReplacer) : ''
     }
-
     return '' + source
 }
 
-// TODO remove this
 function _classFilter (source: string | string[]) {
-    if (source instanceof Array) {
-        return source.join(' ')
-    }
-
-    return source
+    return source instanceof Array ? source.join(' ') : source
 }
 
 function _styleFilter (source: object) {
@@ -84,49 +75,36 @@ function _styleFilter (source: object) {
                 result += key + ':' + source[key] + ';'
             })
         }
-
         return result
     }
-
     return source
 }
 
 function _xclassFilter (outer: string | string[], inner: string) {
-    if (outer instanceof Array) {
-        outer = outer.join(' ')
-    }
-
+    if (outer instanceof Array) outer = outer.join(' ')
     if (outer) {
-        if (inner) {
-            return inner + ' ' + outer
-        }
-
+        if (inner) return inner + ' ' + outer
         return outer
     }
-
     return inner
 }
 
 function _xstyleFilter (outer: object | string | string[], inner: string) {
     outer = outer && defaultStyleFilter(outer)
     if (outer) {
-        if (inner) {
-            return inner + ';' + outer
-        }
-
+        if (inner) return inner + ';' + outer
         return outer
     }
-
     return inner
 }
 
 function attrFilter (name: string, value: string, needHTMLEscape: boolean) {
     if (value) {
         return ' ' + name + '="' + (needHTMLEscape ? escapeHTML(value) : value) + '"'
-    } else if (value != null && !BASE_PROPS[name]) {
+    }
+    if (value != null && !BASE_PROPS[name]) {
         return ' ' + name + '="' + value + '"'
     }
-
     return ''
 }
 
@@ -150,10 +128,8 @@ function defaultStyleFilter (source: object | string | string[]) {
                 result += key + ':' + source[key] + ';'
             }
         }
-
         return result
     }
-
     return source
 }
 

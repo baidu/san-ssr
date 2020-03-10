@@ -3,7 +3,7 @@
 require('source-map-support/register')
 const { execCommandSync, assertSanHTMLEqual } = require('../dist/index')
 const chalk = require('chalk')
-const { readFileSync, readdirSync } = require('fs')
+const { readFileSync, readdirSync, writeFileSync } = require('fs')
 const { resolve } = require('path')
 const root = resolve(__dirname, '../test/cases')
 const { compile } = require('../dist/fixtures/case')
@@ -24,7 +24,10 @@ console.log(chalk.cyan(`[EXPECT] ${caseName}`), expected)
 
 let got1
 try {
-    compile(caseName)
+    const targetCode = compile(caseName)
+    const fileName = `${__dirname}/../test/cases/${caseName}/ssr.js`
+    writeFileSync(fileName, targetCode)
+
     got1 = execCommandSync(resolve(__dirname, `./render-by-source.js`), [caseName])
     assertSanHTMLEqual(got1, expected)
     console.log(chalk.green(`[SOURCE] ${caseName}`), got1)

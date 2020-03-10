@@ -1,12 +1,14 @@
-import { ls, compile, readExpected, renderBySource, renderOnthefly } from '../src/fixtures/case'
+import { ls, compile, getRenderArguments, readExpected, renderOnthefly } from '../src/fixtures/case'
 import { parseSanHTML } from '../src/index'
 
 for (const caseName of ls()) {
     const [expectedData, expectedHtml] = parseSanHTML(readExpected(caseName))
 
     it('render to source: ' + caseName, async function () {
-        compile(caseName)
-        const got = renderBySource(caseName)
+        const code = compile(caseName, true)
+        // eslint-disable-next-line
+        const render = new Function('data', 'noDataOutput', code)
+        const got = render(...getRenderArguments(caseName))
         const [data, html] = parseSanHTML(got)
 
         expect(data).toEqual(expectedData)

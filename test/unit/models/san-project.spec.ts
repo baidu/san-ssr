@@ -1,4 +1,4 @@
-import { SanProject } from '../../../dist/models/san-project'
+import { SanProject } from '../../../src/models/san-project'
 import { defineComponent } from 'san'
 import { resolve } from 'path'
 
@@ -45,19 +45,17 @@ describe('SanProject', function () {
             const proj = new SanProject()
             const componentClass = require(resolve(stubRoot, './a.comp.js'))
             const code = proj.compile(componentClass, 'js', {
-                bareFunction: true
+                bareFunctionBody: true
             })
 
             expect(code).toContain('html += "A')
-            expect(code).toMatch(/^function \(data, noDataOutput\) {/)
+            expect(code).toMatch(/^var sanssrRuntime = /)
         })
 
         it('should not throw if tsConfigFilePath not specified', function () {
             const proj = new SanProject({ tsConfigFilePath: null })
             const componentClass = require(resolve(stubRoot, './a.comp.js'))
-            expect(() => {
-                proj.compile(componentClass, 'js')
-            }).not.toThrow()
+            expect(() => proj.compile(componentClass, 'js')).not.toThrow()
         })
     })
 

@@ -1,5 +1,5 @@
 import { startMeasure } from './timing'
-import { readFileSync, lstatSync, readdirSync, writeFileSync, existsSync } from 'fs'
+import { readFileSync, lstatSync, readdirSync, existsSync } from 'fs'
 import { resolve, join } from 'path'
 import { SanProject } from '../models/san-project'
 import ToJSCompiler from '../target-js'
@@ -22,7 +22,7 @@ export function readExpected (caseName: string) {
     return readFileSync(htmlPath, 'utf8')
 }
 
-export function compile (caseName: string) {
+export function compile (caseName: string, bareFunctionBody = false) {
     debug('compile', caseName)
     const caseDir = join(caseRoot, caseName)
     if (caseDir) {
@@ -35,11 +35,11 @@ export function compile (caseName: string) {
     const targetCode = sanProject.compile(
         existsSync(tsFile) ? tsFile : jsFile,
         ToJSCompiler, {
-            noTemplateOutput
+            noTemplateOutput,
+            bareFunctionBody
         }
     )
-
-    writeFileSync(join(caseDir, 'ssr.js'), targetCode)
+    return targetCode
 }
 
 export function compileAll () {
@@ -69,11 +69,10 @@ export function readCaseData (caseName: string) {
     return JSON.parse(readFileSync(dataPath, 'utf8'))
 }
 
-export function renderBySource (caseName: string) {
-    const render = require(`../../test/cases/${caseName}/ssr.js`)
+export function getRenderArguments (caseName: string) {
     const data = readCaseData(caseName)
     const noDataOutput = /-ndo$/.test(caseName)
-    return render(data, noDataOutput)
+    return [data, noDataOutput]
 }
 
 export function renderOnthefly (caseName: string) {

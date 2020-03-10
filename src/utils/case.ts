@@ -1,3 +1,10 @@
+/**
+ * san ssr 测试样例工具，包括：
+ *
+ * - 数据部分的提取
+ * - HTML 部分的判等
+ * - 顺序无关的数据对象比较
+ */
 import debugFactory from 'debug'
 
 const debug = debugFactory('case')
@@ -23,21 +30,23 @@ export function assertSanHTMLEqual (expected: string, got: string) {
     }
 }
 
-/*
+/**
  * San HTML 数据和 DOM 部分比较（不依赖 Object key 顺序）
+ *
+ * @returns 相等时返回空（undefined），不相等时返回信息（比如 "data not equal"）
  */
 export function compareSanHTML (expected: string, got: string) {
     const [data0, html0] = parseSanHTML(expected)
     const [data1, html1] = parseSanHTML(got)
     if (!deepEqual(data0, data1)) {
-        return 'data not qual'
+        return 'data not equal'
     }
     if (html0 !== html1) {
-        return 'html not qual'
+        return 'html not equal'
     }
 }
 
-function deepEqual (lhs: any, rhs: any) {
+export function deepEqual (lhs: any, rhs: any) {
     if (typeof lhs === 'object' && lhs !== null) {
         const keys = new Set([...Object.keys(lhs), ...Object.keys(rhs)])
         for (const key of keys) {

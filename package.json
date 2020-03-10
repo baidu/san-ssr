@@ -27,6 +27,7 @@
     "unit": "jest test/unit",
     "integration": "jest test/integration.spec.ts",
     "perf": "node ./test/perf/index.js",
+    "check": "npm test && npm run lint",
     "test": "npm run build && npm run unit && npm run integration",
     "coveralls": "npm run build && jest test/unit --coverage && cat coverage/lcov.info | coveralls",
     "coverage": "jest test/unit test/integration.spec.ts --coverage",

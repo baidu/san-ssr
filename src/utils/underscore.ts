@@ -1,5 +1,3 @@
-import { CompileContext } from '../target-js/compilers/renderer-compiler'
-
 const BASE_PROPS = {
     'class': 1,
     'style': 1,
@@ -7,36 +5,19 @@ const BASE_PROPS = {
 }
 
 function extend (target: object, source: object) {
-    if (source) {
-        Object.keys(source).forEach(function (key) {
-            const value = source[key]
-            if (typeof value !== 'undefined') {
-                target[key] = value
-            }
-        })
-    }
-
+    if (!source) return target
+    Object.keys(source).forEach(function (key) {
+        target[key] = source[key]
+    })
     return target
 }
 
-function each<T> (array: T[], iterator: (item: T, index: number) => boolean) {
-    if (array && array.length > 0) {
-        for (let i = 0, l = array.length; i < l; i++) {
-            if (iterator(array[i], i) === false) {
-                break
-            }
-        }
+function includes<T> (array: T[], value: T) {
+    if (!array) return false
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] === value) return true
     }
-}
-
-function contains<T> (array: T[], value: T) {
-    let result
-    each(array, function (item) {
-        result = item === value
-        return !result
-    })
-
-    return result
+    return false
 }
 
 const HTML_ENTITY = {
@@ -51,14 +32,10 @@ const HTML_ENTITY = {
     /* jshint ignore:end */
 }
 
-function htmlFilterReplacer (c: string) {
-    return HTML_ENTITY[c]
-}
-
 function escapeHTML (source: any) {
     if (source == null) return ''
     if (typeof source === 'string') {
-        return source ? source.replace(/[&<>"']/g, htmlFilterReplacer) : ''
+        return source.replace(/[&<>"']/g, (c: string) => HTML_ENTITY[c])
     }
     return '' + source
 }
@@ -67,15 +44,15 @@ function _classFilter (source: string | string[]) {
     return source instanceof Array ? source.join(' ') : source
 }
 
+function isObject (source: any) {
+    return typeof source === 'object' && source !== null
+}
+
 function _styleFilter (source: object) {
-    if (typeof source === 'object') {
-        let result = ''
-        if (source) {
-            Object.keys(source).forEach(function (key) {
-                result += key + ':' + source[key] + ';'
-            })
-        }
-        return result
+    if (isObject(source)) {
+        return Object.keys(source)
+            .map(key => key + ':' + source[key] + ';')
+            .join('')
     }
     return source
 }
@@ -112,23 +89,11 @@ function boolAttrFilter (name: string, value: string) {
     return value ? ' ' + name : ''
 }
 
-function callFilter (ctx: CompileContext, name: string, args: any[]) {
-    const filter = ctx.instance.filters[name]
-    if (typeof filter === 'function') {
-        return filter.apply(ctx.instance, args)
-    }
-}
-
 function defaultStyleFilter (source: object | string | string[]) {
-    if (typeof source === 'object') {
-        let result = ''
-        for (const key in source) {
-            /* istanbul ignore else  */
-            if (source.hasOwnProperty(key)) {
-                result += key + ':' + source[key] + ';'
-            }
-        }
-        return result
+    if (isObject(source)) {
+        return Object.keys(source)
+            .map(key => key + ':' + source[key] + ';')
+            .join('')
     }
     return source
 }
@@ -140,5 +105,5 @@ function createFromPrototype (proto: object) {
 }
 
 export const _ = {
-    escapeHTML, defaultStyleFilter, callFilter, boolAttrFilter, attrFilter, extend, contains, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype
+    escapeHTML, defaultStyleFilter, boolAttrFilter, attrFilter, extend, includes, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype
 }

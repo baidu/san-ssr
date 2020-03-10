@@ -50,7 +50,7 @@ export function stringLiteralize (source: string) {
 
 // 生成数据访问表达式代码
 export function dataAccess (accessorExpr?: ExprAccessorNode): string {
-    let code = 'componentCtx.data'
+    let code = 'ctx.data'
     if (!accessorExpr) return code
     for (const path of accessorExpr.paths) {
         const prop = expr(path)
@@ -62,7 +62,7 @@ export function dataAccess (accessorExpr?: ExprAccessorNode): string {
 // 生成调用表达式代码
 function callExpr (callExpr: ExprCallNode): string {
     const paths = callExpr.name.paths
-    let code = 'componentCtx.instance'
+    let code = 'ctx.instance'
     for (const path of paths) {
         const prop = expr(path)
         code += isValidIdentifier(prop) ? `.${prop}` : `[${prop}]`
@@ -70,7 +70,7 @@ function callExpr (callExpr: ExprCallNode): string {
 
     code += '('
     const argValues = callExpr.args.map(arg => expr(arg))
-    code += [...argValues, 'componentCtx'].join(',')
+    code += [...argValues, 'ctx'].join(',')
     code += ')'
 
     return code
@@ -100,7 +100,7 @@ function interp (interpExpr: ExprInterpNode): string {
 
         default:
             const args = filter.args.map((arg: any) => expr(arg))
-            code = `_.callFilter(componentCtx, "${filterName}", [${code}, ${args.join(', ')}])`
+            code = `ctx.instance.filters["${filterName}"].call(ctx.instance, ${code}, ${args.join(', ')})`
         }
     }
 

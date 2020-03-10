@@ -116,8 +116,8 @@ export class ANodeCompiler {
             emitter.writeFor('var ' + indexName + ' = 0; ' +
             indexName + ' < ' + listName + '.length; ' +
             indexName + '++', () => {
-                emitter.writeLine('componentCtx.data.' + indexName + '=' + indexName + ';')
-                emitter.writeLine('componentCtx.data.' + itemName + '= ' + listName + '[' + indexName + '];')
+                emitter.writeLine('ctx.data.' + indexName + '=' + indexName + ';')
+                emitter.writeLine('ctx.data.' + itemName + '= ' + listName + '[' + indexName + '];')
                 this.compile(forElementANode, emitter)
             })
         })
@@ -126,8 +126,8 @@ export class ANodeCompiler {
         emitter.beginElseIf('typeof ' + listName + ' === "object"')
         emitter.writeFor('var ' + indexName + ' in ' + listName, () => {
             emitter.writeIf(listName + '[' + indexName + '] != null', () => {
-                emitter.writeLine('componentCtx.data.' + indexName + '=' + indexName + ';')
-                emitter.writeLine('componentCtx.data.' + itemName + '= ' + listName + '[' + indexName + '];')
+                emitter.writeLine('ctx.data.' + indexName + '=' + indexName + ';')
+                emitter.writeLine('ctx.data.' + itemName + '= ' + listName + '[' + indexName + '];')
                 this.compile(forElementANode, emitter)
             })
         })
@@ -140,12 +140,12 @@ export class ANodeCompiler {
     compileSlot (aNode: ASlotNode, emitter: JSEmitter) {
         const rendererId = this.nextID()
 
-        emitter.writeLine('componentCtx.slotRenderers.' + rendererId +
-        ' = componentCtx.slotRenderers.' + rendererId + ' || function () {')
+        emitter.writeLine('ctx.slotRenderers.' + rendererId +
+        ' = ctx.slotRenderers.' + rendererId + ' || function () {')
         emitter.indent()
 
         emitter.nextLine('')
-        emitter.writeFunction('$defaultSlotRender', ['componentCtx'], () => {
+        emitter.writeFunction('$defaultSlotRender', ['ctx'], () => {
             emitter.writeLine('var html = "";')
             for (const aNodeChild of aNode.children || []) {
                 this.compile(aNodeChild, emitter)
@@ -154,7 +154,7 @@ export class ANodeCompiler {
         })
 
         emitter.writeLine('var $isInserted = false;')
-        emitter.writeLine('var $ctxSourceSlots = componentCtx.sourceSlots;')
+        emitter.writeLine('var $ctxSourceSlots = ctx.sourceSlots;')
         emitter.writeLine('var $mySourceSlots = [];')
 
         const nameProp = getANodePropByName(aNode, 'name')
@@ -175,7 +175,7 @@ export class ANodeCompiler {
         }
 
         emitter.writeLine('if (!$isInserted) { $mySourceSlots.push($defaultSlotRender); }')
-        emitter.writeLine('var $slotCtx = $isInserted ? componentCtx.owner : componentCtx;')
+        emitter.writeLine('var $slotCtx = $isInserted ? ctx.owner : ctx;')
 
         if (aNode.vars || aNode.directives.bind) {
             emitter.writeLine('$slotCtx = {data: _.extend({}, $slotCtx.data), instance: $slotCtx.instance, owner: $slotCtx.owner};')
@@ -199,7 +199,7 @@ export class ANodeCompiler {
 
         emitter.unindent()
         emitter.writeLine('};')
-        emitter.writeLine('componentCtx.slotRenderers.' + rendererId + '();')
+        emitter.writeLine('ctx.slotRenderers.' + rendererId + '();')
     }
 
     compileElement (aNode: ANode, emitter: JSEmitter) {
@@ -233,7 +233,7 @@ export class ANodeCompiler {
             }
 
             if (defaultSourceSlots.length) {
-                emitter.writeLine('$sourceSlots.push([function (componentCtx) {')
+                emitter.writeLine('$sourceSlots.push([function (ctx) {')
                 emitter.indent()
                 emitter.writeLine('var html = "";')
                 defaultSourceSlots.forEach(child => this.compile(child, emitter))
@@ -244,7 +244,7 @@ export class ANodeCompiler {
 
             for (const key in sourceSlotCodes) {
                 const sourceSlotCode = sourceSlotCodes[key]
-                emitter.writeLine('$sourceSlots.push([function (componentCtx) {')
+                emitter.writeLine('$sourceSlots.push([function (ctx) {')
                 emitter.indent()
                 emitter.writeLine('var html = "";')
                 sourceSlotCode.children.forEach((child: ANode) => {
@@ -273,7 +273,7 @@ export class ANodeCompiler {
 
         const funcName = 'sanssrRuntime.renderer' + info.cid
         emitter.nextLine(`html += ${funcName}(`)
-        emitter.write(dataLiteral + ', true, sanssrRuntime, componentCtx, ' +
+        emitter.write(dataLiteral + ', true, sanssrRuntime, ctx, ' +
         stringifier.str(aNode.tagName) + ', $sourceSlots);')
         emitter.writeLine('$sourceSlots = null;')
     }

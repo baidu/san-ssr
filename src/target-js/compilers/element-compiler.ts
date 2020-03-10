@@ -114,7 +114,7 @@ export class ElementCompiler {
                     if (valueProp) {
                         switch (propsIndex['type'].raw) {
                         case 'checkbox':
-                            emitter.writeIf(`_.contains(${expr(prop.expr)}, ${valueCode})`, () => {
+                            emitter.writeIf(`_.includes(${expr(prop.expr)}, ${valueCode})`, () => {
                                 emitter.bufferHTMLLiteral(' checked')
                             })
                             break

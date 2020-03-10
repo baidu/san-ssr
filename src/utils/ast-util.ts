@@ -15,10 +15,12 @@ export function getComponentClassIdentifier (sourceFile: SourceFile): string | u
 
     const namedImports = declaration.getNamedImports()
     for (const namedImport of namedImports) {
-        const propertyName = namedImport.getText()
-        if (propertyName === 'Component') {
-            return namedImport.getText()
-        }
+        const name = namedImport.getName()
+        if (name !== 'Component') continue
+
+        const alias = namedImport.getAliasNode()
+        if (alias) return alias.getText()
+        return 'Component'
     }
 }
 
@@ -30,16 +32,4 @@ export function isChildClassOf (clazz: ClassDeclaration, parentClass: string) {
     if (!typeNode) return false
 
     return true
-}
-
-export function movePropertyInitiatorToPrototype (sourceFile: SourceFile, clazz: ClassDeclaration) {
-    debug('props', clazz.getProperties())
-    for (const prop of clazz.getProperties()) {
-        debug('movePropertyInitiatorToPrototype', prop.getName())
-        const initializer = prop.getInitializer()
-        if (!initializer || prop.isStatic()) continue
-        const statement = clazz.getName() + '.prototype.' + prop.getName() + ' = ' + initializer.getFullText()
-        sourceFile.addStatements(statement)
-        prop.removeInitializer()
-    }
 }

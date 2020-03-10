@@ -159,21 +159,21 @@ export class RendererCompiler {
         // init data
         const defaultData = (this.component.initData && this.component.initData()) || {}
         Object.keys(defaultData).forEach(function (key) {
-            emitter.writeLine('componentCtx.data["' + key + '"] = componentCtx.data["' + key + '"] || ' +
+            emitter.writeLine('ctx.data["' + key + '"] = ctx.data["' + key + '"] || ' +
             stringifier.any(defaultData[key]) + ';')
         })
-        emitter.writeLine('componentCtx.instance.data = new SanData(componentCtx.data, componentCtx.instance.computed)')
+        emitter.writeLine('ctx.instance.data = new SanData(ctx.data, ctx.instance.computed)')
 
         // call inited
         if (typeof this.component.inited === 'function') {
-            emitter.writeLine('componentCtx.instance.inited()')
+            emitter.writeLine('ctx.instance.inited()')
         }
 
         // calc computed
-        emitter.writeLine('var computedNames = componentCtx.computedNames;')
+        emitter.writeLine('var computedNames = ctx.computedNames;')
         emitter.writeFor('var $i = 0; $i < computedNames.length; $i++', () => {
             emitter.writeLine('var $computedName = computedNames[$i];')
-            emitter.writeLine('data[$computedName] = componentCtx.instance.computed[$computedName].apply(componentCtx.instance);')
+            emitter.writeLine('data[$computedName] = ctx.instance.computed[$computedName].apply(ctx.instance);')
         })
 
         const ifDirective = this.component.aNode.directives['if'] // eslint-disable-line dot-notation
@@ -202,7 +202,7 @@ export class RendererCompiler {
     * 生成组件 renderer 时 ctx 对象构建的代码
     */
     private genComponentContextCode (emitter: JSEmitter) {
-        emitter.writeBlock('var componentCtx =', () => {
+        emitter.writeBlock('var ctx =', () => {
             emitter.writeLine(`instance: _.createFromPrototype(sanssrRuntime.prototype${this.componentInfo.cid}),`)
             emitter.writeLine('sourceSlots: sourceSlots,')
             emitter.writeLine('data: data,')

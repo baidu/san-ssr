@@ -23,7 +23,7 @@ describe('JSEmitter', function () {
     it('should write data comment', function () {
         emitter.writeDataComment()
 
-        expect(emitter.fullText()).toEqual('html += "<!--s-data:" + JSON.stringify(componentCtx.data) + "-->";\n')
+        expect(emitter.fullText()).toEqual('html += "<!--s-data:" + JSON.stringify(ctx.data) + "-->";\n')
     })
 
     describe('write switch case', function () {

@@ -49,7 +49,7 @@ export class TSSanAppParser implements SanAppParser {
     }
 
     public parseSanApp (entryFilePath: string, modules: Modules = {}): SanApp {
-        debug('parsComponent', entryFilePath)
+        debug('parseSanApp', entryFilePath)
         entryFilePath = resolve(entryFilePath)
         this.project.addExistingSourceFileIfExists(entryFilePath)
         const entrySourceFile = getSourceFileTypeOrThrow(entryFilePath) === SourceFileType.js

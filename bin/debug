@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 require('source-map-support/register')
-const { execCommandSync, assertSanHTMLEqual } = require('../dist/index')
+const { assertSanHTMLEqual } = require('../dist/index')
+const { execFileSync } = require('child_process')
 const chalk = require('chalk')
 const { readFileSync, readdirSync, writeFileSync } = require('fs')
 const { resolve } = require('path')
@@ -22,26 +23,33 @@ const htmlPath = resolve(root, caseName, 'expected.html')
 const expected = readFileSync(htmlPath, 'utf8')
 console.log(chalk.cyan(`[EXPECT] ${caseName}`), expected)
 
-let got1
-try {
-    const targetCode = compile(caseName)
-    const fileName = `${__dirname}/../test/cases/${caseName}/ssr.js`
-    writeFileSync(fileName, targetCode)
+if (!caseName.match(/-nsrc$/)) debugCompileToSource()
+debugCompileToRenderer()
 
-    got1 = execCommandSync(resolve(__dirname, `./render-by-source.js`), [caseName])
-    assertSanHTMLEqual(got1, expected)
-    console.log(chalk.green(`[SOURCE] ${caseName}`), got1)
-} catch (err) {
-    console.log(chalk.red(`[SOURCE] ${caseName}`), got1)
-    console.error(err)
+function debugCompileToSource () {
+    let got
+    try {
+        const targetCode = compile(caseName)
+        const fileName = `${__dirname}/../test/cases/${caseName}/ssr.js`
+        writeFileSync(fileName, targetCode)
+
+        got = execFileSync(resolve(__dirname, `./render-by-source.js`), [caseName]).toString()
+        assertSanHTMLEqual(got, expected)
+        console.log(chalk.green(`[SOURCE] ${caseName}`), got)
+    } catch (err) {
+        console.log(chalk.red(`[SOURCE] ${caseName}`), got)
+        console.error(err)
+    }
 }
 
-let got2
-try {
-    got2 = execCommandSync(resolve(__dirname, `./render-onthefly.js`), [caseName])
-    assertSanHTMLEqual(got2, expected)
-    console.log(chalk.green(`[RENDER] ${caseName}`), got2)
-} catch (err) {
-    console.log(chalk.red(`[RENDER] ${caseName}`), got2)
-    console.error(err)
+function debugCompileToRenderer () {
+    let got
+    try {
+        got = execFileSync(resolve(__dirname, `./render-onthefly.js`), [caseName]).toString()
+        assertSanHTMLEqual(got, expected)
+        console.log(chalk.green(`[RENDER] ${caseName}`), got)
+    } catch (err) {
+        console.log(chalk.red(`[RENDER] ${caseName}`), got)
+        console.error(err)
+    }
 }

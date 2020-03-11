@@ -53,7 +53,9 @@ export function compileAll () {
 
 export function compileCaseToRenderer (caseName: string) {
     const caseDir = resolve(caseRoot, caseName)
-    const ComponentClass = require(join(caseDir, 'component.js'))
+    const js = join(caseDir, 'component.js')
+    const ts = join(caseDir, 'component.ts')
+    const ComponentClass = existsSync(js) ? require(js) : ts
     return compileToRenderer(ComponentClass, {
         noTemplateOutput: caseDir.indexOf('notpl') > -1
     })

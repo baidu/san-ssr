@@ -34,3 +34,11 @@ export function shouldInline (decl: ImportDeclaration) {
 export function isRelativePath (importLiteralValue: string) {
     return /^\.+\//.test(importLiteralValue)
 }
+
+export function isAbsolutePath (importLiteralValue: string) {
+    return /^\.+\//.test(importLiteralValue)
+}
+
+export function isPath (str: string) {
+    return isRelativePath(str) || isAbsolutePath(str)
+}

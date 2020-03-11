@@ -75,6 +75,8 @@
     "jest": "^24.9.0",
     "mustache": "^3.2.0",
     "san": "^3.8.0",
+    "san-ssr-target-fake-cmd": "^1.0.0",
+    "san-ssr-target-fake-esm": "^1.0.0",
     "semantic-release": "^15.13.27",
     "source-map-support": "^0.5.16",
     "swig-templates": "^2.0.3",

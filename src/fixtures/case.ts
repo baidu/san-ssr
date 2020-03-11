@@ -1,4 +1,3 @@
-import { startMeasure } from './timing'
 import { readFileSync, lstatSync, readdirSync, existsSync } from 'fs'
 import { resolve, join } from 'path'
 import { SanProject } from '../models/san-project'
@@ -9,7 +8,6 @@ import { compileToRenderer } from '../index'
 const debug = debugFactory('case')
 const caseRoot = resolve(__dirname, '../../test/cases')
 const tsConfigFilePath = resolve(__dirname, '../../test/tsconfig.json')
-const cases = readdirSync(caseRoot)
 const sanProject = new SanProject({ tsConfigFilePath })
 
 export function ls () {
@@ -22,13 +20,9 @@ export function readExpected (caseName: string) {
     return readFileSync(htmlPath, 'utf8')
 }
 
-export function compile (caseName: string, bareFunctionBody = false) {
+export function compile (caseName: string, bareFunctionBody: boolean) {
     debug('compile', caseName)
     const caseDir = join(caseRoot, caseName)
-    if (caseDir) {
-        if (!lstatSync(caseDir).isDirectory()) return
-    }
-
     const tsFile = join(caseDir, 'component.ts')
     const jsFile = resolve(caseDir, 'component.js')
     const noTemplateOutput = caseName.indexOf('notpl') > -1
@@ -40,15 +34,6 @@ export function compile (caseName: string, bareFunctionBody = false) {
         }
     )
     return targetCode
-}
-
-export function compileAll () {
-    const timing = startMeasure()
-    for (const caseName of cases) {
-        console.log(`compiling ${caseName} to js`)
-        compile(caseName)
-    }
-    console.log('compiled in', timing.duration())
 }
 
 export function compileCaseToRenderer (caseName: string) {

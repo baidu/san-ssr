@@ -37,7 +37,7 @@ export class SanProject {
     }: SanProjectOptions = {}) {
         this.tsConfigFilePath = tsConfigFilePath
         if (tsConfigFilePath !== null) {
-            this.tsProject = new Project({ tsConfigFilePath })
+            this.tsProject = new Project({ tsConfigFilePath, addFilesFromTsConfig: false })
         }
         this.modules = modules
     }

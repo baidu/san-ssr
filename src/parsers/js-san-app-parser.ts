@@ -36,6 +36,6 @@ export class JSSanAppParser implements SanAppParser {
     }
 
     private evaluateFile (sourceFile: SanSourceFile) {
-        return this.commonJS.require(sourceFile.getFilePath())
+        return require(sourceFile.getFilePath())
     }
 }

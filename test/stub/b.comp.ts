@@ -1,9 +1,9 @@
 import { Component } from 'san'
-import { defaultTo } from 'lodash'
+import A from './a.comp'
 
 export default class B extends Component {
     public static template = 'B'
-    someMethod () {
-        console.log(defaultTo(0, 10))
-    }
+    components: { a: A }
 }
+
+export class C {}

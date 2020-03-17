@@ -2,8 +2,8 @@ import { ClassDeclaration } from 'ts-morph'
 
 export function normalizeComponentClass (clazz: ClassDeclaration) {
     if (!clazz.getName()) {
-        // clazz.rename('SanSSRComponent')    // this throws
-        throw new Error('anonymous component class is not supported')
+        // clazz.rename('SanSSRMyComponent')
+        throw new Error('anonymous component class is not supported, refer to https://github.com/dsherret/ts-morph/pull/799')
     }
 
     for (const prop of clazz.getProperties()) {

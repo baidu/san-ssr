@@ -8,7 +8,6 @@ import { CommonJS, Modules } from '../loaders/common-js'
 import { tsSourceFile2js } from '../transpilers/ts2js'
 import { normalizeComponentClass } from './normalize-component'
 import { SanSourceFile } from '../models/san-sourcefile'
-import { getDefaultTSConfigPathOrThrow } from './tsconfig'
 import { getDependenciesRecursively } from './dependency-resolver'
 import { SanApp } from '../models/san-app'
 import { SourceFileType, getSourceFileTypeOrThrow } from '../models/source-file-type'
@@ -19,7 +18,6 @@ const debug = debugFactory('ts-component-parser')
 export class TSSanAppParser implements SanAppParser {
     public project: Project
     private id: number = 0
-    private cache: Map<string, SanSourceFile> = new Map()
     private projectFiles: Map<string, SanSourceFile> = new Map()
     private commonJS: CommonJS
     private modules = {}
@@ -32,14 +30,6 @@ export class TSSanAppParser implements SanAppParser {
             const sourceFile = this.projectFiles.get(filepath)!
             return tsSourceFile2js(sourceFile, this.project.getCompilerOptions())
         })
-    }
-
-    static createUsingTsconfig (tsConfigFilePath: string) {
-        return new TSSanAppParser(new Project({ tsConfigFilePath }))
-    }
-
-    static createUsingDefaultTypeScriptConfig () {
-        return TSSanAppParser.createUsingTsconfig(getDefaultTSConfigPathOrThrow())
     }
 
     public parseSanAppFromComponentClass (ComponentClass: ComponentConstructor<{}, {}>): SanApp {
@@ -68,7 +58,8 @@ export class TSSanAppParser implements SanAppParser {
 
         const entryClass = this.evaluateFile(entrySourceFile, modules)
         const componentTree = new ComponentTree(entryClass)
-        return new SanApp(entrySourceFile, this.projectFiles, componentTree)
+        const app = new SanApp(entrySourceFile, this.projectFiles, componentTree)
+        return app
     }
 
     private evaluateFile (sourceFile: SanSourceFile, modules: Modules) {
@@ -78,14 +69,6 @@ export class TSSanAppParser implements SanAppParser {
     }
 
     private parseSanSourceFile (sourceFile: SourceFile): SanSourceFile {
-        const filePath = sourceFile.getFilePath()
-        if (!this.cache.has(filePath)) {
-            this.cache.set(filePath, this.doParseSanSourceFile(sourceFile))
-        }
-        return this.cache.get(filePath)!
-    }
-
-    private doParseSanSourceFile (sourceFile: SourceFile): SanSourceFile {
         debug('parseSanSourceFile', sourceFile.getFilePath())
         sourceFile.refreshFromFileSystemSync()
         const componentClassIdentifier = getComponentClassIdentifier(sourceFile)

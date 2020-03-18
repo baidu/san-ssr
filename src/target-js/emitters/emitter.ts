@@ -4,6 +4,11 @@ import { stringLiteralize, dataAccess } from '../compilers/expr-compiler'
 export class JSEmitter extends Emitter {
     buffer: string = ''
 
+    public fullText () {
+        this.clearStringLiteralBuffer()
+        return super.fullText()
+    }
+
     public write (str: string) {
         this.clearStringLiteralBuffer()
 

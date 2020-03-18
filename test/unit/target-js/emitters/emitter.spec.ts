@@ -8,15 +8,20 @@ describe('JSEmitter', function () {
     })
 
     describe('write html literal', function () {
-        it('should write no buffer html literal', function () {
+        it('should write text', function () {
             emitter.write('foo')
             expect(emitter.fullText()).toEqual('foo')
         })
 
-        it('should write buffer html literal', function () {
+        it('should buffer html literal', function () {
             emitter.bufferHTMLLiteral('foo')
             emitter.write('bar')
             expect(emitter.fullText()).toEqual('html += "foo";\nbar')
+        })
+
+        it('should flush buffer when fullText called', function () {
+            emitter.bufferHTMLLiteral('foo')
+            expect(emitter.fullText()).toEqual('html += "foo";\n')
         })
     })
 

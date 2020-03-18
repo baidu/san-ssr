@@ -3,7 +3,6 @@ import { Project } from 'ts-morph'
 import { resolve } from 'path'
 
 describe('TSSanAppParser', function () {
-    console.log(23)
     const tsConfigFilePath = resolve(__dirname, '../../tsconfig.json')
     const project = new Project({ tsConfigFilePath, addFilesFromTsConfig: false })
 

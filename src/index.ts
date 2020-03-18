@@ -13,7 +13,7 @@ export { Emitter } from './utils/emitter'
 export { TypeGuards }
 
 // class types
-export { SanSourceFile } from './models/san-sourcefile'
+export { SanSourceFile } from './models/san-source-file'
 export { SanApp } from './models/san-app'
 export { SanProject } from './models/san-project'
 export { Compiler } from './models/compiler'

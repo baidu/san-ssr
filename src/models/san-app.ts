@@ -1,4 +1,4 @@
-import { SanSourceFile } from '../models/san-sourcefile'
+import { SanSourceFile } from '../models/san-source-file'
 import { ComponentTree } from './component-tree'
 
 export class SanApp {

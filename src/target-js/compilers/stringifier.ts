@@ -57,21 +57,12 @@ export const stringifier = {
             return source ? 'true' : 'false'
 
         case 'object':
-            if (!source) {
-                return null
-            }
-
-            if (source instanceof Array) {
-                return stringifier.arr(source)
-            }
-
-            if (source instanceof Date) {
-                return stringifier.date(source)
-            }
-
+            if (!source) return 'null'
+            if (source instanceof Array) return stringifier.arr(source)
+            if (source instanceof Date) return stringifier.date(source)
             return stringifier.obj(source)
         }
 
-        throw new Error('Cannot Stringify:' + source)
+        throw new Error(`Cannot Stringify: ${source}`)
     }
 }

@@ -1,6 +1,6 @@
 import { CompilerOptions, transpileModule } from 'typescript'
 import debugFactory from 'debug'
-import { SanSourceFile } from '../models/san-sourcefile'
+import { SanSourceFile } from '../models/san-source-file'
 
 const debug = debugFactory('san-ssr:ts2js')
 
@@ -11,13 +11,7 @@ export function tsSourceFile2js (sourceFile: SanSourceFile, compilerOptions: Com
 
 export function tsCode2js (sourceCode: string, compilerOptions: CompilerOptions) {
     debug('source code:', sourceCode)
-
-    const { diagnostics, outputText } =
-        transpileModule(sourceCode, { compilerOptions })
-    if (diagnostics && diagnostics.length) {
-        console.error(diagnostics)
-        throw new Error('typescript compile error')
-    }
+    const { outputText } = transpileModule(sourceCode, { compilerOptions })
     debug('target code:', outputText)
     return outputText
 }

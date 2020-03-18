@@ -26,6 +26,10 @@ describe('models/SanData', () => {
             const data = new SanData({ bar: { bar: 'FOO' } }, {})
             expect(data.get('bar.foo')).toBeUndefined()
         })
+        it('should return undefined if parent not found', () => {
+            const data = new SanData({}, {})
+            expect(data.get('bar.foo')).toBeUndefined()
+        })
     })
     describe('.set()', () => {
         it('should overwrite an existing value', () => {
@@ -38,10 +42,15 @@ describe('models/SanData', () => {
             expect(data.set('bar.foo', 'BAR'))
             expect(data.get('bar.foo')).toEqual('BAR')
         })
-        it('should overwrite an new value', () => {
+        it('should create an new value', () => {
             const data = new SanData({ bar: { foo: 'FOO' } }, {})
             expect(data.set('foo', 'BAR'))
             expect(data.get('foo')).toEqual('BAR')
+        })
+        it('should skip if parent not exist', () => {
+            const data = new SanData({}, {})
+            expect(data.set('foo.bar', 'BAR'))
+            expect(data.get('foo.bar')).toBeUndefined()
         })
     })
     describe('.removeAt()', () => {

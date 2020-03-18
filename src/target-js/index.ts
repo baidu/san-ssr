@@ -46,13 +46,13 @@ export default class ToJSCompiler implements Compiler {
             emitRuntime(emitter, 'sanssrRuntime')
             for (const info of sanApp.componentTree.preOrder()) {
                 const { cid } = info
-                const cc = new RendererCompiler(info, noTemplateOutput, sanApp.componentTree)
+                const cc = new RendererCompiler(info, noTemplateOutput, sanApp.componentTree, emitter)
 
                 emitter.writeBlock(`sanssrRuntime.prototype${cid} =`, () => {
-                    cc.compileComponentPrototypeSource(emitter)
+                    cc.compileComponentPrototypeSource()
                 })
                 emitter.nextLine(`sanssrRuntime.renderer${cid} = `)
-                cc.compileComponentSource(emitter)
+                cc.compileComponentSource()
             }
             const funcName = 'sanssrRuntime.renderer' + sanApp.componentTree.root.cid
             emitter.writeLine(`return ${funcName}(data, noDataOutput, sanssrRuntime)`)

@@ -13,27 +13,21 @@ import * as TypeGuards from '../../utils/type-guards'
 * ANode 的编译方法集合对象
 */
 export class ANodeCompiler {
-    public component: CompiledComponent<{}>
-    private elementSourceCompiler: ElementCompiler
     private ssrIndex = 0
-    private getComponentInfoByClass: (CompilerClass: ComponentConstructor<{}, {}>) => ComponentInfo
 
     constructor (
-        component: CompiledComponent<{}>,
-        elemencompiler: ElementCompiler,
-        getComponentByANode: (ComponentClass: ComponentConstructor<{}, {}>) => ComponentInfo
-    ) {
-        this.component = component
-        this.elementSourceCompiler = elemencompiler
-        this.getComponentInfoByClass = getComponentByANode
-    }
+        public component: CompiledComponent<{}>,
+        private elementSourceCompiler: ElementCompiler,
+        private getComponentInfoByClass: (ComponentClass: ComponentConstructor<{}, {}>) => ComponentInfo,
+        private emitter: JSEmitter
+    ) {}
 
-    compile (aNode: ANode, emitter: JSEmitter) {
-        if (TypeGuards.isATextNode(aNode)) return this.compileText(aNode, emitter)
-        if (TypeGuards.isAIfNode(aNode)) return this.compileIf(aNode, emitter)
-        if (TypeGuards.isAForNode(aNode)) return this.compileFor(aNode, emitter)
-        if (TypeGuards.isASlotNode(aNode)) return this.compileSlot(aNode, emitter)
-        if (TypeGuards.isATemplateNode(aNode)) return this.compileTemplate(aNode, emitter)
+    compile (aNode: ANode) {
+        if (TypeGuards.isATextNode(aNode)) return this.compileText(aNode)
+        if (TypeGuards.isAIfNode(aNode)) return this.compileIf(aNode)
+        if (TypeGuards.isAForNode(aNode)) return this.compileFor(aNode)
+        if (TypeGuards.isASlotNode(aNode)) return this.compileSlot(aNode)
+        if (TypeGuards.isATemplateNode(aNode)) return this.compileTemplate(aNode)
 
         let ComponentClass = this.component.getComponentType
             ? this.component.getComponentType(aNode)
@@ -44,12 +38,13 @@ export class ANodeCompiler {
                 if (!ComponentClass) return // output nothing if placeholder undefined
             }
             const info = this.getComponentInfoByClass(ComponentClass)
-            return this.compileComponent(aNode, emitter, info)
+            return this.compileComponent(aNode, info)
         }
-        return this.compileElement(aNode, emitter)
+        return this.compileElement(aNode)
     }
 
-    compileText (aNode: ATextNode, emitter: JSEmitter) {
+    compileText (aNode: ATextNode) {
+        const { emitter } = this
         if (aNode.textExpr.original) {
             emitter.writeIf('!noDataOutput', () => {
                 emitter.bufferHTMLLiteral('<!--s-text-->')
@@ -69,16 +64,15 @@ export class ANodeCompiler {
         }
     }
 
-    compileTemplate (aNode: ATemplateNode, emitter: JSEmitter) {
-        this.elementSourceCompiler.inner(emitter, aNode)
+    compileTemplate (aNode: ATemplateNode) {
+        this.elementSourceCompiler.inner(aNode)
     }
 
-    compileIf (aNode: AIfNode, emitter: JSEmitter) {
+    compileIf (aNode: AIfNode) {
+        const { emitter } = this
         // output if
         const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
-        emitter.writeIf(expr(ifDirective.value), () => {
-            this.compile(aNode.ifRinsed, emitter)
-        })
+        emitter.writeIf(expr(ifDirective.value), () => this.compile(aNode.ifRinsed))
 
         // output elif and else
         for (const elseANode of aNode.elses || []) {
@@ -89,13 +83,14 @@ export class ANodeCompiler {
                 emitter.writeLine('else {')
             }
             emitter.indent()
-            this.compile(elseANode, emitter)
+            this.compile(elseANode)
             emitter.unindent()
             emitter.writeLine('}')
         }
     }
 
-    compileFor (aNode: AForNode, emitter: JSEmitter) {
+    compileFor (aNode: AForNode) {
+        const { emitter } = this
         const forElementANode = {
             children: aNode.children,
             props: aNode.props,
@@ -118,7 +113,7 @@ export class ANodeCompiler {
             indexName + '++', () => {
                 emitter.writeLine('ctx.data.' + indexName + '=' + indexName + ';')
                 emitter.writeLine('ctx.data.' + itemName + '= ' + listName + '[' + indexName + '];')
-                this.compile(forElementANode, emitter)
+                this.compile(forElementANode)
             })
         })
 
@@ -128,7 +123,7 @@ export class ANodeCompiler {
             emitter.writeIf(listName + '[' + indexName + '] != null', () => {
                 emitter.writeLine('ctx.data.' + indexName + '=' + indexName + ';')
                 emitter.writeLine('ctx.data.' + itemName + '= ' + listName + '[' + indexName + '];')
-                this.compile(forElementANode, emitter)
+                this.compile(forElementANode)
             })
         })
         emitter.endIf()
@@ -137,7 +132,8 @@ export class ANodeCompiler {
     /**
      * 编译 slot 节点
      */
-    compileSlot (aNode: ASlotNode, emitter: JSEmitter) {
+    compileSlot (aNode: ASlotNode) {
+        const { emitter } = this
         const rendererId = this.nextID()
 
         emitter.writeLine('ctx.slotRenderers.' + rendererId +
@@ -148,7 +144,7 @@ export class ANodeCompiler {
         emitter.writeFunction('$defaultSlotRender', ['ctx'], () => {
             emitter.writeLine('var html = "";')
             for (const aNodeChild of aNode.children || []) {
-                this.compile(aNodeChild, emitter)
+                this.compile(aNodeChild)
             }
             emitter.writeLine('return html;')
         })
@@ -202,14 +198,14 @@ export class ANodeCompiler {
         emitter.writeLine('ctx.slotRenderers.' + rendererId + '();')
     }
 
-    compileElement (aNode: ANode, emitter: JSEmitter) {
-        this.elementSourceCompiler.tagStart(emitter, aNode)
-        this.elementSourceCompiler.inner(emitter, aNode)
-        this.elementSourceCompiler.tagEnd(emitter, aNode)
+    compileElement (aNode: ANode) {
+        this.elementSourceCompiler.tagStart(aNode)
+        this.elementSourceCompiler.inner(aNode)
+        this.elementSourceCompiler.tagEnd(aNode)
     }
 
-    private compileComponent (aNode: ANode, emitter: JSEmitter, info: ComponentInfo) {
-        let dataLiteral = '{}'
+    private compileComponent (aNode: ANode, info: ComponentInfo) {
+        const { emitter } = this
 
         emitter.writeLine('var $sourceSlots = [];')
         if (aNode.children) {
@@ -236,7 +232,7 @@ export class ANodeCompiler {
                 emitter.writeLine('$sourceSlots.push([function (ctx) {')
                 emitter.indent()
                 emitter.writeLine('var html = "";')
-                defaultSourceSlots.forEach(child => this.compile(child, emitter))
+                for (const child of defaultSourceSlots) this.compile(child)
                 emitter.writeLine('return html;')
                 emitter.unindent()
                 emitter.writeLine('}]);')
@@ -248,7 +244,7 @@ export class ANodeCompiler {
                 emitter.indent()
                 emitter.writeLine('var html = "";')
                 sourceSlotCode.children.forEach((child: ANode) => {
-                    this.compile(child, emitter)
+                    this.compile(child)
                 })
                 emitter.writeLine('return html;')
                 emitter.unindent()
@@ -262,13 +258,9 @@ export class ANodeCompiler {
             return `${key}: ${val}`
         })
 
-        dataLiteral = '{' + givenData.join(',\n') + '}'
+        let dataLiteral = '{' + givenData.join(',\n') + '}'
         if (aNode.directives.bind) {
-            dataLiteral = '_.extend(' +
-            expr(aNode.directives.bind.value) +
-            ', ' +
-            dataLiteral +
-            ')'
+            dataLiteral = `_.extend(${expr(aNode.directives.bind.value)}, ${dataLiteral})`
         }
 
         const funcName = 'sanssrRuntime.renderer' + info.cid

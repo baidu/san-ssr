@@ -9,25 +9,23 @@ import * as TypeGuards from '../../utils/type-guards'
 * element 的编译方法集合对象
 */
 export class ElementCompiler {
-    private compileAnode: (aNode: ANode, emitter: JSEmitter) => void
-    private noTemplateOutput: boolean
-
-    constructor (compileAnode: (aNode: ANode, emitter: JSEmitter) => void, noTemplateOutput: boolean) {
-        this.compileAnode = compileAnode
-        this.noTemplateOutput = noTemplateOutput
-    }
+    constructor (
+        private compileAnode: (aNode: ANode, emitter: JSEmitter) => void,
+        private noTemplateOutput: boolean,
+        private emitter: JSEmitter
+    ) {}
 
     /**
      * 编译元素标签头
      *
-     * @param emitter 编译源码的中间buffer
      * @param aNode 抽象节点
      * @param tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
-    tagStart (emitter: JSEmitter, aNode: ANode, tagNameVariable?: string) {
+    tagStart (aNode: ANode, tagNameVariable?: string) {
         const props = aNode.props
         const bindDirective = aNode.directives.bind
         const tagName = aNode.tagName
+        const { emitter } = this
 
         if (tagName) {
             emitter.bufferHTMLLiteral('<' + tagName)
@@ -178,11 +176,11 @@ export class ElementCompiler {
     /**
      * 编译元素闭合
      *
-     * @param emitter 编译源码的中间buffer
      * @param aNode 抽象节点
      * @param tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
-    tagEnd (emitter: JSEmitter, aNode: ANode, tagNameVariable?: string) {
+    tagEnd (aNode: ANode, tagNameVariable?: string) {
+        const { emitter } = this
         const tagName = aNode.tagName
 
         if (tagName) {
@@ -209,7 +207,8 @@ export class ElementCompiler {
     /**
      * 编译元素内容
      */
-    inner (emitter: JSEmitter, aNode: ANode) {
+    inner (aNode: ANode) {
+        const { emitter } = this
         // inner content
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodePropByName(aNode, 'value')

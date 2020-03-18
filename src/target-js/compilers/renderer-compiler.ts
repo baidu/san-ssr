@@ -10,7 +10,7 @@ import { ElementCompiler } from './element-compiler'
 import { ANodeCompiler } from './anode-compiler'
 import { COMPONENT_RESERVED_MEMBERS } from '../../models/component'
 import { CompiledComponent } from '../../models/compiled-component'
-import { ComponentConstructor } from 'san'
+import { ANode, ComponentConstructor } from 'san'
 
 // * 参数列表用于 toSource 和 toRender 两处，anode-compiler 中递归时要与此保持一致
 // * 前两个参数是为了保持和最终的 renderer 兼容，如此就不需要包装
@@ -57,12 +57,20 @@ export class RendererCompiler {
     private elementCompiler: ElementCompiler
     private componentInfo: ComponentInfo
     private componentTree: ComponentTree
+    private emitter: JSEmitter
 
-    constructor (componentInfo: ComponentInfo, noTemplateOutput: boolean, componentTree: ComponentTree) {
+    constructor (
+        componentInfo: ComponentInfo,
+        noTemplateOutput: boolean,
+        componentTree: ComponentTree,
+        emitter = new JSEmitter()
+    ) {
+        this.emitter = emitter
         this.componentTree = componentTree
         this.elementCompiler = new ElementCompiler(
-            (...args) => this.aNodeCompiler.compile(...args),
-            noTemplateOutput
+            (aNode: ANode) => this.aNodeCompiler.compile(aNode),
+            noTemplateOutput,
+            emitter
         )
         this.component = componentInfo.createComponentInstance()
         this.componentInfo = componentInfo
@@ -72,15 +80,16 @@ export class RendererCompiler {
             // TODO 从编译时移到运行时，见：https://github.com/baidu/san-ssr/issues/46
             (ComponentClass: ComponentConstructor<{}, {}>) => {
                 return this.componentTree.addComponentClass(ComponentClass)
-            }
+            },
+            emitter
         )
     }
 
-    public compileComponentSource (emitter: JSEmitter = new JSEmitter()) {
-        emitter.writeAnonymousFunction(RENDERER_ARGS, () => {
-            this.compileComponentRendererBody(emitter)
+    public compileComponentSource () {
+        this.emitter.writeAnonymousFunction(RENDERER_ARGS, () => {
+            this.compileComponentRendererBody()
         })
-        return emitter.fullText()
+        return this.emitter.fullText()
     }
 
     public compileComponentRenderer () {
@@ -88,19 +97,18 @@ export class RendererCompiler {
         return new Function(...RENDERER_ARGS, body) // eslint-disable-line no-new-func
     }
 
-    public compileComponentPrototypeSource (emitter: JSEmitter) {
+    public compileComponentPrototypeSource () {
         const component = this.component
         const ComponentProto = component.constructor.prototype
         const builtinKeys = ['components', '_cmptReady', 'aNode', 'constructor']
+        const { emitter } = this
 
         // members for call expr
-        Object.getOwnPropertyNames(ComponentProto).forEach(function (protoMemberKey) {
-            if (builtinKeys.includes(protoMemberKey)) return
+        for (const protoMemberKey of Object.getOwnPropertyNames(ComponentProto)) {
+            if (builtinKeys.includes(protoMemberKey)) continue
 
             const protoMember = ComponentProto[protoMemberKey]
-            if (COMPONENT_RESERVED_MEMBERS.has(protoMemberKey) || !protoMember) {
-                return
-            }
+            if (COMPONENT_RESERVED_MEMBERS.has(protoMemberKey) || !protoMember) continue
 
             switch (typeof protoMember) {
             case 'function':
@@ -119,15 +127,15 @@ export class RendererCompiler {
                     emitter.writeLine('{')
                     emitter.indent()
                     const members = Object.getOwnPropertyNames(protoMember).filter(key => isFunction(protoMember[key]))
-                    members.forEach(function (itemKey) {
+                    for (const itemKey of members) {
                         const item = protoMember[itemKey]
                         emitter.writeLine(itemKey + ':' + functionString(item) + ',')
-                    })
+                    }
                     emitter.unindent()
                     emitter.writeLine('},')
                 }
             }
-        })
+        }
 
         // filters
         emitter.writeLine('filters: {')
@@ -149,19 +157,20 @@ export class RendererCompiler {
         emitter.writeLine('tagName: "' + component.aNode.tagName + '"')
     }
 
-    public compileComponentRendererBody (emitter: JSEmitter = new JSEmitter()) {
+    public compileComponentRendererBody () {
+        const { emitter } = this
         emitter.writeLine('var _ = sanssrRuntime._;')
         emitter.writeLine('var SanData = sanssrRuntime.SanData;')
         emitter.writeLine('var html = "";')
 
-        this.genComponentContextCode(emitter)
+        this.genComponentContextCode()
 
         // init data
         const defaultData = (this.component.initData && this.component.initData()) || {}
-        Object.keys(defaultData).forEach(function (key) {
+        for (const key of Object.keys(defaultData)) {
             emitter.writeLine('ctx.data["' + key + '"] = ctx.data["' + key + '"] || ' +
             stringifier.any(defaultData[key]) + ';')
-        })
+        }
         emitter.writeLine('ctx.instance.data = new SanData(ctx.data, ctx.instance.computed)')
 
         // call inited
@@ -181,14 +190,14 @@ export class RendererCompiler {
             emitter.writeLine('if (' + expr(ifDirective.value) + ') {')
         }
 
-        this.elementCompiler.tagStart(emitter, this.component.aNode, 'tagName')
+        this.elementCompiler.tagStart(this.component.aNode, 'tagName')
 
         emitter.writeIf('!noDataOutput', () => {
             emitter.writeDataComment()
         })
 
-        this.elementCompiler.inner(emitter, this.component.aNode)
-        this.elementCompiler.tagEnd(emitter, this.component.aNode, 'tagName')
+        this.elementCompiler.inner(this.component.aNode)
+        this.elementCompiler.tagEnd(this.component.aNode, 'tagName')
 
         if (ifDirective) {
             emitter.writeLine('}')
@@ -201,7 +210,8 @@ export class RendererCompiler {
     /**
     * 生成组件 renderer 时 ctx 对象构建的代码
     */
-    private genComponentContextCode (emitter: JSEmitter) {
+    private genComponentContextCode () {
+        const { emitter } = this
         emitter.writeBlock('var ctx =', () => {
             emitter.writeLine(`instance: _.createFromPrototype(sanssrRuntime.prototype${this.componentInfo.cid}),`)
             emitter.writeLine('sourceSlots: sourceSlots,')

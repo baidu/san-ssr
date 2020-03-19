@@ -81,7 +81,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_utils_case_.html#assertsanhtmlequal" class="tsd-kind-icon">assert<wbr>SanHTMLEqual</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_utils_case_.html#comparesanhtml" class="tsd-kind-icon">compare<wbr>SanHTML</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported"><a href="_utils_case_.html#deepequal" class="tsd-kind-icon">deep<wbr>Equal</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_utils_case_.html#deepequal" class="tsd-kind-icon">deep<wbr>Equal</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_utils_case_.html#parsesanhtml" class="tsd-kind-icon">parse<wbr>SanHTML</a></li>
 							</ul>
 						</section>
@@ -96,7 +96,7 @@
 					<div class="tsd-signature tsd-kind-icon">debug<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Debugger</span><span class="tsd-signature-symbol"> =&nbsp;debugFactory(&#x27;case&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/30c929e/src/utils/case.ts#L3">utils/case.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/a029f85/src/utils/case.ts#L10">utils/case.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -113,7 +113,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/30c929e/src/utils/case.ts#L19">utils/case.ts:19</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/a029f85/src/utils/case.ts#L26">utils/case.ts:26</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -133,15 +133,20 @@
 					<a name="comparesanhtml" class="tsd-anchor"></a>
 					<h3>compare<wbr>SanHTML</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">compare<wbr>SanHTML<span class="tsd-signature-symbol">(</span>expected<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, got<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"data not qual"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"html not qual"</span></li>
+						<li class="tsd-signature tsd-kind-icon">compare<wbr>SanHTML<span class="tsd-signature-symbol">(</span>expected<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, got<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"data not equal"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"html not equal"</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/30c929e/src/utils/case.ts#L29">utils/case.ts:29</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/a029f85/src/utils/case.ts#L38">utils/case.ts:38</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>San HTML 数据和 DOM 部分比较（不依赖 Object key 顺序）</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
@@ -153,24 +158,25 @@
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">undefined</span>
 								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">"data not qual"</span>
+								<span class="tsd-signature-type">"data not equal"</span>
 								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">"html not qual"</span>
+								<span class="tsd-signature-type">"html not equal"</span>
 							</h4>
+							<p>相等时返回空（undefined），不相等时返回信息（比如 &quot;data not equal&quot;）</p>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
 					<a name="deepequal" class="tsd-anchor"></a>
 					<h3>deep<wbr>Equal</h3>
-					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
 						<li class="tsd-signature tsd-kind-icon">deep<wbr>Equal<span class="tsd-signature-symbol">(</span>lhs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, rhs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/30c929e/src/utils/case.ts#L40">utils/case.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/a029f85/src/utils/case.ts#L49">utils/case.ts:49</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -196,7 +202,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/30c929e/src/utils/case.ts#L5">utils/case.ts:5</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/a029f85/src/utils/case.ts#L12">utils/case.ts:12</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -233,7 +239,7 @@
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_utils_case_.html#comparesanhtml" class="tsd-kind-icon">compare<wbr>SanHTML</a>
 					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_utils_case_.html#deepequal" class="tsd-kind-icon">deep<wbr>Equal</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">

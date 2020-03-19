@@ -1,3 +1,16 @@
+## [1.10.1](https://github.com/baidu/san-ssr/compare/v1.10.0...v1.10.1) (2020-03-19)
+
+
+### Bug Fixes
+
+* Component#getComponentType() not working ([440e48f](https://github.com/baidu/san-ssr/commit/440e48fa25b1df08681943ef71e5d181368c4a44))
+* JSEmitter not flushing when fullText() called ([d79fe95](https://github.com/baidu/san-ssr/commit/d79fe95d81faf30537fdb4201b0e08bd4c07449e))
+
+
+### Performance Improvements
+
+* fix dot notation in dataAccess and callExpr ([c708bcd](https://github.com/baidu/san-ssr/commit/c708bcdd2e1c7d6684cc410e44a1062bc330b980))
+
 # [1.10.0](https://github.com/baidu/san-ssr/compare/v1.9.7...v1.10.0) (2020-03-04)
 
 

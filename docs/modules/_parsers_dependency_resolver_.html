@@ -76,7 +76,8 @@
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_parsers_dependency_resolver_.html#getdependenciesrecursively" class="tsd-kind-icon">get<wbr>Dependencies<wbr>Recursively</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_parsers_dependency_resolver_.html#getinlinedeclarations" class="tsd-kind-icon">get<wbr>Inline<wbr>Declarations</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_parsers_dependency_resolver_.html#getinlinedependencies" class="tsd-kind-icon">get<wbr>Inline<wbr>Dependencies</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_parsers_dependency_resolver_.html#getinlinedependencyliterals" class="tsd-kind-icon">get<wbr>Inline<wbr>Dependency<wbr>Literals</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_parsers_dependency_resolver_.html#isabsolutepath" class="tsd-kind-icon">is<wbr>Absolute<wbr>Path</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_parsers_dependency_resolver_.html#ispath" class="tsd-kind-icon">is<wbr>Path</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_parsers_dependency_resolver_.html#isrelativepath" class="tsd-kind-icon">is<wbr>Relative<wbr>Path</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_parsers_dependency_resolver_.html#shouldinline" class="tsd-kind-icon">should<wbr>Inline</a></li>
 							</ul>
@@ -96,7 +97,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/30c929e/src/parsers/dependency-resolver.ts#L17">parsers/dependency-resolver.ts:17</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/a029f85/src/parsers/dependency-resolver.ts#L13">parsers/dependency-resolver.ts:13</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -122,7 +123,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/30c929e/src/parsers/dependency-resolver.ts#L3">parsers/dependency-resolver.ts:3</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/a029f85/src/parsers/dependency-resolver.ts#L3">parsers/dependency-resolver.ts:3</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -145,7 +146,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/30c929e/src/parsers/dependency-resolver.ts#L9">parsers/dependency-resolver.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/a029f85/src/parsers/dependency-resolver.ts#L9">parsers/dependency-resolver.ts:9</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -159,25 +160,48 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="getinlinedependencyliterals" class="tsd-anchor"></a>
-					<h3>get<wbr>Inline<wbr>Dependency<wbr>Literals</h3>
+					<a name="isabsolutepath" class="tsd-anchor"></a>
+					<h3>is<wbr>Absolute<wbr>Path</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Inline<wbr>Dependency<wbr>Literals<span class="tsd-signature-symbol">(</span>sourceFile<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">SourceFile</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IterableIterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Absolute<wbr>Path<span class="tsd-signature-symbol">(</span>importLiteralValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/30c929e/src/parsers/dependency-resolver.ts#L13">parsers/dependency-resolver.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/a029f85/src/parsers/dependency-resolver.ts#L34">parsers/dependency-resolver.ts:34</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>sourceFile: <span class="tsd-signature-type">SourceFile</span></h5>
+									<h5>importLiteralValue: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IterableIterator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="ispath" class="tsd-anchor"></a>
+					<h3>is<wbr>Path</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Path<span class="tsd-signature-symbol">(</span>str<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/a029f85/src/parsers/dependency-resolver.ts#L38">parsers/dependency-resolver.ts:38</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>str: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -191,7 +215,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/30c929e/src/parsers/dependency-resolver.ts#L34">parsers/dependency-resolver.ts:34</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/a029f85/src/parsers/dependency-resolver.ts#L30">parsers/dependency-resolver.ts:30</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -214,7 +238,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/30c929e/src/parsers/dependency-resolver.ts#L26">parsers/dependency-resolver.ts:26</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/a029f85/src/parsers/dependency-resolver.ts#L22">parsers/dependency-resolver.ts:22</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -252,7 +276,10 @@
 						<a href="_parsers_dependency_resolver_.html#getinlinedependencies" class="tsd-kind-icon">get<wbr>Inline<wbr>Dependencies</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="_parsers_dependency_resolver_.html#getinlinedependencyliterals" class="tsd-kind-icon">get<wbr>Inline<wbr>Dependency<wbr>Literals</a>
+						<a href="_parsers_dependency_resolver_.html#isabsolutepath" class="tsd-kind-icon">is<wbr>Absolute<wbr>Path</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_parsers_dependency_resolver_.html#ispath" class="tsd-kind-icon">is<wbr>Path</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_parsers_dependency_resolver_.html#isrelativepath" class="tsd-kind-icon">is<wbr>Relative<wbr>Path</a>

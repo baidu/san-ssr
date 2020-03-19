@@ -26,12 +26,13 @@ const binaryOp = {
 function unary (e: ExprUnaryNode) {
     if (e.operator === 33) return '!' + expr(e.expr)
     if (e.operator === 45) return '-' + expr(e.expr)
-    return ''
+    throw new Error(`unexpected unary operator "${String.fromCharCode(e.operator)}"`)
 }
 function binary (e: ExprBinaryNode) {
-    return expr(e.segs[0]) +
-        binaryOp[e.operator] +
-        expr(e.segs[1])
+    const lhs = expr(e.segs[0])
+    const op = binaryOp[e.operator]
+    const rhs = expr(e.segs[1])
+    return `${lhs} ${op} ${rhs}`
 }
 function tertiary (e: ExprTertiaryNode) {
     return expr(e.segs[0]) +
@@ -53,8 +54,8 @@ export function dataAccess (accessorExpr?: ExprAccessorNode): string {
     let code = 'ctx.data'
     if (!accessorExpr) return code
     for (const path of accessorExpr.paths) {
-        const prop = expr(path)
-        code += isValidIdentifier(prop) ? `.${prop}` : `[${prop}]`
+        code += TypeGuards.isExprStringNode(path) && isValidIdentifier(path.value)
+            ? `.${path.value}` : `[${expr(path)}]`
     }
     return code
 }
@@ -64,8 +65,8 @@ function callExpr (callExpr: ExprCallNode): string {
     const paths = callExpr.name.paths
     let code = 'ctx.instance'
     for (const path of paths) {
-        const prop = expr(path)
-        code += isValidIdentifier(prop) ? `.${prop}` : `[${prop}]`
+        code += TypeGuards.isExprStringNode(path) && isValidIdentifier(path.value)
+            ? `.${path.value}` : `[${expr(path)}]`
     }
 
     code += '('

@@ -41,6 +41,7 @@ export abstract class Emitter {
         }
     }
     public writeIndentedLines (str: string) {
+        if (!str) return
         this.indent()
         this.writeLines(str)
         this.unindent()

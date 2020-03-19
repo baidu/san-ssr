@@ -69,7 +69,7 @@ export default class ToJSCompiler implements Compiler {
         for (const info of sanApp.componentTree.preOrder()) {
             const { cid } = info
             const cc = new RendererCompiler(info, noTemplateOutput, sanApp.componentTree)
-            sanssrRuntime[`prototype${cid}`] = cc.component
+            sanssrRuntime[`prototype${cid}`] = info.component
             sanssrRuntime[`renderer${cid}`] = cc.compileComponentRenderer()
         }
         const entryComponentId = sanApp.componentTree.root.cid

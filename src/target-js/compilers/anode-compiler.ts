@@ -1,8 +1,8 @@
 import { stringLiteralize, expr } from './expr-compiler'
-import { CompiledComponent } from '../../models/compiled-component'
 import { isComponentLoader } from '../../models/component'
+import { ComponentTree } from '../../models/component-tree'
 import { JSEmitter } from '../emitters/emitter'
-import { ANode, ComponentConstructor, ExprStringNode, AIfNode, AForNode, ASlotNode, ATemplateNode, ATextNode } from 'san'
+import { ANode, ExprStringNode, AIfNode, AForNode, ASlotNode, ATemplateNode, ATextNode } from 'san'
 import { ComponentInfo } from '../../models/component-info'
 import { ElementCompiler } from './element-compiler'
 import { stringifier } from './stringifier'
@@ -16,11 +16,12 @@ export class ANodeCompiler {
     private ssrIndex = 0
 
     constructor (
-        public component: CompiledComponent<{}>,
+        private componentInfo: ComponentInfo,
+        private componentTree: ComponentTree,
         private elementSourceCompiler: ElementCompiler,
-        private getComponentInfoByClass: (ComponentClass: ComponentConstructor<{}, {}>) => ComponentInfo,
-        private emitter: JSEmitter
-    ) {}
+        public emitter: JSEmitter
+    ) {
+    }
 
     compile (aNode: ANode) {
         if (TypeGuards.isATextNode(aNode)) return this.compileText(aNode)
@@ -28,16 +29,19 @@ export class ANodeCompiler {
         if (TypeGuards.isAForNode(aNode)) return this.compileFor(aNode)
         if (TypeGuards.isASlotNode(aNode)) return this.compileSlot(aNode)
         if (TypeGuards.isATemplateNode(aNode)) return this.compileTemplate(aNode)
+        const component = this.componentInfo.component
 
-        let ComponentClass = this.component.getComponentType
-            ? this.component.getComponentType(aNode)
-            : this.component.components[aNode.tagName]
+        let ComponentClass = component.getComponentType
+            ? component.getComponentType(aNode)
+            : component.components[aNode.tagName]
         if (ComponentClass) {
             if (isComponentLoader(ComponentClass)) {
                 ComponentClass = ComponentClass.placeholder
                 if (!ComponentClass) return // output nothing if placeholder undefined
             }
-            const info = this.getComponentInfoByClass(ComponentClass)
+
+            // TODO 从编译时移到运行时，见：https://github.com/baidu/san-ssr/issues/46
+            const info = this.componentTree.addComponentClass(ComponentClass)
             return this.compileComponent(aNode, info)
         }
         return this.compileElement(aNode)
@@ -143,7 +147,7 @@ export class ANodeCompiler {
         emitter.nextLine('')
         emitter.writeFunction('$defaultSlotRender', ['ctx'], () => {
             emitter.writeLine('var html = "";')
-            for (const aNodeChild of aNode.children || []) {
+            for (const aNodeChild of aNode.children) {
                 this.compile(aNodeChild)
             }
             emitter.writeLine('return html;')
@@ -175,12 +179,12 @@ export class ANodeCompiler {
 
         if (aNode.vars || aNode.directives.bind) {
             emitter.writeLine('$slotCtx = {data: _.extend({}, $slotCtx.data), instance: $slotCtx.instance, owner: $slotCtx.owner};')
-
-            if (aNode.directives.bind) {
-                emitter.writeLine('_.extend($slotCtx.data, ' + expr(aNode.directives.bind.value) + ');')
-            }
-
-            for (const varItem of aNode.vars || []) {
+        }
+        if (aNode.directives.bind) {
+            emitter.writeLine('_.extend($slotCtx.data, ' + expr(aNode.directives.bind.value) + ');')
+        }
+        if (aNode.vars) {
+            for (const varItem of aNode.vars) {
                 emitter.writeLine(
                     '$slotCtx.data["' + varItem.name + '"] = ' +
                     expr(varItem.expr) +
@@ -207,67 +211,62 @@ export class ANodeCompiler {
     private compileComponent (aNode: ANode, info: ComponentInfo) {
         const { emitter } = this
 
-        emitter.writeLine('var $sourceSlots = [];')
-        if (aNode.children) {
-            const defaultSourceSlots: ANode[] = []
-            const sourceSlotCodes = {}
+        const defaultSourceSlots: ANode[] = []
+        const sourceSlotCodes = new Map()
 
-            for (const child of aNode.children) {
-                const slotBind = !child.textExpr && getANodePropByName(child, 'slot')
-                if (slotBind) {
-                    if (!sourceSlotCodes[slotBind.raw]) {
-                        sourceSlotCodes[slotBind.raw] = {
-                            children: [],
-                            prop: slotBind
-                        }
-                    }
-
-                    sourceSlotCodes[slotBind.raw].children.push(child)
-                } else {
-                    defaultSourceSlots.push(child)
+        for (const child of aNode.children!) { // nodes without children (like pATextNode) has been taken over by other methods
+            const slotBind = !child.textExpr && getANodePropByName(child, 'slot')
+            if (slotBind) {
+                if (!sourceSlotCodes.has(slotBind.raw)) {
+                    sourceSlotCodes.set(slotBind.raw, {
+                        children: [],
+                        prop: slotBind
+                    })
                 }
-            }
-
-            if (defaultSourceSlots.length) {
-                emitter.writeLine('$sourceSlots.push([function (ctx) {')
-                emitter.indent()
-                emitter.writeLine('var html = "";')
-                for (const child of defaultSourceSlots) this.compile(child)
-                emitter.writeLine('return html;')
-                emitter.unindent()
-                emitter.writeLine('}]);')
-            }
-
-            for (const key in sourceSlotCodes) {
-                const sourceSlotCode = sourceSlotCodes[key]
-                emitter.writeLine('$sourceSlots.push([function (ctx) {')
-                emitter.indent()
-                emitter.writeLine('var html = "";')
-                sourceSlotCode.children.forEach((child: ANode) => {
-                    this.compile(child)
-                })
-                emitter.writeLine('return html;')
-                emitter.unindent()
-                emitter.writeLine('}, ' + expr(sourceSlotCode.prop.expr) + ']);')
+                sourceSlotCodes.get(slotBind.raw).children.push(child)
+            } else {
+                defaultSourceSlots.push(child)
             }
         }
 
-        const givenData = getANodeProps(aNode).map(prop => {
-            const key = stringLiteralize(prop.name)
-            const val = expr(prop.expr)
-            return `${key}: ${val}`
-        })
+        emitter.writeLine('var $sourceSlots = [];')
+        if (defaultSourceSlots.length) {
+            emitter.writeLine('$sourceSlots.push([')
+            this.compileSlotRenderer(defaultSourceSlots)
+            emitter.writeLine(']);')
+        }
 
-        let dataLiteral = '{' + givenData.join(',\n') + '}'
-        if (aNode.directives.bind) {
-            dataLiteral = `_.extend(${expr(aNode.directives.bind.value)}, ${dataLiteral})`
+        for (const sourceSlotCode of sourceSlotCodes.values()) {
+            emitter.writeLine('$sourceSlots.push([')
+            this.compileSlotRenderer(sourceSlotCode.children)
+            emitter.writeLine(', ' + expr(sourceSlotCode.prop.expr) + ']);')
         }
 
         const funcName = 'sanssrRuntime.renderer' + info.cid
         emitter.nextLine(`html += ${funcName}(`)
-        emitter.write(dataLiteral + ', true, sanssrRuntime, ctx, ' +
+        emitter.write(this.componentDataCode(aNode) + ', true, sanssrRuntime, ctx, ' +
         stringifier.str(aNode.tagName) + ', $sourceSlots);')
         emitter.writeLine('$sourceSlots = null;')
+    }
+
+    private compileSlotRenderer (slots: ANode[]) {
+        const { emitter } = this
+        emitter.writeAnonymousFunction(['ctx'], () => {
+            emitter.writeLine('var html = "";')
+            for (const slot of slots) this.compile(slot)
+            emitter.writeLine('return html;')
+        })
+    }
+
+    private componentDataCode (aNode: ANode) {
+        const givenData = '{' + getANodeProps(aNode).map(prop => {
+            const key = stringLiteralize(prop.name)
+            const val = expr(prop.expr)
+            return `${key}: ${val}`
+        }).join(', ') + '}'
+
+        const bindDirective = aNode.directives.bind
+        return bindDirective ? `_.extend(${expr(bindDirective.value)}, ${givenData})` : givenData
     }
 
     private nextID () {

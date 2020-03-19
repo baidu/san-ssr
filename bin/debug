@@ -33,7 +33,7 @@ function debugCompileToSource () {
         const fileName = `${__dirname}/../test/cases/${caseName}/ssr.js`
         writeFileSync(fileName, targetCode)
 
-        got = execFileSync(resolve(__dirname, `./render-by-source.js`), [caseName]).toString()
+        got = execFileSync(resolve(__dirname, `./render-by-source.js`), [caseName], { encoding: 'utf8' }).toString()
         assertSanHTMLEqual(got, expected)
         console.log(chalk.green(`[SOURCE] ${caseName}`), got)
     } catch (err) {
@@ -45,7 +45,7 @@ function debugCompileToSource () {
 function debugCompileToRenderer () {
     let got
     try {
-        got = execFileSync(resolve(__dirname, `./render-onthefly.js`), [caseName]).toString()
+        got = execFileSync(resolve(__dirname, `./render-onthefly.js`), [caseName], { encoding: 'utf8' }).toString()
         assertSanHTMLEqual(got, expected)
         console.log(chalk.green(`[RENDER] ${caseName}`), got)
     } catch (err) {

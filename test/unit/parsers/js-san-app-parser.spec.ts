@@ -9,12 +9,4 @@ describe('JSSanAppParser', function () {
 
         expect(sanApp.getEntryComponentClass()).toHaveProperty('name', 'ComponentClass')
     })
-
-    it('should throw for invalid component', function () {
-        const parser = new JSSanAppParser()
-        const filepath = resolve(__dirname, '../../stub/foo.js')
-
-        expect(() => parser.parseSanApp(filepath))
-            .toThrow(/not likely a San Component/)
-    })
 })

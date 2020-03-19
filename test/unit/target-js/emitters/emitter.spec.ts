@@ -1,4 +1,4 @@
-import { JSEmitter } from '../../src/target-js/emitters/emitter'
+import { JSEmitter } from '../../../../src/target-js/emitters/emitter'
 
 describe('JSEmitter', function () {
     let emitter

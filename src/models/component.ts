@@ -1,4 +1,4 @@
-import { SanComponent, ComponentConstructor } from 'san'
+import { ANode, ComponentConstructor } from 'san'
 import { CompiledComponent } from './compiled-component'
 import { SanData } from './san-data'
 
@@ -12,9 +12,7 @@ export interface Filters {
 
 export type ComponentClass = ComponentConstructor<{}, {}>
 
-export interface Components {
-    [key: string]: ComponentClass | { load: any, placeholder: ComponentClass }
-}
+export type Components = Map<string | ANode, ComponentClass | { load: any, placeholder: ComponentClass }>
 
 export const COMPONENT_RESERVED_MEMBERS = new Set(
     'aNode,computed,filters,components,' +
@@ -24,11 +22,6 @@ export const COMPONENT_RESERVED_MEMBERS = new Set(
 
 export function isComponentLoader (cmpt: any): cmpt is {placeholder: ComponentClass} {
     return cmpt && cmpt.hasOwnProperty('load') && cmpt.hasOwnProperty('placeholder')
-}
-
-export function isComponentClass (clazz: any): clazz is typeof SanComponent {
-    return typeof clazz === 'function' &&
-        (typeof clazz.template === 'string' || typeof clazz.prototype.template === 'string')
 }
 
 export class SanSSRFiltersDeclarations {

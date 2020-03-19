@@ -22,7 +22,8 @@ export function getANodeProps (aNode: ANode) {
         ) {
             prop.expr = {
                 type: ExprType.BOOL,
-                value: true
+                value: true,
+                raw: 'true'
             }
         }
 

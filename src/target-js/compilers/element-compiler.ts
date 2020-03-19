@@ -1,19 +1,26 @@
 import { expr } from './expr-compiler'
+import { ComponentInfo } from '../../models/component-info'
 import { JSEmitter } from '../emitters/emitter'
 import { getANodePropByName } from '../../utils/anode-util'
 import { autoCloseTags } from '../../utils/dom-util'
-import { ExprType, ANode } from 'san'
-import * as TypeGuards from '../../utils/type-guards'
+import { ANodeCompiler } from './anode-compiler'
+import { ANodeProperty, Directive, ExprType, ANode } from 'san'
+import { isExprStringNode, isExprBoolNode } from '../../utils/type-guards'
+import { ComponentTree } from '../../models/component-tree'
 
 /*
 * element 的编译方法集合对象
 */
 export class ElementCompiler {
+    private aNodeCompiler: ANodeCompiler
     constructor (
-        private compileAnode: (aNode: ANode, emitter: JSEmitter) => void,
+        componentInfo: ComponentInfo,
+        componentTree: ComponentTree,
         private noTemplateOutput: boolean,
-        private emitter: JSEmitter
-    ) {}
+        public emitter: JSEmitter = new JSEmitter()
+    ) {
+        this.aNodeCompiler = new ANodeCompiler(componentInfo, componentTree, this, emitter)
+    }
 
     /**
      * 编译元素标签头
@@ -27,6 +34,7 @@ export class ElementCompiler {
         const tagName = aNode.tagName
         const { emitter } = this
 
+        // element start '<'
         if (tagName) {
             emitter.bufferHTMLLiteral('<' + tagName)
         } else if (this.noTemplateOutput) {
@@ -38,139 +46,90 @@ export class ElementCompiler {
             emitter.bufferHTMLLiteral('<div')
         }
 
-        // index list
+        // element properties '<'
         const propsIndex = {}
-        for (const prop of props) {
-            propsIndex[prop.name] = prop
+        for (const prop of props) propsIndex[prop.name] = prop
+        for (const prop of props) this.compileProperty(tagName, prop, propsIndex)
+        if (bindDirective) this.compileBindProperties(tagName, bindDirective)
 
-            if (prop.name !== 'slot') {
-                if (TypeGuards.isExprBoolNode(prop.expr)) {
-                    emitter.bufferHTMLLiteral(' ' + prop.name)
-                } else if (TypeGuards.isExprStringNode(prop.expr)) {
-                    emitter.bufferHTMLLiteral(` ${prop.name}="${prop.expr.literal}"`)
-                } else if (prop.expr.value != null) {
-                    emitter.bufferHTMLLiteral(` ${prop.name}="${expr(prop.expr)}"`)
-                }
+        // element end '>'
+        emitter.bufferHTMLLiteral('>')
+    }
+
+    private compileProperty (tagName: string, prop: ANodeProperty, propsIndex: { [key: string]: ANodeProperty }) {
+        const { name } = prop
+        const { emitter } = this
+        if (name === 'slot') return
+
+        if (isExprBoolNode(prop.expr)) return emitter.bufferHTMLLiteral(' ' + name)
+        if (isExprStringNode(prop.expr)) return emitter.bufferHTMLLiteral(` ${name}="${prop.expr.literal}"`)
+        if (prop.expr.value != null) return emitter.bufferHTMLLiteral(` ${name}="${expr(prop.expr)}"`)
+
+        if (name === 'value') {
+            if (tagName === 'textarea') return
+            if (tagName === 'select') {
+                return emitter.writeLine(`$selectValue = ${expr(prop.expr)} || "";`)
+            }
+            if (tagName === 'option') {
+                emitter.writeLine(`$optionValue = ${expr(prop.expr)};`)
+                emitter.writeIf('$optionValue != null', () => {
+                    emitter.writeHTML('" value=\\"" + $optionValue + "\\""') // value attr
+                })
+                emitter.writeIf('$optionValue === $selectValue', () => {
+                    emitter.bufferHTMLLiteral(' selected') // selected attr
+                })
+                return
             }
         }
 
-        for (const prop of props) {
-            if (prop.name === 'slot' || prop.expr.value != null) {
-                continue
-            }
+        if (name === 'readonly' || name === 'disabled' || name === 'multiple') {
+            return emitter.writeHTML(`_.boolAttrFilter("${name}", ${expr(prop.expr)})`)
+        }
 
-            if (prop.name === 'value') {
-                switch (tagName) {
-                case 'textarea':
-                    continue
-
-                case 'select':
-                    emitter.writeLine('$selectValue = ' +
-                        expr(prop.expr) +
-                        ' || "";'
-                    )
-                    continue
-
-                case 'option':
-                    emitter.writeLine('$optionValue = ' +
-                        expr(prop.expr) +
-                        ';'
-                    )
-                    // value
-                    emitter.writeIf('$optionValue != null', () => {
-                        emitter.writeHTML('" value=\\"" + $optionValue + "\\""')
-                    })
-
-                    // selected
-                    emitter.writeIf('$optionValue === $selectValue', () => {
-                        emitter.bufferHTMLLiteral(' selected')
-                    })
-                    continue
-                }
-            }
-
-            switch (prop.name) {
-            case 'readonly':
-            case 'disabled':
-            case 'multiple':
-                if (prop.raw == null) {
-                    emitter.bufferHTMLLiteral(' ' + prop.name)
-                } else {
-                    emitter.writeHTML(
-                        '_.boolAttrFilter("' + prop.name + '", ' +
-                        expr(prop.expr) +
-                        ')'
-                    )
-                }
-                break
-
-            case 'checked':
-                if (tagName === 'input') {
-                    const valueProp = propsIndex['value']
-                    const valueCode = expr(valueProp.expr)
-
-                    if (valueProp) {
-                        switch (propsIndex['type'].raw) {
-                        case 'checkbox':
-                            emitter.writeIf(`_.includes(${expr(prop.expr)}, ${valueCode})`, () => {
-                                emitter.bufferHTMLLiteral(' checked')
-                            })
-                            break
-
-                        case 'radio':
-                            emitter.writeIf(`${expr(prop.expr)} === ${valueCode}`, () => {
-                                emitter.bufferHTMLLiteral(' checked')
-                            })
-                            break
-                        }
-                    }
-                }
-                break
-
-            default:
-                const onlyOneAccessor = prop.expr.type === ExprType.ACCESSOR
-                emitter.writeHTML('_.attrFilter("' + prop.name + '", ' +
-                    expr(prop.expr) +
-                    (prop.x || onlyOneAccessor ? ', true' : '') +
-                    ')'
-                )
-                break
+        const valueProp = propsIndex['value']
+        const inputType = propsIndex['type']
+        if (name === 'checked' && tagName === 'input' && valueProp && inputType) {
+            switch (inputType.raw) {
+            case 'checkbox':
+                return emitter.writeIf(`_.includes(${expr(prop.expr)}, ${expr(valueProp.expr)})`, () => {
+                    emitter.bufferHTMLLiteral(' checked')
+                })
+            case 'radio':
+                return emitter.writeIf(`${expr(prop.expr)} === ${expr(valueProp.expr)}`, () => {
+                    emitter.bufferHTMLLiteral(' checked')
+                })
             }
         }
 
-        if (bindDirective) {
-            // start function
-            emitter.writeLine('(function ($bindObj) {')
-            emitter.indent()
+        const onlyOneAccessor = prop.expr.type === ExprType.ACCESSOR
+        const escp = (prop.x || onlyOneAccessor ? ', true' : '')
+        emitter.writeHTML(`_.attrFilter("${name}", ${expr(prop.expr)}${escp})`)
+    }
 
-            emitter.writeFor('var $key in $bindObj', () => {
-                emitter.writeLine('var $value = $bindObj[$key]')
+    private compileBindProperties (tagName: string, bindDirective: Directive<any>) {
+        const { emitter } = this
+        // start function
+        emitter.writeLine('(function ($bindObj) {')
+        emitter.indent()
 
-                if (tagName === 'textarea') {
-                    emitter.writeIf('$key === "value"', () => {
-                        emitter.writeLine('continue')
-                    })
-                }
-
-                emitter.writeSwitch('$key', () => {
-                    emitter.writeCase('"readonly"')
-                    emitter.writeCase('"disabled"')
-                    emitter.writeCase('"multiple"')
-                    emitter.writeCase('"checked"', () => {
-                        emitter.writeHTML('_.boolAttrFilter($key, $value)')
-                        emitter.writeBreak()
-                    })
-                    emitter.writeDefault(() => {
-                        emitter.writeHTML('_.attrFilter($key, $value, true)')
-                    })
+        emitter.writeFor('var $key in $bindObj', () => {
+            emitter.writeLine('var $value = $bindObj[$key]')
+            emitter.writeSwitch('$key', () => {
+                emitter.writeCase('"readonly"')
+                emitter.writeCase('"disabled"')
+                emitter.writeCase('"multiple"')
+                emitter.writeCase('"checked"', () => {
+                    emitter.writeHTML('_.boolAttrFilter($key, $value)')
+                    emitter.writeBreak()
+                })
+                emitter.writeDefault(() => {
+                    emitter.writeHTML('_.attrFilter($key, $value, true)')
                 })
             })
-            // end function
-            emitter.unindent()
-            emitter.writeLine(`})(${expr(bindDirective.value)})`)
-        }
-
-        emitter.bufferHTMLLiteral('>')
+        })
+        // end function
+        emitter.unindent()
+        emitter.writeLine(`})(${expr(bindDirective.value)})`)
     }
 
     /**
@@ -197,10 +156,12 @@ export class ElementCompiler {
             }
         } else if (this.noTemplateOutput) {
             // noop
-        } else {
+        } else if (tagNameVariable) {
             emitter.bufferHTMLLiteral('</')
             emitter.writeHTML(tagNameVariable + ' || "div"')
             emitter.bufferHTMLLiteral('>')
+        } else {
+            emitter.bufferHTMLLiteral('</div>')
         }
     }
 
@@ -212,22 +173,16 @@ export class ElementCompiler {
         // inner content
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodePropByName(aNode, 'value')
-            if (valueProp) {
-                emitter.writeHTML('_.escapeHTML(' +
-                expr(valueProp.expr) +
-                ')'
-                )
-            }
+            if (valueProp) emitter.writeHTML(`_.escapeHTML(${expr(valueProp.expr)})`)
             return
         }
 
         const htmlDirective = aNode.directives.html
         if (htmlDirective) {
             emitter.writeHTML(expr(htmlDirective.value))
-        } else {
-            for (const aNodeChild of aNode.children || []) {
-                this.compileAnode(aNodeChild, emitter)
-            }
+            return
         }
+        // only ATextNode#children is not defined, it has been taken over by ANodeCompiler#compileText()
+        for (const aNodeChild of aNode.children!) this.aNodeCompiler.compile(aNodeChild)
     }
 }

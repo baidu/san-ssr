@@ -23,7 +23,7 @@ export class ComponentTree {
         const info = this.parser.parseComponent(ComponentClass)
         this.nodes.set(ComponentClass, info)
 
-        for (let childComponentClass of Object.values(info.childComponentClasses)) {
+        for (let childComponentClass of info.childComponentClasses.values()) {
             if (isComponentLoader(childComponentClass)) {
                 childComponentClass = childComponentClass.placeholder
             }

@@ -1,4 +1,4 @@
-import { Component as SanComponent } from 'san'
+import { ComponentConstructor } from 'san'
 import { Project } from 'ts-morph'
 import { ToJSCompileOptions } from '../target-js/index'
 import { TSSanAppParser } from '../parsers/ts-san-app-parser'
@@ -46,14 +46,14 @@ export class SanProject {
      * @alias SanProject.compileToSource
      */
     public compile (
-        filepathOrComponentClass: string | typeof SanComponent,
+        filepathOrComponentClass: string | ComponentConstructor<{}, any>,
         target: string | CompilerClass = 'js',
         options: CompileOptions = {}
     ) {
         return this.compileToSource(filepathOrComponentClass, target, options)
     }
     public compileToSource (
-        filepathOrComponentClass: string | typeof SanComponent,
+        filepathOrComponentClass: string | ComponentConstructor<{}, any>,
         target: string | CompilerClass = 'js',
         options: CompileOptions = {}
     ) {
@@ -62,7 +62,7 @@ export class SanProject {
         return compiler.compile(sanApp, options)
     }
     public parseSanApp (
-        filepathOrComponentClass: string | typeof SanComponent
+        filepathOrComponentClass: string | ComponentConstructor<{}, any>
     ) {
         const parser = this.getParser()
         const sanApp = typeof filepathOrComponentClass === 'string'
@@ -78,7 +78,7 @@ export class SanProject {
      *  * `options.bareFunction` is fixed to true
      */
     public compileToRenderer (
-        filepathOrComponentClass: string | typeof SanComponent,
+        filepathOrComponentClass: string | ComponentConstructor<{}, any>,
         options?: ToJSCompileOptions
     ): Renderer {
         const sanApp = this.parseSanApp(filepathOrComponentClass)

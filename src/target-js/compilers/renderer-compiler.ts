@@ -7,10 +7,7 @@ import { Renderer } from '../../models/renderer'
 import { expr } from './expr-compiler'
 import { stringifier } from './stringifier'
 import { ElementCompiler } from './element-compiler'
-import { ANodeCompiler } from './anode-compiler'
 import { COMPONENT_RESERVED_MEMBERS } from '../../models/component'
-import { CompiledComponent } from '../../models/compiled-component'
-import { ANode, ComponentConstructor } from 'san'
 
 // * 参数列表用于 toSource 和 toRender 两处，anode-compiler 中递归时要与此保持一致
 // * 前两个参数是为了保持和最终的 renderer 兼容，如此就不需要包装
@@ -52,37 +49,22 @@ export interface CompileContext {
  * Each ComponentClass is compiled to a render function
  */
 export class RendererCompiler {
-    public component: CompiledComponent<{}>
-    private aNodeCompiler: ANodeCompiler
     private elementCompiler: ElementCompiler
-    private componentInfo: ComponentInfo
-    private componentTree: ComponentTree
-    private emitter: JSEmitter
 
     constructor (
-        componentInfo: ComponentInfo,
+        private componentInfo: ComponentInfo,
         noTemplateOutput: boolean,
         componentTree: ComponentTree,
-        emitter = new JSEmitter()
+        public emitter = new JSEmitter()
     ) {
         this.emitter = emitter
-        this.componentTree = componentTree
         this.elementCompiler = new ElementCompiler(
-            (aNode: ANode) => this.aNodeCompiler.compile(aNode),
+            componentInfo,
+            componentTree,
             noTemplateOutput,
             emitter
         )
-        this.component = componentInfo.createComponentInstance()
         this.componentInfo = componentInfo
-        this.aNodeCompiler = new ANodeCompiler(
-            this.component,
-            this.elementCompiler,
-            // TODO 从编译时移到运行时，见：https://github.com/baidu/san-ssr/issues/46
-            (ComponentClass: ComponentConstructor<{}, {}>) => {
-                return this.componentTree.addComponentClass(ComponentClass)
-            },
-            emitter
-        )
     }
 
     public compileComponentSource () {
@@ -98,7 +80,7 @@ export class RendererCompiler {
     }
 
     public compileComponentPrototypeSource () {
-        const component = this.component
+        const component = this.componentInfo.component
         const ComponentProto = component.constructor.prototype
         const builtinKeys = ['components', '_cmptReady', 'aNode', 'constructor']
         const { emitter } = this
@@ -117,14 +99,17 @@ export class RendererCompiler {
                 break
 
             case 'object':
-                emitter.writeLine(protoMemberKey + ':')
+                emitter.nextLine(protoMemberKey + ': ')
 
                 if (protoMember instanceof Array) {
-                    emitter.writeLine('[')
-                    const lines = protoMember.map(item => isFunction(item) ? functionString(item) : '').join(', ')
-                    emitter.writeLines(lines + ',')
+                    emitter.feedLine('[')
+                    emitter.indent()
+                    const lines = protoMember.map(item => isFunction(item) ? functionString(item) : String(item)).join(',\n')
+                    emitter.writeLines(lines)
+                    emitter.unindent()
+                    emitter.writeLine('],')
                 } else {
-                    emitter.writeLine('{')
+                    emitter.feedLine('{')
                     emitter.indent()
                     const members = Object.getOwnPropertyNames(protoMember).filter(key => isFunction(protoMember[key]))
                     for (const itemKey of members) {
@@ -159,6 +144,7 @@ export class RendererCompiler {
 
     public compileComponentRendererBody () {
         const { emitter } = this
+        const component = this.componentInfo.component
         emitter.writeLine('var _ = sanssrRuntime._;')
         emitter.writeLine('var SanData = sanssrRuntime.SanData;')
         emitter.writeLine('var html = "";')
@@ -166,7 +152,7 @@ export class RendererCompiler {
         this.genComponentContextCode()
 
         // init data
-        const defaultData = (this.component.initData && this.component.initData()) || {}
+        const defaultData = (component.initData && component.initData()) || {}
         for (const key of Object.keys(defaultData)) {
             emitter.writeLine('ctx.data["' + key + '"] = ctx.data["' + key + '"] || ' +
             stringifier.any(defaultData[key]) + ';')
@@ -174,7 +160,7 @@ export class RendererCompiler {
         emitter.writeLine('ctx.instance.data = new SanData(ctx.data, ctx.instance.computed)')
 
         // call inited
-        if (typeof this.component.inited === 'function') {
+        if (typeof component.inited === 'function') {
             emitter.writeLine('ctx.instance.inited()')
         }
 
@@ -185,19 +171,19 @@ export class RendererCompiler {
             emitter.writeLine('data[$computedName] = ctx.instance.computed[$computedName].apply(ctx.instance);')
         })
 
-        const ifDirective = this.component.aNode.directives['if'] // eslint-disable-line dot-notation
+        const ifDirective = component.aNode.directives['if'] // eslint-disable-line dot-notation
         if (ifDirective) {
             emitter.writeLine('if (' + expr(ifDirective.value) + ') {')
         }
 
-        this.elementCompiler.tagStart(this.component.aNode, 'tagName')
+        this.elementCompiler.tagStart(component.aNode, 'tagName')
 
         emitter.writeIf('!noDataOutput', () => {
             emitter.writeDataComment()
         })
 
-        this.elementCompiler.inner(this.component.aNode)
-        this.elementCompiler.tagEnd(this.component.aNode, 'tagName')
+        this.elementCompiler.inner(component.aNode)
+        this.elementCompiler.tagEnd(component.aNode, 'tagName')
 
         if (ifDirective) {
             emitter.writeLine('}')
@@ -230,7 +216,7 @@ export class RendererCompiler {
 
 function functionString (fn: Function) {
     let str = fn.toString()
-    if (!/^function /.test(str)) { // es6 method syntax
+    if (!/^\s*function(\s|\()/.test(str) && /^\s*\w+\s*\([^)]*\)\s*{/.test(str)) { // es6 method syntax: foo(){}
         str = 'function ' + str
     }
     return str

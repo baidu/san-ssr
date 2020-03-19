@@ -23,14 +23,6 @@ describe('TSSanAppParser', function () {
         expect(sanApp.getEntryComponentClass()).toHaveProperty('sanssrCid', 0)
     })
 
-    it('should throw for invalid component', function () {
-        const parser = new TSSanAppParser(project)
-        const filepath = resolve(__dirname, '../../stub/foo.ts')
-
-        expect(() => parser.parseSanApp(filepath))
-            .toThrow(/not likely a San Component/)
-    })
-
     it('should skip non-component class', function () {
         const parser = new TSSanAppParser(project)
         const filepath = resolve(__dirname, '../../stub/b.comp.ts')

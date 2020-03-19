@@ -75,5 +75,31 @@ describe('SanProject', function () {
             expect(render).toBeInstanceOf(Function)
             expect(render({ name: 'Harttle' }, true)).toEqual('<div>name: Harttle</div>')
         })
+
+        it('the noDataOutput parameter should be optional and default to false', function () {
+            const proj = new SanProject()
+            const componentClass = defineComponent({ template: '<div>{{name}}</div>' })
+            const render = proj.compileToRenderer(componentClass)
+
+            expect(render).toBeInstanceOf(Function)
+            expect(render({ name: 'Harttle' })).toEqual('<div><!--s-data:{"name":"Harttle"}-->Harttle</div>')
+        })
+    })
+
+    describe('#compileToSource()', function () {
+        it('should default to JavaScript source', function () {
+            const proj = new SanProject()
+            const code = proj.compileToSource(resolve(stubRoot, './a.comp.ts'))
+
+            expect(code).toContain('exports = function')
+        })
+
+        it('should compile to a renderer function which accepts data', function () {
+            const proj = new SanProject()
+            const render = proj.compileToRenderer(resolve(stubRoot, './name.comp.js'))
+
+            expect(render).toBeInstanceOf(Function)
+            expect(render({ name: 'Harttle' }, true)).toEqual('<div>name: Harttle</div>')
+        })
     })
 })

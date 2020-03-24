@@ -1,5 +1,4 @@
 import { ComponentInfo } from '../models/component-info'
-import { isComponentLoader } from '../models/component'
 import { ComponentConstructor } from 'san'
 import { ComponentParser } from '../parsers/component-parser'
 
@@ -13,22 +12,22 @@ export class ComponentTree {
     private parser = new ComponentParser()
 
     constructor (ComponentClass: ComponentConstructor<{}, {}>) {
-        this.root = this.addComponentClass(ComponentClass)
+        const root = this.addComponentClass(ComponentClass)
+        if (!root) throw new Error('cannot construct ComponentTree from empty root component')
+        this.root = root
     }
 
-    addComponentClass (ComponentClass: ComponentConstructor<{}, {}>): ComponentInfo {
-        if (this.nodes.has(ComponentClass)) {
-            return this.nodes.get(ComponentClass)!
-        }
-        const info = this.parser.parseComponent(ComponentClass)
-        this.nodes.set(ComponentClass, info)
+    addComponentClass (ComponentClass: ComponentConstructor<{}, {}>): ComponentInfo | undefined {
+        let info = this.nodes.get(ComponentClass)
+        if (info) return info
 
-        for (let childComponentClass of info.childComponentClasses.values()) {
-            if (isComponentLoader(childComponentClass)) {
-                childComponentClass = childComponentClass.placeholder
-            }
-            if (!childComponentClass) continue
-            info.children.push(this.addComponentClass(childComponentClass))
+        info = this.parser.parseComponent(ComponentClass)
+        if (!info) return
+
+        this.nodes.set(ComponentClass, info)
+        for (const childComponentClass of info.childComponentClasses.values()) {
+            const child = this.addComponentClass(childComponentClass)
+            if (child) info.children.push(child)
         }
         return info
     }

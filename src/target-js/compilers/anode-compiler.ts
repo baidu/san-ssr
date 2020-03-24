@@ -29,20 +29,11 @@ export class ANodeCompiler {
         if (TypeGuards.isAForNode(aNode)) return this.compileFor(aNode)
         if (TypeGuards.isASlotNode(aNode)) return this.compileSlot(aNode)
         if (TypeGuards.isATemplateNode(aNode)) return this.compileTemplate(aNode)
-        const component = this.componentInfo.component
 
-        let ComponentClass = component.getComponentType
-            ? component.getComponentType(aNode)
-            : component.components[aNode.tagName]
+        const ComponentClass = this.componentInfo.getChildComponentClass(aNode)
         if (ComponentClass) {
-            if (isComponentLoader(ComponentClass)) {
-                ComponentClass = ComponentClass.placeholder
-                if (!ComponentClass) return // output nothing if placeholder undefined
-            }
-
-            // TODO 从编译时移到运行时，见：https://github.com/baidu/san-ssr/issues/46
             const info = this.componentTree.addComponentClass(ComponentClass)
-            return this.compileComponent(aNode, info)
+            return info ? this.compileComponent(aNode, info) : undefined
         }
         return this.compileElement(aNode)
     }

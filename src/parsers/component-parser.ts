@@ -3,7 +3,7 @@ import { noop, isNumber, keys, isFunction } from 'lodash'
 import { CompiledComponent } from '../models/compiled-component'
 import { ComponentInfo } from '../models/component-info'
 import { getMember } from '../utils/lang'
-import { Components, ComponentClass, Filters, Computed } from '../models/component'
+import { isComponentLoader, Components, ComponentClass, Filters, Computed } from '../models/component'
 
 /**
 * 组件解析器，创建并维护组件树
@@ -11,7 +11,12 @@ import { Components, ComponentClass, Filters, Computed } from '../models/compone
 export class ComponentParser {
     private id = 1
 
-    parseComponent (componentClass: ComponentClass): ComponentInfo {
+    parseComponent (componentClass: ComponentClass): ComponentInfo | undefined {
+        if (isComponentLoader(componentClass)) {
+            componentClass = componentClass.placeholder
+        }
+        if (!componentClass) return
+
         const filters = this.parseFilters(getMember(componentClass, 'filters', {}))
         const component = this.createComponentInstance(componentClass)
         const computed = this.parseComputed(getMember(componentClass, 'computed', {}))

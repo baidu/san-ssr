@@ -1,7 +1,6 @@
-import { ComponentConstructor } from 'san'
+import { ANode, ComponentConstructor } from 'san'
 import { CompiledComponent } from './compiled-component'
-import { Filters, Computed } from './component'
-import { Components, ComponentClass } from '../models/component'
+import { Components, ComponentClass, Filters, Computed } from './component'
 
 interface ComponentInfoOptions {
     filters: Filters
@@ -44,5 +43,8 @@ export class ComponentInfo {
         this.componentClass = componentClass
         this.children = children
         this.childComponentClasses = childComponentClasses
+    }
+    getChildComponentClass (aNode: ANode) {
+        return this.childComponentClasses.get(aNode) || this.childComponentClasses.get(aNode.tagName)
     }
 }

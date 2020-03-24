@@ -12,7 +12,7 @@ export interface Filters {
 
 export type ComponentClass = ComponentConstructor<{}, {}>
 
-export type Components = Map<string | ANode, ComponentClass | { load: any, placeholder: ComponentClass }>
+export type Components = Map<string | ANode, ComponentClass>
 
 export const COMPONENT_RESERVED_MEMBERS = new Set(
     'aNode,computed,filters,components,' +

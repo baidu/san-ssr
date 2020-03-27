@@ -13,8 +13,8 @@ describe('target-js/compilers/renderer-compiler', () => {
                 component: new ComponentClass(),
                 componentClass: ComponentClass
             } as any)
-            const compiler = new RendererCompiler(info, false, {} as any)
-            compiler.compileComponentPrototypeSource()
+            const compiler = new RendererCompiler(false, {} as any)
+            compiler.compileComponentPrototypeSource(info)
             expect(compiler.emitter.fullText()).toEqual(`foo: [
     1,
     x => x

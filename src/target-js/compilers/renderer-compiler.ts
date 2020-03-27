@@ -49,38 +49,27 @@ export interface CompileContext {
  * Each ComponentClass is compiled to a render function
  */
 export class RendererCompiler {
-    private elementCompiler: ElementCompiler
-
     constructor (
-        private componentInfo: ComponentInfo,
-        noTemplateOutput: boolean,
-        componentTree: ComponentTree,
+        private noTemplateOutput: boolean,
+        private componentTree: ComponentTree,
         public emitter = new JSEmitter()
-    ) {
-        this.emitter = emitter
-        this.elementCompiler = new ElementCompiler(
-            componentInfo,
-            componentTree,
-            noTemplateOutput,
-            emitter
-        )
-        this.componentInfo = componentInfo
-    }
+    ) {}
 
-    public compileComponentSource () {
+    public compileComponentSource (componentInfo: ComponentInfo) {
         this.emitter.writeAnonymousFunction(RENDERER_ARGS, () => {
-            this.compileComponentRendererBody()
+            this.compileComponentRendererBody(componentInfo)
         })
         return this.emitter.fullText()
     }
 
-    public compileComponentRenderer () {
-        const body = this.compileComponentRendererBody()
+    public compileComponentRenderer (componentInfo: ComponentInfo) {
+        this.emitter.clear()
+        const body = this.compileComponentRendererBody(componentInfo)
         return new Function(...RENDERER_ARGS, body) // eslint-disable-line no-new-func
     }
 
-    public compileComponentPrototypeSource () {
-        const component = this.componentInfo.component
+    public compileComponentPrototypeSource (componentInfo: ComponentInfo) {
+        const component = componentInfo.component
         const ComponentProto = component.constructor.prototype
         const builtinKeys = ['components', '_cmptReady', 'aNode', 'constructor']
         const { emitter } = this
@@ -125,7 +114,7 @@ export class RendererCompiler {
         // filters
         emitter.writeLine('filters: {')
         emitter.writeIndentedLines(map(
-            this.componentInfo.filters,
+            componentInfo.filters,
             (fn, key) => `${key}: ${functionString(fn)}`
         ).join(', '))
         emitter.writeLine('},')
@@ -133,7 +122,7 @@ export class RendererCompiler {
         // computed obj
         emitter.writeLine('computed: {')
         emitter.writeIndentedLines(map(
-            this.componentInfo.computed,
+            componentInfo.computed,
             (fn, key) => `${key}: ${functionString(fn)}`
         ).join(', '))
         emitter.writeLine('},')
@@ -142,14 +131,14 @@ export class RendererCompiler {
         emitter.writeLine('tagName: "' + component.aNode.tagName + '"')
     }
 
-    public compileComponentRendererBody () {
+    public compileComponentRendererBody (componentInfo: ComponentInfo) {
         const { emitter } = this
-        const component = this.componentInfo.component
+        const component = componentInfo.component
         emitter.writeLine('var _ = sanssrRuntime._;')
         emitter.writeLine('var SanData = sanssrRuntime.SanData;')
         emitter.writeLine('var html = "";')
 
-        this.genComponentContextCode()
+        this.genComponentContextCode(componentInfo)
 
         // init data
         const defaultData = (component.initData && component.initData()) || {}
@@ -176,14 +165,20 @@ export class RendererCompiler {
             emitter.writeLine('if (' + expr(ifDirective.value) + ') {')
         }
 
-        this.elementCompiler.tagStart(component.aNode, 'tagName')
+        const elementCompiler = new ElementCompiler(
+            componentInfo,
+            this.componentTree,
+            this.noTemplateOutput,
+            emitter
+        )
+        elementCompiler.tagStart(component.aNode, 'tagName')
 
         emitter.writeIf('!noDataOutput', () => {
             emitter.writeDataComment()
         })
 
-        this.elementCompiler.inner(component.aNode)
-        this.elementCompiler.tagEnd(component.aNode, 'tagName')
+        elementCompiler.inner(component.aNode)
+        elementCompiler.tagEnd(component.aNode, 'tagName')
 
         if (ifDirective) {
             emitter.writeLine('}')
@@ -196,17 +191,17 @@ export class RendererCompiler {
     /**
     * 生成组件 renderer 时 ctx 对象构建的代码
     */
-    private genComponentContextCode () {
+    private genComponentContextCode (componentInfo: ComponentInfo) {
         const { emitter } = this
         emitter.writeBlock('var ctx =', () => {
-            emitter.writeLine(`instance: _.createFromPrototype(sanssrRuntime.prototype${this.componentInfo.cid}),`)
+            emitter.writeLine(`instance: _.createFromPrototype(sanssrRuntime.prototype${componentInfo.cid}),`)
             emitter.writeLine('sourceSlots: sourceSlots,')
             emitter.writeLine('data: data,')
             emitter.writeLine('owner: parentCtx,')
 
             // computedNames
             emitter.nextLine('computedNames: [')
-            emitter.write(Object.keys(this.componentInfo.computed).map(x => `'${x}'`).join(', '))
+            emitter.write(Object.keys(componentInfo.computed).map(x => `'${x}'`).join(', '))
             emitter.feedLine('],')
 
             emitter.writeLine('slotRenderers: {}')

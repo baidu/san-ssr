@@ -1,5 +1,4 @@
 import { stringLiteralize, expr } from './expr-compiler'
-import { isComponentLoader } from '../../models/component'
 import { ComponentTree } from '../../models/component-tree'
 import { JSEmitter } from '../emitters/emitter'
 import { ANode, ExprStringNode, AIfNode, AForNode, ASlotNode, ATemplateNode, ATextNode } from 'san'
@@ -16,8 +15,8 @@ export class ANodeCompiler {
     private ssrIndex = 0
 
     constructor (
-        private componentInfo: ComponentInfo,
-        private componentTree: ComponentTree,
+        private owner: ComponentInfo,
+        private root: ComponentTree,
         private elementSourceCompiler: ElementCompiler,
         public emitter: JSEmitter
     ) {
@@ -30,9 +29,9 @@ export class ANodeCompiler {
         if (TypeGuards.isASlotNode(aNode)) return this.compileSlot(aNode)
         if (TypeGuards.isATemplateNode(aNode)) return this.compileTemplate(aNode)
 
-        const ComponentClass = this.componentInfo.getChildComponentClass(aNode)
+        const ComponentClass = this.owner.getChildComponentClass(aNode)
         if (ComponentClass) {
-            const info = this.componentTree.addComponentClass(ComponentClass)
+            const info = this.root.addComponentClass(ComponentClass)
             return info ? this.compileComponent(aNode, info) : undefined
         }
         return this.compileElement(aNode)

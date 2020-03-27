@@ -14,12 +14,12 @@ import { ComponentTree } from '../../models/component-tree'
 export class ElementCompiler {
     private aNodeCompiler: ANodeCompiler
     constructor (
-        componentInfo: ComponentInfo,
-        componentTree: ComponentTree,
+        owner: ComponentInfo,
+        root: ComponentTree,
         private noTemplateOutput: boolean,
         public emitter: JSEmitter = new JSEmitter()
     ) {
-        this.aNodeCompiler = new ANodeCompiler(componentInfo, componentTree, this, emitter)
+        this.aNodeCompiler = new ANodeCompiler(owner, root, this, emitter)
     }
 
     /**

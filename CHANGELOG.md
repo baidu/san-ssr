@@ -1,3 +1,10 @@
+## [1.10.2](https://github.com/baidu/san-ssr/compare/v1.10.1...v1.10.2) (2020-03-27)
+
+
+### Performance Improvements
+
+* reutilization of RendererCompiler ([8269ae1](https://github.com/baidu/san-ssr/commit/8269ae14199f7faae5b6b0aa2145b3d0d80d0e61))
+
 ## [1.10.1](https://github.com/baidu/san-ssr/compare/v1.10.0...v1.10.1) (2020-03-19)
 
 

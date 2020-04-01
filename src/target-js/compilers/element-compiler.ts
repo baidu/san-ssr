@@ -46,7 +46,7 @@ export class ElementCompiler {
             emitter.bufferHTMLLiteral('<div')
         }
 
-        // element properties '<'
+        // element properties
         const propsIndex = {}
         for (const prop of props) propsIndex[prop.name] = prop
         for (const prop of props) this.compileProperty(tagName, prop, propsIndex)

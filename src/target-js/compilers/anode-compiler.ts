@@ -135,7 +135,7 @@ export class ANodeCompiler {
         emitter.indent()
 
         emitter.nextLine('')
-        emitter.writeFunction('$defaultSlotRender', ['ctx'], () => {
+        emitter.writeFunction('$defaultSlotRender', ['ctx', 'currentCtx'], () => {
             emitter.writeLine('var html = "";')
             for (const aNodeChild of aNode.children) {
                 this.compile(aNodeChild)
@@ -184,7 +184,7 @@ export class ANodeCompiler {
         }
 
         emitter.writeFor('var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++', () => {
-            emitter.writeLine('html += $mySourceSlots[$renderIndex]($slotCtx);')
+            emitter.writeLine('html += $mySourceSlots[$renderIndex]($slotCtx, currentCtx);')
         })
 
         emitter.unindent()
@@ -234,14 +234,14 @@ export class ANodeCompiler {
 
         const funcName = 'sanssrRuntime.renderer' + info.cid
         emitter.nextLine(`html += ${funcName}(`)
-        emitter.write(this.componentDataCode(aNode) + ', true, sanssrRuntime, ctx, ' +
+        emitter.write(this.componentDataCode(aNode) + ', true, sanssrRuntime, ctx, currentCtx, ' +
         stringifier.str(aNode.tagName) + ', $sourceSlots);')
         emitter.writeLine('$sourceSlots = null;')
     }
 
     private compileSlotRenderer (slots: ANode[]) {
         const { emitter } = this
-        emitter.writeAnonymousFunction(['ctx'], () => {
+        emitter.writeAnonymousFunction(['ctx', 'currentCtx'], () => {
             emitter.writeLine('var html = "";')
             for (const slot of slots) this.compile(slot)
             emitter.writeLine('return html;')

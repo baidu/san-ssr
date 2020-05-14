@@ -11,7 +11,7 @@ import { COMPONENT_RESERVED_MEMBERS } from '../../models/component'
 
 // * 参数列表用于 toSource 和 toRender 两处，anode-compiler 中递归时要与此保持一致
 // * 前两个参数是为了保持和最终的 renderer 兼容，如此就不需要包装
-const RENDERER_ARGS = ['data = {}', 'noDataOutput', 'sanssrRuntime', 'parentCtx', 'tagName', 'sourceSlots']
+const RENDERER_ARGS = ['data = {}', 'noDataOutput', 'sanssrRuntime', 'ownerCtx', 'parentCtx', 'tagName', 'sourceSlots']
 
 export type ExpressionEvaluator = (ctx: CompileContext) => any
 
@@ -20,7 +20,7 @@ export interface Data {
 }
 
 export interface ComponentRender {
-    (data: Data, noDataOutput: boolean, parentCtx: CompileContext, tagName: string, sourceSlots: SourceSlot[]): string
+    (data: Data, noDataOutput: boolean, ownerCtx: CompileContext, parentCtx: CompileContext, tagName: string, sourceSlots: SourceSlot[]): string
 }
 
 export type SourceSlot = any
@@ -139,6 +139,7 @@ export class RendererCompiler {
         emitter.writeLine('var html = "";')
 
         this.genComponentContextCode(componentInfo)
+        emitter.writeLine(`var currentCtx = ctx;`)
 
         // instance preraration
         const defaultData = (component.initData && component.initData()) || {}
@@ -198,7 +199,7 @@ export class RendererCompiler {
             emitter.writeLine(`instance: _.createFromPrototype(sanssrRuntime.prototype${componentInfo.cid}),`)
             emitter.writeLine('sourceSlots: sourceSlots,')
             emitter.writeLine('data: data,')
-            emitter.writeLine('owner: parentCtx,')
+            emitter.writeLine('owner: ownerCtx,')
 
             // computedNames
             emitter.nextLine('computedNames: [')

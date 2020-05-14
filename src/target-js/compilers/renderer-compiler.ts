@@ -84,7 +84,7 @@ export class RendererCompiler {
             switch (typeof protoMember) {
             case 'function':
                 const funcString = functionString(protoMember)
-                emitter.writeLine(protoMemberKey + ': ' + funcString + ',')
+                emitter.writeLines(protoMemberKey + ': ' + funcString + ',')
                 break
 
             case 'object':
@@ -103,7 +103,7 @@ export class RendererCompiler {
                     const members = Object.getOwnPropertyNames(protoMember).filter(key => isFunction(protoMember[key]))
                     for (const itemKey of members) {
                         const item = protoMember[itemKey]
-                        emitter.writeLine(itemKey + ':' + functionString(item) + ',')
+                        emitter.writeLines(itemKey + ':' + functionString(item) + ',')
                     }
                     emitter.unindent()
                     emitter.writeLine('},')
@@ -216,5 +216,26 @@ function functionString (fn: Function) {
     if (!/^\s*function(\s|\()/.test(str) && /^\s*\w+\s*\([^)]*\)\s*{/.test(str)) { // es6 method syntax: foo(){}
         str = 'function ' + str
     }
-    return str
+    /**
+     * 去除函数外缩进。例如：
+     *
+     * Input:
+     * function() {
+     *         console.log(1)
+     *         return 1
+     *     }
+     *
+     * Output:
+     * function() {
+     *     console.log(1)
+     *     return 1
+     * }
+     */
+    const lines = str.split('\n')
+    const firstLine = lines.shift()!
+    const minIndent = lines.reduce(
+        (min: number, line: string) => Math.min(min, /^\s*/.exec(line)![0].length),
+        Infinity
+    )
+    return [firstLine, ...lines.map(line => line.slice(minIndent))].join('\n')
 }

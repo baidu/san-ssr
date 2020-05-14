@@ -140,13 +140,14 @@ export class RendererCompiler {
 
         this.genComponentContextCode(componentInfo)
 
-        // init data
+        // instance preraration
         const defaultData = (component.initData && component.initData()) || {}
         for (const key of Object.keys(defaultData)) {
             emitter.writeLine('ctx.data["' + key + '"] = ctx.data["' + key + '"] || ' +
             stringifier.any(defaultData[key]) + ';')
         }
         emitter.writeLine('ctx.instance.data = new SanData(ctx.data, ctx.instance.computed)')
+        emitter.writeLine(`ctx.instance.parentComponent = parentCtx && parentCtx.instance`)
 
         // call inited
         if (typeof component.inited === 'function') {

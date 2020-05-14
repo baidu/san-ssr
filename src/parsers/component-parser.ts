@@ -18,7 +18,7 @@ export class ComponentParser {
         if (!componentClass) return
 
         const filters = this.parseFilters(getMember(componentClass, 'filters', {}))
-        const component = this.createComponentInstance(componentClass)
+        const component = ComponentParser.createComponentInstance(componentClass)
         const computed = this.parseComputed(getMember(componentClass, 'computed', {}))
         const template = getMember(componentClass, 'template', '')
         const childComponentClasses = this.parseChildComponentClasses(componentClass, component)
@@ -28,6 +28,21 @@ export class ComponentParser {
         return new ComponentInfo({
             filters, computed, template, componentClass, cid, childComponentClasses, component
         })
+    }
+
+    public static createComponentInstance (componentClass: ComponentClass): CompiledComponent<{}> {
+        // TODO Do not `new Component` during SSR,
+        // see https://github.com/baidu/san-ssr/issues/42
+        const ComponentClass = componentClass
+        const proto = ComponentClass.prototype['__proto__']    // eslint-disable-line
+        const calcComputed = proto['_calcComputed']
+        const inited = ComponentClass.prototype['inited']
+        proto['_calcComputed'] = noop
+        ComponentClass.prototype['inited'] = undefined
+        const instance = new ComponentClass()
+        ComponentClass.prototype['inited'] = inited
+        proto['_calcComputed'] = calcComputed
+        return instance as CompiledComponent<{}>
     }
 
     private parseChildComponentClasses (componentClass: ComponentClass, component: CompiledComponent<{}>): Components {
@@ -50,21 +65,6 @@ export class ComponentParser {
     private visitANodeRecursively (aNode: ANode, visitor: (aNode: ANode) => void) {
         visitor(aNode)
         for (const child of aNode.children || []) this.visitANodeRecursively(child, visitor)
-    }
-
-    private createComponentInstance (componentClass: ComponentClass): CompiledComponent<{}> {
-        // TODO Do not `new Component` during SSR,
-        // see https://github.com/baidu/san-ssr/issues/42
-        const ComponentClass = componentClass
-        const proto = ComponentClass.prototype['__proto__']    // eslint-disable-line
-        const calcComputed = proto['_calcComputed']
-        const inited = ComponentClass.prototype['inited']
-        proto['_calcComputed'] = noop
-        ComponentClass.prototype['inited'] = undefined
-        const instance = new ComponentClass()
-        ComponentClass.prototype['inited'] = inited
-        proto['_calcComputed'] = calcComputed
-        return instance as CompiledComponent<{}>
     }
 
     private parseFilters (filters: any): Filters {

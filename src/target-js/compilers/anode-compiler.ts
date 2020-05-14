@@ -221,9 +221,9 @@ export class ANodeCompiler {
 
         emitter.writeLine('var $sourceSlots = [];')
         if (defaultSourceSlots.length) {
-            emitter.writeLine('$sourceSlots.push([')
+            emitter.nextLine('$sourceSlots.push([')
             this.compileSlotRenderer(defaultSourceSlots)
-            emitter.writeLine(']);')
+            emitter.feedLine(']);')
         }
 
         for (const sourceSlotCode of sourceSlotCodes.values()) {

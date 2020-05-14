@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/baidu/san-ssr/compare/v1.10.2...v1.11.0) (2020-05-14)
+
+
+### Features
+
+* support for this.parentComponent, see [#52](https://github.com/baidu/san-ssr/issues/52) ([480105c](https://github.com/baidu/san-ssr/commit/480105c9be5d07d972a0843b81bc8e014c894fa7))
+
 ## [1.10.2](https://github.com/baidu/san-ssr/compare/v1.10.1...v1.10.2) (2020-03-27)
 
 

@@ -1,3 +1,10 @@
+## [1.11.1](https://github.com/baidu/san-ssr/compare/v1.11.0...v1.11.1) (2020-05-14)
+
+
+### Bug Fixes
+
+* this.parentComponent for slots, see [#52](https://github.com/baidu/san-ssr/issues/52) ([f23068f](https://github.com/baidu/san-ssr/commit/f23068f734f415dcf1ddde291e81c2ca571f5f79))
+
 # [1.11.0](https://github.com/baidu/san-ssr/compare/v1.10.2...v1.11.0) (2020-05-14)
 
 

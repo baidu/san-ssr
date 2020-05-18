@@ -35,6 +35,7 @@ export class ElementCompiler {
         const { emitter } = this
 
         // element start '<'
+        if (tagName === 'fragment') return
         if (tagName) {
             emitter.bufferHTMLLiteral('<' + tagName)
         } else if (this.noTemplateOutput) {
@@ -142,6 +143,7 @@ export class ElementCompiler {
         const { emitter } = this
         const tagName = aNode.tagName
 
+        if (tagName === 'fragment') return
         if (tagName) {
             if (!autoCloseTags.has(tagName)) {
                 emitter.bufferHTMLLiteral('</' + tagName + '>')
@@ -183,6 +185,6 @@ export class ElementCompiler {
             return
         }
         // only ATextNode#children is not defined, it has been taken over by ANodeCompiler#compileText()
-        for (const aNodeChild of aNode.children!) this.aNodeCompiler.compile(aNodeChild)
+        for (const aNodeChild of aNode.children!) this.aNodeCompiler.compile(aNodeChild, aNode)
     }
 }

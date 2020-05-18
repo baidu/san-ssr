@@ -6,7 +6,7 @@ import {
     ExprBinaryNode, ExprUnaryNode, ExprTertiaryNode,
 
     // ANodes
-    ANode, AIfNode, AForNode, ASlotNode, ATextNode, ATemplateNode
+    ANode, AIfNode, AForNode, ASlotNode, ATextNode, ATemplateNode, AFragmentNode
 } from 'san'
 
 /*
@@ -86,4 +86,8 @@ export function isATextNode (aNode: ANode): aNode is ATextNode {
 
 export function isATemplateNode (aNode: ANode): aNode is ATemplateNode {
     return aNode.tagName === 'template'
+}
+
+export function isAFragmentNode (aNode: ANode): aNode is AFragmentNode {
+    return aNode.tagName === 'fragment'
 }

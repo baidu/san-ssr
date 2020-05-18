@@ -163,9 +163,7 @@ export class RendererCompiler {
         })
 
         const ifDirective = component.aNode.directives['if'] // eslint-disable-line dot-notation
-        if (ifDirective) {
-            emitter.writeLine('if (' + expr(ifDirective.value) + ') {')
-        }
+        if (ifDirective) emitter.writeLine('if (' + expr(ifDirective.value) + ') {')
 
         const elementCompiler = new ElementCompiler(
             componentInfo,
@@ -174,18 +172,11 @@ export class RendererCompiler {
             emitter
         )
         elementCompiler.tagStart(component.aNode, 'tagName')
-
-        emitter.writeIf('!noDataOutput', () => {
-            emitter.writeDataComment()
-        })
-
+        emitter.writeIf('!noDataOutput', () => emitter.writeDataComment())
         elementCompiler.inner(component.aNode)
         elementCompiler.tagEnd(component.aNode, 'tagName')
 
-        if (ifDirective) {
-            emitter.writeLine('}')
-        }
-
+        if (ifDirective) emitter.writeLine('}')
         emitter.writeLine('return html;')
         return emitter.fullText()
     }

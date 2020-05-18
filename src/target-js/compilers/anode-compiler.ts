@@ -1,7 +1,7 @@
 import { stringLiteralize, expr } from './expr-compiler'
 import { ComponentTree } from '../../models/component-tree'
 import { JSEmitter } from '../emitters/emitter'
-import { ANode, ExprStringNode, AIfNode, AForNode, ASlotNode, ATemplateNode, ATextNode } from 'san'
+import { ANode, ExprStringNode, AIfNode, AForNode, ASlotNode, ATemplateNode, AFragmentNode, ATextNode } from 'san'
 import { ComponentInfo } from '../../models/component-info'
 import { ElementCompiler } from './element-compiler'
 import { stringifier } from './stringifier'
@@ -22,12 +22,13 @@ export class ANodeCompiler {
     ) {
     }
 
-    compile (aNode: ANode) {
-        if (TypeGuards.isATextNode(aNode)) return this.compileText(aNode)
+    compile (aNode: ANode, parentNode: ANode) {
+        if (TypeGuards.isATextNode(aNode)) return this.compileText(aNode, parentNode)
         if (TypeGuards.isAIfNode(aNode)) return this.compileIf(aNode)
         if (TypeGuards.isAForNode(aNode)) return this.compileFor(aNode)
         if (TypeGuards.isASlotNode(aNode)) return this.compileSlot(aNode)
         if (TypeGuards.isATemplateNode(aNode)) return this.compileTemplate(aNode)
+        if (TypeGuards.isAFragmentNode(aNode)) return this.compileTemplate(aNode)
 
         const ComponentClass = this.owner.getChildComponentClass(aNode)
         if (ComponentClass) {
@@ -37,8 +38,11 @@ export class ANodeCompiler {
         return this.compileElement(aNode)
     }
 
-    compileText (aNode: ATextNode) {
+    compileText (aNode: ATextNode, parentNode: ANode) {
         const { emitter } = this
+        if (TypeGuards.isAFragmentNode(parentNode) && parentNode.children[0] === aNode) {
+            emitter.bufferHTMLLiteral('<!--s-frag-->')
+        }
         if (aNode.textExpr.original) {
             emitter.writeIf('!noDataOutput', () => {
                 emitter.bufferHTMLLiteral('<!--s-text-->')
@@ -56,9 +60,12 @@ export class ANodeCompiler {
                 emitter.bufferHTMLLiteral('<!--/s-text-->')
             })
         }
+        if (TypeGuards.isAFragmentNode(parentNode) && parentNode.children[parentNode.children.length - 1] === aNode) {
+            emitter.bufferHTMLLiteral('<!--s-frag-->')
+        }
     }
 
-    compileTemplate (aNode: ATemplateNode) {
+    compileTemplate (aNode: ATemplateNode | AFragmentNode) {
         this.elementSourceCompiler.inner(aNode)
     }
 
@@ -66,7 +73,7 @@ export class ANodeCompiler {
         const { emitter } = this
         // output if
         const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
-        emitter.writeIf(expr(ifDirective.value), () => this.compile(aNode.ifRinsed))
+        emitter.writeIf(expr(ifDirective.value), () => this.compile(aNode.ifRinsed, aNode))
 
         // output elif and else
         for (const elseANode of aNode.elses || []) {
@@ -77,7 +84,7 @@ export class ANodeCompiler {
                 emitter.writeLine('else {')
             }
             emitter.indent()
-            this.compile(elseANode)
+            this.compile(elseANode, aNode)
             emitter.unindent()
             emitter.writeLine('}')
         }
@@ -107,7 +114,7 @@ export class ANodeCompiler {
             indexName + '++', () => {
                 emitter.writeLine('ctx.data.' + indexName + '=' + indexName + ';')
                 emitter.writeLine('ctx.data.' + itemName + '= ' + listName + '[' + indexName + '];')
-                this.compile(forElementANode)
+                this.compile(forElementANode, aNode)
             })
         })
 
@@ -117,7 +124,7 @@ export class ANodeCompiler {
             emitter.writeIf(listName + '[' + indexName + '] != null', () => {
                 emitter.writeLine('ctx.data.' + indexName + '=' + indexName + ';')
                 emitter.writeLine('ctx.data.' + itemName + '= ' + listName + '[' + indexName + '];')
-                this.compile(forElementANode)
+                this.compile(forElementANode, aNode)
             })
         })
         emitter.endIf()
@@ -138,7 +145,7 @@ export class ANodeCompiler {
         emitter.writeFunction('$defaultSlotRender', ['ctx', 'currentCtx'], () => {
             emitter.writeLine('var html = "";')
             for (const aNodeChild of aNode.children) {
-                this.compile(aNodeChild)
+                this.compile(aNodeChild, aNode)
             }
             emitter.writeLine('return html;')
         })
@@ -222,13 +229,13 @@ export class ANodeCompiler {
         emitter.writeLine('var $sourceSlots = [];')
         if (defaultSourceSlots.length) {
             emitter.nextLine('$sourceSlots.push([')
-            this.compileSlotRenderer(defaultSourceSlots)
+            this.compileSlotRenderer(defaultSourceSlots, aNode)
             emitter.feedLine(']);')
         }
 
         for (const sourceSlotCode of sourceSlotCodes.values()) {
             emitter.writeLine('$sourceSlots.push([')
-            this.compileSlotRenderer(sourceSlotCode.children)
+            this.compileSlotRenderer(sourceSlotCode.children, aNode)
             emitter.writeLine(', ' + expr(sourceSlotCode.prop.expr) + ']);')
         }
 
@@ -239,11 +246,11 @@ export class ANodeCompiler {
         emitter.writeLine('$sourceSlots = null;')
     }
 
-    private compileSlotRenderer (slots: ANode[]) {
+    private compileSlotRenderer (slots: ANode[], parentANode: ANode) {
         const { emitter } = this
         emitter.writeAnonymousFunction(['ctx', 'currentCtx'], () => {
             emitter.writeLine('var html = "";')
-            for (const slot of slots) this.compile(slot)
+            for (const slot of slots) this.compile(slot, parentANode)
             emitter.writeLine('return html;')
         })
     }

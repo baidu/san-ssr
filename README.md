@@ -82,6 +82,25 @@ writeFileSync('ssr.php', targetCode)
 npm i san-ssr san-ssr-target-php
 ```
 
+## 贡献指南
+
+欢迎任何类型的 Issue、完整的 Pull Request、或者不完整的 Pull Request。可以按照下面的步骤开始开发：
+
+1. 克隆本仓库并 `npm install`
+2. 在 test/cases 下添加你的测试样例，以 test/cases/array-literal 为例
+3. 通过 `./bin/debug array-literal` 来查看 SSR 结果。此时会输出三种 HTML：
+    1. EXPECTED。test/cases/array-literal/expected.html 的内容。
+    2. SOURCE。compileToSource + render() 的结果，test/cases/array-literal/ssr.js 可查看生成的 ssr 代码。
+    3. RENDER。compileToRenderer + render() 的结果。
+4. 如果 debug 符合预期，可以运行 `npm run integration` 来查看其它样例是否仍然正常。
+5. 如果一切正常，运行 `npm run check` 来做最后的编码风格检查，和完整的测试。
+6. 如果能够通过那么 Travis CI 就应该能通过，请发 PR 到本仓库。
+
+Tips:
+
+1. 请添加 `PATH=$PATH:./bin` 到你的 Shell 配置，就可以直接用 `debug array-literal` 了。
+2. 如果你在用 ZShell，先执行一次 ./bin/auto-complete 或把它添加到 .zshrc 里，`debug` 命令就可以自动补全样例名了。
+
 [san]: https://github.com/baidu/san
 [sanproject]: https://baidu.github.io/san-ssr/classes/_models_san_project_.sanproject.html
 [target-compile]: https://baidu.github.io/san-ssr/interfaces/_models_compiler_.compiler.html#compile

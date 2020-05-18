@@ -20,6 +20,7 @@ export class SanData {
     }
 
     get (path: string): any {
+        if (arguments.length === 0) return this.data
         if (this.computed[path]) return this.computed[path].call({ data: this })
         return this.parseExpr(path).reduce(
             (val: any, name: string) => val == null ? val : val[name],

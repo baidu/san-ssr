@@ -1,3 +1,10 @@
+## [1.11.2](https://github.com/baidu/san-ssr/compare/v1.11.1...v1.11.2) (2020-05-18)
+
+
+### Bug Fixes
+
+* call SanData#get() without arguments, closes [#57](https://github.com/baidu/san-ssr/issues/57) ([6b0e696](https://github.com/baidu/san-ssr/commit/6b0e6965bcd02dd4a29dca80f2be027d9088afba))
+
 ## [1.11.1](https://github.com/baidu/san-ssr/compare/v1.11.0...v1.11.1) (2020-05-14)
 
 

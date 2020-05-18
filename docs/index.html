@@ -132,6 +132,28 @@
 writeFileSync(<span class="hljs-string">'ssr.php'</span>, targetCode)</code></pre>
 				<p>指定非 <code>js</code> 的目标时，san-ssr 会从 CWD 开始寻找 <code>san-ssr-target-${target}</code> 的包，因此需要作为 san-ssr 的 peer 来安装。例如：</p>
 				<pre><code class="language-bash">npm i san-ssr san-ssr-target-php</code></pre>
+				<a href="#贡献指南" id="贡献指南" style="color: inherit; text-decoration: none;">
+					<h2>贡献指南</h2>
+				</a>
+				<p>欢迎任何类型的 Issue、完整的 Pull Request、或者不完整的 Pull Request。可以按照下面的步骤开始开发：</p>
+				<ol>
+					<li>克隆本仓库并 <code>npm install</code></li>
+					<li>在 test/cases 下添加你的测试样例，以 test/cases/array-literal 为例</li>
+					<li>通过 <code>./bin/debug array-literal</code> 来查看 SSR 结果。此时会输出三种 HTML：<ol>
+							<li>EXPECTED。test/cases/array-literal/expected.html 的内容。</li>
+							<li>SOURCE。compileToSource + render() 的结果，test/cases/array-literal/ssr.js 可查看生成的 ssr 代码。</li>
+							<li>RENDER。compileToRenderer + render() 的结果。</li>
+						</ol>
+					</li>
+					<li>如果 debug 符合预期，可以运行 <code>npm run integration</code> 来查看其它样例是否仍然正常。</li>
+					<li>如果一切正常，运行 <code>npm run check</code> 来做最后的编码风格检查，和完整的测试。</li>
+					<li>如果能够通过那么 Travis CI 就应该能通过，请发 PR 到本仓库。</li>
+				</ol>
+				<p>Tips:</p>
+				<ol>
+					<li>请添加 <code>PATH=$PATH:./bin</code> 到你的 Shell 配置，就可以直接用 <code>debug array-literal</code> 了。</li>
+					<li>如果你在用 ZShell，先执行一次 ./bin/auto-complete 或把它添加到 .zshrc 里，<code>debug</code> 命令就可以自动补全样例名了。</li>
+				</ol>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">

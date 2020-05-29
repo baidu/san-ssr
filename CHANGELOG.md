@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/baidu/san-ssr/compare/v1.11.2...v1.12.0) (2020-05-29)
+
+
+### Features
+
+* support <fragment>, see [#53](https://github.com/baidu/san-ssr/issues/53) ([7b74ec1](https://github.com/baidu/san-ssr/commit/7b74ec1b708b4beb5a6601d80c87c094959e8ba4))
+
 ## [1.11.2](https://github.com/baidu/san-ssr/compare/v1.11.1...v1.11.2) (2020-05-18)
 
 

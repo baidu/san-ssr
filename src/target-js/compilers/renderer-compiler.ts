@@ -171,10 +171,10 @@ export class RendererCompiler {
             this.noTemplateOutput,
             emitter
         )
-        elementCompiler.tagStart(component.aNode, 'tagName')
+        elementCompiler.tagStart(component.aNode)
         emitter.writeIf('!noDataOutput', () => emitter.writeDataComment())
         elementCompiler.inner(component.aNode)
-        elementCompiler.tagEnd(component.aNode, 'tagName')
+        elementCompiler.tagEnd(component.aNode)
 
         if (ifDirective) emitter.writeLine('}')
         emitter.writeLine('return html;')

@@ -28,7 +28,7 @@ export class ElementCompiler {
      * @param aNode 抽象节点
      * @param tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
-    tagStart (aNode: ANode, tagNameVariable?: string) {
+    tagStart (aNode: ANode) {
         const props = aNode.props
         const bindDirective = aNode.directives.bind
         const tagName = aNode.tagName
@@ -40,11 +40,9 @@ export class ElementCompiler {
             emitter.bufferHTMLLiteral('<' + tagName)
         } else if (this.noTemplateOutput) {
             return
-        } else if (tagNameVariable) {
-            emitter.bufferHTMLLiteral('<')
-            emitter.writeHTML(tagNameVariable + ' || "div"')
         } else {
-            emitter.bufferHTMLLiteral('<div')
+            emitter.bufferHTMLLiteral('<')
+            emitter.writeHTML('tagName || "div"')
         }
 
         // element properties
@@ -139,7 +137,7 @@ export class ElementCompiler {
      * @param aNode 抽象节点
      * @param tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
-    tagEnd (aNode: ANode, tagNameVariable?: string) {
+    tagEnd (aNode: ANode) {
         const { emitter } = this
         const tagName = aNode.tagName
 
@@ -158,12 +156,10 @@ export class ElementCompiler {
             }
         } else if (this.noTemplateOutput) {
             // noop
-        } else if (tagNameVariable) {
-            emitter.bufferHTMLLiteral('</')
-            emitter.writeHTML(tagNameVariable + ' || "div"')
-            emitter.bufferHTMLLiteral('>')
         } else {
-            emitter.bufferHTMLLiteral('</div>')
+            emitter.bufferHTMLLiteral('</')
+            emitter.writeHTML('tagName || "div"')
+            emitter.bufferHTMLLiteral('>')
         }
     }
 

@@ -13,13 +13,21 @@ import * as TypeGuards from '../../utils/type-guards'
 */
 export class ANodeCompiler {
     private ssrIndex = 0
+    private elementCompiler: ElementCompiler
 
     constructor (
         private owner: ComponentInfo,
         private root: ComponentTree,
-        private elementSourceCompiler: ElementCompiler,
+        noTemplateOutput: boolean,
         public emitter: JSEmitter
     ) {
+        this.elementCompiler = new ElementCompiler(
+            owner,
+            root,
+            noTemplateOutput,
+            this,
+            emitter
+        )
     }
 
     compile (aNode: ANode, parentNode: ANode) {
@@ -66,7 +74,7 @@ export class ANodeCompiler {
     }
 
     compileTemplate (aNode: ATemplateNode | AFragmentNode) {
-        this.elementSourceCompiler.inner(aNode)
+        this.elementCompiler.inner(aNode)
     }
 
     compileIf (aNode: AIfNode) {
@@ -199,10 +207,16 @@ export class ANodeCompiler {
         emitter.writeLine('ctx.slotRenderers.' + rendererId + '();')
     }
 
-    compileElement (aNode: ANode) {
-        this.elementSourceCompiler.tagStart(aNode)
-        this.elementSourceCompiler.inner(aNode)
-        this.elementSourceCompiler.tagEnd(aNode)
+    compileElement (aNode: ANode, emitData = false) {
+        this.elementCompiler.tagStart(aNode)
+        if (emitData) {
+            this.emitter.writeIf(
+                '!noDataOutput',
+                () => this.emitter.writeDataComment()
+            )
+        }
+        this.elementCompiler.inner(aNode)
+        this.elementCompiler.tagEnd(aNode)
     }
 
     private compileComponent (aNode: ANode, info: ComponentInfo) {

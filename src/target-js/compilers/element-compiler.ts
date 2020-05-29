@@ -12,15 +12,13 @@ import { ComponentTree } from '../../models/component-tree'
 * element 的编译方法集合对象
 */
 export class ElementCompiler {
-    private aNodeCompiler: ANodeCompiler
     constructor (
         owner: ComponentInfo,
         root: ComponentTree,
         private noTemplateOutput: boolean,
+        private aNodeCompiler: ANodeCompiler,
         public emitter: JSEmitter = new JSEmitter()
-    ) {
-        this.aNodeCompiler = new ANodeCompiler(owner, root, this, emitter)
-    }
+    ) {}
 
     /**
      * 编译元素标签头

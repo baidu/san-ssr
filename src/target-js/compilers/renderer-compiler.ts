@@ -1,4 +1,5 @@
 import { isFunction, map } from 'lodash'
+import { ANodeCompiler } from './anode-compiler'
 import { ComponentTree } from '../../models/component-tree'
 import { ComponentInfo } from '../../models/component-info'
 import { JSEmitter } from '../emitters/emitter'
@@ -165,16 +166,8 @@ export class RendererCompiler {
         const ifDirective = component.aNode.directives['if'] // eslint-disable-line dot-notation
         if (ifDirective) emitter.writeLine('if (' + expr(ifDirective.value) + ') {')
 
-        const elementCompiler = new ElementCompiler(
-            componentInfo,
-            this.componentTree,
-            this.noTemplateOutput,
-            emitter
-        )
-        elementCompiler.tagStart(component.aNode)
-        emitter.writeIf('!noDataOutput', () => emitter.writeDataComment())
-        elementCompiler.inner(component.aNode)
-        elementCompiler.tagEnd(component.aNode)
+        const aNodeCompiler = new ANodeCompiler(componentInfo, this.componentTree, this.noTemplateOutput, emitter)
+        aNodeCompiler.compileElement(component.aNode, true)
 
         if (ifDirective) emitter.writeLine('}')
         emitter.writeLine('return html;')

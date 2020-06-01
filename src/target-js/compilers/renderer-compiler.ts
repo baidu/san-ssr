@@ -167,7 +167,7 @@ export class RendererCompiler {
         if (ifDirective) emitter.writeLine('if (' + expr(ifDirective.value) + ') {')
 
         const aNodeCompiler = new ANodeCompiler(componentInfo, this.componentTree, this.noTemplateOutput, emitter)
-        aNodeCompiler.compileElement(component.aNode, true)
+        aNodeCompiler.compile(component.aNode, undefined, true)
 
         if (ifDirective) emitter.writeLine('}')
         emitter.writeLine('return html;')

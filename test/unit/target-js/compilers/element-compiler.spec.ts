@@ -4,16 +4,9 @@ import { parseTemplate } from 'san'
 describe('target-js/compilers/element-compiler', () => {
     let compiler
     beforeEach(() => {
-        compiler = new ElementCompiler(null as any, null as any, false)
+        compiler = new ElementCompiler(null as any, null as any, false, null as any)
     })
 
-    it('should compile a simple <div>', () => {
-        const aNode = parseTemplate('<div></div>')
-        compiler.tagStart(aNode)
-        compiler.tagEnd(aNode)
-        expect(compiler.emitter.fullText()).toEqual(`html += "<div></div>";
-`)
-    })
     it('should compile a simple <div> with customized tagName', () => {
         const aNode = parseTemplate('<div></div>')
         compiler.tagStart(aNode, 'tagName')

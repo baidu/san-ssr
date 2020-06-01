@@ -17,14 +17,11 @@ export class ElementCompiler {
         root: ComponentTree,
         private noTemplateOutput: boolean,
         private aNodeCompiler: ANodeCompiler,
-        public emitter: JSEmitter = new JSEmitter()
+        private emitter: JSEmitter = new JSEmitter()
     ) {}
 
     /**
      * 编译元素标签头
-     *
-     * @param aNode 抽象节点
-     * @param tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
     tagStart (aNode: ANode) {
         const props = aNode.props
@@ -33,14 +30,13 @@ export class ElementCompiler {
         const { emitter } = this
 
         // element start '<'
-        if (tagName === 'fragment') return
         if (tagName) {
-            emitter.bufferHTMLLiteral('<' + tagName)
+            emitter.writeHTMLLiteral('<' + tagName)
         } else if (this.noTemplateOutput) {
             return
         } else {
-            emitter.bufferHTMLLiteral('<')
-            emitter.writeHTML('tagName || "div"')
+            emitter.writeHTMLLiteral('<')
+            emitter.writeHTMLExpression('tagName || "div"')
         }
 
         // element properties
@@ -50,7 +46,7 @@ export class ElementCompiler {
         if (bindDirective) this.compileBindProperties(tagName, bindDirective)
 
         // element end '>'
-        emitter.bufferHTMLLiteral('>')
+        emitter.writeHTMLLiteral('>')
     }
 
     private compileProperty (tagName: string, prop: ANodeProperty, propsIndex: { [key: string]: ANodeProperty }) {
@@ -58,9 +54,9 @@ export class ElementCompiler {
         const { emitter } = this
         if (name === 'slot') return
 
-        if (isExprBoolNode(prop.expr)) return emitter.bufferHTMLLiteral(' ' + name)
-        if (isExprStringNode(prop.expr)) return emitter.bufferHTMLLiteral(` ${name}="${prop.expr.literal}"`)
-        if (prop.expr.value != null) return emitter.bufferHTMLLiteral(` ${name}="${expr(prop.expr)}"`)
+        if (isExprBoolNode(prop.expr)) return emitter.writeHTMLLiteral(' ' + name)
+        if (isExprStringNode(prop.expr)) return emitter.writeHTMLLiteral(` ${name}="${prop.expr.literal}"`)
+        if (prop.expr.value != null) return emitter.writeHTMLLiteral(` ${name}="${expr(prop.expr)}"`)
 
         if (name === 'value') {
             if (tagName === 'textarea') return
@@ -70,17 +66,17 @@ export class ElementCompiler {
             if (tagName === 'option') {
                 emitter.writeLine(`$optionValue = ${expr(prop.expr)};`)
                 emitter.writeIf('$optionValue != null', () => {
-                    emitter.writeHTML('" value=\\"" + $optionValue + "\\""') // value attr
+                    emitter.writeHTMLExpression('" value=\\"" + $optionValue + "\\""') // value attr
                 })
                 emitter.writeIf('$optionValue === $selectValue', () => {
-                    emitter.bufferHTMLLiteral(' selected') // selected attr
+                    emitter.writeHTMLLiteral(' selected') // selected attr
                 })
                 return
             }
         }
 
         if (name === 'readonly' || name === 'disabled' || name === 'multiple') {
-            return emitter.writeHTML(`_.boolAttrFilter("${name}", ${expr(prop.expr)})`)
+            return emitter.writeHTMLExpression(`_.boolAttrFilter("${name}", ${expr(prop.expr)})`)
         }
 
         const valueProp = propsIndex['value']
@@ -89,18 +85,18 @@ export class ElementCompiler {
             switch (inputType.raw) {
             case 'checkbox':
                 return emitter.writeIf(`_.includes(${expr(prop.expr)}, ${expr(valueProp.expr)})`, () => {
-                    emitter.bufferHTMLLiteral(' checked')
+                    emitter.writeHTMLLiteral(' checked')
                 })
             case 'radio':
                 return emitter.writeIf(`${expr(prop.expr)} === ${expr(valueProp.expr)}`, () => {
-                    emitter.bufferHTMLLiteral(' checked')
+                    emitter.writeHTMLLiteral(' checked')
                 })
             }
         }
 
         const onlyOneAccessor = prop.expr.type === ExprType.ACCESSOR
         const escp = (prop.x || onlyOneAccessor ? ', true' : '')
-        emitter.writeHTML(`_.attrFilter("${name}", ${expr(prop.expr)}${escp})`)
+        emitter.writeHTMLExpression(`_.attrFilter("${name}", ${expr(prop.expr)}${escp})`)
     }
 
     private compileBindProperties (tagName: string, bindDirective: Directive<any>) {
@@ -116,11 +112,11 @@ export class ElementCompiler {
                 emitter.writeCase('"disabled"')
                 emitter.writeCase('"multiple"')
                 emitter.writeCase('"checked"', () => {
-                    emitter.writeHTML('_.boolAttrFilter($key, $value)')
+                    emitter.writeHTMLExpression('_.boolAttrFilter($key, $value)')
                     emitter.writeBreak()
                 })
                 emitter.writeDefault(() => {
-                    emitter.writeHTML('_.attrFilter($key, $value, true)')
+                    emitter.writeHTMLExpression('_.attrFilter($key, $value, true)')
                 })
             })
         })
@@ -131,18 +127,14 @@ export class ElementCompiler {
 
     /**
      * 编译元素闭合
-     *
-     * @param aNode 抽象节点
-     * @param tagNameVariable 组件标签为外部动态传入时的标签变量名
      */
     tagEnd (aNode: ANode) {
         const { emitter } = this
         const tagName = aNode.tagName
 
-        if (tagName === 'fragment') return
         if (tagName) {
             if (!autoCloseTags.has(tagName)) {
-                emitter.bufferHTMLLiteral('</' + tagName + '>')
+                emitter.writeHTMLLiteral('</' + tagName + '>')
             }
 
             if (tagName === 'select') {
@@ -155,9 +147,9 @@ export class ElementCompiler {
         } else if (this.noTemplateOutput) {
             // noop
         } else {
-            emitter.bufferHTMLLiteral('</')
-            emitter.writeHTML('tagName || "div"')
-            emitter.bufferHTMLLiteral('>')
+            emitter.writeHTMLLiteral('</')
+            emitter.writeHTMLExpression('tagName || "div"')
+            emitter.writeHTMLLiteral('>')
         }
     }
 
@@ -169,16 +161,16 @@ export class ElementCompiler {
         // inner content
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodePropByName(aNode, 'value')
-            if (valueProp) emitter.writeHTML(`_.escapeHTML(${expr(valueProp.expr)})`)
+            if (valueProp) emitter.writeHTMLExpression(`_.escapeHTML(${expr(valueProp.expr)})`)
             return
         }
 
         const htmlDirective = aNode.directives.html
         if (htmlDirective) {
-            emitter.writeHTML(expr(htmlDirective.value))
+            emitter.writeHTMLExpression(expr(htmlDirective.value))
             return
         }
         // only ATextNode#children is not defined, it has been taken over by ANodeCompiler#compileText()
-        for (const aNodeChild of aNode.children!) this.aNodeCompiler.compile(aNodeChild, aNode)
+        for (const aNodeChild of aNode.children!) this.aNodeCompiler.compile(aNodeChild, aNode, false)
     }
 }

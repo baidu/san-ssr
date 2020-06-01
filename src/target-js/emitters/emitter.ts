@@ -15,15 +15,15 @@ export class JSEmitter extends Emitter {
         return this.defaultWrite(str)
     }
 
-    public writeHTML (code: string) {
+    public writeHTMLExpression (code: string) {
         this.writeLine(`html += ${code};`)
     }
 
     public writeDataComment () {
-        this.writeHTML('"<!--s-data:" + JSON.stringify(' + dataAccess() + ') + "-->"')
+        this.writeHTMLExpression(`"<!--s-data:" + JSON.stringify(${dataAccess()}) + "-->"`)
     }
 
-    public bufferHTMLLiteral (str: string) {
+    public writeHTMLLiteral (str: string) {
         this.buffer += str
     }
 
@@ -31,7 +31,7 @@ export class JSEmitter extends Emitter {
         if (this.buffer === '') return
         const buffer = this.buffer
         this.buffer = ''
-        this.writeHTML(stringLiteralize(buffer))
+        this.writeHTMLExpression(stringLiteralize(buffer))
     }
 
     public writeSwitch (expr: string, body: Function) {

@@ -33,9 +33,11 @@ export class ComponentInfo {
     // Raw components
     public readonly childComponentClasses: Components
     public component: CompiledComponent<{}>
+    public readonly rootANode: ANode
 
     constructor ({ filters, computed, template, cid, componentClass, children = [], childComponentClasses, component }: ComponentInfoOptions) {
         this.component = component
+        this.rootANode = component.aNode
         this.filters = filters
         this.computed = computed
         this.template = template

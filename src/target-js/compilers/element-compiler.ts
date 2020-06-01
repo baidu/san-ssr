@@ -171,6 +171,6 @@ export class ElementCompiler {
             return
         }
         // only ATextNode#children is not defined, it has been taken over by ANodeCompiler#compileText()
-        for (const aNodeChild of aNode.children!) this.aNodeCompiler.compile(aNodeChild, aNode, false)
+        for (const aNodeChild of aNode.children!) this.aNodeCompiler.compile(aNodeChild, false)
     }
 }

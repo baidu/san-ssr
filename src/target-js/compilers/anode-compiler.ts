@@ -32,13 +32,13 @@ export class ANodeCompiler {
         )
     }
 
-    compile (aNode: ANode, parentNode: ANode | undefined, needOutputData: boolean) {
-        if (TypeGuards.isATextNode(aNode)) return this.compileText(aNode, parentNode)
+    compile (aNode: ANode, needOutputData: boolean) {
+        if (TypeGuards.isATextNode(aNode)) return this.compileText(aNode)
         if (TypeGuards.isAIfNode(aNode)) return this.compileIf(aNode)
         if (TypeGuards.isAForNode(aNode)) return this.compileFor(aNode)
         if (TypeGuards.isASlotNode(aNode)) return this.compileSlot(aNode)
         if (TypeGuards.isATemplateNode(aNode)) return this.compileTemplate(aNode)
-        if (TypeGuards.isAFragmentNode(aNode)) return this.compileTemplate(aNode)
+        if (TypeGuards.isAFragmentNode(aNode)) return this.compileFragment(aNode)
 
         const ComponentClass = this.owner.getChildComponentClass(aNode)
         if (ComponentClass) {
@@ -48,11 +48,8 @@ export class ANodeCompiler {
         return this.compileElement(aNode, needOutputData)
     }
 
-    private compileText (aNode: ATextNode, parentNode: ANode | undefined) {
+    private compileText (aNode: ATextNode) {
         const { emitter } = this
-        if (parentNode && TypeGuards.isAFragmentNode(parentNode) && parentNode.children[0] === aNode) {
-            emitter.writeHTMLLiteral('<!--s-frag-->')
-        }
         if (aNode.textExpr.original) {
             emitter.writeIf('!noDataOutput', () => {
                 emitter.writeHTMLLiteral('<!--s-text-->')
@@ -70,20 +67,27 @@ export class ANodeCompiler {
                 emitter.writeHTMLLiteral('<!--/s-text-->')
             })
         }
-        if (parentNode && TypeGuards.isAFragmentNode(parentNode) && parentNode.children[parentNode.children.length - 1] === aNode) {
-            emitter.writeHTMLLiteral('<!--s-frag-->')
-        }
     }
 
-    compileTemplate (aNode: ATemplateNode | AFragmentNode) {
+    compileTemplate (aNode: ATemplateNode) {
         this.elementCompiler.inner(aNode)
+    }
+
+    compileFragment (aNode: AFragmentNode) {
+        if (TypeGuards.isATextNode(aNode.children[0])) {
+            this.emitter.writeHTMLLiteral('<!--s-frag-->')
+        }
+        this.elementCompiler.inner(aNode)
+        if (TypeGuards.isATextNode(aNode.children[aNode.children.length - 1])) {
+            this.emitter.writeHTMLLiteral('<!--/s-frag-->')
+        }
     }
 
     private compileIf (aNode: AIfNode) {
         const { emitter } = this
         // output if
         const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
-        emitter.writeIf(expr(ifDirective.value), () => this.compile(aNode.ifRinsed, aNode, false))
+        emitter.writeIf(expr(ifDirective.value), () => this.compile(aNode.ifRinsed, false))
 
         // output elif and else
         for (const elseANode of aNode.elses || []) {
@@ -94,7 +98,7 @@ export class ANodeCompiler {
                 emitter.writeLine('else {')
             }
             emitter.indent()
-            this.compile(elseANode, aNode, false)
+            this.compile(elseANode, false)
             emitter.unindent()
             emitter.writeLine('}')
         }
@@ -124,7 +128,7 @@ export class ANodeCompiler {
             indexName + '++', () => {
                 emitter.writeLine('ctx.data.' + indexName + '=' + indexName + ';')
                 emitter.writeLine('ctx.data.' + itemName + '= ' + listName + '[' + indexName + '];')
-                this.compile(forElementANode, aNode, false)
+                this.compile(forElementANode, false)
             })
         })
 
@@ -134,7 +138,7 @@ export class ANodeCompiler {
             emitter.writeIf(listName + '[' + indexName + '] != null', () => {
                 emitter.writeLine('ctx.data.' + indexName + '=' + indexName + ';')
                 emitter.writeLine('ctx.data.' + itemName + '= ' + listName + '[' + indexName + '];')
-                this.compile(forElementANode, aNode, false)
+                this.compile(forElementANode, false)
             })
         })
         emitter.endIf()
@@ -155,7 +159,7 @@ export class ANodeCompiler {
         emitter.writeFunction('$defaultSlotRender', ['ctx', 'currentCtx'], () => {
             emitter.writeLine('var html = "";')
             for (const aNodeChild of aNode.children) {
-                this.compile(aNodeChild, aNode, false)
+                this.compile(aNodeChild, false)
             }
             emitter.writeLine('return html;')
         })
@@ -266,7 +270,7 @@ export class ANodeCompiler {
         const { emitter } = this
         emitter.writeAnonymousFunction(['ctx', 'currentCtx'], () => {
             emitter.writeLine('var html = "";')
-            for (const slot of slots) this.compile(slot, parentANode, false)
+            for (const slot of slots) this.compile(slot, false)
             emitter.writeLine('return html;')
         })
     }

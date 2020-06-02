@@ -7,7 +7,6 @@ import { SanData } from '../../models/san-data'
 import { Renderer } from '../../models/renderer'
 import { expr } from './expr-compiler'
 import { stringifier } from './stringifier'
-import { ElementCompiler } from './element-compiler'
 import { COMPONENT_RESERVED_MEMBERS } from '../../models/component'
 
 // * 参数列表用于 toSource 和 toRender 两处，anode-compiler 中递归时要与此保持一致
@@ -51,7 +50,7 @@ export interface CompileContext {
  */
 export class RendererCompiler {
     constructor (
-        private noTemplateOutput: boolean,
+        private ssrOnly: boolean,
         private componentTree: ComponentTree,
         public emitter = new JSEmitter()
     ) {}
@@ -166,8 +165,8 @@ export class RendererCompiler {
         const ifDirective = component.aNode.directives['if'] // eslint-disable-line dot-notation
         if (ifDirective) emitter.writeLine('if (' + expr(ifDirective.value) + ') {')
 
-        const aNodeCompiler = new ANodeCompiler(componentInfo, this.componentTree, this.noTemplateOutput, emitter)
-        aNodeCompiler.compile(component.aNode, true)
+        const aNodeCompiler = new ANodeCompiler(componentInfo, this.componentTree, this.ssrOnly, emitter)
+        aNodeCompiler.compile(component.aNode, !this.ssrOnly)
 
         if (ifDirective) emitter.writeLine('}')
         emitter.writeLine('return html;')

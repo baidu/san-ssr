@@ -6,16 +6,20 @@ import { autoCloseTags } from '../../utils/dom-util'
 import { ANodeCompiler } from './anode-compiler'
 import { ANodeProperty, Directive, ExprType, ANode } from 'san'
 import { isExprStringNode, isExprBoolNode } from '../../utils/type-guards'
-import { ComponentTree } from '../../models/component-tree'
 
-/*
-* element 的编译方法集合对象
-*/
+/**
+ * 编译一个 HTML 标签
+ *
+ * 每个 ElementCompiler 对象对应于一个 ComponentClass，可以用来编译该组件中的所有 HTML 标签，并递归地调用 ANodeCompiler 来编译标签内容。
+ */
 export class ElementCompiler {
+    /**
+     * @param owner 被编译标签所属的组件信息对象
+     * @param aNodeCompiler 编译 aNode 的对象，编译标签内容时用
+     * @param emitter 代码输出器，产出代码塞到这里面
+     */
     constructor (
         owner: ComponentInfo,
-        root: ComponentTree,
-        private noTemplateOutput: boolean,
         private aNodeCompiler: ANodeCompiler,
         private emitter: JSEmitter = new JSEmitter()
     ) {}
@@ -32,8 +36,6 @@ export class ElementCompiler {
         // element start '<'
         if (tagName) {
             emitter.writeHTMLLiteral('<' + tagName)
-        } else if (this.noTemplateOutput) {
-            return
         } else {
             emitter.writeHTMLLiteral('<')
             emitter.writeHTMLExpression('tagName || "div"')
@@ -136,16 +138,12 @@ export class ElementCompiler {
             if (!autoCloseTags.has(tagName)) {
                 emitter.writeHTMLLiteral('</' + tagName + '>')
             }
-
             if (tagName === 'select') {
                 emitter.writeLine('$selectValue = null;')
             }
-
             if (tagName === 'option') {
                 emitter.writeLine('$optionValue = null;')
             }
-        } else if (this.noTemplateOutput) {
-            // noop
         } else {
             emitter.writeHTMLLiteral('</')
             emitter.writeHTMLExpression('tagName || "div"')

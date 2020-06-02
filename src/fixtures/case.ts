@@ -25,13 +25,11 @@ export function compile (caseName: string, bareFunctionBody: boolean) {
     const caseDir = join(caseRoot, caseName)
     const tsFile = join(caseDir, 'component.ts')
     const jsFile = resolve(caseDir, 'component.js')
-    const noTemplateOutput = caseName.indexOf('notpl') > -1
+    const ssrOnly = /-so/.test(caseName)
     const targetCode = sanProject.compile(
         existsSync(tsFile) ? tsFile : jsFile,
-        ToJSCompiler, {
-            noTemplateOutput,
-            bareFunctionBody
-        }
+        ToJSCompiler,
+        { ssrOnly, bareFunctionBody }
     )
     return targetCode
 }
@@ -42,7 +40,7 @@ export function compileCaseToRenderer (caseName: string) {
     const ts = join(caseDir, 'component.ts')
     const ComponentClass = existsSync(js) ? require(js) : ts
     return compileToRenderer(ComponentClass, {
-        noTemplateOutput: caseDir.indexOf('notpl') > -1
+        ssrOnly: /-so/.test(caseDir)
     })
 }
 

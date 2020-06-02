@@ -12,7 +12,7 @@ import { RendererCompiler } from './compilers/renderer-compiler'
 const debug = debugFactory('target-js')
 
 export type ToJSCompileOptions = {
-    noTemplateOutput?: boolean
+    ssrOnly?: boolean
 }
 
 export type ToJSConstructOptions = {
@@ -29,7 +29,7 @@ export default class ToJSCompiler implements Compiler {
     }
 
     public compile (sanApp: SanApp, {
-        noTemplateOutput = false,
+        ssrOnly = false,
         bareFunction = false,
         bareFunctionBody = false
     }) {
@@ -44,7 +44,7 @@ export default class ToJSCompiler implements Compiler {
 
         function emitFunctionBody () {
             emitRuntime(emitter, 'sanssrRuntime')
-            const cc = new RendererCompiler(noTemplateOutput, sanApp.componentTree, emitter)
+            const cc = new RendererCompiler(ssrOnly, sanApp.componentTree, emitter)
             for (const info of sanApp.componentTree.preOrder()) {
                 const { cid } = info
                 emitter.writeBlock(`sanssrRuntime.prototype${cid} =`, () => {
@@ -61,10 +61,10 @@ export default class ToJSCompiler implements Compiler {
     }
 
     public compileToRenderer (sanApp: SanApp, {
-        noTemplateOutput = false
+        ssrOnly = false
     }: ToJSCompileOptions = {}): Renderer {
         const sanssrRuntime = { _, SanData }
-        const cc = new RendererCompiler(noTemplateOutput, sanApp.componentTree)
+        const cc = new RendererCompiler(ssrOnly, sanApp.componentTree)
 
         for (const info of sanApp.componentTree.preOrder()) {
             const { cid } = info

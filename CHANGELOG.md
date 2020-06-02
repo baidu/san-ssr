@@ -1,3 +1,11 @@
+# [1.13.0](https://github.com/baidu/san-ssr/compare/v1.12.0...v1.13.0) (2020-06-02)
+
+
+### Features
+
+* ssrOnly, see [#59](https://github.com/baidu/san-ssr/issues/59) ([ccca8e9](https://github.com/baidu/san-ssr/commit/ccca8e96e6db3ce001e2915d53881ac247309004))
+* 支持根元素为组件，[#58](https://github.com/baidu/san-ssr/issues/58) ([0602a77](https://github.com/baidu/san-ssr/commit/0602a7746c827951b83c8939df15c488727613b6))
+
 # [1.12.0](https://github.com/baidu/san-ssr/compare/v1.11.2...v1.12.0) (2020-05-29)
 
 

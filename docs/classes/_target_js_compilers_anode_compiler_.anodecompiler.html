@@ -72,8 +72,9 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>ANode 的编译方法集合对象</p>
+						<p>ANode 编译</p>
 					</div>
+					<p>负责单个 ComponentClass 的编译，每个 ANodeCompiler 对应于一个 ComponentInfo。</p>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
@@ -97,11 +98,12 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#elementsourcecompiler" class="tsd-kind-icon">element<wbr>Source<wbr>Compiler</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#componentinfo" class="tsd-kind-icon">component<wbr>Info</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#componenttree" class="tsd-kind-icon">component<wbr>Tree</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#elementcompiler" class="tsd-kind-icon">element<wbr>Compiler</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#emitter" class="tsd-kind-icon">emitter</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#owner" class="tsd-kind-icon">owner</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#root" class="tsd-kind-icon">root</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#ssrindex" class="tsd-kind-icon">ssr<wbr>Index</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#ssronly" class="tsd-kind-icon">ssr<wbr>Only</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -109,15 +111,17 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compile" class="tsd-kind-icon">compile</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compilecomponent" class="tsd-kind-icon">compile<wbr>Component</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compileelement" class="tsd-kind-icon">compile<wbr>Element</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compileelement" class="tsd-kind-icon">compile<wbr>Element</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compilefor" class="tsd-kind-icon">compile<wbr>For</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compileif" class="tsd-kind-icon">compile<wbr>If</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compilefragment" class="tsd-kind-icon">compile<wbr>Fragment</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compileif" class="tsd-kind-icon">compile<wbr>If</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compileslot" class="tsd-kind-icon">compile<wbr>Slot</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compileslotrenderer" class="tsd-kind-icon">compile<wbr>Slot<wbr>Renderer</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compiletemplate" class="tsd-kind-icon">compile<wbr>Template</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compiletext" class="tsd-kind-icon">compile<wbr>Text</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compiletext" class="tsd-kind-icon">compile<wbr>Text</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#componentdatacode" class="tsd-kind-icon">component<wbr>Data<wbr>Code</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#nextid" class="tsd-kind-icon">nextID</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_anode_compiler_.anodecompiler.html#outputdata" class="tsd-kind-icon">output<wbr>Data</a></li>
 							</ul>
 						</section>
 					</div>
@@ -129,28 +133,50 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new ANode<wbr>Compiler<span class="tsd-signature-symbol">(</span>owner<span class="tsd-signature-symbol">: </span><a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a>, root<span class="tsd-signature-symbol">: </span><a href="_models_component_tree_.componenttree.html" class="tsd-signature-type">ComponentTree</a>, elementSourceCompiler<span class="tsd-signature-symbol">: </span><a href="_target_js_compilers_element_compiler_.elementcompiler.html" class="tsd-signature-type">ElementCompiler</a>, emitter<span class="tsd-signature-symbol">: </span><a href="_target_js_emitters_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_target_js_compilers_anode_compiler_.anodecompiler.html" class="tsd-signature-type">ANodeCompiler</a></li>
+						<li class="tsd-signature tsd-kind-icon">new ANode<wbr>Compiler<span class="tsd-signature-symbol">(</span>componentInfo<span class="tsd-signature-symbol">: </span><a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a>, componentTree<span class="tsd-signature-symbol">: </span><a href="_models_component_tree_.componenttree.html" class="tsd-signature-type">ComponentTree</a>, ssrOnly<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, emitter<span class="tsd-signature-symbol">: </span><a href="_target_js_emitters_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_target_js_compilers_anode_compiler_.anodecompiler.html" class="tsd-signature-type">ANodeCompiler</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbb9213/src/target-js/compilers/anode-compiler.ts#L15">target-js/compilers/anode-compiler.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L18">target-js/compilers/anode-compiler.ts:18</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>owner: <a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a></h5>
+									<h5>componentInfo: <a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>要被编译的节点所在组件的信息</p>
+										</div>
+									</div>
 								</li>
 								<li>
-									<h5>root: <a href="_models_component_tree_.componenttree.html" class="tsd-signature-type">ComponentTree</a></h5>
+									<h5>componentTree: <a href="_models_component_tree_.componenttree.html" class="tsd-signature-type">ComponentTree</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>当前组件所在的组件树</p>
+										</div>
+									</div>
 								</li>
 								<li>
-									<h5>elementSourceCompiler: <a href="_target_js_compilers_element_compiler_.elementcompiler.html" class="tsd-signature-type">ElementCompiler</a></h5>
+									<h5>ssrOnly: <span class="tsd-signature-type">boolean</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>san-ssr 当做模板引擎来使用（产出 HTML 更简单，但无法反解）</p>
+										</div>
+									</div>
 								</li>
 								<li>
 									<h5>emitter: <a href="_target_js_emitters_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>代码输出器，产出代码塞到这里面</p>
+										</div>
+									</div>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_target_js_compilers_anode_compiler_.anodecompiler.html" class="tsd-signature-type">ANodeCompiler</a></h4>
@@ -161,12 +187,42 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="elementsourcecompiler" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> element<wbr>Source<wbr>Compiler</h3>
-					<div class="tsd-signature tsd-kind-icon">element<wbr>Source<wbr>Compiler<span class="tsd-signature-symbol">:</span> <a href="_target_js_compilers_element_compiler_.elementcompiler.html" class="tsd-signature-type">ElementCompiler</a></div>
+					<a name="componentinfo" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> component<wbr>Info</h3>
+					<div class="tsd-signature tsd-kind-icon">component<wbr>Info<span class="tsd-signature-symbol">:</span> <a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbb9213/src/target-js/compilers/anode-compiler.ts#L20">target-js/compilers/anode-compiler.ts:20</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L27">target-js/compilers/anode-compiler.ts:27</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>要被编译的节点所在组件的信息</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="componenttree" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> component<wbr>Tree</h3>
+					<div class="tsd-signature tsd-kind-icon">component<wbr>Tree<span class="tsd-signature-symbol">:</span> <a href="_models_component_tree_.componenttree.html" class="tsd-signature-type">ComponentTree</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L28">target-js/compilers/anode-compiler.ts:28</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>当前组件所在的组件树</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="elementcompiler" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> element<wbr>Compiler</h3>
+					<div class="tsd-signature tsd-kind-icon">element<wbr>Compiler<span class="tsd-signature-symbol">:</span> <a href="_target_js_compilers_element_compiler_.elementcompiler.html" class="tsd-signature-type">ElementCompiler</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L18">target-js/compilers/anode-compiler.ts:18</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -176,29 +232,14 @@
 					<div class="tsd-signature tsd-kind-icon">emitter<span class="tsd-signature-symbol">:</span> <a href="_target_js_emitters_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbb9213/src/target-js/compilers/anode-compiler.ts#L21">target-js/compilers/anode-compiler.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L30">target-js/compilers/anode-compiler.ts:30</a></li>
 						</ul>
 					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="owner" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> owner</h3>
-					<div class="tsd-signature tsd-kind-icon">owner<span class="tsd-signature-symbol">:</span> <a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbb9213/src/target-js/compilers/anode-compiler.ts#L18">target-js/compilers/anode-compiler.ts:18</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="root" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> root</h3>
-					<div class="tsd-signature tsd-kind-icon">root<span class="tsd-signature-symbol">:</span> <a href="_models_component_tree_.componenttree.html" class="tsd-signature-type">ComponentTree</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbb9213/src/target-js/compilers/anode-compiler.ts#L19">target-js/compilers/anode-compiler.ts:19</a></li>
-						</ul>
-					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>代码输出器，产出代码塞到这里面</p>
+						</div>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="ssrindex" class="tsd-anchor"></a>
@@ -206,9 +247,24 @@
 					<div class="tsd-signature tsd-kind-icon">ssr<wbr>Index<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbb9213/src/target-js/compilers/anode-compiler.ts#L15">target-js/compilers/anode-compiler.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L17">target-js/compilers/anode-compiler.ts:17</a></li>
 						</ul>
 					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="ssronly" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> ssr<wbr>Only</h3>
+					<div class="tsd-signature tsd-kind-icon">ssr<wbr>Only<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L29">target-js/compilers/anode-compiler.ts:29</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>san-ssr 当做模板引擎来使用（产出 HTML 更简单，但无法反解）</p>
+						</div>
+					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
@@ -217,13 +273,13 @@
 					<a name="compile" class="tsd-anchor"></a>
 					<h3>compile</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">compile<span class="tsd-signature-symbol">(</span>aNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ANode</span>, parentNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ANode</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">compile<span class="tsd-signature-symbol">(</span>aNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ANode</span>, needOutputData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbb9213/src/target-js/compilers/anode-compiler.ts#L25">target-js/compilers/anode-compiler.ts:25</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L37">target-js/compilers/anode-compiler.ts:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -232,7 +288,7 @@
 									<h5>aNode: <span class="tsd-signature-type">ANode</span></h5>
 								</li>
 								<li>
-									<h5>parentNode: <span class="tsd-signature-type">ANode</span></h5>
+									<h5>needOutputData: <span class="tsd-signature-type">boolean</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -243,13 +299,13 @@
 					<a name="compilecomponent" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> compile<wbr>Component</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">compile<wbr>Component<span class="tsd-signature-symbol">(</span>aNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ANode</span>, info<span class="tsd-signature-symbol">: </span><a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">compile<wbr>Component<span class="tsd-signature-symbol">(</span>aNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ANode</span>, info<span class="tsd-signature-symbol">: </span><a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a>, needOutputData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbb9213/src/target-js/compilers/anode-compiler.ts#L208">target-js/compilers/anode-compiler.ts:208</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L220">target-js/compilers/anode-compiler.ts:220</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -260,28 +316,34 @@
 								<li>
 									<h5>info: <a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a></h5>
 								</li>
+								<li>
+									<h5>needOutputData: <span class="tsd-signature-type">boolean</span></h5>
+								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
 					<a name="compileelement" class="tsd-anchor"></a>
-					<h3>compile<wbr>Element</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">compile<wbr>Element<span class="tsd-signature-symbol">(</span>aNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ANode</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> compile<wbr>Element</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">compile<wbr>Element<span class="tsd-signature-symbol">(</span>aNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ANode</span>, needOutputData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbb9213/src/target-js/compilers/anode-compiler.ts#L202">target-js/compilers/anode-compiler.ts:202</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L209">target-js/compilers/anode-compiler.ts:209</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>aNode: <span class="tsd-signature-type">ANode</span></h5>
+								</li>
+								<li>
+									<h5>needOutputData: <span class="tsd-signature-type">boolean</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -298,7 +360,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbb9213/src/target-js/compilers/anode-compiler.ts#L93">target-js/compilers/anode-compiler.ts:93</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L105">target-js/compilers/anode-compiler.ts:105</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -312,16 +374,39 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="compileif" class="tsd-anchor"></a>
-					<h3>compile<wbr>If</h3>
+					<a name="compilefragment" class="tsd-anchor"></a>
+					<h3>compile<wbr>Fragment</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">compile<wbr>Fragment<span class="tsd-signature-symbol">(</span>aNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AFragmentNode</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L74">target-js/compilers/anode-compiler.ts:74</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>aNode: <span class="tsd-signature-type">AFragmentNode</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="compileif" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> compile<wbr>If</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
 						<li class="tsd-signature tsd-kind-icon">compile<wbr>If<span class="tsd-signature-symbol">(</span>aNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AIfNode</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbb9213/src/target-js/compilers/anode-compiler.ts#L72">target-js/compilers/anode-compiler.ts:72</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L84">target-js/compilers/anode-compiler.ts:84</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -344,7 +429,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbb9213/src/target-js/compilers/anode-compiler.ts#L136">target-js/compilers/anode-compiler.ts:136</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L148">target-js/compilers/anode-compiler.ts:148</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -366,22 +451,19 @@
 					<a name="compileslotrenderer" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> compile<wbr>Slot<wbr>Renderer</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">compile<wbr>Slot<wbr>Renderer<span class="tsd-signature-symbol">(</span>slots<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ANode</span><span class="tsd-signature-symbol">[]</span>, parentANode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ANode</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">compile<wbr>Slot<wbr>Renderer<span class="tsd-signature-symbol">(</span>slots<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ANode</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbb9213/src/target-js/compilers/anode-compiler.ts#L249">target-js/compilers/anode-compiler.ts:249</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L262">target-js/compilers/anode-compiler.ts:262</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>slots: <span class="tsd-signature-type">ANode</span><span class="tsd-signature-symbol">[]</span></h5>
-								</li>
-								<li>
-									<h5>parentANode: <span class="tsd-signature-type">ANode</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -392,45 +474,42 @@
 					<a name="compiletemplate" class="tsd-anchor"></a>
 					<h3>compile<wbr>Template</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">compile<wbr>Template<span class="tsd-signature-symbol">(</span>aNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ATemplateNode</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">AFragmentNode</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">compile<wbr>Template<span class="tsd-signature-symbol">(</span>aNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ATemplateNode</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbb9213/src/target-js/compilers/anode-compiler.ts#L68">target-js/compilers/anode-compiler.ts:68</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L70">target-js/compilers/anode-compiler.ts:70</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>aNode: <span class="tsd-signature-type">ATemplateNode</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">AFragmentNode</span></h5>
+									<h5>aNode: <span class="tsd-signature-type">ATemplateNode</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
 					<a name="compiletext" class="tsd-anchor"></a>
-					<h3>compile<wbr>Text</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">compile<wbr>Text<span class="tsd-signature-symbol">(</span>aNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ATextNode</span>, parentNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ANode</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> compile<wbr>Text</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">compile<wbr>Text<span class="tsd-signature-symbol">(</span>aNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ATextNode</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbb9213/src/target-js/compilers/anode-compiler.ts#L41">target-js/compilers/anode-compiler.ts:41</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L53">target-js/compilers/anode-compiler.ts:53</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>aNode: <span class="tsd-signature-type">ATextNode</span></h5>
-								</li>
-								<li>
-									<h5>parentNode: <span class="tsd-signature-type">ANode</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -447,7 +526,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbb9213/src/target-js/compilers/anode-compiler.ts#L258">target-js/compilers/anode-compiler.ts:258</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L271">target-js/compilers/anode-compiler.ts:271</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -470,10 +549,27 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbb9213/src/target-js/compilers/anode-compiler.ts#L269">target-js/compilers/anode-compiler.ts:269</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L282">target-js/compilers/anode-compiler.ts:282</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="outputdata" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> output<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">output<wbr>Data<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/target-js/compilers/anode-compiler.ts#L216">target-js/compilers/anode-compiler.ts:216</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -501,19 +597,22 @@
 								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#elementsourcecompiler" class="tsd-kind-icon">element<wbr>Source<wbr>Compiler</a>
+								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#componentinfo" class="tsd-kind-icon">component<wbr>Info</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#componenttree" class="tsd-kind-icon">component<wbr>Tree</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#elementcompiler" class="tsd-kind-icon">element<wbr>Compiler</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#emitter" class="tsd-kind-icon">emitter</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#owner" class="tsd-kind-icon">owner</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#root" class="tsd-kind-icon">root</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#ssrindex" class="tsd-kind-icon">ssr<wbr>Index</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#ssronly" class="tsd-kind-icon">ssr<wbr>Only</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compile" class="tsd-kind-icon">compile</a>
@@ -521,13 +620,16 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compilecomponent" class="tsd-kind-icon">compile<wbr>Component</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compileelement" class="tsd-kind-icon">compile<wbr>Element</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compilefor" class="tsd-kind-icon">compile<wbr>For</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compilefragment" class="tsd-kind-icon">compile<wbr>Fragment</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compileif" class="tsd-kind-icon">compile<wbr>If</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -539,7 +641,7 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compiletemplate" class="tsd-kind-icon">compile<wbr>Template</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#compiletext" class="tsd-kind-icon">compile<wbr>Text</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
@@ -547,6 +649,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#nextid" class="tsd-kind-icon">nextID</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_target_js_compilers_anode_compiler_.anodecompiler.html#outputdata" class="tsd-kind-icon">output<wbr>Data</a>
 							</li>
 						</ul>
 					</li>

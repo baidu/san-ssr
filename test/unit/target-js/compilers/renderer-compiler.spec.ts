@@ -23,7 +23,6 @@ filters: {
 },
 computed: {
 },
-tagName: "div"
 `)
         })
     })

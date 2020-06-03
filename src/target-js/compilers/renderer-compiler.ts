@@ -1,4 +1,4 @@
-import { isFunction, map } from 'lodash'
+import { isFunction } from 'lodash'
 import { ANodeCompiler } from './anode-compiler'
 import { ComponentTree } from '../../models/component-tree'
 import { ComponentInfo } from '../../models/component-info'
@@ -69,14 +69,11 @@ export class RendererCompiler {
     }
 
     public compileComponentPrototypeSource (componentInfo: ComponentInfo) {
-        const component = componentInfo.component
-        const ComponentProto = component.constructor.prototype
-        const builtinKeys = ['components', '_cmptReady', 'aNode', 'constructor']
+        const ComponentProto = componentInfo.proto
         const { emitter } = this
 
-        // members for call expr
         for (const protoMemberKey of Object.getOwnPropertyNames(ComponentProto)) {
-            if (builtinKeys.includes(protoMemberKey)) continue
+            if (['components', 'aNode', 'constructor'].includes(protoMemberKey)) continue
 
             const protoMember = ComponentProto[protoMemberKey]
             if (COMPONENT_RESERVED_MEMBERS.has(protoMemberKey) || !protoMember) continue
@@ -110,39 +107,19 @@ export class RendererCompiler {
                 }
             }
         }
-
-        // filters
-        emitter.writeLine('filters: {')
-        emitter.writeIndentedLines(map(
-            componentInfo.filters,
-            (fn, key) => `${key}: ${functionString(fn)}`
-        ).join(', '))
-        emitter.writeLine('},')
-
-        // computed obj
-        emitter.writeLine('computed: {')
-        emitter.writeIndentedLines(map(
-            componentInfo.computed,
-            (fn, key) => `${key}: ${functionString(fn)}`
-        ).join(', '))
-        emitter.writeLine('},')
-
-        // tagName
-        emitter.writeLine('tagName: "' + component.aNode.tagName + '"')
     }
 
-    public compileComponentRendererBody (componentInfo: ComponentInfo) {
+    public compileComponentRendererBody (info: ComponentInfo) {
         const { emitter } = this
-        const component = componentInfo.component
         emitter.writeLine('var _ = sanssrRuntime._;')
         emitter.writeLine('var SanData = sanssrRuntime.SanData;')
         emitter.writeLine('var html = "";')
 
-        this.genComponentContextCode(componentInfo)
+        this.genComponentContextCode(info)
         emitter.writeLine(`var currentCtx = ctx;`)
 
         // instance preraration
-        const defaultData = (component.initData && component.initData()) || {}
+        const defaultData = (info.proto.initData && info.proto.initData.call({})) || {}
         for (const key of Object.keys(defaultData)) {
             emitter.writeLine('ctx.data["' + key + '"] = ctx.data["' + key + '"] || ' +
             stringifier.any(defaultData[key]) + ';')
@@ -151,7 +128,7 @@ export class RendererCompiler {
         emitter.writeLine(`ctx.instance.parentComponent = parentCtx && parentCtx.instance`)
 
         // call inited
-        if (typeof component.inited === 'function') {
+        if (typeof info.proto.inited === 'function') {
             emitter.writeLine('ctx.instance.inited()')
         }
 
@@ -162,11 +139,11 @@ export class RendererCompiler {
             emitter.writeLine('data[$computedName] = ctx.instance.computed[$computedName].apply(ctx.instance);')
         })
 
-        const ifDirective = component.aNode.directives['if'] // eslint-disable-line dot-notation
+        const ifDirective = info.rootANode.directives['if'] // eslint-disable-line dot-notation
         if (ifDirective) emitter.writeLine('if (' + expr(ifDirective.value) + ') {')
 
-        const aNodeCompiler = new ANodeCompiler(componentInfo, this.componentTree, this.ssrOnly, emitter)
-        aNodeCompiler.compile(component.aNode, !this.ssrOnly)
+        const aNodeCompiler = new ANodeCompiler(info, this.componentTree, this.ssrOnly, emitter)
+        aNodeCompiler.compile(info.rootANode, !this.ssrOnly)
 
         if (ifDirective) emitter.writeLine('}')
         emitter.writeLine('return html;')

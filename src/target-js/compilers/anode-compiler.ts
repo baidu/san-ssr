@@ -68,6 +68,8 @@ export class ANodeCompiler {
     }
 
     compileTemplate (aNode: ATemplateNode) {
+        // if、for 等区块 wrap，只渲染内容。
+        // 注意：<template> 为组件根节点时，tagName=null, isATemplateNode=false
         this.elementCompiler.inner(aNode)
     }
 
@@ -84,8 +86,10 @@ export class ANodeCompiler {
     private compileIf (aNode: AIfNode) {
         const { emitter } = this
         // output if
-        const ifDirective = aNode.directives['if'] // eslint-disable-line dot-notation
-        emitter.writeIf(expr(ifDirective.value), () => this.compile(aNode.ifRinsed, false))
+        const ifDirective = aNode.directives['if']
+        const aNodeWithoutIf = Object.assign({}, aNode)
+        delete aNodeWithoutIf.directives['if']
+        emitter.writeIf(expr(ifDirective.value), () => this.compile(aNodeWithoutIf, false))
 
         // output elif and else
         for (const elseANode of aNode.elses || []) {
@@ -102,7 +106,7 @@ export class ANodeCompiler {
         }
     }
 
-    compileFor (aNode: AForNode) {
+    private compileFor (aNode: AForNode) {
         const { emitter } = this
         const forElementANode = {
             children: aNode.children,
@@ -142,10 +146,7 @@ export class ANodeCompiler {
         emitter.endIf()
     }
 
-    /**
-     * 编译 slot 节点
-     */
-    compileSlot (aNode: ASlotNode) {
+    private compileSlot (aNode: ASlotNode) {
         const { emitter } = this
         const rendererId = this.nextID()
 

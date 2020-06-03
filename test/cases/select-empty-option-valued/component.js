@@ -7,6 +7,7 @@ const MyComponent = san.defineComponent({
         '<select value="{=online=}">' +
         '<option s-for="p in persons">{{p}}</option>' +
         '<option value="">empty</option>' +
+        '<option></option>' +
         '</select>' +
         '</div>'
 })

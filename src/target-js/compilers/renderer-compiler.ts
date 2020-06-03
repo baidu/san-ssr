@@ -73,8 +73,6 @@ export class RendererCompiler {
         const { emitter } = this
 
         for (const protoMemberKey of Object.getOwnPropertyNames(ComponentProto)) {
-            if (['components', 'aNode', 'constructor'].includes(protoMemberKey)) continue
-
             const protoMember = ComponentProto[protoMemberKey]
             if (COMPONENT_RESERVED_MEMBERS.has(protoMemberKey) || !protoMember) continue
 
@@ -89,20 +87,19 @@ export class RendererCompiler {
 
                 if (protoMember instanceof Array) {
                     emitter.feedLine('[')
-                    emitter.indent()
-                    const lines = protoMember.map(item => isFunction(item) ? functionString(item) : String(item)).join(',\n')
-                    emitter.writeLines(lines)
-                    emitter.unindent()
+                    emitter.writeIndentedLines(
+                        protoMember.map(item => isFunction(item)
+                            ? functionString(item)
+                            : String(item)).join(',\n')
+                    )
                     emitter.writeLine('],')
                 } else {
                     emitter.feedLine('{')
-                    emitter.indent()
                     const members = Object.getOwnPropertyNames(protoMember).filter(key => isFunction(protoMember[key]))
                     for (const itemKey of members) {
                         const item = protoMember[itemKey]
-                        emitter.writeLines(itemKey + ':' + functionString(item) + ',')
+                        emitter.writeIndentedLines(itemKey + ':' + functionString(item) + ',')
                     }
-                    emitter.unindent()
                     emitter.writeLine('},')
                 }
             }

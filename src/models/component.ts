@@ -15,9 +15,9 @@ export type ComponentClass = ComponentConstructor<{}, {}>
 export type Components = Map<string | ANode, ComponentClass>
 
 export const COMPONENT_RESERVED_MEMBERS = new Set(
-    'aNode,computed,filters,components,' +
+    ('constructor,aNode,components,' +
     'initData,template,attached,created,' +
-    'detached,disposed,compiled'.split(',')
+    'detached,disposed,compiled').split(',')
 )
 
 export function isComponentLoader (cmpt: any): cmpt is {placeholder: ComponentClass} {

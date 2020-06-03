@@ -33,16 +33,6 @@ export class ComponentParser {
         })
     }
 
-    public static createComponentInstance (componentClass: ComponentClass): CompiledComponent<{}> {
-        const proto = componentClass.prototype
-        proto.filters = Object.assign({}, proto.filters, componentClass['filters'])
-        proto.computed = Object.assign({}, proto.computed, componentClass['computed'])
-
-        function Constructor () {}
-        Constructor.prototype = proto
-        return new (Constructor as any)()
-    }
-
     private parseChildComponentClasses (componentClass: ComponentClass, rootANode: ANode): Components {
         const children: Components = new Map()
 

@@ -293,8 +293,8 @@ declare namespace San {
     }
 
     interface ASlotNode extends ANode {
-        tagName: 'slot';
         children: ANode[];
+        tagName: 'slot';
     }
 
     interface ParseTemplateOption {

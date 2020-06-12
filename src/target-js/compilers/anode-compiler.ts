@@ -34,7 +34,7 @@ export class ANodeCompiler {
         )
     }
 
-    compile (aNode: ANode, needOutputData: boolean) {
+    compile (aNode: ANode, isRootElement: boolean) {
         if (TypeGuards.isATextNode(aNode)) return this.compileText(aNode)
         if (TypeGuards.isAIfNode(aNode)) return this.compileIf(aNode)
         if (TypeGuards.isAForNode(aNode)) return this.compileFor(aNode)
@@ -45,9 +45,9 @@ export class ANodeCompiler {
         const ComponentClass = this.componentInfo.getChildComponentClass(aNode)
         if (ComponentClass) {
             const info = this.componentTree.addComponentClass(ComponentClass)
-            return info ? this.compileComponent(aNode, info, needOutputData) : undefined
+            return info ? this.compileComponent(aNode, info, isRootElement) : undefined
         }
-        return this.compileElement(aNode, needOutputData)
+        return this.compileElement(aNode, isRootElement)
     }
 
     private compileText (aNode: ATextNode) {
@@ -207,9 +207,9 @@ export class ANodeCompiler {
         emitter.writeLine(`ctx.slotRenderers.${rendererId}();`)
     }
 
-    private compileElement (aNode: ANode, needOutputData: boolean) {
+    private compileElement (aNode: ANode, isRootElement: boolean) {
         this.elementCompiler.tagStart(aNode)
-        if (needOutputData) this.outputData()
+        if (isRootElement && !this.ssrOnly) this.outputData()
         this.elementCompiler.inner(aNode)
         this.elementCompiler.tagEnd(aNode)
     }
@@ -218,7 +218,7 @@ export class ANodeCompiler {
         this.emitter.writeIf('!noDataOutput', () => this.emitter.writeDataComment())
     }
 
-    private compileComponent (aNode: ANode, info: ComponentInfo, needOutputData: boolean) {
+    private compileComponent (aNode: ANode, info: ComponentInfo, isRootElement: boolean) {
         const { emitter } = this
 
         const defaultSourceSlots: ANode[] = []
@@ -252,7 +252,7 @@ export class ANodeCompiler {
             emitter.writeLine(', ' + expr(sourceSlotCode.prop.expr) + ']);')
         }
 
-        const ndo = needOutputData ? 'noDataOutput' : 'true'
+        const ndo = isRootElement ? 'noDataOutput' : 'true'
         const funcName = 'sanssrRuntime.renderer' + info.cid
         emitter.nextLine(`html += ${funcName}(`)
         emitter.write(this.componentDataCode(aNode) + `, ${ndo}, sanssrRuntime, ctx, currentCtx, ` +

@@ -38,7 +38,7 @@ export class ElementCompiler {
             emitter.writeHTMLLiteral('<' + tagName)
         } else {
             emitter.writeHTMLLiteral('<')
-            emitter.writeHTMLExpression('tagName || "div"')
+            emitter.writeHTMLExpression('tagName')
         }
 
         // element properties
@@ -146,7 +146,7 @@ export class ElementCompiler {
             }
         } else {
             emitter.writeHTMLLiteral('</')
-            emitter.writeHTMLExpression('tagName || "div"')
+            emitter.writeHTMLExpression('tagName')
             emitter.writeHTMLLiteral('>')
         }
     }

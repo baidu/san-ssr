@@ -12,9 +12,9 @@ describe('target-js/compilers/element-compiler', () => {
         compiler.tagStart(aNode, 'tagName')
         compiler.tagEnd(aNode, 'tagName')
         expect(compiler.emitter.fullText()).toEqual(`html += "<";
-html += tagName || "div";
+html += tagName;
 html += "></";
-html += tagName || "div";
+html += tagName;
 html += ">";
 `)
     })

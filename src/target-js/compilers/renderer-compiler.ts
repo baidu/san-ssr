@@ -5,13 +5,10 @@ import { ComponentInfo } from '../../models/component-info'
 import { JSEmitter } from '../emitters/emitter'
 import { SanData } from '../../models/san-data'
 import { Renderer } from '../../models/renderer'
-import { expr } from './expr-compiler'
 import { stringifier } from './stringifier'
 import { COMPONENT_RESERVED_MEMBERS } from '../../models/component'
 
-// * 参数列表用于 toSource 和 toRender 两处，anode-compiler 中递归时要与此保持一致
-// * 前两个参数是为了保持和最终的 renderer 兼容，如此就不需要包装
-const RENDERER_ARGS = ['data = {}', 'noDataOutput', 'sanssrRuntime', 'ownerCtx', 'parentCtx', 'tagName', 'sourceSlots']
+const RENDERER_ARGS = ['data = {}', 'noDataOutput', 'sanssrRuntime', 'ownerCtx', 'parentCtx', 'tagName = "div"', 'sourceSlots']
 
 export type ExpressionEvaluator = (ctx: CompileContext) => any
 
@@ -136,13 +133,9 @@ export class RendererCompiler {
             emitter.writeLine('data[$computedName] = ctx.instance.computed[$computedName].apply(ctx.instance);')
         })
 
-        const ifDirective = info.rootANode.directives['if'] // eslint-disable-line dot-notation
-        if (ifDirective) emitter.writeLine('if (' + expr(ifDirective.value) + ') {')
-
         const aNodeCompiler = new ANodeCompiler(info, this.componentTree, this.ssrOnly, emitter)
-        aNodeCompiler.compile(info.rootANode, !this.ssrOnly)
+        aNodeCompiler.compile(info.rootANode, true)
 
-        if (ifDirective) emitter.writeLine('}')
         emitter.writeLine('return html;')
         return emitter.fullText()
     }

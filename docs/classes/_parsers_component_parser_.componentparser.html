@@ -101,8 +101,6 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_parsers_component_parser_.componentparser.html#parsecomponent" class="tsd-kind-icon">parse<wbr>Component</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_parsers_component_parser_.componentparser.html#parsecomputed" class="tsd-kind-icon">parse<wbr>Computed</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_parsers_component_parser_.componentparser.html#parsefilters" class="tsd-kind-icon">parse<wbr>Filters</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_parsers_component_parser_.componentparser.html#visitanoderecursively" class="tsd-kind-icon">visitANode<wbr>Recursively</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_parsers_component_parser_.componentparser.html#createcomponentinstance" class="tsd-kind-icon">create<wbr>Component<wbr>Instance</a></li>
 							</ul>
 						</section>
 					</div>
@@ -116,7 +114,7 @@
 					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;1</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/parsers/component-parser.ts#L12">parsers/component-parser.ts:12</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/parsers/component-parser.ts#L12">parsers/component-parser.ts:12</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -127,13 +125,13 @@
 					<a name="parsechildcomponentclasses" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> parse<wbr>Child<wbr>Component<wbr>Classes</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">parse<wbr>Child<wbr>Component<wbr>Classes<span class="tsd-signature-symbol">(</span>componentClass<span class="tsd-signature-symbol">: </span><a href="../modules/_models_component_.html#componentclass" class="tsd-signature-type">ComponentClass</a>, component<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_compiled_component_.compiledcomponent.html" class="tsd-signature-type">CompiledComponent</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/_models_component_.html#components" class="tsd-signature-type">Components</a></li>
+						<li class="tsd-signature tsd-kind-icon">parse<wbr>Child<wbr>Component<wbr>Classes<span class="tsd-signature-symbol">(</span>componentClass<span class="tsd-signature-symbol">: </span><a href="../modules/_models_component_.html#componentclass" class="tsd-signature-type">ComponentClass</a>, rootANode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ANode</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/_models_component_.html#components" class="tsd-signature-type">Components</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/parsers/component-parser.ts#L48">parsers/component-parser.ts:48</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/parsers/component-parser.ts#L35">parsers/component-parser.ts:35</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -142,7 +140,7 @@
 									<h5>componentClass: <a href="../modules/_models_component_.html#componentclass" class="tsd-signature-type">ComponentClass</a></h5>
 								</li>
 								<li>
-									<h5>component: <a href="../interfaces/_models_compiled_component_.compiledcomponent.html" class="tsd-signature-type">CompiledComponent</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>rootANode: <span class="tsd-signature-type">ANode</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../modules/_models_component_.html#components" class="tsd-signature-type">Components</a></h4>
@@ -159,7 +157,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/parsers/component-parser.ts#L14">parsers/component-parser.ts:14</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/parsers/component-parser.ts#L14">parsers/component-parser.ts:14</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -185,7 +183,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/parsers/component-parser.ts#L79">parsers/component-parser.ts:79</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/parsers/component-parser.ts#L61">parsers/component-parser.ts:61</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -208,7 +206,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/parsers/component-parser.ts#L70">parsers/component-parser.ts:70</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/parsers/component-parser.ts#L52">parsers/component-parser.ts:52</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -218,73 +216,6 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_models_component_.filters.html" class="tsd-signature-type">Filters</a></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="visitanoderecursively" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> visitANode<wbr>Recursively</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">visitANode<wbr>Recursively<span class="tsd-signature-symbol">(</span>aNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ANode</span>, visitor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/parsers/component-parser.ts#L65">parsers/component-parser.ts:65</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>aNode: <span class="tsd-signature-type">ANode</span></h5>
-								</li>
-								<li>
-									<h5>visitor: <span class="tsd-signature-type">function</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter-siganture">
-											<ul class="tsd-signatures tsd-kind-type-literal tsd-is-not-exported">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>aNode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ANode</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-											</ul>
-											<ul class="tsd-descriptions">
-												<li class="tsd-description">
-													<h4 class="tsd-parameters-title">Parameters</h4>
-													<ul class="tsd-parameters">
-														<li>
-															<h5>aNode: <span class="tsd-signature-type">ANode</span></h5>
-														</li>
-													</ul>
-													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-												</li>
-											</ul>
-										</li>
-									</ul>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="createcomponentinstance" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> create<wbr>Component<wbr>Instance</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Component<wbr>Instance<span class="tsd-signature-symbol">(</span>componentClass<span class="tsd-signature-symbol">: </span><a href="../modules/_models_component_.html#componentclass" class="tsd-signature-type">ComponentClass</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_compiled_component_.compiledcomponent.html" class="tsd-signature-type">CompiledComponent</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/parsers/component-parser.ts#L33">parsers/component-parser.ts:33</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>componentClass: <a href="../modules/_models_component_.html#componentclass" class="tsd-signature-type">ComponentClass</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_models_compiled_component_.compiledcomponent.html" class="tsd-signature-type">CompiledComponent</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -323,16 +254,28 @@
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
 								<a href="_parsers_component_parser_.componentparser.html#parsefilters" class="tsd-kind-icon">parse<wbr>Filters</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="_parsers_component_parser_.componentparser.html#visitanoderecursively" class="tsd-kind-icon">visitANode<wbr>Recursively</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="_parsers_component_parser_.componentparser.html#createcomponentinstance" class="tsd-kind-icon">create<wbr>Component<wbr>Instance</a>
-							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_parsers_component_parser_.html#normalizeoptiontag" class="tsd-kind-icon">normalize<wbr>Option<wbr>Tag</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_parsers_component_parser_.html#normalizerootanode" class="tsd-kind-icon">normalize<wbr>RootANode</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_parsers_component_parser_.html#normalizerootatemplatenode" class="tsd-kind-icon">normalize<wbr>RootATemplate<wbr>Node</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_parsers_component_parser_.html#normalizerootclassprop" class="tsd-kind-icon">normalize<wbr>Root<wbr>Class<wbr>Prop</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_parsers_component_parser_.html#normalizerootstyleprop" class="tsd-kind-icon">normalize<wbr>Root<wbr>Style<wbr>Prop</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_parsers_component_parser_.html#visitanoderecursively" class="tsd-kind-icon">visitANode<wbr>Recursively</a>
+					</li>
 				</ul>
 			</nav>
 		</div>

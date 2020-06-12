@@ -1,3 +1,10 @@
+## [1.13.1](https://github.com/baidu/san-ssr/compare/v1.13.0...v1.13.1) (2020-06-12)
+
+
+### Bug Fixes
+
+* types for Component ([9007876](https://github.com/baidu/san-ssr/commit/9007876a4439d599820c03733cd9dd2e5ae6a710))
+
 # [1.13.0](https://github.com/baidu/san-ssr/compare/v1.12.0...v1.13.0) (2020-06-02)
 
 

@@ -106,10 +106,10 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_component_info_.componentinfo.html#childcomponentclasses" class="tsd-kind-icon">child<wbr>Component<wbr>Classes</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_component_info_.componentinfo.html#children" class="tsd-kind-icon">children</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_component_info_.componentinfo.html#cid" class="tsd-kind-icon">cid</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_component_info_.componentinfo.html#component" class="tsd-kind-icon">component</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_component_info_.componentinfo.html#componentclass" class="tsd-kind-icon">component<wbr>Class</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_component_info_.componentinfo.html#computed" class="tsd-kind-icon">computed</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_component_info_.componentinfo.html#filters" class="tsd-kind-icon">filters</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_component_info_.componentinfo.html#proto" class="tsd-kind-icon">proto</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_component_info_.componentinfo.html#rootanode" class="tsd-kind-icon">rootANode</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_component_info_.componentinfo.html#template" class="tsd-kind-icon">template</a></li>
 							</ul>
@@ -135,7 +135,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/models/component-info.ts#L36">models/component-info.ts:36</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/models/component-info.ts#L41">models/component-info.ts:41</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -153,9 +153,6 @@
 											<h5>cid<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span></h5>
 										</li>
 										<li class="tsd-parameter">
-											<h5>component<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_compiled_component_.compiledcomponent.html" class="tsd-signature-type">CompiledComponent</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></h5>
-										</li>
-										<li class="tsd-parameter">
 											<h5>component<wbr>Class<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></h5>
 										</li>
 										<li class="tsd-parameter">
@@ -163,6 +160,9 @@
 										</li>
 										<li class="tsd-parameter">
 											<h5>filters<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_component_.filters.html" class="tsd-signature-type">Filters</a></h5>
+										</li>
+										<li class="tsd-parameter">
+											<h5>rootANode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ANode</span></h5>
 										</li>
 										<li class="tsd-parameter">
 											<h5>template<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
@@ -183,7 +183,7 @@
 					<div class="tsd-signature tsd-kind-icon">child<wbr>Component<wbr>Classes<span class="tsd-signature-symbol">:</span> <a href="../modules/_models_component_.html#components" class="tsd-signature-type">Components</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/models/component-info.ts#L34">models/component-info.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/models/component-info.ts#L40">models/component-info.ts:40</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -193,7 +193,7 @@
 					<div class="tsd-signature tsd-kind-icon">children<span class="tsd-signature-symbol">:</span> <a href="_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/models/component-info.ts#L32">models/component-info.ts:32</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/models/component-info.ts#L38">models/component-info.ts:38</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -203,17 +203,7 @@
 					<div class="tsd-signature tsd-kind-icon">cid<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/models/component-info.ts#L29">models/component-info.ts:29</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="component" class="tsd-anchor"></a>
-					<h3>component</h3>
-					<div class="tsd-signature tsd-kind-icon">component<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_models_compiled_component_.compiledcomponent.html" class="tsd-signature-type">CompiledComponent</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/models/component-info.ts#L35">models/component-info.ts:35</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/models/component-info.ts#L28">models/component-info.ts:28</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -223,7 +213,7 @@
 					<div class="tsd-signature tsd-kind-icon">component<wbr>Class<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/models/component-info.ts#L30">models/component-info.ts:30</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/models/component-info.ts#L29">models/component-info.ts:29</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -233,7 +223,7 @@
 					<div class="tsd-signature tsd-kind-icon">computed<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_models_component_.computed.html" class="tsd-signature-type">Computed</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/models/component-info.ts#L27">models/component-info.ts:27</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/models/component-info.ts#L26">models/component-info.ts:26</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -243,9 +233,36 @@
 					<div class="tsd-signature tsd-kind-icon">filters<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_models_component_.filters.html" class="tsd-signature-type">Filters</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/models/component-info.ts#L26">models/component-info.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/models/component-info.ts#L25">models/component-info.ts:25</a></li>
 						</ul>
 					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="proto" class="tsd-anchor"></a>
+					<h3>proto</h3>
+					<div class="tsd-signature tsd-kind-icon">proto<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/models/component-info.ts#L31">models/component-info.ts:31</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>computed<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_component_.computed.html" class="tsd-signature-type">Computed</a></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>filters<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_component_.filters.html" class="tsd-signature-type">Filters</a></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> init<wbr>Data<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">function</span></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5><span class="tsd-flag ts-flagOptional">Optional</span> inited<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">function</span></h5>
+							</li>
+						</ul>
+					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="rootanode" class="tsd-anchor"></a>
@@ -253,7 +270,7 @@
 					<div class="tsd-signature tsd-kind-icon">rootANode<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ANode</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/models/component-info.ts#L36">models/component-info.ts:36</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/models/component-info.ts#L41">models/component-info.ts:41</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -263,7 +280,7 @@
 					<div class="tsd-signature tsd-kind-icon">template<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/models/component-info.ts#L28">models/component-info.ts:28</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/models/component-info.ts#L27">models/component-info.ts:27</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -280,7 +297,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ccca8e9/src/models/component-info.ts#L49">models/component-info.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/models/component-info.ts#L58">models/component-info.ts:58</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -329,9 +346,6 @@
 								<a href="_models_component_info_.componentinfo.html#cid" class="tsd-kind-icon">cid</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_models_component_info_.componentinfo.html#component" class="tsd-kind-icon">component</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_models_component_info_.componentinfo.html#componentclass" class="tsd-kind-icon">component<wbr>Class</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
@@ -339,6 +353,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_models_component_info_.componentinfo.html#filters" class="tsd-kind-icon">filters</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_models_component_info_.componentinfo.html#proto" class="tsd-kind-icon">proto</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_models_component_info_.componentinfo.html#rootanode" class="tsd-kind-icon">rootANode</a>

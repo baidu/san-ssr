@@ -20,7 +20,6 @@ export { Compiler } from './models/compiler'
 export { ComponentInfo } from './models/component-info'
 export { ComponentTree } from './models/component-tree'
 export { COMPONENT_RESERVED_MEMBERS } from './models/component'
-export { CompiledComponent } from './models/compiled-component'
 
 let defaultProject: SanProject
 

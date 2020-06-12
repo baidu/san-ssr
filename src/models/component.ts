@@ -1,5 +1,4 @@
-import { ANode, ComponentConstructor } from 'san'
-import { CompiledComponent } from './compiled-component'
+import { ANode, ComponentConstructor, SanComponent } from 'san'
 import { SanData } from './san-data'
 
 export interface Computed {
@@ -7,7 +6,7 @@ export interface Computed {
 }
 
 export interface Filters {
-    [k: string]: (this: CompiledComponent<{}>, ...args: any[]) => any
+    [k: string]: (this: SanComponent<{}>, ...args: any[]) => any
 }
 
 export type ComponentClass = ComponentConstructor<{}, {}>
@@ -29,5 +28,5 @@ export class SanSSRFiltersDeclarations {
 }
 
 export class SanSSRComputedDeclarations {
-    [key: string]: (sanssrSelf: CompiledComponent<{}>) => any
+    [key: string]: (sanssrSelf: SanComponent<{}>) => any
 }

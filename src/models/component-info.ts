@@ -27,7 +27,13 @@ export class ComponentInfo {
     public readonly template?: string
     public readonly cid: number
     public readonly componentClass: ComponentConstructor<{}, {}>
-    public readonly proto: { initData?: () => any, inited?: () => void }
+    // 编译用的，normalize 过的原型
+    public readonly proto: {
+        initData?: () => any,
+        inited?: () => void,
+        computed: Computed,
+        filters: Filters
+    }
     // child Component Info nodes
     public readonly children: ComponentInfo[]
     // Raw components

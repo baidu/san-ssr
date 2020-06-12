@@ -1,6 +1,5 @@
 import { ANodeProperty, ExprInterpNode, parseTemplate, ComponentConstructor, ANode } from 'san'
 import { isNumber, keys, isFunction } from 'lodash'
-import { CompiledComponent } from '../models/compiled-component'
 import { ComponentInfo } from '../models/component-info'
 import { getMember } from '../utils/lang'
 import { isComponentLoader, Components, ComponentClass, Filters, Computed } from '../models/component'

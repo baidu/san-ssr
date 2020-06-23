@@ -1,5 +1,5 @@
-import { Emitter } from '../../utils/emitter'
-import { stringLiteralize, dataAccess } from '../compilers/expr-compiler'
+import { Emitter } from '../utils/emitter'
+import { stringLiteralize, dataAccess } from './compilers/expr-compiler'
 
 export class JSEmitter extends Emitter {
     buffer: string = ''

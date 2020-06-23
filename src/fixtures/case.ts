@@ -8,7 +8,7 @@ import { compileToRenderer } from '../index'
 const debug = debugFactory('case')
 const caseRoot = resolve(__dirname, '../../test/cases')
 const tsConfigFilePath = resolve(__dirname, '../../test/tsconfig.json')
-const sanProject = new SanProject({ tsConfigFilePath })
+const sanProject = new SanProject(tsConfigFilePath)
 
 export function ls () {
     return readdirSync(caseRoot)
@@ -36,9 +36,7 @@ export function compile (caseName: string, bareFunctionBody: boolean) {
 
 export function compileCaseToRenderer (caseName: string) {
     const caseDir = resolve(caseRoot, caseName)
-    const js = join(caseDir, 'component.js')
-    const ts = join(caseDir, 'component.ts')
-    const ComponentClass = existsSync(js) ? require(js) : ts
+    const ComponentClass = require(join(caseDir, 'component.js'))
     return compileToRenderer(ComponentClass, {
         ssrOnly: /-so/.test(caseDir)
     })

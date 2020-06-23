@@ -1,46 +1,10 @@
-import { isFunction } from 'lodash'
 import { ANodeCompiler } from './anode-compiler'
-import { ComponentTree } from '../../models/component-tree'
-import { ComponentInfo } from '../../models/component-info'
-import { JSEmitter } from '../emitters/emitter'
-import { SanData } from '../../models/san-data'
-import { Renderer } from '../../models/renderer'
 import { stringifier } from './stringifier'
-import { COMPONENT_RESERVED_MEMBERS } from '../../models/component'
+import { DynamicComponentInfo, isTypedComponentInfo, ComponentInfo } from '../../models/component-info'
+import { JSEmitter } from '../js-emitter'
+import { Renderer } from '../../models/renderer'
 
-const RENDERER_ARGS = ['data = {}', 'noDataOutput', 'sanssrRuntime', 'ownerCtx', 'parentCtx', 'tagName = "div"', 'sourceSlots']
-
-export type ExpressionEvaluator = (ctx: CompileContext) => any
-
-export interface Data {
-    [key: string]: any
-}
-
-export interface ComponentRender {
-    (data: Data, noDataOutput: boolean, ownerCtx: CompileContext, parentCtx: CompileContext, tagName: string, sourceSlots: SourceSlot[]): string
-}
-
-export type SourceSlot = any
-
-interface SanSSRComponent {
-    filters: {
-        [k: string]: (this: SanSSRComponent, ...args: any[]) => any
-    }
-    computed: {
-        [k: string]: (this: { data: SanData }) => any
-    }
-    tagName: string
-    data: SanData
-}
-
-export interface CompileContext {
-    instance: SanSSRComponent
-    sourceSlots: SourceSlot[]
-    data: any,
-    owner: CompileContext,
-    computedNames: string[],
-    slotRenderers: {[key: string]: Renderer}
-}
+const RENDERER_ARGS = ['data = {}', 'noDataOutput', 'sanSSRRuntime', 'ownerCtx', 'parentCtx', 'tagName = "div"', 'sourceSlots']
 
 /**
  * Each ComponentClass is compiled to a render function
@@ -48,96 +12,81 @@ export interface CompileContext {
 export class RendererCompiler {
     constructor (
         private ssrOnly: boolean,
-        private componentTree: ComponentTree,
         public emitter = new JSEmitter()
     ) {}
 
-    public compileComponentSource (componentInfo: ComponentInfo) {
+    /**
+     * 把 ComponentInfo 编译成 Render 函数
+     */
+    public compileComponentRenderer (componentInfo: ComponentInfo): Renderer {
+        this.emitter.clear()
+        const body = this.compileComponentRendererBody(componentInfo)
+        return new Function(...RENDERER_ARGS, body) as Renderer // eslint-disable-line no-new-func
+    }
+
+    /**
+     * 把 ComponentInfo 编译成 Render JS 匿名函数源码
+     */
+    public compileComponentRendererSource (componentInfo: ComponentInfo) {
         this.emitter.writeAnonymousFunction(RENDERER_ARGS, () => {
             this.compileComponentRendererBody(componentInfo)
         })
         return this.emitter.fullText()
     }
 
-    public compileComponentRenderer (componentInfo: ComponentInfo) {
-        this.emitter.clear()
-        const body = this.compileComponentRendererBody(componentInfo)
-        return new Function(...RENDERER_ARGS, body) // eslint-disable-line no-new-func
-    }
-
-    public compileComponentPrototypeSource (componentInfo: ComponentInfo) {
-        const ComponentProto = componentInfo.proto
-        const { emitter } = this
-
-        for (const protoMemberKey of Object.getOwnPropertyNames(ComponentProto)) {
-            const protoMember = ComponentProto[protoMemberKey]
-            if (COMPONENT_RESERVED_MEMBERS.has(protoMemberKey) || !protoMember) continue
-
-            switch (typeof protoMember) {
-            case 'function':
-                const funcString = functionString(protoMember)
-                emitter.writeLines(protoMemberKey + ': ' + funcString + ',')
-                break
-
-            case 'object':
-                emitter.nextLine(protoMemberKey + ': ')
-
-                if (protoMember instanceof Array) {
-                    emitter.feedLine('[')
-                    emitter.writeIndentedLines(
-                        protoMember.map(item => isFunction(item)
-                            ? functionString(item)
-                            : String(item)).join(',\n')
-                    )
-                    emitter.writeLine('],')
-                } else {
-                    emitter.feedLine('{')
-                    const members = Object.getOwnPropertyNames(protoMember).filter(key => isFunction(protoMember[key]))
-                    for (const itemKey of members) {
-                        const item = protoMember[itemKey]
-                        emitter.writeIndentedLines(itemKey + ':' + functionString(item) + ',')
-                    }
-                    emitter.writeLine('},')
-                }
-            }
-        }
-    }
-
     public compileComponentRendererBody (info: ComponentInfo) {
         const { emitter } = this
-        emitter.writeLine('var _ = sanssrRuntime._;')
-        emitter.writeLine('var SanData = sanssrRuntime.SanData;')
+        // 没有 ANode 的组件，比如 load-success 样例
+        if (!info.root) {
+            emitter.writeLine('return ""')
+            return emitter.fullText()
+        }
+        emitter.writeLine('var _ = sanSSRRuntime._;')
+        emitter.writeLine('var SanData = sanSSRRuntime.SanData;')
         emitter.writeLine('var html = "";')
 
         this.genComponentContextCode(info)
         emitter.writeLine(`var currentCtx = ctx;`)
 
         // instance preraration
-        const defaultData = (info.proto.initData && info.proto.initData.call({})) || {}
-        for (const key of Object.keys(defaultData)) {
-            emitter.writeLine('ctx.data["' + key + '"] = ctx.data["' + key + '"] || ' +
-            stringifier.any(defaultData[key]) + ';')
+        if (info.hasMethod('initData')) {
+            if (isTypedComponentInfo(info)) this.emitInitDataInRuntime()
+            else this.emitInitDataInCompileTime(info)
         }
         emitter.writeLine('ctx.instance.data = new SanData(ctx.data, ctx.instance.computed)')
         emitter.writeLine(`ctx.instance.parentComponent = parentCtx && parentCtx.instance`)
 
         // call inited
-        if (typeof info.proto.inited === 'function') {
+        if (info.hasMethod('inited')) {
             emitter.writeLine('ctx.instance.inited()')
         }
 
         // calc computed
-        emitter.writeLine('var computedNames = ctx.computedNames;')
-        emitter.writeFor('var $i = 0; $i < computedNames.length; $i++', () => {
-            emitter.writeLine('var $computedName = computedNames[$i];')
-            emitter.writeLine('data[$computedName] = ctx.instance.computed[$computedName].apply(ctx.instance);')
+        emitter.writeFor('var i = 0; i < ctx.computedNames.length; i++', () => {
+            emitter.writeLine('var name = ctx.computedNames[i];')
+            emitter.writeLine('data[name] = ctx.instance.computed[name].apply(ctx.instance);')
         })
 
-        const aNodeCompiler = new ANodeCompiler(info, this.componentTree, this.ssrOnly, emitter)
-        aNodeCompiler.compile(info.rootANode, true)
+        const aNodeCompiler = new ANodeCompiler(info, this.ssrOnly, emitter)
+        aNodeCompiler.compile(info.root, true)
 
         emitter.writeLine('return html;')
         return emitter.fullText()
+    }
+
+    public emitInitDataInCompileTime (info: DynamicComponentInfo) {
+        const defaultData = info.proto['initData'].call({}) || {}
+        for (const key of Object.keys(defaultData)) {
+            this.emitter.writeLine('ctx.data["' + key + '"] = ctx.data["' + key + '"] || ' +
+            stringifier.any(defaultData[key]) + ';')
+        }
+    }
+
+    public emitInitDataInRuntime () {
+        this.emitter.writeLine('var sanSSRInitData = ctx.instance.initData() || {}')
+        this.emitter.writeFor('var key of Object.keys(sanSSRInitData)', () => {
+            this.emitter.writeLine('ctx.data[key] = ctx.data[key] || sanSSRInitData[key]')
+        })
     }
 
     /**
@@ -146,46 +95,17 @@ export class RendererCompiler {
     private genComponentContextCode (componentInfo: ComponentInfo) {
         const { emitter } = this
         emitter.writeBlock('var ctx =', () => {
-            emitter.writeLine(`instance: _.createFromPrototype(sanssrRuntime.prototype${componentInfo.cid}),`)
+            emitter.writeLine(`instance: _.createFromPrototype(sanSSRRuntime.proto${componentInfo.id}),`)
             emitter.writeLine('sourceSlots: sourceSlots,')
             emitter.writeLine('data: data,')
             emitter.writeLine('owner: ownerCtx,')
 
             // computedNames
             emitter.nextLine('computedNames: [')
-            emitter.write(Object.keys(componentInfo.computed).map(x => `'${x}'`).join(', '))
+            emitter.write(componentInfo.getComputedNames().map(x => `'${x}'`).join(', '))
             emitter.feedLine('],')
 
             emitter.writeLine('slotRenderers: {}')
         })
     }
-}
-
-function functionString (fn: Function) {
-    let str = fn.toString()
-    if (!/^\s*function(\s|\()/.test(str) && /^\s*\w+\s*\([^)]*\)\s*{/.test(str)) { // es6 method syntax: foo(){}
-        str = 'function ' + str
-    }
-    /**
-     * 去除函数外缩进。例如：
-     *
-     * Input:
-     * function() {
-     *         console.log(1)
-     *         return 1
-     *     }
-     *
-     * Output:
-     * function() {
-     *     console.log(1)
-     *     return 1
-     * }
-     */
-    const lines = str.split('\n')
-    const firstLine = lines.shift()!
-    const minIndent = lines.reduce(
-        (min: number, line: string) => Math.min(min, /^\s*/.exec(line)![0].length),
-        Infinity
-    )
-    return [firstLine, ...lines.map(line => line.slice(minIndent))].join('\n')
 }

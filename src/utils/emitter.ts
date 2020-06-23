@@ -24,16 +24,25 @@ export abstract class Emitter {
         this.write('\n')
     }
     public nextLine (str: string) {
-        this.carriageReturn()
-        this.write(str)
+        for (const line of str.split('\n')) {
+            this.carriageReturn()
+            this.write(line)
+        }
     }
     public feedLine (str: string) {
-        this.write(str)
+        let first = true
+        for (const line of str.split('\n')) {
+            if (!first) this.carriageReturn()
+            first = false
+            this.write(line)
+        }
         this.writeNewLine()
     }
     public writeLine (str: string) {
-        this.carriageReturn()
-        this.write(str)
+        for (const line of str.split('\n')) {
+            this.carriageReturn()
+            this.write(line)
+        }
         this.writeNewLine()
     }
     public writeLines (str: string) {

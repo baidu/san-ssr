@@ -1,7 +1,7 @@
-import { SanApp } from '../models/san-app'
+import { SanSourceFile, DynamicSanSourceFile } from '../models/san-source-file'
 import { Renderer } from '../models/renderer'
 
 export interface Compiler {
-    compile (sanApp: SanApp, options?: any): string;
-    compileToRenderer? (sanApp: SanApp, options?: any): Renderer;
+    compileToSource (sourceFile: SanSourceFile, options?: any): string;
+    compileToRenderer? (sourceFile: DynamicSanSourceFile, options?: any): Renderer;
 }

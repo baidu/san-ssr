@@ -47,7 +47,7 @@ const outputFile = yargs.argv.output as OptionValue
 const componentFile = resolve(yargs.argv._[0])
 console.error(chalk.gray('compiling'), componentFile, 'to', target)
 
-const project = new SanProject({ tsConfigFilePath })
+const project = new SanProject(tsConfigFilePath)
 const targetCode = project.compile(componentFile, target, options)
 
 if (outputFile !== undefined) {

@@ -1,4 +1,4 @@
-import { SanData } from '../../../src/models/san-data'
+import { SanData } from '../../../src/runtime/san-data'
 
 describe('models/SanData', () => {
     describe('.get()', () => {

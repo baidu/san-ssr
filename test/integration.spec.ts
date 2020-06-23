@@ -8,8 +8,9 @@ for (const caseName of ls()) {
         it('render to source: ' + caseName, async function () {
             const code = compile(caseName, true)
             // eslint-disable-next-line
-            const render = new Function('data', 'noDataOutput', code)
-            const got = render(...getRenderArguments(caseName))
+            const render = new Function('data', 'noDataOutput', 'require', code)
+            // 测试在 strict mode，因此需要手动传入 require
+            const got = render(...getRenderArguments(caseName), require)
             const [data, html] = parseSanHTML(got)
 
             expect(data).toEqual(expectedData)

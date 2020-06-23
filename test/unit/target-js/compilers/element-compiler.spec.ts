@@ -4,7 +4,7 @@ import { parseTemplate } from 'san'
 describe('target-js/compilers/element-compiler', () => {
     let compiler
     beforeEach(() => {
-        compiler = new ElementCompiler(null as any, null as any)
+        compiler = new ElementCompiler(null as any)
     })
 
     it('should compile a simple <div> with customized tagName', () => {

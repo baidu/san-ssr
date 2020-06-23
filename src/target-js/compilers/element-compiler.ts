@@ -1,6 +1,5 @@
 import { expr } from './expr-compiler'
-import { ComponentInfo } from '../../models/component-info'
-import { JSEmitter } from '../emitters/emitter'
+import { JSEmitter } from '../js-emitter'
 import { getANodePropByName } from '../../utils/anode-util'
 import { autoCloseTags } from '../../utils/dom-util'
 import { ANodeCompiler } from './anode-compiler'
@@ -14,13 +13,11 @@ import { isExprStringNode, isExprBoolNode } from '../../utils/type-guards'
  */
 export class ElementCompiler {
     /**
-     * @param owner 被编译标签所属的组件信息对象
      * @param aNodeCompiler 编译 aNode 的对象，编译标签内容时用
      * @param emitter 代码输出器，产出代码塞到这里面
      */
     constructor (
-        owner: ComponentInfo,
-        private aNodeCompiler: ANodeCompiler,
+        private aNodeCompiler: ANodeCompiler<never>,
         private emitter: JSEmitter = new JSEmitter()
     ) {}
 

@@ -11,7 +11,12 @@ export function getANodePropByName (aNode: ANode, name: string): ANodeProperty |
     }
 }
 
-export function getANodeProps (aNode: ANode) {
+/**
+ * 获取 ANode 的 props
+ *
+ * 做了一点归一化：对于布尔属性，只要 key 存在就把它的值设为 true
+ */
+export function parseANodeProps (aNode: ANode) {
     return aNode.props.map(p => {
         const prop = { ...p, name: camelCase(p.name) }
         const expr = prop.expr
@@ -29,4 +34,12 @@ export function getANodeProps (aNode: ANode) {
 
         return prop
     })
+}
+
+/**
+ * 先序遍历 ANode 树
+ */
+export function visitANodeRecursively (aNode: ANode, visitor: (aNode: ANode) => void) {
+    visitor(aNode)
+    for (const child of aNode.children || []) visitANodeRecursively(child, visitor)
 }

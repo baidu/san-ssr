@@ -1,83 +1,71 @@
-import { SourceFile, ClassDeclaration, PropertyDeclaration } from 'ts-morph'
-import { readFileSync } from 'fs'
-import { ok } from 'assert'
-import { SourceFileType } from '../models/source-file-type'
-import { ComponentInfo } from '../models/component-info'
+import { SourceFile } from 'ts-morph'
+import debugFactory from 'debug'
+import { DynamicComponentInfo, ComponentInfo, TypedComponentInfo } from '../models/component-info'
 
-interface SanSourceFileOptions {
-    sourceFile?: SourceFile
-    componentClassIdentifier?: string
-    fileType: SourceFileType
-    filepath: string
-}
+const debug = debugFactory('san-source-file')
 
 /**
- * 一个 San 项目中的远文件
+ * 一个 San 项目中的源文件
+ *
+ * 是 TypeScript SourceFile 的封装，但包含组件信息
  */
-export class SanSourceFile {
-    // 是 TypeScript 文件时非空
-    public tsSourceFile?: SourceFile
+export abstract class SanSourceFileImpl<T extends ComponentInfo = ComponentInfo> {
+    constructor (
+        /**
+         * 每个组件对应一个 ComponentInfo，它们可以在运行时互相调用，是平铺关系
+         */
+        public readonly componentInfos: T[],
+        /**
+         * componentInfos 中作为入口组件的那个
+         * - 对于 TypeScript 解析来的组件，是默认导出的组件
+         * - 对于 ComponentClass 解析来的组件，是根组件
+         */
+        public readonly entryComponentInfo?: T
+    ) {}
+    /**
+     * 文件路径对于命名空间（编译到非 JavaScript 时）很有用
+     */
+    abstract getFilePath(): string
+}
 
-    // 是 TypeScript 文件且包含 San 组件时非空
-    public componentClassIdentifier?: string
-    public fakeProperties: PropertyDeclaration[] = []
-    public componentClassDeclarations: Map<number, ClassDeclaration> = new Map()
-    public componentInfos: Map<number, ComponentInfo> = new Map()
-    public fileType: SourceFileType
+export class DynamicSanSourceFile extends SanSourceFileImpl<DynamicComponentInfo> {
+    constructor (
+        componentInfos: DynamicComponentInfo[],
+        private readonly filePath: string,
+        public readonly entryComponentInfo: DynamicComponentInfo
+    ) {
+        super(componentInfos, entryComponentInfo)
+    }
+    getFilePath () {
+        return this.filePath
+    }
+}
 
-    private filepath: string
-
-    private constructor ({
-        sourceFile,
-        componentClassIdentifier,
-        filepath,
-        fileType
-    }: SanSourceFileOptions) {
-        this.tsSourceFile = sourceFile
-        this.componentClassIdentifier = componentClassIdentifier
-        this.fileType = fileType
-        this.filepath = filepath
+export class TypedSanSourceFile extends SanSourceFileImpl<TypedComponentInfo> {
+    constructor (
+        componentInfos: TypedComponentInfo[],
+        public readonly tsSourceFile: SourceFile,
+        entryComponentInfo?: TypedComponentInfo
+    ) {
+        super(componentInfos, entryComponentInfo)
     }
 
-    static createFromTSSourceFile (sourceFile: SourceFile, componentClassIdentifier?: string) {
-        return new SanSourceFile({
-            sourceFile,
-            componentClassIdentifier,
-            fileType: SourceFileType.ts,
-            filepath: sourceFile.getFilePath()
-        })
+    getFilePath () {
+        return this.tsSourceFile.getFilePath()
     }
 
-    static createFromJSFilePath (filepath: string) {
-        return new SanSourceFile({
-            filepath, fileType: SourceFileType.js
-        })
+    /**
+     * 遍历组件类声明
+     */
+    * getComponentClassDeclarations () {
+        for (const info of this.componentInfos) {
+            yield info.classDeclaration
+        }
     }
+}
 
-    static createVirtualSourceFile () {
-        return new SanSourceFile({
-            filepath: '/tmp/virtual-file',
-            fileType: SourceFileType.js
-        })
-    }
+export type SanSourceFile = DynamicSanSourceFile | TypedSanSourceFile
 
-    getClassDeclarations () {
-        ok(this.tsSourceFile, 'cannot get class declarations for non-typescript source file')
-        return this.tsSourceFile!.getClasses()
-    }
-
-    getFullText (): string {
-        return this.tsSourceFile
-            ? this.tsSourceFile.getFullText()
-            : readFileSync(this.filepath, 'utf8')
-    }
-
-    getFilePath (): string {
-        return this.filepath
-    }
-
-    getClass (name: string) {
-        ok(this.tsSourceFile, 'cannot get class for non-typescript source file')
-        return this.tsSourceFile!.getClass(name)
-    }
+export function isTypedSanSourceFile (sourceFile: SanSourceFile): sourceFile is TypedSanSourceFile {
+    return !!sourceFile['tsSourceFile']
 }

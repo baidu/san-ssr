@@ -10,9 +10,15 @@ describe('SanProject', function () {
     })
 
     it('should not throw if tsConfigFilePath not specified', function () {
-        expect(() => new SanProject({
-            tsConfigFilePath: null // simulate the case when no tsconfig specified
-        })).not.toThrow()
+        // simulate the case when no tsconfig specified
+        expect(() => new SanProject(null)).not.toThrow()
+    })
+
+    describe('#parseSanSourceFile()', () => {
+        it('should compile TypeScript to JavaScript renderer by default', function () {
+            const proj = new SanProject(null)
+            expect(() => proj.parseSanSourceFile(resolve(stubRoot, './a.comp.ts'))).toThrow(/tsconfig not specified/)
+        })
     })
 
     describe('#compile()', () => {
@@ -49,11 +55,11 @@ describe('SanProject', function () {
             })
 
             expect(code).toContain('html += "A')
-            expect(code).toMatch(/^var sanssrRuntime = /)
+            expect(code).toMatch(/^var sanSSRRuntime = /)
         })
 
         it('should not throw if tsConfigFilePath not specified', function () {
-            const proj = new SanProject({ tsConfigFilePath: null })
+            const proj = new SanProject(null)
             const componentClass = require(resolve(stubRoot, './a.comp.js'))
             expect(() => proj.compile(componentClass, 'js')).not.toThrow()
         })
@@ -62,15 +68,7 @@ describe('SanProject', function () {
     describe('#compileToRenderer()', function () {
         it('should compile to a renderer function', function () {
             const proj = new SanProject()
-            const render = proj.compileToRenderer(resolve(stubRoot, './a.comp.ts'))
-
-            expect(render).toBeInstanceOf(Function)
-            expect(render({}, true)).toEqual('<div>A</div>')
-        })
-
-        it('should compile to a renderer function which accepts data', function () {
-            const proj = new SanProject()
-            const render = proj.compileToRenderer(resolve(stubRoot, './name.comp.js'))
+            const render = proj.compileToRenderer(require(resolve(stubRoot, './name.comp.js')))
 
             expect(render).toBeInstanceOf(Function)
             expect(render({ name: 'Harttle' }, true)).toEqual('<div>name: Harttle</div>')
@@ -96,10 +94,30 @@ describe('SanProject', function () {
 
         it('should compile to a renderer function which accepts data', function () {
             const proj = new SanProject()
-            const render = proj.compileToRenderer(resolve(stubRoot, './name.comp.js'))
+            const render = proj.compileToRenderer(require(resolve(stubRoot, './name.comp.js')))
 
             expect(render).toBeInstanceOf(Function)
             expect(render({ name: 'Harttle' }, true)).toEqual('<div>name: Harttle</div>')
+        })
+    })
+    describe('.loadCompilerClassByTarget()', () => {
+        let proj: SanProject
+        beforeEach(() => { proj = new SanProject() })
+        it('should return compiler for target-js', () => {
+            const compiler = proj.loadCompilerClass('js')
+            expect(compiler.name).toEqual('ToJSCompiler')
+        })
+        it('should find compiler if installed (ESM)', () => {
+            const compiler = proj.loadCompilerClass('fake-esm')
+            expect(compiler.name).toEqual('FakeESM')
+        })
+        it('should find compiler if installed (CMD)', () => {
+            const compiler = proj.loadCompilerClass('fake-cmd')
+            expect(compiler.name).toEqual('FakeCMD')
+        })
+        it('should throw if compiler not found', () => {
+            expect(() => proj.loadCompilerClass('rust'))
+                .toThrow('failed to load "san-ssr-target-rust"')
         })
     })
 })

@@ -1,11 +1,7 @@
 import { Component } from 'san'
 
 export default class MyComponent extends Component {
-    public static template = '<form>' +
-      '<fieldset s-for="cate in cates">' +
-        '<label s-for="item in forms[cate]">{{item}}</label>' +
-      '</fieldset>' +
-    '</form>'
+    public static template = `<form><fieldset s-for="cate in cates"><label s-for="item in forms[cate]">{{item}}</label></fieldset></form>`
 
     initData () {
         return {

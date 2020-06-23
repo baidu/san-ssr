@@ -13,4 +13,5 @@ export function normalizeComponentClass (clazz: ClassDeclaration) {
             if (!prop.isStatic()) prop.setIsStatic(true)
         }
     }
+    return clazz
 }

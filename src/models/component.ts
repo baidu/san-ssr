@@ -1,8 +1,7 @@
-import { ANode, ComponentConstructor, SanComponent } from 'san'
-import { SanData } from './san-data'
+import { SanData, ComponentConstructor, SanComponent } from 'san'
 
 export interface Computed {
-    [k: string]: (this: { data: SanData }) => any
+    [k: string]: (this: { data: SanData<{}> }) => any
 }
 
 export interface Filters {
@@ -11,22 +10,12 @@ export interface Filters {
 
 export type ComponentClass = ComponentConstructor<{}, {}>
 
-export type Components = Map<string | ANode, ComponentClass>
-
 export const COMPONENT_RESERVED_MEMBERS = new Set(
     ('constructor,aNode,components,' +
-    'initData,template,attached,created,' +
+    'template,attached,created,' +
     'detached,disposed,compiled').split(',')
 )
 
 export function isComponentLoader (cmpt: any): cmpt is {placeholder: ComponentClass} {
     return cmpt && cmpt.hasOwnProperty('load') && cmpt.hasOwnProperty('placeholder')
-}
-
-export class SanSSRFiltersDeclarations {
-    [key: string]: (...args: any[]) => any
-}
-
-export class SanSSRComputedDeclarations {
-    [key: string]: (sanssrSelf: SanComponent<{}>) => any
 }

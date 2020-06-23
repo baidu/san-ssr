@@ -1,5 +1,7 @@
-import { ImportDeclaration, ClassDeclaration, ts, SourceFile } from 'ts-morph'
+import { Node, MethodDeclaration, ShorthandPropertyAssignment, PropertyAssignment, TypeGuards, SyntaxKind, ImportDeclaration, ClassDeclaration, ts, SourceFile } from 'ts-morph'
 import debugFactory from 'debug'
+import { TagName } from '../models/component-info'
+import { getExportedComponentID, getDefaultExportedComponentID, ComponentReference } from '../models/component-reference'
 
 const debug = debugFactory('ast-util')
 
@@ -32,4 +34,114 @@ export function isChildClassOf (clazz: ClassDeclaration, parentClass: string) {
     if (!typeNode) return false
 
     return true
+}
+
+export function getComponentDeclarations (sourceFile: SourceFile) {
+    const componentClassIdentifier = getComponentClassIdentifier(sourceFile)
+    if (!componentClassIdentifier) return []
+    return sourceFile.getClasses().filter(clazz => isChildClassOf(clazz, componentClassIdentifier))
+}
+
+export function getPropertyStringValue (clazz: ClassDeclaration, memberName: string) {
+    const member = clazz.getProperty(memberName)
+    if (!member) return ''
+
+    const init = member.getInitializer()
+    if (!init) return ''
+
+    // 字符串常量，取其字面值
+    const value = getLiteralText(init)
+    if (value !== undefined) return value
+
+    // 变量，找到定义处，取其字面值（非字面量跑错）
+    if (TypeGuards.isIdentifier(init)) {
+        const identName = init.getText()
+        const file = clazz.getSourceFile()
+        const decl = file.getVariableDeclarationOrThrow(identName)
+        const value = decl.getInitializer()
+        if (!value) throw new Error(`${JSON.stringify(decl.getParent().getText())} not supported, specify a string literal for "${memberName}"`)
+        const str = getLiteralText(value)
+        if (str === undefined) {
+            throw new Error(`${JSON.stringify(value.getText())} not supported, specify a string literal for "${memberName}"`)
+        }
+        return str
+    }
+    throw new Error(`invalid "${memberName}" property`)
+}
+
+function getLiteralText (expr: Node) {
+    if (TypeGuards.isStringLiteral(expr) || TypeGuards.isNoSubstitutionTemplateLiteral(expr)) {
+        return expr.getLiteralValue()
+    }
+}
+
+export function getChildComponents (clazz: ClassDeclaration, defaultClassDeclaration?: ClassDeclaration): Map<TagName, ComponentReference> {
+    const member = clazz.getProperty('components')
+    const ret: Map<TagName, ComponentReference> = new Map()
+    if (!member) return ret
+
+    // 对引入的名称做索引，例如
+    //
+    // import XList from './list'
+    // 索引为
+    // 'XList' => { specifier: './list', named: false }
+    const file = clazz.getSourceFile()
+    const importedNames: Map<string, { specifier: string, named: boolean }> = new Map()
+    for (const decl of file.getImportDeclarations()) {
+        const specifier = decl.getModuleSpecifier().getLiteralValue()
+        const defaultImport = decl.getDefaultImport()
+        if (defaultImport) {
+            importedNames.set(defaultImport.getText(), { specifier, named: false })
+        }
+        for (const namedImport of decl.getNamedImports()) {
+            importedNames.set(namedImport.getName(), { specifier, named: true })
+        }
+    }
+
+    // 子组件声明遍历，例如
+    //
+    // components: {
+    //     'x-list': XList
+    // }
+    // 解析后的子组件信息为
+    // 'x-list' => { relativeFilePath: './list', id: '0', isDefault: true }
+    const init = member.getInitializerIfKindOrThrow(SyntaxKind.ObjectLiteralExpression)
+    for (const prop of init.getProperties()) {
+        if (!TypeGuards.isPropertyAssignment(prop)) throw new Error(`${JSON.stringify(prop.getText())} not supported`)
+        const propName = getPropertyAssignmentName(prop)
+        const childComponentClassName = prop.getInitializerIfKindOrThrow(SyntaxKind.Identifier).getText()
+        if (importedNames.has(childComponentClassName)) { // 子组件来自外部源文件
+            const { specifier, named } = importedNames.get(childComponentClassName)!
+            ret.set(propName, {
+                relativeFilePath: specifier,
+                id: named ? getExportedComponentID(childComponentClassName) : getDefaultExportedComponentID(),
+                isDefault: !named
+            })
+        } else { // 子组件来自当前源文件
+            ret.set(propName, {
+                relativeFilePath: '.',
+                id: getExportedComponentID(childComponentClassName),
+                isDefault: defaultClassDeclaration ? defaultClassDeclaration.getName() === childComponentClassName : false
+            })
+        }
+    }
+    return ret
+}
+
+export function getObjectLiteralPropertyKeys (clazz: ClassDeclaration, propertyName: string): string[] {
+    const prop = clazz.getProperty(propertyName)
+    if (!prop) return []
+
+    const init = prop.getInitializerIfKindOrThrow(SyntaxKind.ObjectLiteralExpression)
+    return init.getProperties().map(prop => {
+        if (TypeGuards.isPropertyAssignment(prop)) return getPropertyAssignmentName(prop)
+        if (TypeGuards.isShorthandPropertyAssignment(prop)) return getPropertyAssignmentName(prop)
+        if (TypeGuards.isMethodDeclaration(prop)) return getPropertyAssignmentName(prop)
+        throw new Error('object property not recognized')
+    })
+}
+
+export function getPropertyAssignmentName (prop: PropertyAssignment | ShorthandPropertyAssignment | MethodDeclaration) {
+    const nameNode = prop.getNameNode()
+    return TypeGuards.isStringLiteral(nameNode) ? nameNode.getLiteralValue() : prop.getName()
 }

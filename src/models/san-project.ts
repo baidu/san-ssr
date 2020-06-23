@@ -1,24 +1,15 @@
 import { ComponentConstructor } from 'san'
 import { Project } from 'ts-morph'
-import { ToJSCompileOptions } from '../target-js/index'
-import { TSSanAppParser } from '../parsers/ts-san-app-parser'
+import { resolve } from 'path'
+import { ComponentClassParser } from '../parsers/component-class-parser'
+import { TypeScriptSanParser } from '../parsers/typescript-san-parser'
+import { SanSourceFile } from '../models/san-source-file'
+import ToJSCompiler, { ToJSCompileOptions } from '../target-js/index'
 import { Renderer } from './renderer'
 import { getDefaultTSConfigPath } from '../parsers/tsconfig'
 import { Compiler } from '../models/compiler'
-import { JSSanAppParser } from '../parsers/js-san-app-parser'
-import { Modules } from '../loaders/common-js'
-import { loadCompilerClassByTarget } from '../loaders/target'
 
-export interface SanProjectOptions {
-    tsConfigFilePath?: string | null,
-    modules?: Modules
-}
-
-interface CompileOptions {
-    [key: string]: any
-}
-
-type CompilerClass = { new(options: { project: SanProject }): Compiler }
+type CompilerClass<T extends Compiler = Compiler> = { new(project: SanProject): T }
 
 /**
  * A SanProject corresponds to a TypeScript project,
@@ -26,81 +17,104 @@ type CompilerClass = { new(options: { project: SanProject }): Compiler }
  */
 export class SanProject {
     public tsProject?: Project
-    public tsConfigFilePath?: string | null
 
     private compilers: Map<CompilerClass, Compiler> = new Map()
-    private modules: Modules
 
-    constructor ({
-        tsConfigFilePath = getDefaultTSConfigPath(),
-        modules = {}
-    }: SanProjectOptions = {}) {
-        this.tsConfigFilePath = tsConfigFilePath
+    constructor (public tsConfigFilePath: null | string | undefined = getDefaultTSConfigPath()) {
         if (tsConfigFilePath !== null) {
             this.tsProject = new Project({ tsConfigFilePath, addFilesFromTsConfig: false })
         }
-        this.modules = modules
     }
 
     /**
+     * 兼容旧版用法
      * @alias SanProject.compileToSource
      */
     public compile (
         filepathOrComponentClass: string | ComponentConstructor<{}, any>,
         target: string | CompilerClass = 'js',
-        options: CompileOptions = {}
+        options = {}
     ) {
         return this.compileToSource(filepathOrComponentClass, target, options)
     }
-    public compileToSource (
+
+    /**
+     * 源文件/组件类编译到源代码
+     */
+    public compileToSource<T extends Compiler> (
         filepathOrComponentClass: string | ComponentConstructor<{}, any>,
-        target: string | CompilerClass = 'js',
-        options: CompileOptions = {}
+        target: string | CompilerClass<T> = 'js',
+        options = {}
     ) {
-        const sanApp = this.parseSanApp(filepathOrComponentClass)
+        const sanSourceFile = this.parseSanSourceFile(filepathOrComponentClass)
         const compiler = this.getOrCreateCompilerInstance(target)
-        return compiler.compile(sanApp, options)
-    }
-    public parseSanApp (
-        filepathOrComponentClass: string | ComponentConstructor<{}, any>
-    ) {
-        const parser = this.getParser()
-        const sanApp = typeof filepathOrComponentClass === 'string'
-            ? parser.parseSanApp(filepathOrComponentClass, this.modules)
-            : parser.parseSanAppFromComponentClass(filepathOrComponentClass)
-        return sanApp
+        return compiler.compileToSource(sanSourceFile, options)
     }
 
     /**
-     * Compile to render function in current JavaScript context.
+     * 源文件/组件类解析为 SanSourceFile
+     */
+    public parseSanSourceFile (
+        filepathOrComponentClass: string | ComponentConstructor<{}, any>
+    ): SanSourceFile {
+        if (typeof filepathOrComponentClass !== 'string') {
+            return new ComponentClassParser(filepathOrComponentClass, '').parse()
+        }
+        if (/\.ts$/.test(filepathOrComponentClass)) {
+            if (!this.tsProject) {
+                throw new Error(`Error parsing ${filepathOrComponentClass}, tsconfig not specified`)
+            }
+            const filePath = resolve(filepathOrComponentClass)
+            this.tsProject.addExistingSourceFileIfExists(filePath)
+            const sourceFile = this.tsProject.getSourceFileOrThrow(filePath)
+            sourceFile.refreshFromFileSystemSync()
+            return new TypeScriptSanParser(sourceFile).parse()
+        }
+        return new ComponentClassParser(require(filepathOrComponentClass), filepathOrComponentClass).parse()
+    }
+
+    /**
+     * 编译成当前 JavaScript 进程里的 render 函数
      *
-     *  * `target` is fixed to "js"
-     *  * `options.bareFunction` is fixed to true
+     *  * `target` 固定为 "js"
+     *  * `options.bareFunction` 固定为 true
      */
     public compileToRenderer (
-        filepathOrComponentClass: string | ComponentConstructor<{}, any>,
+        componentClass: ComponentConstructor<{}, any>,
         options?: ToJSCompileOptions
     ): Renderer {
-        const sanApp = this.parseSanApp(filepathOrComponentClass)
-        const compiler = this.getOrCreateCompilerInstance('js')
-        return compiler.compileToRenderer!(sanApp, options)
+        const sanSourceFile = new ComponentClassParser(componentClass, '').parse()
+        const compiler = this.getOrCreateCompilerInstance(ToJSCompiler)
+        return compiler.compileToRenderer(sanSourceFile, options)
     }
 
-    private getParser () {
-        return this.tsProject ? new TSSanAppParser(this.tsProject) : new JSSanAppParser()
+    public getCompilerOptionsOrThrow () {
+        return this.tsProject!.getCompilerOptions()
     }
 
-    private getOrCreateCompilerInstance (target: string | CompilerClass): Compiler {
-        const CompilerClass = this.loadCompilerClass(target)
+    public getOrCreateCompilerInstance<T extends Compiler = Compiler> (target: string | CompilerClass<T>): T {
+        const CC: CompilerClass<T> = this.loadCompilerClass(target)
 
-        if (!this.compilers.has(CompilerClass)) {
-            this.compilers.set(CompilerClass, new CompilerClass(this))
+        if (!this.compilers.has(CC)) {
+            this.compilers.set(CC, new CC(this))
         }
-        return this.compilers.get(CompilerClass)!
+        return this.compilers.get(CC) as T
     }
 
-    private loadCompilerClass (target: string | CompilerClass) {
-        if (typeof target === 'string') return loadCompilerClassByTarget(target)
-        return target
+    public loadCompilerClass (target: string | CompilerClass) {
+        if (typeof target !== 'string') return target
+
+        const name = `san-ssr-target-${target}`
+        if (name === 'san-ssr-target-js') return ToJSCompiler
+
+        let path
+        try {
+            path = require.resolve(name)
+        } catch (e) {
+            throw new Error(`failed to load "san-ssr-target-${target}"`)
+        }
+
+        const plugin = require(path)
+        return plugin.default || plugin
     }
 }

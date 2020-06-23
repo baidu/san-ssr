@@ -6,19 +6,17 @@ import * as TypeGuards from './utils/type-guards'
 
 // util functions
 export { parseSanHTML, compareSanHTML, assertSanHTMLEqual } from './utils/case'
-export { getInlineDeclarations } from './parsers/dependency-resolver'
 export { autoCloseTags, booleanAttributes } from './utils/dom-util'
-export { getANodeProps, getANodePropByName } from './utils/anode-util'
+export { getANodePropByName } from './utils/anode-util'
 export { Emitter } from './utils/emitter'
 export { TypeGuards }
 
 // class types
-export { SanSourceFile } from './models/san-source-file'
-export { SanApp } from './models/san-app'
+export { SanSourceFile, TypedSanSourceFile, DynamicSanSourceFile, isTypedSanSourceFile } from './models/san-source-file'
 export { SanProject } from './models/san-project'
 export { Compiler } from './models/compiler'
-export { ComponentInfo } from './models/component-info'
-export { ComponentTree } from './models/component-tree'
+export { ComponentInfo, TypedComponentInfo, DynamicComponentInfo, isTypedComponentInfo } from './models/component-info'
+export { ComponentReference } from './models/component-reference'
 export { COMPONENT_RESERVED_MEMBERS } from './models/component'
 
 let defaultProject: SanProject
@@ -31,7 +29,7 @@ export function compileToSource (ComponentClass: string | typeof SanComponent): 
     return targetCode
 }
 
-export function compileToRenderer (ComponentClass: string | typeof SanComponent, options?: ToJSCompileOptions): Renderer {
+export function compileToRenderer (ComponentClass: typeof SanComponent, options?: ToJSCompileOptions): Renderer {
     defaultProject = defaultProject || new SanProject()
     const renderer = defaultProject.compileToRenderer(ComponentClass, options)
     return renderer

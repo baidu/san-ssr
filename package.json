@@ -89,7 +89,7 @@
     "lodash": "^4.17.15",
     "snake-case": "^2.1.0",
     "ts-morph": "4.0.1",
-    "typescript": "^3.4.5",
+    "typescript": "^3.9.5",
     "yargs": "^14.2.0"
   },
   "peerDependencies": {

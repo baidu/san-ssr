@@ -1,11 +1,10 @@
 import { stringLiteralize, expr } from './expr-compiler'
-import { ComponentTree } from '../../models/component-tree'
-import { JSEmitter } from '../emitters/emitter'
+import { JSEmitter } from '../js-emitter'
 import { ANode, ExprStringNode, AIfNode, AForNode, ASlotNode, ATemplateNode, AFragmentNode, ATextNode } from 'san'
 import { ComponentInfo } from '../../models/component-info'
 import { ElementCompiler } from './element-compiler'
 import { stringifier } from './stringifier'
-import { getANodeProps, getANodePropByName } from '../../utils/anode-util'
+import { getANodePropByName } from '../../utils/anode-util'
 import * as TypeGuards from '../../utils/type-guards'
 
 /**
@@ -13,7 +12,7 @@ import * as TypeGuards from '../../utils/type-guards'
  *
  * 负责单个 ComponentClass 的编译，每个 ANodeCompiler 对应于一个 ComponentInfo。
  */
-export class ANodeCompiler {
+export class ANodeCompiler<T extends 'none' | 'typed'> {
     private ssrIndex = 0
     private elementCompiler: ElementCompiler
 
@@ -25,13 +24,10 @@ export class ANodeCompiler {
      */
     constructor (
         private componentInfo: ComponentInfo,
-        private componentTree: ComponentTree,
         private ssrOnly: boolean,
         public emitter: JSEmitter
     ) {
-        this.elementCompiler = new ElementCompiler(
-            componentInfo, this, emitter
-        )
+        this.elementCompiler = new ElementCompiler(this, emitter)
     }
 
     compile (aNode: ANode, isRootElement: boolean) {
@@ -42,10 +38,9 @@ export class ANodeCompiler {
         if (TypeGuards.isATemplateNode(aNode)) return this.compileTemplate(aNode)
         if (TypeGuards.isAFragmentNode(aNode)) return this.compileFragment(aNode)
 
-        const ComponentClass = this.componentInfo.getChildComponentClass(aNode)
-        if (ComponentClass) {
-            const info = this.componentTree.addComponentClass(ComponentClass)
-            return info ? this.compileComponent(aNode, info, isRootElement) : undefined
+        const ref = this.componentInfo.getChildComponentRenference(aNode)
+        if (ref) {
+            return this.compileComponent(aNode, ref.id, isRootElement)
         }
         return this.compileElement(aNode, isRootElement)
     }
@@ -218,7 +213,7 @@ export class ANodeCompiler {
         this.emitter.writeIf('!noDataOutput', () => this.emitter.writeDataComment())
     }
 
-    private compileComponent (aNode: ANode, info: ComponentInfo, isRootElement: boolean) {
+    private compileComponent (aNode: ANode, cid: string, isRootElement: boolean) {
         const { emitter } = this
 
         const defaultSourceSlots: ANode[] = []
@@ -253,9 +248,9 @@ export class ANodeCompiler {
         }
 
         const ndo = isRootElement ? 'noDataOutput' : 'true'
-        const funcName = 'sanssrRuntime.renderer' + info.cid
+        const funcName = 'sanSSRRuntime.renderer' + cid
         emitter.nextLine(`html += ${funcName}(`)
-        emitter.write(this.componentDataCode(aNode) + `, ${ndo}, sanssrRuntime, ctx, currentCtx, ` +
+        emitter.write(this.componentDataCode(aNode) + `, ${ndo}, sanSSRRuntime, ctx, currentCtx, ` +
         stringifier.str(aNode.tagName) + ', $sourceSlots);')
         emitter.writeLine('$sourceSlots = null;')
     }
@@ -270,7 +265,7 @@ export class ANodeCompiler {
     }
 
     private componentDataCode (aNode: ANode) {
-        const givenData = '{' + getANodeProps(aNode).map(prop => {
+        const givenData = '{' + aNode.props.map(prop => {
             const key = stringLiteralize(prop.name)
             const val = expr(prop.expr)
             return `${key}: ${val}`
@@ -281,6 +276,6 @@ export class ANodeCompiler {
     }
 
     private nextID () {
-        return 'sanssrId' + (this.ssrIndex++)
+        return 'sanSSRID' + (this.ssrIndex++)
     }
 }

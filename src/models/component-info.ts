@@ -1,61 +1,93 @@
-import { ANode, ComponentConstructor } from 'san'
-import { Components, ComponentClass, Filters, Computed } from './component'
+import { SanComponent, ANode, ComponentConstructor } from 'san'
+import { ClassDeclaration } from 'ts-morph'
+import { ComponentReference, DynamicComponentReference } from './component-reference'
+import { getObjectLiteralPropertyKeys } from '../utils/ast-util'
 
-interface ComponentInfoOptions {
-    filters: Filters
-    rootANode: ANode,
-    computed: Computed
-    template?: string
-    cid: number
-    children?: ComponentInfo[]
-    componentClass: ComponentClass
-    childComponentClasses: Components
-}
+export type TagName = string
 
 /**
- * 提供一个组件信息封装
+ * 提供一个组件信息的封装，包括：
+ * - computed name 列表、filters name 列表、template、root ANode
+ * - 从 TypeScript 来的还有 sourceFile、classDeclaration 等
  *
- * 目的：
- * 1. 避免 SSR 对组件构造函数/类产生副作用
- * 2. 对外提供规范化（normalized）的组件信息
- *
- * Note：这里只是存数据，它的创建由 componentParser 负责
+ * Note：这里只是存数据，它的创建由具体 parser 负责
  */
-export class ComponentInfo {
-    public readonly filters: Filters
-    public readonly computed: Computed
-    public readonly template?: string
-    public readonly cid: number
-    public readonly componentClass: ComponentConstructor<{}, {}>
-    // 编译用的，normalize 过的原型
-    public readonly proto: {
-        initData?: () => any,
-        inited?: () => void,
-        computed: Computed,
-        filters: Filters
-    }
-    // child Component Info nodes
-    public readonly children: ComponentInfo[]
-    // Raw components
-    public readonly childComponentClasses: Components
-    public readonly rootANode: ANode
+export abstract class ComponentInfoImpl<R extends ComponentReference = ComponentReference> {
+    /**
+     * 归一化的 proto。
+     *
+     * 确保 computed、template 等属性都出现在 proto 上，
+     * 用于 compileToRenderer() 和 compileToSource()
+     */
+    constructor (
+        /**
+         * 见 component-reference.ts 的说明
+         */
+        public readonly id: string,
+        public readonly template: string,
+        public readonly root: ANode,
+        public readonly childComponents: Map<TagName | ANode, R>
+    ) {}
 
-    constructor ({ filters, computed, template, cid, componentClass, children = [], childComponentClasses, rootANode }: ComponentInfoOptions) {
-        this.rootANode = rootANode
-        this.filters = filters
-        this.computed = computed
-        this.template = template
-        this.cid = cid
-        this.componentClass = componentClass
-        this.children = children
-        this.childComponentClasses = childComponentClasses
+    abstract hasMethod (name: string): boolean
+    abstract getComputedNames (): string[]
+    abstract getFilterNames (): string[]
 
-        const proto = componentClass.prototype
-        proto.filters = Object.assign({}, proto.filters, componentClass['filters'])
-        proto.computed = Object.assign({}, proto.computed, componentClass['computed'])
-        this.proto = proto
+    getChildComponentRenference (aNode: ANode): R | undefined {
+        return this.childComponents.get(aNode) || this.childComponents.get(aNode.tagName)
     }
-    getChildComponentClass (aNode: ANode) {
-        return this.childComponentClasses.get(aNode) || this.childComponentClasses.get(aNode.tagName)
+}
+
+export class DynamicComponentInfo extends ComponentInfoImpl<DynamicComponentReference> {
+    public readonly proto: SanComponent<{}>
+    constructor (
+        id: string,
+        template: string,
+        root: ANode,
+        childComponents: Map<TagName | ANode, DynamicComponentReference>,
+        public readonly componentClass: ComponentConstructor<{}, {}>
+    ) {
+        super(id, template, root, childComponents)
+        this.proto = Object.assign(componentClass.prototype, componentClass)
     }
+    hasMethod (name: string) {
+        return !!this.proto[name]
+    }
+    getComputedNames () {
+        return Object.keys(this.proto['computed'] || {})
+    }
+    getFilterNames () {
+        return Object.keys(this.proto['filters'] || {})
+    }
+}
+
+export class TypedComponentInfo extends ComponentInfoImpl {
+    private computedNames: string[]
+    private filterNames: string[]
+    constructor (
+        id: string,
+        template: string,
+        root: ANode,
+        childComponents: Map<TagName | ANode, ComponentReference>,
+        public readonly classDeclaration: ClassDeclaration
+    ) {
+        super(id, template, root, childComponents)
+        this.computedNames = getObjectLiteralPropertyKeys(this.classDeclaration, 'computed')
+        this.filterNames = getObjectLiteralPropertyKeys(this.classDeclaration, 'filters')
+    }
+    hasMethod (name: string) {
+        return !!this.classDeclaration.getMethod(name)
+    }
+    getComputedNames () {
+        return this.computedNames
+    }
+    getFilterNames () {
+        return this.filterNames
+    }
+}
+
+export type ComponentInfo = TypedComponentInfo | DynamicComponentInfo
+
+export function isTypedComponentInfo (componentInfo: ComponentInfo): componentInfo is TypedComponentInfo {
+    return componentInfo['classDeclaration']
 }

@@ -1,7 +1,9 @@
-import { Computed } from './component'
-
 interface DataObject {
     [key: string]: any
+}
+
+interface Computed {
+    [k: string]: (this: { data: SanData }) => any
 }
 
 /**
@@ -14,7 +16,7 @@ export class SanData {
     data: DataObject
     computed: Computed
 
-    constructor (data: DataObject, computed: Computed) {
+    constructor (data: DataObject, computed: Computed = {}) {
         this.data = data
         this.computed = computed
     }

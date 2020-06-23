@@ -1,4 +1,4 @@
-import { _ } from '../../../src/utils/underscore'
+import { _ } from '../../../src/runtime/underscore'
 
 describe('utils/underscore', function () {
     describe('.escapeHTML()', function () {

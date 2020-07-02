@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/baidu/san-ssr/compare/v2.0.0...v2.0.1) (2020-07-02)
+
+
+### Bug Fixes
+
+* more accurate type for parseSanSourceFile() ([4078ad7](https://github.com/baidu/san-ssr/commit/4078ad7868457e08f9d86327ee8e3e870573a1b0))
+
 # [2.0.0](https://github.com/baidu/san-ssr/compare/v1.13.1...v2.0.0) (2020-07-02)
 
 

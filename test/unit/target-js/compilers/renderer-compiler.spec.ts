@@ -29,7 +29,7 @@ describe('target-js/compilers/renderer-compiler', () => {
             compiler.emitInitDataInCompileTime(sourceFile.componentInfos[0])
             expect(compiler.emitter.fullText()).toMatch(/ctx.data\["foo"\] = ctx\.data\["foo"\] \|\|/)
         })
-        it('should default to {} if initData() returned falsy value', () => {
+        it('should not throw if initData() returned a falsy value', () => {
             const ComponentClass = defineComponent({
                 template: '<div></div>',
                 initData () {
@@ -38,8 +38,7 @@ describe('target-js/compilers/renderer-compiler', () => {
             })
             const sourceFile = new ComponentClassParser(ComponentClass, '/tmp/foo.js').parse()
             const compiler = new RendererCompiler(false)
-            compiler.emitInitDataInCompileTime(sourceFile.componentInfos[0])
-            expect(compiler.emitter.fullText()).not.toMatch(/ctx.data\["foo"\] = ctx\.data\["foo"\] \|\|/)
+            expect(() => compiler.emitInitDataInCompileTime(sourceFile.componentInfos[0])).not.toThrow()
         })
     })
 })

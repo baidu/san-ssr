@@ -3,7 +3,7 @@ import { Project } from 'ts-morph'
 import { resolve } from 'path'
 import { ComponentClassParser } from '../parsers/component-class-parser'
 import { TypeScriptSanParser } from '../parsers/typescript-san-parser'
-import { SanSourceFile } from '../models/san-source-file'
+import { DynamicSanSourceFile, SanSourceFile } from '../models/san-source-file'
 import ToJSCompiler, { ToJSCompileOptions } from '../target-js/index'
 import { Renderer } from './renderer'
 import { getDefaultTSConfigPath } from '../parsers/tsconfig'
@@ -54,9 +54,9 @@ export class SanProject {
     /**
      * 源文件/组件类解析为 SanSourceFile
      */
-    public parseSanSourceFile (
-        filepathOrComponentClass: string | ComponentConstructor<{}, any>
-    ): SanSourceFile {
+    public parseSanSourceFile (componentClass: ComponentConstructor<{}, any>): DynamicSanSourceFile;
+    public parseSanSourceFile (filepathOrComponentClass: string | ComponentConstructor<{}, any>): SanSourceFile
+    public parseSanSourceFile (filepathOrComponentClass: string | ComponentConstructor<{}, any>): SanSourceFile {
         if (typeof filepathOrComponentClass !== 'string') {
             return new ComponentClassParser(filepathOrComponentClass, '').parse()
         }

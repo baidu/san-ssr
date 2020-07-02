@@ -1,3 +1,17 @@
+# [2.0.0](https://github.com/baidu/san-ssr/compare/v1.13.1...v2.0.0) (2020-07-02)
+
+
+### Features
+
+* TypeScript 输入静态分析；以 SourceFile 为粒度编译 ([1000a05](https://github.com/baidu/san-ssr/commit/1000a052ed74e7a7d15a557a15ca016d9feac403))
+
+
+### BREAKING CHANGES
+
+* - ComponentTree 对象不再可用，只给出当前 SourceFile 的 Component
+列表（平铺）
+- dependency resolver API 不再可用，比如 .getRuntimeDependencyDeclarations() 已经被移除
+
 ## [1.13.1](https://github.com/baidu/san-ssr/compare/v1.13.0...v1.13.1) (2020-06-12)
 
 

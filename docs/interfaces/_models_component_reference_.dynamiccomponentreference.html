@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>SanAppParser | san-ssr</title>
+	<title>DynamicComponentReference | san-ssr</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,32 +56,37 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_parsers_san_app_parser_.html">&quot;parsers/san-app-parser&quot;</a>
+					<a href="../modules/_models_component_reference_.html">&quot;models/component-reference&quot;</a>
 				</li>
 				<li>
-					<a href="_parsers_san_app_parser_.sanappparser.html">SanAppParser</a>
+					<a href="_models_component_reference_.dynamiccomponentreference.html">DynamicComponentReference</a>
 				</li>
 			</ul>
-			<h1>Interface SanAppParser</h1>
+			<h1>Interface DynamicComponentReference</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>ComponentReference 的特型，用于 ComponentClassParser</p>
+					</div>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">SanAppParser</span>
+						<a href="_models_component_reference_.componentreference.html" class="tsd-signature-type">ComponentReference</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">DynamicComponentReference</span>
+							</li>
+						</ul>
 					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel">
-				<h3>Implemented by</h3>
-				<ul class="tsd-hierarchy">
-					<li><a href="../classes/_parsers_js_san_app_parser_.jssanappparser.html" class="tsd-signature-type">JSSanAppParser</a></li>
-					<li><a href="../classes/_parsers_ts_san_app_parser_.tssanappparser.html" class="tsd-signature-type">TSSanAppParser</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -89,62 +94,81 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Methods</h3>
+							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_parsers_san_app_parser_.sanappparser.html#parsesanapp" class="tsd-kind-icon">parse<wbr>San<wbr>App</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_parsers_san_app_parser_.sanappparser.html#parsesanappfromcomponentclass" class="tsd-kind-icon">parse<wbr>San<wbr>App<wbr>From<wbr>Component<wbr>Class</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_models_component_reference_.dynamiccomponentreference.html#componentclass" class="tsd-kind-icon">component<wbr>Class</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_models_component_reference_.dynamiccomponentreference.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_models_component_reference_.dynamiccomponentreference.html#isdefault" class="tsd-kind-icon">is<wbr>Default</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-inherited"><a href="_models_component_reference_.dynamiccomponentreference.html#relativefilepath" class="tsd-kind-icon">relative<wbr>File<wbr>Path</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="parsesanapp" class="tsd-anchor"></a>
-					<h3>parse<wbr>San<wbr>App</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">parse<wbr>San<wbr>App<span class="tsd-signature-symbol">(</span>entryFilePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_models_san_app_.sanapp.html" class="tsd-signature-type">SanApp</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/parsers/san-app-parser.ts#L9">parsers/san-app-parser.ts:9</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>entryFilePath: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="../classes/_models_san_app_.sanapp.html" class="tsd-signature-type">SanApp</a></h4>
-						</li>
-					</ul>
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="componentclass" class="tsd-anchor"></a>
+					<h3>component<wbr>Class</h3>
+					<div class="tsd-signature tsd-kind-icon">component<wbr>Class<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/1000a05/src/models/component-reference.ts#L25">models/component-reference.ts:25</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>从 ComponentClass 解析时，可以引用到子组件的 ComponentClass</p>
+						</div>
+					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
-					<a name="parsesanappfromcomponentclass" class="tsd-anchor"></a>
-					<h3>parse<wbr>San<wbr>App<wbr>From<wbr>Component<wbr>Class</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
-						<li class="tsd-signature tsd-kind-icon">parse<wbr>San<wbr>App<wbr>From<wbr>Component<wbr>Class<span class="tsd-signature-symbol">(</span>ComponentClass<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../classes/_models_san_app_.sanapp.html" class="tsd-signature-type">SanApp</a></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/parsers/san-app-parser.ts#L8">parsers/san-app-parser.ts:8</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>ComponentClass: <span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="../classes/_models_san_app_.sanapp.html" class="tsd-signature-type">SanApp</a></h4>
-						</li>
-					</ul>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="id" class="tsd-anchor"></a>
+					<h3>id</h3>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="_models_component_reference_.componentreference.html">ComponentReference</a>.<a href="_models_component_reference_.componentreference.html#id">id</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/1000a05/src/models/component-reference.ts#L11">models/component-reference.ts:11</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>组件的 id。见下面的说明。</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="isdefault" class="tsd-anchor"></a>
+					<h3>is<wbr>Default</h3>
+					<div class="tsd-signature tsd-kind-icon">is<wbr>Default<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="_models_component_reference_.componentreference.html">ComponentReference</a>.<a href="_models_component_reference_.componentreference.html#isdefault">isDefault</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/1000a05/src/models/component-reference.ts#L15">models/component-reference.ts:15</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>是否是该源文件的默认导出（export default 或 module.exports）</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+					<a name="relativefilepath" class="tsd-anchor"></a>
+					<h3>relative<wbr>File<wbr>Path</h3>
+					<div class="tsd-signature tsd-kind-icon">relative<wbr>File<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="_models_component_reference_.componentreference.html">ComponentReference</a>.<a href="_models_component_reference_.componentreference.html#relativefilepath">relativeFilePath</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/1000a05/src/models/component-reference.ts#L7">models/component-reference.ts:7</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>组件所在源文件的相对路径</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -155,29 +179,44 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_parsers_san_app_parser_.html">"parsers/san-<wbr>app-<wbr>parser"</a>
+						<a href="../modules/_models_component_reference_.html">"models/component-<wbr>reference"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_models_component_reference_.componentreference.html" class="tsd-kind-icon">Component<wbr>Reference</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_parsers_san_app_parser_.sanappparser.html" class="tsd-kind-icon">San<wbr>App<wbr>Parser</a>
+						<a href="_models_component_reference_.dynamiccomponentreference.html" class="tsd-kind-icon">Dynamic<wbr>Component<wbr>Reference</a>
 						<ul>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="_parsers_san_app_parser_.sanappparser.html#parsesanapp" class="tsd-kind-icon">parse<wbr>San<wbr>App</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_models_component_reference_.dynamiccomponentreference.html#componentclass" class="tsd-kind-icon">component<wbr>Class</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-interface">
-								<a href="_parsers_san_app_parser_.sanappparser.html#parsesanappfromcomponentclass" class="tsd-kind-icon">parse<wbr>San<wbr>App<wbr>From<wbr>Component<wbr>Class</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="_models_component_reference_.dynamiccomponentreference.html#id" class="tsd-kind-icon">id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="_models_component_reference_.dynamiccomponentreference.html#isdefault" class="tsd-kind-icon">is<wbr>Default</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-inherited">
+								<a href="_models_component_reference_.dynamiccomponentreference.html#relativefilepath" class="tsd-kind-icon">relative<wbr>File<wbr>Path</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_parsers_san_app_parser_.html#debug" class="tsd-kind-icon">debug</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_models_component_reference_.html#getcomponentclassid" class="tsd-kind-icon">get<wbr>Component<wbr>ClassID</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_models_component_reference_.html#getdefaultexportedcomponentid" class="tsd-kind-icon">get<wbr>Default<wbr>Exported<wbr>ComponentID</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_models_component_reference_.html#getexportedcomponentid" class="tsd-kind-icon">get<wbr>Exported<wbr>ComponentID</a>
 					</li>
 				</ul>
 			</nav>

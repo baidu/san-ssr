@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>SanData | san-ssr</title>
+	<title>ComponentClassCompiler | san-ssr</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,35 +56,24 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_models_san_data_.html">&quot;models/san-data&quot;</a>
+					<a href="../modules/_target_js_compilers_component_compiler_.html">&quot;target-js/compilers/component-compiler&quot;</a>
 				</li>
 				<li>
-					<a href="_models_san_data_.sandata.html">SanData</a>
+					<a href="_target_js_compilers_component_compiler_.componentclasscompiler.html">ComponentClassCompiler</a>
 				</li>
 			</ul>
-			<h1>Class SanData</h1>
+			<h1>Class ComponentClassCompiler</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>SSR 期间的 Data 实现，替代 import(&#39;san&#39;).SanData</p>
-					</div>
-					<ul>
-						<li>不涉及视图更新</li>
-						<li>便于编译期优化</li>
-					</ul>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">SanData</span>
+						<span class="target">ComponentClassCompiler</span>
 					</li>
 				</ul>
 			</section>
@@ -95,23 +84,22 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_models_san_data_.sandata.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_target_js_compilers_component_compiler_.componentclasscompiler.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_san_data_.sandata.html#computed" class="tsd-kind-icon">computed</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_san_data_.sandata.html#data" class="tsd-kind-icon">data</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_target_js_compilers_component_compiler_.componentclasscompiler.html#emitter" class="tsd-kind-icon">emitter</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_models_san_data_.sandata.html#get" class="tsd-kind-icon">get</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_models_san_data_.sandata.html#parseexpr" class="tsd-kind-icon">parse<wbr>Expr</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_models_san_data_.sandata.html#removeat" class="tsd-kind-icon">remove<wbr>At</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_models_san_data_.sandata.html#set" class="tsd-kind-icon">set</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_target_js_compilers_component_compiler_.componentclasscompiler.html#compile" class="tsd-kind-icon">compile</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_component_compiler_.componentclasscompiler.html#emitarray" class="tsd-kind-icon">emit<wbr>Array</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_component_compiler_.componentclasscompiler.html#emitmethod" class="tsd-kind-icon">emit<wbr>Method</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_target_js_compilers_component_compiler_.componentclasscompiler.html#emitobjectliteral" class="tsd-kind-icon">emit<wbr>Object<wbr>Literal</a></li>
 							</ul>
 						</section>
 					</div>
@@ -123,25 +111,22 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>San<wbr>Data<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_san_data_.dataobject.html" class="tsd-signature-type">DataObject</a>, computed<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_component_.computed.html" class="tsd-signature-type">Computed</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_models_san_data_.sandata.html" class="tsd-signature-type">SanData</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Component<wbr>Class<wbr>Compiler<span class="tsd-signature-symbol">(</span>emitter<span class="tsd-signature-symbol">?: </span><a href="_target_js_js_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_target_js_compilers_component_compiler_.componentclasscompiler.html" class="tsd-signature-type">ComponentClassCompiler</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/models/san-data.ts#L15">models/san-data.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/1000a05/src/target-js/compilers/component-compiler.ts#L7">target-js/compilers/component-compiler.ts:7</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>data: <a href="../interfaces/_models_san_data_.dataobject.html" class="tsd-signature-type">DataObject</a></h5>
-								</li>
-								<li>
-									<h5>computed: <a href="../interfaces/_models_component_.computed.html" class="tsd-signature-type">Computed</a></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> emitter: <a href="_target_js_js_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a><span class="tsd-signature-symbol"> =&nbsp;new JSEmitter()</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_models_san_data_.sandata.html" class="tsd-signature-type">SanData</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_target_js_compilers_component_compiler_.componentclasscompiler.html" class="tsd-signature-type">ComponentClassCompiler</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -149,22 +134,12 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="computed" class="tsd-anchor"></a>
-					<h3>computed</h3>
-					<div class="tsd-signature tsd-kind-icon">computed<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_models_component_.computed.html" class="tsd-signature-type">Computed</a></div>
+					<a name="emitter" class="tsd-anchor"></a>
+					<h3>emitter</h3>
+					<div class="tsd-signature tsd-kind-icon">emitter<span class="tsd-signature-symbol">:</span> <a href="_target_js_js_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/models/san-data.ts#L15">models/san-data.ts:15</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="data" class="tsd-anchor"></a>
-					<h3>data</h3>
-					<div class="tsd-signature tsd-kind-icon">data<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_models_san_data_.dataobject.html" class="tsd-signature-type">DataObject</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/models/san-data.ts#L14">models/san-data.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/1000a05/src/target-js/compilers/component-compiler.ts#L8">target-js/compilers/component-compiler.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -172,103 +147,113 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="get" class="tsd-anchor"></a>
-					<h3>get</h3>
+					<a name="compile" class="tsd-anchor"></a>
+					<h3>compile</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+						<li class="tsd-signature tsd-kind-icon">compile<span class="tsd-signature-symbol">(</span>componentInfo<span class="tsd-signature-symbol">: </span><a href="_models_component_info_.dynamiccomponentinfo.html" class="tsd-signature-type">DynamicComponentInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/models/san-data.ts#L22">models/san-data.ts:22</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/1000a05/src/target-js/compilers/component-compiler.ts#L21">target-js/compilers/component-compiler.ts:21</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>编译一个 ComponentClass 的 proto。例如输入组件类：</p>
+								</div>
+								<p>class Foo { computed = { author: () =&gt; &#39;harttle&#39; } }</p>
+								<p>输出字符串：</p>
+								<p>computed: {
+									author: () =&gt; &#39;harttle&#39;
+								},</p>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>path: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="parseexpr" class="tsd-anchor"></a>
-					<h3>parse<wbr>Expr</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">parse<wbr>Expr<span class="tsd-signature-symbol">(</span>expr<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/models/san-data.ts#L48">models/san-data.ts:48</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>expr: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="removeat" class="tsd-anchor"></a>
-					<h3>remove<wbr>At</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">remove<wbr>At<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, index<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/models/san-data.ts#L44">models/san-data.ts:44</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>path: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>index: <span class="tsd-signature-type">number</span></h5>
+									<h5>componentInfo: <a href="_models_component_info_.dynamiccomponentinfo.html" class="tsd-signature-type">DynamicComponentInfo</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="set" class="tsd-anchor"></a>
-					<h3>set</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">set<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="emitarray" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> emit<wbr>Array</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">emit<wbr>Array<span class="tsd-signature-symbol">(</span>arr<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span>, emitter<span class="tsd-signature-symbol">: </span><a href="_target_js_js_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/models/san-data.ts#L30">models/san-data.ts:30</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/1000a05/src/target-js/compilers/component-compiler.ts#L43">target-js/compilers/component-compiler.ts:43</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>path: <span class="tsd-signature-type">string</span></h5>
+									<h5>arr: <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 								<li>
-									<h5>value: <span class="tsd-signature-type">string</span></h5>
+									<h5>emitter: <a href="_target_js_js_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span>
-								<span class="tsd-signature-symbol"> | </span>
-								<span class="tsd-signature-type">string</span>
-							</h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="emitmethod" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> emit<wbr>Method</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">emit<wbr>Method<span class="tsd-signature-symbol">(</span>fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span>, emitter<span class="tsd-signature-symbol">: </span><a href="_target_js_js_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/1000a05/src/target-js/compilers/component-compiler.ts#L52">target-js/compilers/component-compiler.ts:52</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>fn: <span class="tsd-signature-type">Function</span></h5>
+								</li>
+								<li>
+									<h5>emitter: <a href="_target_js_js_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="emitobjectliteral" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> emit<wbr>Object<wbr>Literal</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">emit<wbr>Object<wbr>Literal<span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, emitter<span class="tsd-signature-symbol">: </span><a href="_target_js_js_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/1000a05/src/target-js/compilers/component-compiler.ts#L34">target-js/compilers/component-compiler.ts:34</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>obj: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>emitter: <a href="_target_js_js_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -281,7 +266,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_models_san_data_.html">"models/san-<wbr>data"</a>
+						<a href="../modules/_target_js_compilers_component_compiler_.html">"target-<wbr>js/compilers/component-<wbr>compiler"</a>
 					</li>
 				</ul>
 			</nav>
@@ -290,36 +275,30 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_models_san_data_.sandata.html" class="tsd-kind-icon">San<wbr>Data</a>
+						<a href="_target_js_compilers_component_compiler_.componentclasscompiler.html" class="tsd-kind-icon">Component<wbr>Class<wbr>Compiler</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_models_san_data_.sandata.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_target_js_compilers_component_compiler_.componentclasscompiler.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_models_san_data_.sandata.html#computed" class="tsd-kind-icon">computed</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_models_san_data_.sandata.html#data" class="tsd-kind-icon">data</a>
+								<a href="_target_js_compilers_component_compiler_.componentclasscompiler.html#emitter" class="tsd-kind-icon">emitter</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_models_san_data_.sandata.html#get" class="tsd-kind-icon">get</a>
+								<a href="_target_js_compilers_component_compiler_.componentclasscompiler.html#compile" class="tsd-kind-icon">compile</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_models_san_data_.sandata.html#parseexpr" class="tsd-kind-icon">parse<wbr>Expr</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_target_js_compilers_component_compiler_.componentclasscompiler.html#emitarray" class="tsd-kind-icon">emit<wbr>Array</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_models_san_data_.sandata.html#removeat" class="tsd-kind-icon">remove<wbr>At</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_target_js_compilers_component_compiler_.componentclasscompiler.html#emitmethod" class="tsd-kind-icon">emit<wbr>Method</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_models_san_data_.sandata.html#set" class="tsd-kind-icon">set</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_target_js_compilers_component_compiler_.componentclasscompiler.html#emitobjectliteral" class="tsd-kind-icon">emit<wbr>Object<wbr>Literal</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../interfaces/_models_san_data_.dataobject.html" class="tsd-kind-icon">Data<wbr>Object</a>
-					</li>
 				</ul>
 			</nav>
 		</div>

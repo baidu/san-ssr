@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>CompileContext | san-ssr</title>
+	<title>SanSourceFileImpl | san-ssr</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,24 +56,48 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_target_js_compilers_renderer_compiler_.html">&quot;target-js/compilers/renderer-compiler&quot;</a>
+					<a href="../modules/_models_san_source_file_.html">&quot;models/san-source-file&quot;</a>
 				</li>
 				<li>
-					<a href="_target_js_compilers_renderer_compiler_.compilecontext.html">CompileContext</a>
+					<a href="_models_san_source_file_.sansourcefileimpl.html">SanSourceFileImpl</a>
 				</li>
 			</ul>
-			<h1>Interface CompileContext</h1>
+			<h1>Class SanSourceFileImpl&lt;T&gt;</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>一个 San 项目中的源文件</p>
+					</div>
+					<p>是 TypeScript SourceFile 的封装，但包含组件信息</p>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-type-parameters">
+				<h3>Type parameters</h3>
+				<ul class="tsd-type-parameters">
+					<li>
+						<h4>T<span class="tsd-signature-symbol">: </span><a href="../modules/_models_component_info_.html#componentinfo" class="tsd-signature-type">ComponentInfo</a></h4>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">CompileContext</span>
+						<span class="target">SanSourceFileImpl</span>
+						<ul class="tsd-hierarchy">
+							<li>
+								<a href="_models_san_source_file_.dynamicsansourcefile.html" class="tsd-signature-type">DynamicSanSourceFile</a>
+							</li>
+							<li>
+								<a href="_models_san_source_file_.typedsansourcefile.html" class="tsd-signature-type">TypedSanSourceFile</a>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</section>
@@ -82,88 +106,116 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_models_san_source_file_.sansourcefileimpl.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_target_js_compilers_renderer_compiler_.compilecontext.html#computednames" class="tsd-kind-icon">computed<wbr>Names</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_target_js_compilers_renderer_compiler_.compilecontext.html#data" class="tsd-kind-icon">data</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_target_js_compilers_renderer_compiler_.compilecontext.html#instance" class="tsd-kind-icon">instance</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_target_js_compilers_renderer_compiler_.compilecontext.html#owner" class="tsd-kind-icon">owner</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_target_js_compilers_renderer_compiler_.compilecontext.html#slotrenderers" class="tsd-kind-icon">slot<wbr>Renderers</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_target_js_compilers_renderer_compiler_.compilecontext.html#sourceslots" class="tsd-kind-icon">source<wbr>Slots</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_san_source_file_.sansourcefileimpl.html#componentinfos" class="tsd-kind-icon">component<wbr>Infos</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_models_san_source_file_.sansourcefileimpl.html#entrycomponentinfo" class="tsd-kind-icon">entry<wbr>Component<wbr>Info</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_models_san_source_file_.sansourcefileimpl.html#getfilepath" class="tsd-kind-icon">get<wbr>File<wbr>Path</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>San<wbr>Source<wbr>File<wbr>Impl<span class="tsd-signature-symbol">(</span>componentInfos<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">[]</span>, entryComponentInfo<span class="tsd-signature-symbol">?: </span><a href="" class="tsd-signature-type">T</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_models_san_source_file_.sansourcefileimpl.html" class="tsd-signature-type">SanSourceFileImpl</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/1000a05/src/models/san-source-file.ts#L12">models/san-source-file.ts:12</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>componentInfos: <span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> entryComponentInfo: <a href="" class="tsd-signature-type">T</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_models_san_source_file_.sansourcefileimpl.html" class="tsd-signature-type">SanSourceFileImpl</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="computednames" class="tsd-anchor"></a>
-					<h3>computed<wbr>Names</h3>
-					<div class="tsd-signature tsd-kind-icon">computed<wbr>Names<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="componentinfos" class="tsd-anchor"></a>
+					<h3>component<wbr>Infos</h3>
+					<div class="tsd-signature tsd-kind-icon">component<wbr>Infos<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/target-js/compilers/renderer-compiler.ts#L41">target-js/compilers/renderer-compiler.ts:41</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/1000a05/src/models/san-source-file.ts#L17">models/san-source-file.ts:17</a></li>
 						</ul>
 					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="data" class="tsd-anchor"></a>
-					<h3>data</h3>
-					<div class="tsd-signature tsd-kind-icon">data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/target-js/compilers/renderer-compiler.ts#L39">target-js/compilers/renderer-compiler.ts:39</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="instance" class="tsd-anchor"></a>
-					<h3>instance</h3>
-					<div class="tsd-signature tsd-kind-icon">instance<span class="tsd-signature-symbol">:</span> <a href="_target_js_compilers_renderer_compiler_.sanssrcomponent.html" class="tsd-signature-type">SanSSRComponent</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/target-js/compilers/renderer-compiler.ts#L37">target-js/compilers/renderer-compiler.ts:37</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="owner" class="tsd-anchor"></a>
-					<h3>owner</h3>
-					<div class="tsd-signature tsd-kind-icon">owner<span class="tsd-signature-symbol">:</span> <a href="_target_js_compilers_renderer_compiler_.compilecontext.html" class="tsd-signature-type">CompileContext</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/target-js/compilers/renderer-compiler.ts#L40">target-js/compilers/renderer-compiler.ts:40</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="slotrenderers" class="tsd-anchor"></a>
-					<h3>slot<wbr>Renderers</h3>
-					<div class="tsd-signature tsd-kind-icon">slot<wbr>Renderers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/target-js/compilers/renderer-compiler.ts#L42">target-js/compilers/renderer-compiler.ts:42</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-index-signature">
-								<h5><span class="tsd-signature-symbol">[</span>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><a href="_models_renderer_.renderer.html" class="tsd-signature-type">Renderer</a></h5>
-							</li>
-						</ul>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>每个组件对应一个 ComponentInfo，它们可以在运行时互相调用，是平铺关系</p>
+						</div>
 					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="sourceslots" class="tsd-anchor"></a>
-					<h3>source<wbr>Slots</h3>
-					<div class="tsd-signature tsd-kind-icon">source<wbr>Slots<span class="tsd-signature-symbol">:</span> <a href="../modules/_target_js_compilers_renderer_compiler_.html#sourceslot" class="tsd-signature-type">SourceSlot</a><span class="tsd-signature-symbol">[]</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="entrycomponentinfo" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> entry<wbr>Component<wbr>Info</h3>
+					<div class="tsd-signature tsd-kind-icon">entry<wbr>Component<wbr>Info<span class="tsd-signature-symbol">:</span> <a href="" class="tsd-signature-type">T</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/b192295/src/target-js/compilers/renderer-compiler.ts#L38">target-js/compilers/renderer-compiler.ts:38</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/1000a05/src/models/san-source-file.ts#L23">models/san-source-file.ts:23</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>componentInfos 中作为入口组件的那个</p>
+							<ul>
+								<li>对于 TypeScript 解析来的组件，是默认导出的组件</li>
+								<li>对于 ComponentClass 解析来的组件，是根组件</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getfilepath" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagAbstract">Abstract</span> get<wbr>File<wbr>Path</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>File<wbr>Path<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/1000a05/src/models/san-source-file.ts#L28">models/san-source-file.ts:28</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>文件路径对于命名空间（编译到非 JavaScript 时）很有用</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -174,62 +226,47 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_target_js_compilers_renderer_compiler_.html">"target-<wbr>js/compilers/renderer-<wbr>compiler"</a>
+						<a href="../modules/_models_san_source_file_.html">"models/san-<wbr>source-<wbr>file"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/_target_js_compilers_renderer_compiler_.renderercompiler.html" class="tsd-kind-icon">Renderer<wbr>Compiler</a>
+						<a href="_models_san_source_file_.dynamicsansourcefile.html" class="tsd-kind-icon">Dynamic<wbr>San<wbr>Source<wbr>File</a>
 					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_target_js_compilers_renderer_compiler_.compilecontext.html" class="tsd-kind-icon">Compile<wbr>Context</a>
+					<li class="current tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="_models_san_source_file_.sansourcefileimpl.html" class="tsd-kind-icon">San<wbr>Source<wbr>File<wbr>Impl</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_target_js_compilers_renderer_compiler_.compilecontext.html#computednames" class="tsd-kind-icon">computed<wbr>Names</a>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="_models_san_source_file_.sansourcefileimpl.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_target_js_compilers_renderer_compiler_.compilecontext.html#data" class="tsd-kind-icon">data</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_models_san_source_file_.sansourcefileimpl.html#componentinfos" class="tsd-kind-icon">component<wbr>Infos</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_target_js_compilers_renderer_compiler_.compilecontext.html#instance" class="tsd-kind-icon">instance</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_models_san_source_file_.sansourcefileimpl.html#entrycomponentinfo" class="tsd-kind-icon">entry<wbr>Component<wbr>Info</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_target_js_compilers_renderer_compiler_.compilecontext.html#owner" class="tsd-kind-icon">owner</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_target_js_compilers_renderer_compiler_.compilecontext.html#slotrenderers" class="tsd-kind-icon">slot<wbr>Renderers</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_target_js_compilers_renderer_compiler_.compilecontext.html#sourceslots" class="tsd-kind-icon">source<wbr>Slots</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_models_san_source_file_.sansourcefileimpl.html#getfilepath" class="tsd-kind-icon">get<wbr>File<wbr>Path</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_target_js_compilers_renderer_compiler_.componentrender.html" class="tsd-kind-icon">Component<wbr>Render</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_target_js_compilers_renderer_compiler_.data.html" class="tsd-kind-icon">Data</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_target_js_compilers_renderer_compiler_.sanssrcomponent.html" class="tsd-kind-icon">SanSSRComponent</a>
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_models_san_source_file_.typedsansourcefile.html" class="tsd-kind-icon">Typed<wbr>San<wbr>Source<wbr>File</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
-						<a href="../modules/_target_js_compilers_renderer_compiler_.html#expressionevaluator" class="tsd-kind-icon">Expression<wbr>Evaluator</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module">
-						<a href="../modules/_target_js_compilers_renderer_compiler_.html#sourceslot" class="tsd-kind-icon">Source<wbr>Slot</a>
+						<a href="../modules/_models_san_source_file_.html#sansourcefile" class="tsd-kind-icon">San<wbr>Source<wbr>File</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_target_js_compilers_renderer_compiler_.html#renderer_args" class="tsd-kind-icon">RENDERER_<wbr>ARGS</a>
+						<a href="../modules/_models_san_source_file_.html#debug" class="tsd-kind-icon">debug</a>
 					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_target_js_compilers_renderer_compiler_.html#functionstring" class="tsd-kind-icon">function<wbr>String</a>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="../modules/_models_san_source_file_.html#istypedsansourcefile" class="tsd-kind-icon">is<wbr>Typed<wbr>San<wbr>Source<wbr>File</a>
 					</li>
 				</ul>
 			</nav>

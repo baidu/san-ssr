@@ -30,6 +30,23 @@ describe('SanProject', function () {
             expect(code).toContain('exports = module.exports = function (data, noDataOutput) {')
         })
 
+        it('should support TypeScriptFileDescriptor', function () {
+            const proj = new SanProject()
+            const code = proj.compile({
+                filePath: resolve(stubRoot, './a.comp.ts'),
+                fileContent: `
+                    import { Component } from 'san'
+
+                    export default class A extends Component {
+                        public static template = '<div>B</div>'
+                    }
+                `
+            })
+
+            expect(code).toContain('html += "B')
+            expect(code).toContain('exports = module.exports = function (data, noDataOutput) {')
+        })
+
         it('should compile JavaScript to JavaScript renderer', function () {
             const proj = new SanProject()
             const code = proj.compile(resolve(stubRoot, './a.comp.js'))

@@ -1,13 +1,13 @@
 import { ComponentConstructor } from 'san'
 import { Project } from 'ts-morph'
-import { resolve } from 'path'
 import { ComponentClassParser } from '../parsers/component-class-parser'
 import { TypeScriptSanParser } from '../parsers/typescript-san-parser'
-import { DynamicSanSourceFile, SanSourceFile } from '../models/san-source-file'
+import { TypedSanSourceFile, DynamicSanSourceFile, SanSourceFile } from '../models/san-source-file'
 import ToJSCompiler, { ToJSCompileOptions } from '../target-js/index'
 import { Renderer } from './renderer'
 import { getDefaultTSConfigPath } from '../parsers/tsconfig'
 import { Compiler } from '../models/compiler'
+import { isFilePath, isComponentClass, ComponentClass, TypeScriptFileDescriptor, CompileInput } from './options'
 
 type CompilerClass<T extends Compiler = Compiler> = { new(project: SanProject): T }
 
@@ -30,23 +30,19 @@ export class SanProject {
      * 兼容旧版用法
      * @alias SanProject.compileToSource
      */
-    public compile (
-        filepathOrComponentClass: string | ComponentConstructor<{}, any>,
-        target: string | CompilerClass = 'js',
-        options = {}
-    ) {
-        return this.compileToSource(filepathOrComponentClass, target, options)
+    public compile (input: CompileInput, target: string | CompilerClass = 'js', options = {}) {
+        return this.compileToSource(input, target, options)
     }
 
     /**
      * 源文件/组件类编译到源代码
      */
     public compileToSource<T extends Compiler> (
-        filepathOrComponentClass: string | ComponentConstructor<{}, any>,
+        input: CompileInput,
         target: string | CompilerClass<T> = 'js',
         options = {}
     ) {
-        const sanSourceFile = this.parseSanSourceFile(filepathOrComponentClass)
+        const sanSourceFile = this.parseSanSourceFile(input)
         const compiler = this.getOrCreateCompilerInstance(target)
         return compiler.compileToSource(sanSourceFile, options)
     }
@@ -54,23 +50,19 @@ export class SanProject {
     /**
      * 源文件/组件类解析为 SanSourceFile
      */
-    public parseSanSourceFile (componentClass: ComponentConstructor<{}, any>): DynamicSanSourceFile;
-    public parseSanSourceFile (filepathOrComponentClass: string | ComponentConstructor<{}, any>): SanSourceFile
-    public parseSanSourceFile (filepathOrComponentClass: string | ComponentConstructor<{}, any>): SanSourceFile {
-        if (typeof filepathOrComponentClass !== 'string') {
-            return new ComponentClassParser(filepathOrComponentClass, '').parse()
-        }
-        if (/\.ts$/.test(filepathOrComponentClass)) {
-            if (!this.tsProject) {
-                throw new Error(`Error parsing ${filepathOrComponentClass}, tsconfig not specified`)
-            }
-            const filePath = resolve(filepathOrComponentClass)
-            this.tsProject.addExistingSourceFileIfExists(filePath)
-            const sourceFile = this.tsProject.getSourceFileOrThrow(filePath)
-            sourceFile.refreshFromFileSystemSync()
+    public parseSanSourceFile (componentClass: ComponentClass): DynamicSanSourceFile;
+    public parseSanSourceFile (fileDescriptor: TypeScriptFileDescriptor): TypedSanSourceFile
+    public parseSanSourceFile (input: CompileInput): SanSourceFile
+    public parseSanSourceFile (input: CompileInput): SanSourceFile {
+        if (isComponentClass(input)) return new ComponentClassParser(input, '').parse()
+        const filePath = isFilePath(input) ? input : input.filePath
+        const fileContent = isFilePath(input) ? '' : input.fileContent
+        if (/\.ts$/.test(filePath)) {
+            if (!this.tsProject) throw new Error(`Error parsing ${input}, tsconfig not specified`)
+            const sourceFile = this.createOrRefreshSourceFile(this.tsProject, filePath, fileContent)
             return new TypeScriptSanParser(sourceFile).parse()
         }
-        return new ComponentClassParser(require(filepathOrComponentClass), filepathOrComponentClass).parse()
+        return new ComponentClassParser(require(filePath), filePath).parse()
     }
 
     /**
@@ -116,5 +108,15 @@ export class SanProject {
 
         const plugin = require(path)
         return plugin.default || plugin
+    }
+
+    private createOrRefreshSourceFile (tsProject: Project, filePath: string, fileContent?: string) {
+        if (fileContent) {
+            return tsProject.createSourceFile(filePath, fileContent, { overwrite: true })
+        }
+        tsProject.addExistingSourceFileIfExists(filePath)
+        const sourceFile = tsProject.getSourceFileOrThrow(filePath)
+        sourceFile.refreshFromFileSystemSync()
+        return sourceFile
     }
 }

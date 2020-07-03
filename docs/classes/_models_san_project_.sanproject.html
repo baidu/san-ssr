@@ -109,6 +109,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_models_san_project_.sanproject.html#compile" class="tsd-kind-icon">compile</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_models_san_project_.sanproject.html#compiletorenderer" class="tsd-kind-icon">compile<wbr>ToRenderer</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="_models_san_project_.sanproject.html#compiletosource" class="tsd-kind-icon">compile<wbr>ToSource</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_models_san_project_.sanproject.html#createorrefreshsourcefile" class="tsd-kind-icon">create<wbr>OrRefresh<wbr>Source<wbr>File</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_models_san_project_.sanproject.html#getcompileroptionsorthrow" class="tsd-kind-icon">get<wbr>Compiler<wbr>Options<wbr>OrThrow</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter"><a href="_models_san_project_.sanproject.html#getorcreatecompilerinstance" class="tsd-kind-icon">get<wbr>OrCreate<wbr>Compiler<wbr>Instance</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_models_san_project_.sanproject.html#loadcompilerclass" class="tsd-kind-icon">load<wbr>Compiler<wbr>Class</a></li>
@@ -130,7 +131,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4078ad7/src/models/san-project.ts#L21">models/san-project.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4ed9cf1/src/models/san-project.ts#L21">models/san-project.ts:21</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -152,7 +153,7 @@
 					<div class="tsd-signature tsd-kind-icon">compilers<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_models_san_project_.html#compilerclass" class="tsd-signature-type">CompilerClass</a><span class="tsd-signature-symbol">, </span><a href="../interfaces/_models_compiler_.compiler.html" class="tsd-signature-type">Compiler</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;new Map()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4078ad7/src/models/san-project.ts#L21">models/san-project.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4ed9cf1/src/models/san-project.ts#L21">models/san-project.ts:21</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -162,7 +163,7 @@
 					<div class="tsd-signature tsd-kind-icon">ts<wbr>Config<wbr>File<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4078ad7/src/models/san-project.ts#L23">models/san-project.ts:23</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4ed9cf1/src/models/san-project.ts#L23">models/san-project.ts:23</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -172,7 +173,7 @@
 					<div class="tsd-signature tsd-kind-icon">ts<wbr>Project<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Project</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4078ad7/src/models/san-project.ts#L19">models/san-project.ts:19</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4ed9cf1/src/models/san-project.ts#L19">models/san-project.ts:19</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -183,13 +184,13 @@
 					<a name="compile" class="tsd-anchor"></a>
 					<h3>compile</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">compile<span class="tsd-signature-symbol">(</span>filepathOrComponentClass<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>, target<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../modules/_models_san_project_.html#compilerclass" class="tsd-signature-type">CompilerClass</a>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">compile<span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">: </span><a href="../modules/_models_options_.html#compileinput" class="tsd-signature-type">CompileInput</a>, target<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../modules/_models_san_project_.html#compilerclass" class="tsd-signature-type">CompilerClass</a>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4078ad7/src/models/san-project.ts#L33">models/san-project.ts:33</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4ed9cf1/src/models/san-project.ts#L33">models/san-project.ts:33</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -205,7 +206,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>filepathOrComponentClass: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>input: <a href="../modules/_models_options_.html#compileinput" class="tsd-signature-type">CompileInput</a></h5>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> target: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../modules/_models_san_project_.html#compilerclass" class="tsd-signature-type">CompilerClass</a><span class="tsd-signature-symbol"> =&nbsp;&quot;js&quot;</span></h5>
@@ -230,7 +231,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4078ad7/src/models/san-project.ts#L82">models/san-project.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4ed9cf1/src/models/san-project.ts#L74">models/san-project.ts:74</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -259,13 +260,13 @@
 					<a name="compiletosource" class="tsd-anchor"></a>
 					<h3>compile<wbr>ToSource</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">compile<wbr>ToSource&lt;T&gt;<span class="tsd-signature-symbol">(</span>filepathOrComponentClass<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span>, target<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../modules/_models_san_project_.html#compilerclass" class="tsd-signature-type">CompilerClass</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">compile<wbr>ToSource&lt;T&gt;<span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">: </span><a href="../modules/_models_options_.html#compileinput" class="tsd-signature-type">CompileInput</a>, target<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../modules/_models_san_project_.html#compilerclass" class="tsd-signature-type">CompilerClass</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span>, options<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4078ad7/src/models/san-project.ts#L44">models/san-project.ts:44</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4ed9cf1/src/models/san-project.ts#L40">models/san-project.ts:40</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -282,7 +283,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>filepathOrComponentClass: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>input: <a href="../modules/_models_options_.html#compileinput" class="tsd-signature-type">CompileInput</a></h5>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> target: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../modules/_models_san_project_.html#compilerclass" class="tsd-signature-type">CompilerClass</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> =&nbsp;&quot;js&quot;</span></h5>
@@ -297,6 +298,35 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="createorrefreshsourcefile" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> create<wbr>OrRefresh<wbr>Source<wbr>File</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>OrRefresh<wbr>Source<wbr>File<span class="tsd-signature-symbol">(</span>tsProject<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Project</span>, filePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, fileContent<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">SourceFile</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4ed9cf1/src/models/san-project.ts#L113">models/san-project.ts:113</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>tsProject: <span class="tsd-signature-type">Project</span></h5>
+								</li>
+								<li>
+									<h5>filePath: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> fileContent: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">SourceFile</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="getcompileroptionsorthrow" class="tsd-anchor"></a>
 					<h3>get<wbr>Compiler<wbr>Options<wbr>OrThrow</h3>
@@ -307,7 +337,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4078ad7/src/models/san-project.ts#L91">models/san-project.ts:91</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4ed9cf1/src/models/san-project.ts#L83">models/san-project.ts:83</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">CompilerOptions</span></h4>
@@ -324,7 +354,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4078ad7/src/models/san-project.ts#L95">models/san-project.ts:95</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4ed9cf1/src/models/san-project.ts#L87">models/san-project.ts:87</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -353,7 +383,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4078ad7/src/models/san-project.ts#L104">models/san-project.ts:104</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4ed9cf1/src/models/san-project.ts#L96">models/san-project.ts:96</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -370,14 +400,15 @@
 					<a name="parsesansourcefile" class="tsd-anchor"></a>
 					<h3>parse<wbr>San<wbr>Source<wbr>File</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">parse<wbr>San<wbr>Source<wbr>File<span class="tsd-signature-symbol">(</span>componentClass<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_models_san_source_file_.dynamicsansourcefile.html" class="tsd-signature-type">DynamicSanSourceFile</a></li>
-						<li class="tsd-signature tsd-kind-icon">parse<wbr>San<wbr>Source<wbr>File<span class="tsd-signature-symbol">(</span>filepathOrComponentClass<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/_models_san_source_file_.html#sansourcefile" class="tsd-signature-type">SanSourceFile</a></li>
+						<li class="tsd-signature tsd-kind-icon">parse<wbr>San<wbr>Source<wbr>File<span class="tsd-signature-symbol">(</span>componentClass<span class="tsd-signature-symbol">: </span><a href="../modules/_models_component_.html#componentclass" class="tsd-signature-type">ComponentClass</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_models_san_source_file_.dynamicsansourcefile.html" class="tsd-signature-type">DynamicSanSourceFile</a></li>
+						<li class="tsd-signature tsd-kind-icon">parse<wbr>San<wbr>Source<wbr>File<span class="tsd-signature-symbol">(</span>fileDescriptor<span class="tsd-signature-symbol">: </span><a href="../interfaces/_models_options_.typescriptfiledescriptor.html" class="tsd-signature-type">TypeScriptFileDescriptor</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_models_san_source_file_.typedsansourcefile.html" class="tsd-signature-type">TypedSanSourceFile</a></li>
+						<li class="tsd-signature tsd-kind-icon">parse<wbr>San<wbr>Source<wbr>File<span class="tsd-signature-symbol">(</span>input<span class="tsd-signature-symbol">: </span><a href="../modules/_models_options_.html#compileinput" class="tsd-signature-type">CompileInput</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/_models_san_source_file_.html#sansourcefile" class="tsd-signature-type">SanSourceFile</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4078ad7/src/models/san-project.ts#L57">models/san-project.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4ed9cf1/src/models/san-project.ts#L53">models/san-project.ts:53</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -388,7 +419,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>componentClass: <span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>componentClass: <a href="../modules/_models_component_.html#componentclass" class="tsd-signature-type">ComponentClass</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_models_san_source_file_.dynamicsansourcefile.html" class="tsd-signature-type">DynamicSanSourceFile</a></h4>
@@ -396,13 +427,27 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4078ad7/src/models/san-project.ts#L58">models/san-project.ts:58</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4ed9cf1/src/models/san-project.ts#L54">models/san-project.ts:54</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>filepathOrComponentClass: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ComponentConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>fileDescriptor: <a href="../interfaces/_models_options_.typescriptfiledescriptor.html" class="tsd-signature-type">TypeScriptFileDescriptor</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_models_san_source_file_.typedsansourcefile.html" class="tsd-signature-type">TypedSanSourceFile</a></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4ed9cf1/src/models/san-project.ts#L55">models/san-project.ts:55</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>input: <a href="../modules/_models_options_.html#compileinput" class="tsd-signature-type">CompileInput</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../modules/_models_san_source_file_.html#sansourcefile" class="tsd-signature-type">SanSourceFile</a></h4>
@@ -449,6 +494,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
 								<a href="_models_san_project_.sanproject.html#compiletosource" class="tsd-kind-icon">compile<wbr>ToSource</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_models_san_project_.sanproject.html#createorrefreshsourcefile" class="tsd-kind-icon">create<wbr>OrRefresh<wbr>Source<wbr>File</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_models_san_project_.sanproject.html#getcompileroptionsorthrow" class="tsd-kind-icon">get<wbr>Compiler<wbr>Options<wbr>OrThrow</a>

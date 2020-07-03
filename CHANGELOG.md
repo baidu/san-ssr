@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/baidu/san-ssr/compare/v2.0.1...v2.1.0) (2020-07-03)
+
+
+### Features
+
+* SanProject#compile({filePath, fileContent}) ([4ed9cf1](https://github.com/baidu/san-ssr/commit/4ed9cf11fdc084e29d08532298165b71c70695d2))
+
 ## [2.0.1](https://github.com/baidu/san-ssr/compare/v2.0.0...v2.0.1) (2020-07-02)
 
 

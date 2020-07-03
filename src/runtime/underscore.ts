@@ -21,21 +21,26 @@ function includes<T> (array: T[], value: T) {
 }
 
 const HTML_ENTITY = {
-    /* jshint ignore:start */
-    '&': '&amp;',
     '<': '&lt;',
     '>': '&gt;',
     '"': '&quot;',
-    /* eslint-disable quotes */
-    "'": '&#39;'
-    /* eslint-enable quotes */
-    /* jshint ignore:end */
+    "'": '&#39;',
+    '\u00a0': '&nbsp;',
+    '\u2003': '&emsp;',
+    '\u2002': '&ensp;',
+    '\u2009': '&thinsp;',
+    '\xa9': '&copy;',
+    '\xae': '&reg;',
+    '\u200c': '&zwnj;',
+    '\u200d': '&zwj;',
+    '&': '&amp;'
 }
+const rENTITY = new RegExp(`[${Object.keys(HTML_ENTITY).join('')}]`, 'g')
 
 function escapeHTML (source: any) {
     if (source == null) return ''
     if (typeof source === 'string') {
-        return source.replace(/[&<>"']/g, (c: string) => HTML_ENTITY[c])
+        return source.replace(rENTITY, (c: string) => HTML_ENTITY[c])
     }
     return '' + source
 }

@@ -23,12 +23,11 @@ export function parseANodeProps (aNode: ANode) {
         if (
             TypeGuards.isExprTextNode(expr) &&
             expr.segs.length === 0 &&
-            prop.raw == null
+            prop.noValue
         ) {
             prop.expr = {
                 type: ExprType.BOOL,
-                value: true,
-                raw: 'true'
+                value: true
             }
         }
 

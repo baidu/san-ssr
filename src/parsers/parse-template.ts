@@ -39,8 +39,7 @@ function normalizeOptionTag (aNode: ANode) {
     if (!aNode.children!.length) return
     aNode.props.push({
         name: 'value',
-        expr: aNode.children![0].textExpr!,
-        raw: ''
+        expr: aNode.children![0].textExpr!
     })
 }
 
@@ -50,14 +49,14 @@ function normalizeANodeProps (aNode: ANode) {
 
 function normalizeRootClassProp (clazz: ANodeProperty) {
     const parentClassExpr = clazz.expr
-    const expr = parseTemplate('{{class | _xclass}}').children![0].textExpr!.segs[0] as ExprInterpNode
+    const expr = (parseTemplate('{{class | _xclass}}').children![0].textExpr! as any).segs[0] as ExprInterpNode
     expr.filters[0].args.push(parentClassExpr)
     clazz.expr = expr
 }
 
 function normalizeRootStyleProp (style: ANodeProperty) {
     const parentStyleExpr = style.expr
-    const expr = parseTemplate('{{style | _xstyle}}').children![0].textExpr!.segs[0] as ExprInterpNode
+    const expr = (parseTemplate('{{style | _xstyle}}').children![0].textExpr! as any).segs[0] as ExprInterpNode
     expr.filters[0].args.push(parentStyleExpr)
     style.expr = expr
 }

@@ -1,5 +1,6 @@
 import { Emitter } from '../utils/emitter'
-import { stringLiteralize, dataAccess } from './compilers/expr-compiler'
+import { dataAccess } from './compilers/expr-compiler'
+import { stringifier } from './compilers/stringifier'
 
 export class JSEmitter extends Emitter {
     buffer: string = ''
@@ -31,7 +32,7 @@ export class JSEmitter extends Emitter {
         if (this.buffer === '') return
         const buffer = this.buffer
         this.buffer = ''
-        this.writeHTMLExpression(stringLiteralize(buffer))
+        this.writeHTMLExpression(stringifier.str(buffer))
     }
 
     public writeSwitch (expr: string, body: Function) {

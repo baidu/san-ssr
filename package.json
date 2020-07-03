@@ -74,7 +74,7 @@
     "handlebars": "^4.5.3",
     "jest": "^24.9.0",
     "mustache": "^3.2.0",
-    "san": "^3.8.0",
+    "san": "^3.9.1",
     "san-ssr-target-fake-cmd": "^1.0.0",
     "san-ssr-target-fake-esm": "^1.0.0",
     "semantic-release": "^15.13.27",
@@ -93,7 +93,7 @@
     "yargs": "^14.2.0"
   },
   "peerDependencies": {
-    "san": "~3.8.0"
+    "san": "^3.9.1"
   },
   "release": {
     "branch": "master",

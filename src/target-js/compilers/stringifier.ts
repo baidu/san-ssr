@@ -1,5 +1,3 @@
-import { stringLiteralize } from './expr-compiler'
-
 export const stringifier = {
     obj: function (source: object) {
         let prefixComma
@@ -15,7 +13,7 @@ export const stringifier = {
             }
             prefixComma = 1
 
-            result += stringLiteralize(key) + ':' + stringifier.any(source[key])
+            result += stringifier.str(key) + ':' + stringifier.any(source[key])
         }
 
         return result + '}'
@@ -38,7 +36,12 @@ export const stringifier = {
     },
 
     str: function (source: string) {
-        return stringLiteralize(source)
+        return '"' + source
+            .replace(/\x5C/g, '\\\\')
+            .replace(/"/g, '\\"')
+            .replace(/\n/g, '\\n')
+            .replace(/\t/g, '\\t')
+            .replace(/\r/g, '\\r') + '"'
     },
 
     date: function (source: Date) {

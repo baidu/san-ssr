@@ -1,9 +1,10 @@
 /**
  * 编译源码的 helper 方法集合
  */
-import { ExprNode, ExprTertiaryNode, ExprBinaryNode, ExprUnaryNode, ExprInterpNode, ExprAccessorNode, ExprCallNode, ExprTextNode, ExprObjectNode, ExprArrayNode } from 'san'
+import { ExprStringNode, ExprNode, ExprTertiaryNode, ExprBinaryNode, ExprUnaryNode, ExprInterpNode, ExprAccessorNode, ExprCallNode, ExprTextNode, ExprObjectNode, ExprArrayNode } from 'san'
 import { isValidIdentifier } from '../../utils/lang'
 import * as TypeGuards from '../../utils/type-guards'
+import { _ } from '../../runtime/underscore'
 
 // 二元表达式操作符映射表
 const binaryOp = {
@@ -38,15 +39,6 @@ function tertiary (e: ExprTertiaryNode) {
     return expr(e.segs[0]) +
         '?' + expr(e.segs[1]) +
         ':' + expr(e.segs[2])
-}
-// 字符串字面化
-export function stringLiteralize (source: string) {
-    return '"' + source
-        .replace(/\x5C/g, '\\\\')
-        .replace(/"/g, '\\"')
-        .replace(/\n/g, '\\n')
-        .replace(/\t/g, '\\t')
-        .replace(/\r/g, '\\r') + '"'
 }
 
 // 生成数据访问表达式代码
@@ -104,12 +96,11 @@ function interp (interpExpr: ExprInterpNode): string {
             code = `ctx.instance.filters["${filterName}"].call(ctx.instance, ${code}, ${args.join(', ')})`
         }
     }
+    return interpExpr.original ? code : '_.escapeHTML(' + code + ')'
+}
 
-    if (!interpExpr.original) {
-        return '_.escapeHTML(' + code + ')'
-    }
-
-    return code
+function str (e: ExprStringNode): string {
+    return '"' + _.escapeHTML(e.value) + '"'
 }
 
 // 生成文本片段代码
@@ -156,7 +147,7 @@ function dispatch (e: ExprNode): string {
     if (TypeGuards.isExprUnaryNode(e)) return unary(e)
     if (TypeGuards.isExprBinaryNode(e)) return binary(e)
     if (TypeGuards.isExprTertiaryNode(e)) return tertiary(e)
-    if (TypeGuards.isExprStringNode(e)) return stringLiteralize(e.literal || e.value)
+    if (TypeGuards.isExprStringNode(e)) return str(e)
     if (TypeGuards.isExprNumberNode(e)) return '' + e.value
     if (TypeGuards.isExprBoolNode(e)) return e.value ? 'true' : 'false'
     if (TypeGuards.isExprAccessorNode(e)) return dataAccess(e)
@@ -166,5 +157,5 @@ function dispatch (e: ExprNode): string {
     if (TypeGuards.isExprObjectNode(e)) return object(e)
     if (TypeGuards.isExprCallNode(e)) return callExpr(e)
     if (TypeGuards.isExprNullNode(e)) return 'null'
-    throw new Error(`unexpected expression ${JSON.stringify(e.raw)}`)
+    throw new Error(`unexpected expression ${JSON.stringify(e)}`)
 }

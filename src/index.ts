@@ -10,6 +10,7 @@ export { autoCloseTags, booleanAttributes } from './utils/dom-util'
 export { getANodePropByName } from './utils/anode-util'
 export { Emitter } from './utils/emitter'
 export { TypeGuards }
+export { _ } from './runtime/underscore'
 
 // class types
 export { SanSourceFile, TypedSanSourceFile, DynamicSanSourceFile, isTypedSanSourceFile } from './models/san-source-file'

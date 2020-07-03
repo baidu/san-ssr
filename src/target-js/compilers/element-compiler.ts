@@ -5,6 +5,7 @@ import { autoCloseTags } from '../../utils/dom-util'
 import { ANodeCompiler } from './anode-compiler'
 import { ANodeProperty, Directive, ExprType, ANode } from 'san'
 import { isExprStringNode, isExprBoolNode } from '../../utils/type-guards'
+import { stringifier } from './stringifier'
 
 /**
  * 编译一个 HTML 标签
@@ -54,7 +55,7 @@ export class ElementCompiler {
         if (name === 'slot') return
 
         if (isExprBoolNode(prop.expr)) return emitter.writeHTMLLiteral(' ' + name)
-        if (isExprStringNode(prop.expr)) return emitter.writeHTMLLiteral(` ${name}="${prop.expr.literal}"`)
+        if (isExprStringNode(prop.expr)) return emitter.writeHTMLLiteral(` ${name}=${stringifier.str(prop.expr.value)}`)
         if (prop.expr.value != null) return emitter.writeHTMLLiteral(` ${name}="${expr(prop.expr)}"`)
 
         if (name === 'value') {
@@ -81,7 +82,7 @@ export class ElementCompiler {
         const valueProp = propsIndex['value']
         const inputType = propsIndex['type']
         if (name === 'checked' && tagName === 'input' && valueProp && inputType) {
-            switch (inputType.raw) {
+            switch (inputType.expr.value) {
             case 'checkbox':
                 return emitter.writeIf(`_.includes(${expr(prop.expr)}, ${expr(valueProp.expr)})`, () => {
                     emitter.writeHTMLLiteral(' checked')

@@ -45,7 +45,20 @@ export function getComponentClassID (id: number) {
 export function getExportedComponentID (name: string) {
     return name
 }
-// TODO 是否必要？用 getExportedComponentID 能否都满足
+/**
+ * 默认导出需要有固定的名字，因为它的引用不包含它的名字信息。
+ *
+ * 例如：
+ * // a.san.ts
+ * export default class A extends Component {}
+ *
+ * // b.san.ts
+ * import AComponent from './a.san'
+ *
+ * // 对于如下 Component Reference，
+ * // 如果 id 为 AComponent 将无法定位到 a.san.ts 中的 class A
+ * { relativeFilePath: './a.san', id: '0', isDefault: true }
+ */
 export function getDefaultExportedComponentID () {
     return '0'
 }

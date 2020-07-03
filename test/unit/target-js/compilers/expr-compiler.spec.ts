@@ -9,7 +9,7 @@ describe('target-js/compilers/expr-compiler', () => {
     it('should throw for unexpected expression type', () => {
         const e = parseExpr('!b')
         e.type = 222
-        expect(() => expr(e)).toThrow('unexpected expression "!b"')
+        expect(() => expr(e)).toThrow(/unexpected expression/)
     })
     it('should throw for unexpected unary operator', () => {
         const e = parseExpr('!b')

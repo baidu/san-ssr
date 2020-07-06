@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/baidu/san-ssr/compare/v2.1.0...v2.2.0) (2020-07-06)
+
+
+### Features
+
+* support san@3.9.0 ([5de18cc](https://github.com/baidu/san-ssr/commit/5de18ccbcda62f695ea078ba68c066453aaa77cb))
+
 # [2.1.0](https://github.com/baidu/san-ssr/compare/v2.0.1...v2.1.0) (2020-07-03)
 
 

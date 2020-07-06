@@ -100,7 +100,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4ed9cf1/src/models/component-reference.ts#L42">models/component-reference.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/5de18cc/src/models/component-reference.ts#L42">models/component-reference.ts:42</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -144,9 +144,22 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4ed9cf1/src/models/component-reference.ts#L49">models/component-reference.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/5de18cc/src/models/component-reference.ts#L62">models/component-reference.ts:62</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>默认导出需要有固定的名字，因为它的引用不包含它的名字信息。</p>
+								</div>
+								<p>例如：
+									// a.san.ts
+								export default class A extends Component {}</p>
+								<p>// b.san.ts
+								import AComponent from &#39;./a.san&#39;</p>
+								<p>// 对于如下 Component Reference，
+									// 如果 id 为 AComponent 将无法定位到 a.san.ts 中的 class A
+								{ relativeFilePath: &#39;./a.san&#39;, id: &#39;0&#39;, isDefault: true }</p>
+							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
@@ -161,7 +174,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/4ed9cf1/src/models/component-reference.ts#L45">models/component-reference.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/5de18cc/src/models/component-reference.ts#L45">models/component-reference.ts:45</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>

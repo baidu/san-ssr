@@ -1,4 +1,5 @@
 import { expr } from './expr-compiler'
+import { camelCase } from 'lodash'
 import { JSEmitter } from '../js-emitter'
 import { ANode, AIfNode, AForNode, ASlotNode, ATemplateNode, AFragmentNode, ATextNode } from 'san'
 import { ComponentInfo } from '../../models/component-info'
@@ -259,7 +260,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
 
     private componentDataCode (aNode: ANode) {
         const givenData = '{' + aNode.props.map(prop => {
-            const key = stringifier.str(prop.name)
+            const key = stringifier.str(camelCase(prop.name))
             const val = expr(prop.expr)
             return `${key}: ${val}`
         }).join(', ') + '}'

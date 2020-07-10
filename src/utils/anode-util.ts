@@ -1,5 +1,4 @@
 import * as TypeGuards from './type-guards'
-import { camelCase } from 'lodash'
 import { ANode, ExprType, ANodeProperty } from 'san'
 
 /**
@@ -17,8 +16,7 @@ export function getANodePropByName (aNode: ANode, name: string): ANodeProperty |
  * 做了一点归一化：对于布尔属性，只要 key 存在就把它的值设为 true
  */
 export function parseANodeProps (aNode: ANode) {
-    return aNode.props.map(p => {
-        const prop = { ...p, name: camelCase(p.name) }
+    return aNode.props.map(prop => {
         const expr = prop.expr
         if (
             TypeGuards.isExprTextNode(expr) &&

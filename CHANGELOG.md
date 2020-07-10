@@ -1,3 +1,10 @@
+## [2.2.1](https://github.com/baidu/san-ssr/compare/v2.2.0...v2.2.1) (2020-07-10)
+
+
+### Bug Fixes
+
+* 只在合并数据时属性名转 camelCase ([af4893f](https://github.com/baidu/san-ssr/commit/af4893f564a9890bf9a182da88ce2d4304c4c39e))
+
 # [2.2.0](https://github.com/baidu/san-ssr/compare/v2.1.0...v2.2.0) (2020-07-06)
 
 

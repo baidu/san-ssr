@@ -1,3 +1,10 @@
+## [2.2.2](https://github.com/baidu/san-ssr/compare/v2.2.1...v2.2.2) (2020-07-16)
+
+
+### Bug Fixes
+
+* trimWhitespace and delimiters, see https://baidu.github.io/san/doc/api/#trimWhitespace ([ca9be69](https://github.com/baidu/san-ssr/commit/ca9be698fa4f7b17071e6fb4e5fbf5c435b38a78))
+
 ## [2.2.1](https://github.com/baidu/san-ssr/compare/v2.2.0...v2.2.1) (2020-07-10)
 
 

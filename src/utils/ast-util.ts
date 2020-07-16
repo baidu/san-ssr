@@ -42,16 +42,18 @@ export function getComponentDeclarations (sourceFile: SourceFile) {
     return sourceFile.getClasses().filter(clazz => isChildClassOf(clazz, componentClassIdentifier))
 }
 
-export function getPropertyStringValue (clazz: ClassDeclaration, memberName: string) {
+export function getPropertyStringValue<T extends string> (clazz: ClassDeclaration, memberName: string, defaultValue: T): T;
+export function getPropertyStringValue<T extends string> (clazz: ClassDeclaration, memberName: string): T | undefined;
+export function getPropertyStringValue<T extends string> (clazz: ClassDeclaration, memberName: string, defaultValue?: T): T | undefined {
     const member = clazz.getProperty(memberName)
-    if (!member) return ''
+    if (!member) return defaultValue
 
     const init = member.getInitializer()
-    if (!init) return ''
+    if (!init) return defaultValue
 
     // 字符串常量，取其字面值
     const value = getLiteralText(init)
-    if (value !== undefined) return value
+    if (value !== undefined) return value as T
 
     // 变量，找到定义处，取其字面值（非字面量跑错）
     if (TypeGuards.isIdentifier(init)) {
@@ -64,9 +66,22 @@ export function getPropertyStringValue (clazz: ClassDeclaration, memberName: str
         if (str === undefined) {
             throw new Error(`${JSON.stringify(value.getText())} not supported, specify a string literal for "${memberName}"`)
         }
-        return str
+        return str as T
     }
     throw new Error(`invalid "${memberName}" property`)
+}
+
+export function getPropertyStringArrayValue<T extends string[]> (clazz: ClassDeclaration, memberName: string): T | undefined {
+    const member = clazz.getProperty(memberName)
+    if (!member) return undefined
+
+    const init = member.getInitializer()
+    if (!init) return undefined
+
+    if (!TypeGuards.isArrayLiteralExpression(init)) {
+        throw new Error(`invalid "${memberName}": "${init.getText()}", array literal expected`)
+    }
+    return init.getElements().map(element => getLiteralText(element)) as T
 }
 
 function getLiteralText (expr: Node) {

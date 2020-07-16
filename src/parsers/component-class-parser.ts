@@ -49,7 +49,9 @@ export class ComponentClassParser {
         if (!componentClass) componentClass = defineComponent({ template: '' })
 
         const template = getMember(componentClass, 'template', '')
-        const rootANode = parseAndNormalizeTemplate(template)
+        const trimWhitespace = getMember<'none' | 'blank' | 'all'>(componentClass, 'trimWhitespace')
+        const delimiters = getMember<[string, string]>(componentClass, 'delimiters')
+        const rootANode = parseAndNormalizeTemplate(template, { trimWhitespace, delimiters })
         const childComponents = this.getChildComponentClasses(componentClass, rootANode)
 
         return new DynamicComponentInfo(id, template, rootANode, childComponents, componentClass)

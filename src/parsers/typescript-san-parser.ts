@@ -1,6 +1,6 @@
 import { SourceFile, ClassDeclaration } from 'ts-morph'
 import debugFactory from 'debug'
-import { getChildComponents, getComponentDeclarations, getPropertyStringValue } from '../utils/ast-util'
+import { getChildComponents, getPropertyStringArrayValue, getComponentDeclarations, getPropertyStringValue } from '../utils/ast-util'
 import { normalizeComponentClass } from './normalize-component'
 import { TypedSanSourceFile } from '../models/san-source-file'
 import { parseAndNormalizeTemplate } from './parse-template'
@@ -25,12 +25,16 @@ export class TypeScriptSanParser {
     }
 
     private parseComponentClassDeclaration (classDeclaration: ClassDeclaration, defaultClassDeclaration?: ClassDeclaration): TypedComponentInfo {
-        const template = getPropertyStringValue(classDeclaration, 'template')
+        const template = getPropertyStringValue(classDeclaration, 'template', '')
+        const trimWhitespace = getPropertyStringValue<'none' | 'blank' | 'all'>(classDeclaration, 'trimWhitespace')
+        const delimiters = getPropertyStringArrayValue<[string, string]>(classDeclaration, 'delimiters')
         const childComponents = getChildComponents(classDeclaration, defaultClassDeclaration)
         return new TypedComponentInfo(
             classDeclaration.isDefaultExport() ? getDefaultExportedComponentID() : getExportedComponentID(classDeclaration.getName()!),
             template,
-            parseAndNormalizeTemplate(template),
+            parseAndNormalizeTemplate(template, {
+                trimWhitespace, delimiters
+            }),
             childComponents,
             classDeclaration
         )

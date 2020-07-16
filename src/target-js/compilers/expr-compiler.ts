@@ -5,6 +5,7 @@ import { ExprStringNode, ExprNode, ExprTertiaryNode, ExprBinaryNode, ExprUnaryNo
 import { isValidIdentifier } from '../../utils/lang'
 import * as TypeGuards from '../../utils/type-guards'
 import { _ } from '../../runtime/underscore'
+import { stringifier } from './stringifier'
 
 // 二元表达式操作符映射表
 const binaryOp = {
@@ -100,7 +101,7 @@ function interp (interpExpr: ExprInterpNode): string {
 }
 
 function str (e: ExprStringNode): string {
-    return '"' + _.escapeHTML(e.value) + '"'
+    return stringifier.str(_.escapeHTML(e.value))
 }
 
 // 生成文本片段代码

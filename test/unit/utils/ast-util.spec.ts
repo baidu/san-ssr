@@ -1,10 +1,34 @@
-import { getComponentDeclarations, getObjectLiteralPropertyKeys, getChildComponents, getPropertyStringValue, getComponentClassIdentifier, isChildClassOf } from '../../../src/utils/ast-util'
+import { getPropertyStringArrayValue, getComponentDeclarations, getObjectLiteralPropertyKeys, getChildComponents, getPropertyStringValue, getComponentClassIdentifier, isChildClassOf } from '../../../src/utils/ast-util'
 import { Project } from 'ts-morph'
 
 describe('utils/ast-util', function () {
     let proj
     beforeEach(() => {
         proj = new Project({ addFilesFromTsConfig: false })
+    })
+    describe('.getPropertyStringArrayValue()', function () {
+        it('should get array of strings', () => {
+            const file = proj.createSourceFile('foo.ts', `
+            class Foo {
+                delimiters = ["{{", "}}"]
+            }`)
+            expect(getPropertyStringArrayValue(file.getClass('Foo'), 'delimiters')).toEqual(['{{', '}}'])
+        })
+        it('should return undefined if property not assigned', () => {
+            const file = proj.createSourceFile('foo.ts', `
+            class Foo {
+                delimiters
+            }`)
+            expect(getPropertyStringArrayValue(file.getClass('Foo'), 'delimiters')).toBeUndefined()
+        })
+        it('should throw if not array literal', () => {
+            const file = proj.createSourceFile('foo.ts', `
+            let foo = [];
+            class Foo {
+                delimiters = foo
+            }`)
+            expect(() => getPropertyStringArrayValue(file.getClass('Foo'), 'delimiters')).toThrow(/invalid "delimiters": "foo", array literal expected/)
+        })
     })
     describe('.getObjectLiteralPropertyKeys()', function () {
         it('should support method declaration, property assignment, and shorthanded', () => {
@@ -59,13 +83,17 @@ describe('utils/ast-util', function () {
     })
 
     describe('.getPropertyStringValue()', function () {
-        it('should return "" if member not exist', () => {
+        it('should return undefined if member not exist', () => {
             const file = proj.createSourceFile('foo.ts', `class Foo { }`)
-            expect(getPropertyStringValue(file.getClass('Foo'), 'template')).toEqual('')
+            expect(getPropertyStringValue(file.getClass('Foo'), 'template')).toEqual(undefined)
         })
-        it('should return "" if member not initialized', () => {
+        it('should return undefined if member not initialized', () => {
             const file = proj.createSourceFile('foo.ts', `class Foo { template: string }`)
-            expect(getPropertyStringValue(file.getClass('Foo'), 'template')).toEqual('')
+            expect(getPropertyStringValue(file.getClass('Foo'), 'template')).toEqual(undefined)
+        })
+        it('should return defaultValue if member not exist', () => {
+            const file = proj.createSourceFile('foo.ts', `class Foo { }`)
+            expect(getPropertyStringValue(file.getClass('Foo'), 'template', '')).toEqual('')
         })
         it('should work for member with a stirng literal initializer', () => {
             const file = proj.createSourceFile('foo.ts', `class Foo { template = 'foo' }`)

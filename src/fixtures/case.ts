@@ -6,9 +6,13 @@ import debugFactory from 'debug'
 import { compileToRenderer } from '../index'
 
 const debug = debugFactory('case')
-const caseRoot = resolve(__dirname, '../../test/cases')
+export const caseRoot = resolve(__dirname, '../../test/cases')
 const tsConfigFilePath = resolve(__dirname, '../../test/tsconfig.json')
 const sanProject = new SanProject(tsConfigFilePath)
+
+export function tsExists (caseName: string) {
+    return existsSync(join(caseRoot, caseName, 'component.ts'))
+}
 
 export function ls () {
     return readdirSync(caseRoot)
@@ -21,13 +25,26 @@ export function readExpected (caseName: string) {
 }
 
 export function compile (caseName: string, bareFunctionBody: boolean) {
-    debug('compile', caseName)
+    debug('compile js', caseName)
     const caseDir = join(caseRoot, caseName)
-    const tsFile = join(caseDir, 'component.ts')
+    // const tsFile = join(caseDir, 'component.ts')
     const jsFile = resolve(caseDir, 'component.js')
     const ssrOnly = /-so/.test(caseName)
     const targetCode = sanProject.compile(
-        existsSync(tsFile) ? tsFile : jsFile,
+        jsFile,
+        ToJSCompiler,
+        { ssrOnly, bareFunctionBody }
+    )
+    return targetCode
+}
+
+export function compileTS (caseName: string, bareFunctionBody: boolean) {
+    debug('compile ts', caseName)
+    const caseDir = join(caseRoot, caseName)
+    const tsFile = join(caseDir, 'component.ts')
+    const ssrOnly = /-so/.test(caseName)
+    const targetCode = sanProject.compile(
+        tsFile,
         ToJSCompiler,
         { ssrOnly, bareFunctionBody }
     )

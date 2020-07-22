@@ -5,9 +5,8 @@ const { assertSanHTMLEqual } = require('../dist/index')
 const { execFileSync } = require('child_process')
 const chalk = require('chalk')
 const { readFileSync, readdirSync, writeFileSync } = require('fs')
-const { resolve } = require('path')
-const root = resolve(__dirname, '../test/cases')
-const { compile, compileTS } = require('../dist/fixtures/case')
+const { join } = require('path')
+const { caseRoot, tsExists, compile, compileTS } = require('../dist/fixtures/case')
 
 const caseName = process.argv[2]
 if (!caseName) {
@@ -15,26 +14,28 @@ if (!caseName) {
     console.error('Example: debug array-literal')
     console.error()
     console.error('Available case names:')
-    console.error(readdirSync(root).map(x => `  - ${x}`).join('\n'))
+    console.error(readdirSync(caseRoot).map(x => `  - ${x}`).join('\n'))
     process.exit(1)
 }
 
-const htmlPath = resolve(root, caseName, 'expected.html')
+const htmlPath = join(caseRoot, caseName, 'expected.html')
 const expected = readFileSync(htmlPath, 'utf8')
 console.log(chalk.cyan(`[EXPECT] ${caseName}`), expected)
 
-if (!caseName.match(/-nsrc$/)) debugCompileToSource()
-if (!caseName.match(/-nsrc$/)) debugCompileToTSSource()
+if (!caseName.match(/-nsrc$/)) {
+    debugCompileToSource()
+    if (tsExists(caseName)) debugCompileToTSSource()
+}
 debugCompileToRenderer()
 
 function debugCompileToSource () {
     let got
     try {
         const targetCode = compile(caseName)
-        const fileName = `${__dirname}/../test/cases/${caseName}/ssr.js`
+        const fileName = join(caseRoot, caseName, 'ssr.js')
         writeFileSync(fileName, targetCode)
 
-        got = execFileSync(resolve(__dirname, `./render-by-source.js`), [caseName], { encoding: 'utf8' }).toString()
+        got = execFileSync(join(__dirname, `./render-by-source.js`), [caseName], { encoding: 'utf8' }).toString()
         assertSanHTMLEqual(got, expected)
         console.log(chalk.green(`[SOURCE] ${caseName}`), got)
     } catch (err) {
@@ -47,10 +48,10 @@ function debugCompileToTSSource () {
     let got
     try {
         const targetCode = compileTS(caseName)
-        const fileName = `${__dirname}/../test/cases/${caseName}/ssr.js`
+        const fileName = join(caseRoot, caseName, 'ssr.js')
         writeFileSync(fileName, targetCode)
 
-        got = execFileSync(resolve(__dirname, `./render-by-source.js`), [caseName], { encoding: 'utf8' }).toString()
+        got = execFileSync(join(__dirname, `./render-by-source.js`), [caseName], { encoding: 'utf8' }).toString()
         assertSanHTMLEqual(got, expected)
         console.log(chalk.green(`[SRC TS] ${caseName}`), got)
     } catch (err) {
@@ -62,7 +63,7 @@ function debugCompileToTSSource () {
 function debugCompileToRenderer () {
     let got
     try {
-        got = execFileSync(resolve(__dirname, `./render-onthefly.js`), [caseName], { encoding: 'utf8' }).toString()
+        got = execFileSync(join(__dirname, `./render-onthefly.js`), [caseName], { encoding: 'utf8' }).toString()
         assertSanHTMLEqual(got, expected)
         console.log(chalk.green(`[RENDER] ${caseName}`), got)
     } catch (err) {

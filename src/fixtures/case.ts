@@ -1,13 +1,13 @@
 import { readFileSync, lstatSync, readdirSync, existsSync } from 'fs'
-import { resolve, join } from 'path'
+import { join } from 'path'
 import { SanProject } from '../models/san-project'
 import ToJSCompiler from '../target-js'
 import debugFactory from 'debug'
 import { compileToRenderer } from '../index'
 
 const debug = debugFactory('case')
-export const caseRoot = resolve(__dirname, '../../test/cases')
-const tsConfigFilePath = resolve(__dirname, '../../test/tsconfig.json')
+export const caseRoot = join(__dirname, '../../node_modules/san-html-cases/src')
+const tsConfigFilePath = join(__dirname, '../../test/tsconfig.json')
 const sanProject = new SanProject(tsConfigFilePath)
 
 export function tsExists (caseName: string) {
@@ -16,7 +16,7 @@ export function tsExists (caseName: string) {
 
 export function ls () {
     return readdirSync(caseRoot)
-        .filter(caseName => lstatSync(resolve(caseRoot, caseName)).isDirectory())
+        .filter(caseName => lstatSync(join(caseRoot, caseName)).isDirectory())
 }
 
 export function readExpected (caseName: string) {
@@ -27,8 +27,7 @@ export function readExpected (caseName: string) {
 export function compile (caseName: string, bareFunctionBody: boolean) {
     debug('compile js', caseName)
     const caseDir = join(caseRoot, caseName)
-    // const tsFile = join(caseDir, 'component.ts')
-    const jsFile = resolve(caseDir, 'component.js')
+    const jsFile = join(caseDir, 'component.js')
     const ssrOnly = /-so/.test(caseName)
     const targetCode = sanProject.compile(
         jsFile,
@@ -52,7 +51,7 @@ export function compileTS (caseName: string, bareFunctionBody: boolean) {
 }
 
 export function compileCaseToRenderer (caseName: string) {
-    const caseDir = resolve(caseRoot, caseName)
+    const caseDir = join(caseRoot, caseName)
     const ComponentClass = require(join(caseDir, 'component.js'))
     return compileToRenderer(ComponentClass, {
         ssrOnly: /-so/.test(caseDir)
@@ -60,7 +59,7 @@ export function compileCaseToRenderer (caseName: string) {
 }
 
 export function readCaseData (caseName: string) {
-    const caseDir = resolve(caseRoot, caseName)
+    const caseDir = join(caseRoot, caseName)
     const dataJSPath = join(caseDir, 'data.js')
     if (existsSync(dataJSPath)) {
         return require(dataJSPath)

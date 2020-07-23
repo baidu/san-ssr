@@ -43,8 +43,8 @@ function tertiary (e: ExprTertiaryNode) {
 }
 
 // 生成数据访问表达式代码
-export function dataAccess (accessorExpr?: ExprAccessorNode): string {
-    let code = 'ctx.data'
+export function dataAccess (accessorExpr?: ExprAccessorNode, contextVariableName: string = 'ctx'): string {
+    let code = `${contextVariableName}.data`
     if (!accessorExpr) return code
     for (const path of accessorExpr.paths) {
         code += TypeGuards.isExprStringNode(path) && isValidIdentifier(path.value)

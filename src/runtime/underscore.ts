@@ -4,6 +4,10 @@ const BASE_PROPS = {
     'id': 1
 }
 
+interface Context {
+    owner?: Context
+}
+
 function extend (target: object, source: object) {
     if (!source) return target
     Object.keys(source).forEach(function (key) {
@@ -109,6 +113,11 @@ function createFromPrototype (proto: object) {
     return new (Creator as any)()
 }
 
+function getRootCtx (ctx: Context) {
+    while (ctx.owner) ctx = ctx.owner
+    return ctx
+}
+
 export const _ = {
-    escapeHTML, defaultStyleFilter, boolAttrFilter, attrFilter, extend, includes, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype
+    escapeHTML, defaultStyleFilter, boolAttrFilter, attrFilter, extend, includes, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype, getRootCtx
 }

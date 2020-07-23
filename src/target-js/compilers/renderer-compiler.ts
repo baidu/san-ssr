@@ -46,6 +46,7 @@ export class RendererCompiler {
         emitter.writeLine('var html = "";')
 
         this.genComponentContextCode(info)
+        // TODO remove
         emitter.writeLine(`var currentCtx = ctx;`)
 
         // instance preraration

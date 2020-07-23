@@ -18,5 +18,5 @@ function _test {
     _arguments -C \
         "-h[Show help information]" \
         "--h[Show help information]" \
-        "1: :($(ls test/cases))"
+        "1: :($(ls node_modules/san-html-cases/src))"
 }

@@ -136,63 +136,29 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
 
     private compileSlot (aNode: ASlotNode) {
         const { emitter } = this
-        const rendererId = this.nextID()
 
-        emitter.writeLine('ctx.slotRenderers.' + rendererId +
-        ' = ctx.slotRenderers.' + rendererId + ' || function () {')
-        emitter.indent()
+        emitter.nextLine(`(`)
+        emitter.writeAnonymousFunction([], () => {
+            emitter.nextLine('const defaultRender = ')
+            this.compileSlotRenderer(aNode.children)
+            emitter.feedLine(';')
 
-        emitter.nextLine('')
-        emitter.writeFunction('$defaultSlotRender', ['ctx', 'currentCtx'], () => {
-            emitter.writeLine('var html = "";')
-            for (const aNodeChild of aNode.children) {
-                this.compile(aNodeChild, false)
-            }
-            emitter.writeLine('return html;')
-        })
-
-        emitter.writeLine('var $isInserted = false;')
-        emitter.writeLine('var $ctxSourceSlots = ctx.sourceSlots;')
-        emitter.writeLine('var $mySourceSlots = [];')
-
-        const nameProp = getANodePropByName(aNode, 'name')
-        if (nameProp) {
-            emitter.writeLine('var $slotName = ' + expr(nameProp.expr) + ';')
-
-            emitter.writeFor('var $i = 0; $i < $ctxSourceSlots.length; $i++', () => {
-                emitter.writeIf('$ctxSourceSlots[$i][1] == $slotName', () => {
-                    emitter.writeLine('$mySourceSlots.push($ctxSourceSlots[$i][0]);')
-                    emitter.writeLine('$isInserted = true;')
-                })
+            emitter.writeBlock('let data =', () => {
+                if (aNode.directives.bind) {
+                    emitter.writeLine('...' + expr(aNode.directives.bind.value) + ',')
+                }
+                for (const item of aNode.vars || []) {
+                    emitter.writeLine(`"${item.name}": ${expr(item.expr)},`)
+                }
             })
-        } else {
-            emitter.writeIf('$ctxSourceSlots[0] && $ctxSourceSlots[0][1] == null', () => {
-                emitter.writeLine('$mySourceSlots.push($ctxSourceSlots[0][0]);')
-                emitter.writeLine('$isInserted = true;')
-            })
-        }
 
-        emitter.writeLine('if (!$isInserted) { $mySourceSlots.push($defaultSlotRender); }')
-        emitter.writeLine('var $slotCtx = $isInserted ? ctx.owner : ctx;')
-
-        if (aNode.vars || aNode.directives.bind) {
-            emitter.writeLine('$slotCtx = {data: _.extend({}, $slotCtx.data), instance: $slotCtx.instance, owner: $slotCtx.owner};')
-        }
-        if (aNode.directives.bind) {
-            emitter.writeLine('_.extend($slotCtx.data, ' + expr(aNode.directives.bind.value) + ');')
-        }
-        for (const item of aNode.vars || []) {
-            const line = `$slotCtx.data["${item.name}"] = ${expr(item.expr)};`
-            emitter.writeLine(line)
-        }
-
-        emitter.writeFor('var $renderIndex = 0; $renderIndex < $mySourceSlots.length; $renderIndex++', () => {
-            emitter.writeLine('html += $mySourceSlots[$renderIndex]($slotCtx, currentCtx);')
+            const nameProp = getANodePropByName(aNode, 'name')
+            const slotNameExpr = nameProp ? expr(nameProp.expr) : '""'
+            emitter.writeLine(`let slotName = ${slotNameExpr};`)
+            emitter.writeLine(`let render = ctx.slots[slotName] || defaultRender;`)
+            emitter.writeLine(`html += render(currentCtx, data);`)
         })
-
-        emitter.unindent()
-        emitter.writeLine('};')
-        emitter.writeLine(`ctx.slotRenderers.${rendererId}();`)
+        emitter.feedLine(')();')
     }
 
     private compileElement (aNode: ANode, isRootElement: boolean) {
@@ -228,32 +194,38 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
             }
         }
 
-        emitter.writeLine('var $sourceSlots = [];')
+        emitter.writeLine('var slots = {};')
         if (defaultSourceSlots.length) {
-            emitter.nextLine('$sourceSlots.push([')
+            emitter.nextLine('slots[""] = ')
             this.compileSlotRenderer(defaultSourceSlots)
-            emitter.feedLine(']);')
+            emitter.feedLine(';')
         }
 
         for (const sourceSlotCode of sourceSlotCodes.values()) {
-            emitter.writeLine('$sourceSlots.push([')
+            emitter.nextLine(`slots[${expr(sourceSlotCode.prop.expr)}] = `)
             this.compileSlotRenderer(sourceSlotCode.children)
-            emitter.writeLine(', ' + expr(sourceSlotCode.prop.expr) + ']);')
+            emitter.feedLine(';')
         }
 
         const ndo = isRootElement ? 'noDataOutput' : 'true'
         const funcName = 'sanSSRRuntime.renderer' + cid
-        emitter.nextLine(`html += ${funcName}(`)
-        emitter.write(this.componentDataCode(aNode) + `, ${ndo}, sanSSRRuntime, ctx, currentCtx, ` +
-        stringifier.str(aNode.tagName) + ', $sourceSlots);')
-        emitter.writeLine('$sourceSlots = null;')
+        emitter.nextLine('html += ')
+        emitter.writeFunctionCall(
+            funcName,
+            [ this.componentDataCode(aNode), ndo, 'sanSSRRuntime', 'currentCtx', stringifier.str(aNode.tagName) + ', slots' ]
+        )
     }
 
-    private compileSlotRenderer (slots: ANode[]) {
+    private compileSlotRenderer (content: ANode[]) {
         const { emitter } = this
-        emitter.writeAnonymousFunction(['ctx', 'currentCtx'], () => {
+        emitter.writeAnonymousFunction(['currentCtx', 'data'], () => {
+            if (!content.length) {
+                emitter.writeLine('return "";')
+                return
+            }
             emitter.writeLine('var html = "";')
-            for (const slot of slots) this.compile(slot, false)
+            emitter.writeLine('ctx = {...ctx, data: Object.assign({}, ctx.data, data)};')
+            for (const child of content) this.compile(child, false)
             emitter.writeLine('return html;')
         })
     }
@@ -266,7 +238,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         }).join(', ') + '}'
 
         const bindDirective = aNode.directives.bind
-        return bindDirective ? `_.extend(${expr(bindDirective.value)}, ${givenData})` : givenData
+        return bindDirective ? `Object.assign(${expr(bindDirective.value)}, ${givenData})` : givenData
     }
 
     private nextID () {

@@ -5,15 +5,7 @@ const BASE_PROPS = {
 }
 
 interface Context {
-    owner?: Context
-}
-
-function extend (target: object, source: object) {
-    if (!source) return target
-    Object.keys(source).forEach(function (key) {
-        target[key] = source[key]
-    })
-    return target
+    parentCtx?: Context;
 }
 
 function includes<T> (array: T[], value: T) {
@@ -114,10 +106,10 @@ function createFromPrototype (proto: object) {
 }
 
 function getRootCtx (ctx: Context) {
-    while (ctx.owner) ctx = ctx.owner
+    while (ctx.parentCtx) ctx = ctx.parentCtx
     return ctx
 }
 
 export const _ = {
-    escapeHTML, defaultStyleFilter, boolAttrFilter, attrFilter, extend, includes, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype, getRootCtx
+    escapeHTML, defaultStyleFilter, boolAttrFilter, attrFilter, includes, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype, getRootCtx
 }

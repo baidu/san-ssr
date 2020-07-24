@@ -4,7 +4,7 @@ import { DynamicComponentInfo, isTypedComponentInfo, ComponentInfo } from '../..
 import { JSEmitter } from '../js-emitter'
 import { Renderer } from '../../models/renderer'
 
-const RENDERER_ARGS = ['data = {}', 'noDataOutput', 'sanSSRRuntime', 'ownerCtx', 'parentCtx', 'tagName = "div"', 'sourceSlots']
+const RENDERER_ARGS = ['data = {}', 'noDataOutput', 'sanSSRRuntime', 'parentCtx', 'tagName = "div"', 'slots']
 
 /**
  * Each ComponentClass is compiled to a render function
@@ -42,11 +42,9 @@ export class RendererCompiler {
             return emitter.fullText()
         }
         emitter.writeLine('var _ = sanSSRRuntime._;')
-        emitter.writeLine('var SanData = sanSSRRuntime.SanData;')
         emitter.writeLine('var html = "";')
 
         this.genComponentContextCode(info)
-        // TODO remove
         emitter.writeLine(`var currentCtx = ctx;`)
 
         // instance preraration
@@ -54,7 +52,7 @@ export class RendererCompiler {
             if (isTypedComponentInfo(info)) this.emitInitDataInRuntime()
             else this.emitInitDataInCompileTime(info)
         }
-        emitter.writeLine('ctx.instance.data = new SanData(ctx.data, ctx.instance.computed)')
+        emitter.writeLine('ctx.instance.data = new sanSSRRuntime.SanData(ctx.data, ctx.instance.computed)')
         emitter.writeLine(`ctx.instance.parentComponent = parentCtx && parentCtx.instance`)
 
         // call inited
@@ -95,18 +93,10 @@ export class RendererCompiler {
     */
     private genComponentContextCode (componentInfo: ComponentInfo) {
         const { emitter } = this
-        emitter.writeBlock('var ctx =', () => {
-            emitter.writeLine(`instance: _.createFromPrototype(sanSSRRuntime.proto${componentInfo.id}),`)
-            emitter.writeLine('sourceSlots: sourceSlots,')
-            emitter.writeLine('data: data,')
-            emitter.writeLine('owner: ownerCtx,')
-
-            // computedNames
-            emitter.nextLine('computedNames: [')
-            emitter.write(componentInfo.getComputedNames().map(x => `'${x}'`).join(', '))
-            emitter.feedLine('],')
-
-            emitter.writeLine('slotRenderers: {}')
-        })
+        emitter.writeLine(`let instance = _.createFromPrototype(sanSSRRuntime.proto${componentInfo.id});`)
+        emitter.nextLine('let computedNames = [')
+        emitter.write(componentInfo.getComputedNames().map(x => `'${x}'`).join(', '))
+        emitter.feedLine('];')
+        emitter.writeLine('var ctx = {instance, slots, data, parentCtx, computedNames}')
     }
 }

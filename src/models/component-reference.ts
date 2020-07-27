@@ -4,7 +4,7 @@ export interface ComponentReference {
     /**
      * 组件所在源文件的相对路径
      */
-    relativeFilePath: string
+    specifier: string
     /**
      * 组件的 id。见下面的说明。
      */
@@ -57,7 +57,7 @@ export function getExportedComponentID (name: string) {
  *
  * // 对于如下 Component Reference，
  * // 如果 id 为 AComponent 将无法定位到 a.san.ts 中的 class A
- * { relativeFilePath: './a.san', id: '0', isDefault: true }
+ * { specifier: './a.san', id: '0', isDefault: true }
  */
 export function getDefaultExportedComponentID () {
     return '0'

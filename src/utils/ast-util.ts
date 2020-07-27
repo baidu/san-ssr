@@ -119,7 +119,7 @@ export function getChildComponents (clazz: ClassDeclaration, defaultClassDeclara
     //     'x-list': XList
     // }
     // 解析后的子组件信息为
-    // 'x-list' => { relativeFilePath: './list', id: '0', isDefault: true }
+    // 'x-list' => { specifier: './list', id: '0', isDefault: true }
     const init = member.getInitializerIfKindOrThrow(SyntaxKind.ObjectLiteralExpression)
     for (const prop of init.getProperties()) {
         if (!TypeGuards.isPropertyAssignment(prop)) throw new Error(`${JSON.stringify(prop.getText())} not supported`)
@@ -128,13 +128,13 @@ export function getChildComponents (clazz: ClassDeclaration, defaultClassDeclara
         if (importedNames.has(childComponentClassName)) { // 子组件来自外部源文件
             const { specifier, named } = importedNames.get(childComponentClassName)!
             ret.set(propName, {
-                relativeFilePath: specifier,
+                specifier,
                 id: named ? getExportedComponentID(childComponentClassName) : getDefaultExportedComponentID(),
                 isDefault: !named
             })
         } else { // 子组件来自当前源文件
             ret.set(propName, {
-                relativeFilePath: '.',
+                specifier: '.',
                 id: getExportedComponentID(childComponentClassName),
                 isDefault: defaultClassDeclaration ? defaultClassDeclaration.getName() === childComponentClassName : false
             })

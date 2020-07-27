@@ -1,3 +1,11 @@
+## [2.2.3](https://github.com/baidu/san-ssr/compare/v2.2.2...v2.2.3) (2020-07-27)
+
+
+### Bug Fixes
+
+* rename ComponentReference#relativeFilePath->specifier ([adda06b](https://github.com/baidu/san-ssr/commit/adda06bab887a499d90b3e5b1a381df49bc1597f))
+* 根元素为组件时，s-data 不正确的问题 ([fd87852](https://github.com/baidu/san-ssr/commit/fd878523181170d035b700edf7137ecc1f7421ff))
+
 ## [2.2.2](https://github.com/baidu/san-ssr/compare/v2.2.1...v2.2.2) (2020-07-16)
 
 

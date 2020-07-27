@@ -4,7 +4,7 @@ const BASE_PROPS = {
     'id': 1
 }
 
-interface Context {
+export interface Context {
     parentCtx?: Context;
 }
 
@@ -105,7 +105,7 @@ function createFromPrototype (proto: object) {
     return new (Creator as any)()
 }
 
-function getRootCtx (ctx: Context) {
+function getRootCtx<T extends {parentCtx?: T}> (ctx: T) {
     while (ctx.parentCtx) ctx = ctx.parentCtx
     return ctx
 }

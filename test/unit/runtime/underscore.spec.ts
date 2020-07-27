@@ -9,12 +9,6 @@ describe('utils/underscore', function () {
             expect(_.escapeHTML('<a foo="bar">')).toEqual('&lt;a foo=&quot;bar&quot;&gt;')
         })
     })
-    describe('.extend()', () => {
-        it('should return target if source not defined', () => {
-            const target = {}
-            expect(_.extend(target, undefined)).toEqual(target)
-        })
-    })
     describe('.includes()', () => {
         it('should return false if array not defined', () => {
             expect(_.includes(false as any, 'coo')).toBeFalsy()

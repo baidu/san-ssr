@@ -53,27 +53,27 @@ describe('utils/ast-util', function () {
             proj.createSourceFile('b.ts', `export class B {}`)
             const file = proj.createSourceFile('foo.ts', `import {B} from './b'; class Foo { components = { b: B } }`)
             expect([...getChildComponents(file.getClass('Foo')).entries()]).toEqual([
-                ['b', { relativeFilePath: './b', id: 'B', isDefault: false }]
+                ['b', { specifier: './b', id: 'B', isDefault: false }]
             ])
         })
         it('should get default child component', () => {
             proj.createSourceFile('b.ts', `export class B {}`)
             const file = proj.createSourceFile('foo.ts', `import B from './b'; class Foo { components = { b: B } }`)
             expect([...getChildComponents(file.getClass('Foo')).entries()]).toEqual([
-                ['b', { relativeFilePath: './b', id: '0', isDefault: true }]
+                ['b', { specifier: './b', id: '0', isDefault: true }]
             ])
         })
         it('should allow string literal as key', () => {
             proj.createSourceFile('b.ts', `export class B {}`)
             const file = proj.createSourceFile('foo.ts', `import B from './b'; class Foo { components = { 'x-b': B } }`)
             expect([...getChildComponents(file.getClass('Foo')).entries()]).toEqual([
-                ['x-b', { relativeFilePath: './b', id: '0', isDefault: true }]
+                ['x-b', { specifier: './b', id: '0', isDefault: true }]
             ])
         })
         it('should allow child Components from current file', () => {
             const file = proj.createSourceFile('foo.ts', `class B {}; class Foo { components = { 'x-b': B } }`)
             expect([...getChildComponents(file.getClass('Foo')).entries()]).toEqual([
-                ['x-b', { relativeFilePath: '.', id: 'B', isDefault: false }]
+                ['x-b', { specifier: '.', id: 'B', isDefault: false }]
             ])
         })
         it('should throw for items not of PropertyAssignment type', () => {

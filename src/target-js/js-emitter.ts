@@ -21,8 +21,7 @@ export class JSEmitter extends Emitter {
     }
 
     public writeDataComment () {
-        this.writeLine('var rootCtx = _.getRootCtx(ctx);')
-        this.writeHTMLExpression(`"<!--s-data:" + JSON.stringify(${dataAccess(undefined, 'rootCtx')}) + "-->"`)
+        this.writeHTMLExpression(`"<!--s-data:" + JSON.stringify(${dataAccess(undefined, '_.getRootCtx(ctx)')}) + "-->"`)
     }
 
     public writeHTMLLiteral (str: string) {

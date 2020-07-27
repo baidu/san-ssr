@@ -75,6 +75,7 @@
     "jest": "^24.9.0",
     "mustache": "^3.2.0",
     "san": "^3.9.1",
+    "san-html-cases": "^1.0.0",
     "san-ssr-target-fake-cmd": "^1.0.0",
     "san-ssr-target-fake-esm": "^1.0.0",
     "semantic-release": "^15.13.27",

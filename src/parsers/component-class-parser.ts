@@ -24,7 +24,7 @@ export class ComponentClassParser {
 
     parse (): DynamicSanSourceFile {
         const componentInfos = []
-        const stack: DynamicComponentReference[] = [{ componentClass: this.root, id: '' + this.id++, relativeFilePath: '.', isDefault: true }]
+        const stack: DynamicComponentReference[] = [{ componentClass: this.root, id: '' + this.id++, specifier: '.', isDefault: true }]
         const parsed = new Set()
         while (stack.length) {
             const { id, componentClass } = stack.pop()!
@@ -69,7 +69,7 @@ export class ComponentClassParser {
         for (const [tagName, componentClass] of Object.entries(components)) {
             // 可能是空，例如 var Foo = defineComponent({components: {foo: Foo}})
             children.set(tagName, {
-                relativeFilePath: '.',
+                specifier: '.',
                 id: this.getOrSetID(componentClass),
                 componentClass,
                 isDefault: componentClass === this.root
@@ -84,7 +84,7 @@ export class ComponentClassParser {
             if (!childClazz) return
 
             children.set(aNode, {
-                relativeFilePath: '.',
+                specifier: '.',
                 id: this.getOrSetID(childClazz),
                 componentClass: childClazz,
                 isDefault: childClazz === this.root

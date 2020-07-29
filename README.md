@@ -84,6 +84,8 @@ npm i san-ssr san-ssr-target-php
 
 ## 贡献指南
 
+### 开发起步
+
 欢迎任何类型的 Issue、完整的 Pull Request、或者不完整的 Pull Request。可以按照下面的步骤开始开发：
 
 1. 克隆本仓库并 `npm install`
@@ -92,14 +94,30 @@ npm i san-ssr san-ssr-target-php
     1. EXPECTED。test/cases/array-literal/expected.html 的内容。
     2. SOURCE。compileToSource + render() 的结果，test/cases/array-literal/ssr.js 可查看生成的 ssr 代码。
     3. RENDER。compileToRenderer + render() 的结果。
-4. 如果 debug 符合预期，可以运行 `npm run integration` 来查看其它样例是否仍然正常。
+4. 如果 debug 符合预期，可以运行 `npm run e2e` 来查看其它样例是否仍然正常。
 5. 如果一切正常，运行 `npm run check` 来做最后的编码风格检查，和完整的测试。
 6. 如果能够通过那么 Travis CI 就应该能通过，请发 PR 到本仓库。
 
-Tips:
+### debug 进阶
 
-1. 请添加 `PATH=$PATH:./bin` 到你的 Shell 配置，就可以直接用 `debug array-literal` 了。
-2. 如果你在用 ZShell，先执行一次 ./bin/auto-complete 或把它添加到 .zshrc 里，`debug` 命令就可以自动补全样例名了。
+准备步骤：
+
+1. 添加 `export PATH=$PATH:./bin` 到你的 Shell 配置里。
+2. 让你的 zsh 进入项目目录后自动 `source ./bin/auto-complete`（如果你想自动补全 case 名字的话）。可以自定义 chpwd() 方法来实现。
+
+debug 命令：
+
+- `debug array-literal` 来执行这个 case 的所有编译方式：
+    1. 从 component.js 编译到 ssr.js 并执行 SSR 和 assert 结果
+    2. 从 component.ts 编译到 ssr.js 并执行 SSR 和 assert 结果
+    3. 从 component.js 编译到 render 函数并 SSR 和 assert 结果
+- `render-by-source.js array-literal` 来跳过编译，直接执行 ssr.js 并 assert 结果。用于手改 ssr.js 调试。
+- `render-onthefly.js array-literal` 来把这个 case 编译到 render 函数并 SSR 和 assert 结果。
+
+注意：
+
+- 如果没能把 ./bin 添加到 PATH，则执行命令需要全路径，例如：`./bin/debug array-literal`
+- 如果没能执行 ./bin/auto-complete，则没法 Tab 自动补全 array-literal
 
 [san]: https://github.com/baidu/san
 [sanproject]: https://baidu.github.io/san-ssr/classes/_models_san_project_.sanproject.html

@@ -1,11 +1,11 @@
 import { expr } from './expr-compiler'
 import { JSEmitter } from '../js-emitter'
 import { getANodePropByName } from '../../utils/anode-util'
+import { _ } from '../../runtime/underscore'
 import { autoCloseTags } from '../../utils/dom-util'
 import { ANodeCompiler } from './anode-compiler'
-import { ANodeProperty, Directive, ExprType, ANode } from 'san'
-import { isExprStringNode, isExprBoolNode } from '../../utils/type-guards'
-import { stringifier } from './stringifier'
+import { ANodeProperty, Directive, ANode } from 'san'
+import { isExprNumberNode, isExprStringNode, isExprBoolNode } from '../../utils/type-guards'
 
 /**
  * 编译一个 HTML 标签
@@ -55,8 +55,9 @@ export class ElementCompiler {
         if (name === 'slot') return
 
         if (isExprBoolNode(prop.expr)) return emitter.writeHTMLLiteral(' ' + name)
-        if (isExprStringNode(prop.expr)) return emitter.writeHTMLLiteral(` ${name}=${stringifier.str(prop.expr.value)}`)
-        if (prop.expr.value != null) return emitter.writeHTMLLiteral(` ${name}="${expr(prop.expr)}"`)
+        if (isExprStringNode(prop.expr) || isExprNumberNode(prop.expr)) {
+            return emitter.writeHTMLLiteral(` ${name}="${_.escapeHTML(prop.expr.value)}"`)
+        }
 
         if (name === 'value') {
             if (tagName === 'textarea') return
@@ -93,15 +94,11 @@ export class ElementCompiler {
                 })
             }
         }
-
-        const onlyOneAccessor = prop.expr.type === ExprType.ACCESSOR
-        const escp = (prop.x || onlyOneAccessor ? ', true' : '')
-        emitter.writeHTMLExpression(`_.attrFilter("${name}", ${expr(prop.expr)}${escp})`)
+        emitter.writeHTMLExpression(`_.attrFilter("${name}", ${expr(prop.expr)}, true)`)
     }
 
     private compileBindProperties (tagName: string, bindDirective: Directive<any>) {
         const { emitter } = this
-        // start function
         emitter.writeLine('(function ($bindObj) {')
         emitter.indent()
 
@@ -120,7 +117,6 @@ export class ElementCompiler {
                 })
             })
         })
-        // end function
         emitter.unindent()
         emitter.writeLine(`})(${expr(bindDirective.value)})`)
     }

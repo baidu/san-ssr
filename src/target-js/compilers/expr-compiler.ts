@@ -37,9 +37,7 @@ function binary (e: ExprBinaryNode) {
     return `${lhs} ${op} ${rhs}`
 }
 function tertiary (e: ExprTertiaryNode) {
-    return expr(e.segs[0]) +
-        '?' + expr(e.segs[1]) +
-        ':' + expr(e.segs[2])
+    return `${expr(e.segs[0])} ? ${expr(e.segs[1])} : ${expr(e.segs[2])}`
 }
 
 // 生成数据访问表达式代码
@@ -64,14 +62,14 @@ function callExpr (callExpr: ExprCallNode): string {
 
     code += '('
     const argValues = callExpr.args.map(arg => expr(arg))
-    code += [...argValues, 'ctx'].join(',')
+    code += [...argValues, 'ctx'].join(', ')
     code += ')'
 
     return code
 }
 
 // 生成插值代码
-function interp (interpExpr: ExprInterpNode): string {
+function interp (interpExpr: ExprInterpNode, escapeHTML: boolean): string {
     let code = expr(interpExpr.expr)
 
     for (const filter of interpExpr.filters) {
@@ -97,19 +95,21 @@ function interp (interpExpr: ExprInterpNode): string {
             code = `ctx.instance.filters["${filterName}"].call(ctx.instance, ${code}, ${args.join(', ')})`
         }
     }
-    return interpExpr.original ? code : '_.escapeHTML(' + code + ')'
+    return escapeHTML && !interpExpr.original ? '_.escapeHTML(' + code + ')' : code
 }
 
-function str (e: ExprStringNode): string {
-    return stringifier.str(_.escapeHTML(e.value))
+function str (e: ExprStringNode, escapeHTML: boolean): string {
+    return escapeHTML
+        ? stringifier.str(_.escapeHTML(e.value))
+        : stringifier.str(e.value)
 }
 
 // 生成文本片段代码
-function text (textExpr: ExprTextNode): string {
+function text (textExpr: ExprTextNode, escapeHTML: boolean): string {
     if (textExpr.segs.length === 0) return '""'
 
     return textExpr.segs
-        .map(seg => expr(seg))
+        .map(seg => expr(seg, escapeHTML))
         .map(seg => `(${seg})`)
         .join(' + ')
 }
@@ -119,7 +119,7 @@ function array (arrayExpr: ExprArrayNode): string {
     return '[' +
             arrayExpr.items
                 .map(e => (e.spread ? '...' : '') + expr(e.expr))
-                .join(',') +
+                .join(', ') +
             ']'
 }
 
@@ -138,22 +138,22 @@ function object (objExpr: ExprObjectNode): string {
     return '{\n' + code.join(',\n') + '\n}'
 }
 
-export function expr (e: ExprNode): string {
-    const str = dispatch(e)
+export function expr (e: ExprNode, escapeHTML = false): string {
+    const str = dispatch(e, escapeHTML)
     return e.parenthesized ? `(${str})` : str
 }
 
 // 根据表达式类型进行生成代码函数的中转分发
-function dispatch (e: ExprNode): string {
+function dispatch (e: ExprNode, escapeHTML: boolean): string {
     if (TypeGuards.isExprUnaryNode(e)) return unary(e)
     if (TypeGuards.isExprBinaryNode(e)) return binary(e)
     if (TypeGuards.isExprTertiaryNode(e)) return tertiary(e)
-    if (TypeGuards.isExprStringNode(e)) return str(e)
+    if (TypeGuards.isExprStringNode(e)) return str(e, escapeHTML)
     if (TypeGuards.isExprNumberNode(e)) return '' + e.value
     if (TypeGuards.isExprBoolNode(e)) return e.value ? 'true' : 'false'
     if (TypeGuards.isExprAccessorNode(e)) return dataAccess(e)
-    if (TypeGuards.isExprInterpNode(e)) return interp(e)
-    if (TypeGuards.isExprTextNode(e)) return text(e)
+    if (TypeGuards.isExprInterpNode(e)) return interp(e, escapeHTML)
+    if (TypeGuards.isExprTextNode(e)) return text(e, escapeHTML)
     if (TypeGuards.isExprArrayNode(e)) return array(e)
     if (TypeGuards.isExprObjectNode(e)) return object(e)
     if (TypeGuards.isExprCallNode(e)) return callExpr(e)

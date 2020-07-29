@@ -30,6 +30,13 @@ export function assertSanHTMLEqual (expected: string, got: string) {
     }
 }
 
+export function assertDeepEqual (lhs: any, rhs: any) {
+    if (!deepEqual(lhs, rhs)) {
+        const msg = `San Data not equal, Expected:\n${JSON.stringify(lhs)}\nReceived\n${JSON.stringify(rhs)}`
+        throw new Error(msg)
+    }
+}
+
 /**
  * San HTML 数据和 DOM 部分比较（不依赖 Object key 顺序）
  *
@@ -47,12 +54,15 @@ export function compareSanHTML (expected: string, got: string) {
 }
 
 export function deepEqual (lhs: any, rhs: any) {
-    if (typeof lhs === 'object' && lhs !== null) {
-        const keys = new Set([...Object.keys(lhs), ...Object.keys(rhs)])
-        for (const key of keys) {
-            if (!deepEqual(lhs[key], rhs[key])) return false
-        }
-        return true
+    if (!isObject(lhs)) return lhs === rhs
+    if (!isObject(rhs)) return false
+    const keys = new Set([...Object.keys(lhs), ...Object.keys(rhs)])
+    for (const key of keys) {
+        if (!deepEqual(lhs[key], rhs[key])) return false
     }
-    return JSON.stringify(lhs) === JSON.stringify(rhs)
+    return true
+}
+
+function isObject (val: any) {
+    return typeof val === 'object' && val !== null
 }

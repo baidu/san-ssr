@@ -1,3 +1,5 @@
+import { ComponentClass } from '../models/component'
+
 const BASE_PROPS = {
     'class': 1,
     'style': 1,
@@ -42,7 +44,8 @@ function escapeHTML (source: any) {
 }
 
 function _classFilter (source: string | string[]) {
-    return source instanceof Array ? source.join(' ') : source
+    if (!(source instanceof Array)) source = [source]
+    return source.filter(x => x != null).join(' ')
 }
 
 function isObject (source: any) {
@@ -58,22 +61,23 @@ function _styleFilter (source: object) {
     return source
 }
 
-function _xclassFilter (outer: string | string[], inner: string) {
-    if (outer instanceof Array) outer = outer.join(' ')
-    if (outer) {
-        if (inner) return inner + ' ' + outer
-        return outer
+function _xclassFilter (inherits: string | string[], own: string) {
+    if (!(inherits instanceof Array)) inherits = [inherits]
+    const inheritStr = inherits = inherits.filter(x => x != null).join(' ')
+    if (inheritStr) {
+        if (own) return own + ' ' + inheritStr
+        return inheritStr
     }
-    return inner
+    return own
 }
 
-function _xstyleFilter (outer: object | string | string[], inner: string) {
-    outer = outer && defaultStyleFilter(outer)
-    if (outer) {
-        if (inner) return inner + ';' + outer
-        return outer
+function _xstyleFilter (inherits: object | string | string[], own: string) {
+    inherits = inherits && defaultStyleFilter(inherits)
+    if (inherits) {
+        if (own) return own + ';' + inherits
+        return inherits
     }
-    return inner
+    return own
 }
 
 function attrFilter (name: string, value: string, needHTMLEscape: boolean) {
@@ -105,11 +109,23 @@ function createFromPrototype (proto: object) {
     return new (Creator as any)()
 }
 
+function createInstanceFromClass (Clazz: ComponentClass) {
+    const inited = Clazz.prototype.inited
+    const computed = Clazz['computed']
+    delete Clazz.prototype.inited
+    delete Clazz['computed']
+
+    const instance = new Clazz()
+    if (inited) Clazz.prototype.inited = inited
+    if (computed) instance['computed'] = Clazz.prototype.computed = Clazz['computed'] = computed
+    return instance
+}
+
 function getRootCtx<T extends {parentCtx?: T}> (ctx: T) {
     while (ctx.parentCtx) ctx = ctx.parentCtx
     return ctx
 }
 
 export const _ = {
-    escapeHTML, defaultStyleFilter, boolAttrFilter, attrFilter, includes, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype, getRootCtx
+    createInstanceFromClass, escapeHTML, defaultStyleFilter, boolAttrFilter, attrFilter, includes, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype, getRootCtx
 }

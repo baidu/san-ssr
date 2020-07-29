@@ -7,13 +7,12 @@ describe('ToJSCompiler', () => {
     const cc = new ToJSCompiler(proj)
 
     describe('#compileToSource()', () => {
-        it('should throw if entry comopennt not found', () => {
+        it('should not throw if entry comopennt not found', () => {
             const sourceFile = proj.tsProject.createSourceFile('foo.ts', `
                 import { Component } from 'san';
                 class Foo extends Component {}
             `)
-            expect(() => cc.compileToSource(new TypeScriptSanParser(sourceFile).parse()))
-                .toThrow(/entry component not found/)
+            expect(() => cc.compileToSource(new TypeScriptSanParser(sourceFile).parse())).not.toThrow()
         })
     })
 })

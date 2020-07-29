@@ -4,13 +4,14 @@ module.exports = {
     ],
     testMatch: [
         '<rootDir>/test/unit/**/*.ts',
-        '<rootDir>/test/integration.spec.ts'
+        '<rootDir>/test/e2e.spec.ts'
     ],
     transform: {
         '^.+\\.ts$': 'babel-jest'
     },
     collectCoverageFrom: [
-        'src/**/*.ts'
+        'src/**/*.ts',
+        '!src/fixtures/**'
     ],
     globals: {
         tsConfig: {

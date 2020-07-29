@@ -5,7 +5,7 @@ import { ToJSCompileOptions } from './target-js/index'
 import * as TypeGuards from './utils/type-guards'
 
 // util functions
-export { parseSanHTML, compareSanHTML, assertSanHTMLEqual } from './utils/case'
+export { parseSanHTML, compareSanHTML, assertDeepEqual, assertSanHTMLEqual } from './utils/case'
 export { autoCloseTags, booleanAttributes } from './utils/dom-util'
 export { getANodePropByName } from './utils/anode-util'
 export { Emitter } from './utils/emitter'
@@ -19,6 +19,7 @@ export { Compiler } from './models/compiler'
 export { ComponentInfo, TypedComponentInfo, DynamicComponentInfo, isTypedComponentInfo } from './models/component-info'
 export { ComponentReference } from './models/component-reference'
 export { COMPONENT_RESERVED_MEMBERS } from './models/component'
+export { CompileInput } from './models/options'
 
 let defaultProject: SanProject
 

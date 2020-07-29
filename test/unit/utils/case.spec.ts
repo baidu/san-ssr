@@ -1,4 +1,4 @@
-import { parseSanHTML, assertSanHTMLEqual, compareSanHTML, deepEqual } from '../../../src/utils/case'
+import { parseSanHTML, assertDeepEqual, assertSanHTMLEqual, compareSanHTML, deepEqual } from '../../../src/utils/case'
 
 describe('utils/case', function () {
     describe('.deepEqual()', function () {
@@ -11,11 +11,22 @@ describe('utils/case', function () {
         it('should return true if object equals', () => {
             expect(deepEqual({ foo: 1 }, { foo: 1 })).toBeTruthy()
         })
+        it('should return false if rhs is not object', () => {
+            expect(deepEqual({ foo: 1 }, undefined)).toBeFalsy()
+        })
         it('should return false if object property not equal', () => {
             expect(deepEqual({ foo: 1 }, { foo: 2 })).toBeFalsy()
         })
         it('should ignore property order', () => {
             expect(deepEqual({ foo: 1, bar: 2 }, { bar: 2, foo: 1 })).toBeTruthy()
+        })
+    })
+    describe('.assertDeepEqual()', function () {
+        it('should throw if not equal', () => {
+            expect(() => assertDeepEqual({ foo: 1 }, { foo: 2 })).toThrow()
+        })
+        it('should not throw if equal', () => {
+            expect(() => assertDeepEqual({ foo: 1 }, { foo: 1 })).not.toThrow()
         })
     })
     describe('.parseSanHTML', () => {

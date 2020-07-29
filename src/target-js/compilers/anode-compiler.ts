@@ -3,6 +3,7 @@ import { camelCase } from 'lodash'
 import { JSEmitter } from '../js-emitter'
 import { ANode, AIfNode, AForNode, ASlotNode, ATemplateNode, AFragmentNode, ATextNode } from 'san'
 import { ComponentInfo } from '../../models/component-info'
+import { ComponentReference } from '../../models/component-reference'
 import { ElementCompiler } from './element-compiler'
 import { stringifier } from './stringifier'
 import { getANodePropByName } from '../../utils/anode-util'
@@ -41,7 +42,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
 
         const ref = this.componentInfo.getChildComponentRenference(aNode)
         if (ref) {
-            return this.compileComponent(aNode, ref.id, isRootElement)
+            return this.compileComponent(aNode, ref, isRootElement)
         }
         return this.compileElement(aNode, isRootElement)
     }
@@ -51,7 +52,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         const shouldEmitComment = TypeGuards.isExprTextNode(aNode.textExpr) && aNode.textExpr.original && !this.ssrOnly
 
         if (shouldEmitComment) emitter.writeHTMLLiteral('<!--s-text-->')
-        emitter.writeHTMLExpression(expr(aNode.textExpr))
+        emitter.writeHTMLExpression(expr(aNode.textExpr, true))
         if (shouldEmitComment) emitter.writeHTMLLiteral('<!--/s-text-->')
     }
 
@@ -156,7 +157,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
             const slotNameExpr = nameProp ? expr(nameProp.expr) : '""'
             emitter.writeLine(`let slotName = ${slotNameExpr};`)
             emitter.writeLine(`let render = ctx.slots[slotName] || defaultRender;`)
-            emitter.writeLine(`html += render(currentCtx, data);`)
+            emitter.writeLine(`html += render(parentCtx, data);`)
         })
         emitter.feedLine(')();')
     }
@@ -172,7 +173,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         this.emitter.writeIf('!noDataOutput', () => this.emitter.writeDataComment())
     }
 
-    private compileComponent (aNode: ANode, cid: string, isRootElement: boolean) {
+    private compileComponent (aNode: ANode, ref: ComponentReference, isRootElement: boolean) {
         const { emitter } = this
 
         const defaultSourceSlots: ANode[] = []
@@ -208,17 +209,17 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         }
 
         const ndo = isRootElement ? 'noDataOutput' : 'true'
-        const funcName = 'sanSSRRuntime.renderer' + cid
+
         emitter.nextLine('html += ')
         emitter.writeFunctionCall(
-            funcName,
-            [ this.componentDataCode(aNode), ndo, 'sanSSRRuntime', 'currentCtx', stringifier.str(aNode.tagName) + ', slots' ]
+            `runtime.resolver.getRenderer("${ref.id}", "${ref.specifier}")`,
+            [ this.componentDataCode(aNode), ndo, 'runtime', 'parentCtx', stringifier.str(aNode.tagName) + ', slots' ]
         )
     }
 
     private compileSlotRenderer (content: ANode[]) {
         const { emitter } = this
-        emitter.writeAnonymousFunction(['currentCtx', 'data'], () => {
+        emitter.writeAnonymousFunction(['parentCtx', 'data'], () => {
             if (!content.length) {
                 emitter.writeLine('return "";')
                 return

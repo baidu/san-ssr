@@ -1,6 +1,6 @@
 import { SanData } from '../../../src/runtime/san-data'
 
-describe('models/SanData', () => {
+describe('runtime/SanData', () => {
     describe('.get()', () => {
         it('should get directly defined data', () => {
             const data = new SanData({ foo: 'FOO' }, {})

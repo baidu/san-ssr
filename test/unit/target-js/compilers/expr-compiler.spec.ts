@@ -18,8 +18,8 @@ describe('target-js/compilers/expr-compiler', () => {
     })
     it('should compile url filter', () => {
         const e = parseTemplate('{{"foo"|url}}')
-        const exp = e.children[0].textExpr.segs[0]
-        expect(expr(exp)).toEqual('_.escapeHTML(encodeURIComponent("foo"))')
+        const exp = e.children[0].textExpr
+        expect(expr(exp)).toEqual('(encodeURIComponent("foo"))')
     })
     it('should compile boolean expression', () => {
         expect(expr(parseExpr('false'))).toEqual('false')
@@ -27,7 +27,7 @@ describe('target-js/compilers/expr-compiler', () => {
     })
     it('should compile custom filter', () => {
         const e = parseTemplate('{{"foo"|bar("coo")}}')
-        const exp = e.children[0].textExpr.segs[0]
-        expect(expr(exp)).toEqual('_.escapeHTML(ctx.instance.filters["bar"].call(ctx.instance, "foo", "coo"))')
+        const exp = e.children[0].textExpr
+        expect(expr(exp)).toEqual('(ctx.instance.filters["bar"].call(ctx.instance, "foo", "coo"))')
     })
 })

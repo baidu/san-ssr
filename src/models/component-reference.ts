@@ -35,7 +35,7 @@ export interface DynamicComponentReference extends ComponentReference {
  * 2. 对于 TypeScript San 源文件单独编译：可以从 import 语句映射到 ID。
  *   - 此时要求它是 sourceFile 内 top level 的名字，因此是唯一的
  *   - 例如：named export 组件，ID 为 ClassDeclaration#.getName()
- *   - 特例：default export 的组件，ID 为 0
+ *   - 特例：default export 的组件，ID 为 "default"
  *
  * Note: ID 的作用只是确保文件中唯一，不可直接用于目标语言文件中的标识符
  */
@@ -57,8 +57,8 @@ export function getExportedComponentID (name: string) {
  *
  * // 对于如下 Component Reference，
  * // 如果 id 为 AComponent 将无法定位到 a.san.ts 中的 class A
- * { specifier: './a.san', id: '0', isDefault: true }
+ * { specifier: './a.san', id: 'default', isDefault: true }
  */
 export function getDefaultExportedComponentID () {
-    return '0'
+    return 'default'
 }

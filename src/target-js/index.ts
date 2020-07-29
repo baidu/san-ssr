@@ -1,16 +1,13 @@
 import { SanProject } from '../models/san-project'
 import debugFactory from 'debug'
 import { JSEmitter } from './js-emitter'
-import { createRuntime, RUNTIME_FILES } from '../runtime/index'
+import { createRuntime, emitRuntime } from '../runtime/index'
 import { ComponentClassCompiler } from './compilers/component-compiler'
 import { SanSourceFile, TypedSanSourceFile, DynamicSanSourceFile, isTypedSanSourceFile } from '../models/san-source-file'
 import { Renderer } from '../models/renderer'
 import { Compiler } from '../models/compiler'
-import { ComponentInfo } from '../models/component-info'
 import { RendererCompiler } from './compilers/renderer-compiler'
 import { tsSourceFile2js } from '../transpilers/ts2js'
-import { readStringSync } from '../utils/fs'
-import { Emitter } from '../utils/emitter'
 
 const debug = debugFactory('target-js')
 
@@ -36,12 +33,17 @@ export default class ToJSCompiler implements Compiler {
     } = {}) {
         const emitter = new JSEmitter()
         if (bareFunctionBody) {
-            this.emitMainRenderFunctionBody(sourceFile, ssrOnly, emitter)
+            emitter.writeLine('let exports = {}, module = { exports };')
+            this.doCompileToSource(sourceFile, ssrOnly, emitter)
+            emitter.writeLine(`return module.exports(data, noDataOutput);`)
         } else if (bareFunction) {
-            emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => this.emitMainRenderFunctionBody(sourceFile, ssrOnly, emitter))
+            emitter.writeFunction('render', ['data', 'noDataOutput'], () => {
+                emitter.writeLine('let exports = {}, module = { exports };')
+                this.doCompileToSource(sourceFile, ssrOnly, emitter)
+                emitter.writeLine(`return module.exports(data, noDataOutput);`)
+            })
         } else {
-            emitter.write('exports = module.exports = ')
-            emitter.writeAnonymousFunction(['data', 'noDataOutput'], () => this.emitMainRenderFunctionBody(sourceFile, ssrOnly, emitter))
+            this.doCompileToSource(sourceFile, ssrOnly, emitter)
         }
         return emitter.fullText()
     }
@@ -57,91 +59,58 @@ export default class ToJSCompiler implements Compiler {
     }: ToJSCompileOptions = {}): Renderer {
         const { componentInfos, entryComponentInfo } = sourceFile
         const cc = new RendererCompiler(ssrOnly)
-        const sanSSRRuntime = createRuntime()
+        const runtime = createRuntime()
 
         for (const info of componentInfos) {
             const { id } = info
-            sanSSRRuntime[`proto${id}`] = info.proto
-            sanSSRRuntime[`renderer${id}`] = cc.compileComponentRenderer(info)
+            runtime.resolver.setPrototype(id, info.componentClass.prototype)
+            runtime.resolver.setRenderer(id, cc.compileComponentRenderer(info))
         }
         return (data: any, noDataOutput: boolean = false) => {
-            const render = sanSSRRuntime[`renderer${entryComponentInfo.id}`]
-            return render(data, noDataOutput, sanSSRRuntime)
+            const render = runtime.resolver.getRenderer(entryComponentInfo.id)
+            return render(data, noDataOutput, runtime)
         }
     }
 
-    /**
-     * 产生 SSR 代码的函数体，包括运行时、组件代码、组件 render 代码、入口组件调用
-     */
-    emitMainRenderFunctionBody (sourceFile: SanSourceFile, ssrOnly: boolean, emitter: JSEmitter) {
-        const entryComponentInfo = sourceFile.entryComponentInfo
-        if (!entryComponentInfo) throw new Error('entry component not found')
+    private doCompileToSource (sourceFile: SanSourceFile, ssrOnly: boolean, emitter: JSEmitter) {
+        // 如果源文件中有 san 组件，才输出一个运行时
+        if (sourceFile.componentInfos.length) emitRuntime(emitter)
 
-        this.emitRuntime(emitter, 'sanSSRRuntime')
-        this.emitComponent(sourceFile, emitter)
-        this.emitComponentRenderers(sourceFile.componentInfos, ssrOnly, emitter)
-        this.emitComponentRendererCall(entryComponentInfo, emitter)
-    }
-
-    /**
-     * 产出组件 class 的代码，即组件所在文件的运行时代码
-     */
-    private emitComponent (sourceFile: SanSourceFile, emitter: JSEmitter) {
-        if (isTypedSanSourceFile(sourceFile)) this.compileTypeScriptToSource(sourceFile, emitter)
+        // 编译源文件到 JS
+        if (isTypedSanSourceFile(sourceFile)) this.compileTSComponentToSource(sourceFile, emitter)
         else this.compileComponentClassToSource(sourceFile, emitter)
+
+        // 编译 render 函数
+        const cc = new RendererCompiler(ssrOnly, emitter)
+        for (const info of sourceFile.componentInfos) {
+            emitter.nextLine(`sanSSRRuntime.resolver.setRenderer("${info.id}", `)
+            cc.compileComponentRendererSource(info)
+            emitter.feedLine(');')
+        }
+
+        // 导出入口 render 函数
+        const entryInfo = sourceFile.entryComponentInfo
+        if (entryInfo) {
+            emitter.writeLine(`module.exports = Object.assign(sanSSRRuntime.resolver.getRenderer("${entryInfo.id}"), exports)`)
+        }
     }
 
-    private compileTypeScriptToSource (sourceFile: TypedSanSourceFile, emitter: JSEmitter) {
-        emitter.nextLine('(')
-        emitter.writeAnonymousFunction(['exports'], () => {
-            const dst = tsSourceFile2js(sourceFile.tsSourceFile, this.project.getCompilerOptionsOrThrow())
-            emitter.writeLines(dst)
+    private compileTSComponentToSource (sourceFile: TypedSanSourceFile, emitter: JSEmitter) {
+        const dst = tsSourceFile2js(sourceFile.tsSourceFile, this.project.getCompilerOptionsOrThrow())
+        emitter.writeLines(dst)
 
-            for (const info of sourceFile.componentInfos) {
-                const className = info.classDeclaration.getName()
-                emitter.writeLine(`sanSSRRuntime.proto${info.id} = Object.assign(${className}.prototype, ${className})`)
-            }
-        })
-        emitter.feedLine(')({});')
+        for (const info of sourceFile.componentInfos) {
+            const className = info.classDeclaration.getName()
+            emitter.writeLine(`sanSSRRuntime.resolver.setPrototype("${info.id}", sanSSRRuntime._.createInstanceFromClass(${className}));`)
+        }
     }
 
     private compileComponentClassToSource (sourceFile: DynamicSanSourceFile, emitter: JSEmitter) {
         const cc = new ComponentClassCompiler(emitter)
         for (const info of sourceFile.componentInfos) {
-            emitter.writeBlock(`sanSSRRuntime.proto${info.id} =`, () => cc.compile(info))
-        }
-    }
-
-    /**
-     * 出源文件中所有组件的 renderer 代码
-     */
-    private emitComponentRenderers (componentInfos: ComponentInfo[], ssrOnly: boolean, emitter: JSEmitter) {
-        const cc = new RendererCompiler(ssrOnly, emitter)
-        for (const info of componentInfos) {
-            emitter.nextLine(`sanSSRRuntime.renderer${info.id} = `)
-            cc.compileComponentRendererSource(info)
-        }
-    }
-
-    /**
-     * 产出组件调用代码
-     */
-    private emitComponentRendererCall (componentInfo: ComponentInfo, emitter: JSEmitter) {
-        const funcName = 'sanSSRRuntime.renderer' + componentInfo.id
-        emitter.writeLine(`return ${funcName}(data, noDataOutput, sanSSRRuntime)`)
-    }
-
-    /**
-     * 产出运行时代码
-     */
-    private emitRuntime (emitter: Emitter, name: string) {
-        emitter.writeLine(`var ${name} = {};`)
-        for (const file of RUNTIME_FILES) {
-            emitter.writeLine(`!(function (exports) {`)
-            emitter.indent()
-            emitter.writeLines(readStringSync(file))
-            emitter.unindent()
-            emitter.writeLine(`})(${name});`)
+            emitter.nextLine(`sanSSRRuntime.resolver.setPrototype("${info.id}", `)
+            emitter.writeBlock('', () => cc.compile(info), false)
+            emitter.feedLine(`);`)
         }
     }
 }

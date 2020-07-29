@@ -4,7 +4,7 @@ import { DynamicComponentInfo, isTypedComponentInfo, ComponentInfo } from '../..
 import { JSEmitter } from '../js-emitter'
 import { Renderer } from '../../models/renderer'
 
-const RENDERER_ARGS = ['data = {}', 'noDataOutput', 'sanSSRRuntime', 'parentCtx', 'tagName = "div"', 'slots']
+const RENDERER_ARGS = ['data = {}', 'noDataOutput', 'runtime = sanSSRRuntime', 'parentCtx', 'tagName = "div"', 'slots']
 
 /**
  * Each ComponentClass is compiled to a render function
@@ -41,19 +41,19 @@ export class RendererCompiler {
             emitter.writeLine('return ""')
             return emitter.fullText()
         }
-        emitter.writeLine('var _ = sanSSRRuntime._;')
+        emitter.writeLine('var _ = runtime._;')
         emitter.writeLine('var html = "";')
 
         this.genComponentContextCode(info)
-        emitter.writeLine(`var currentCtx = ctx;`)
+        emitter.writeLine('ctx.instance.data = new runtime.SanData(ctx.data, ctx.instance.computed)')
+        emitter.writeLine(`ctx.instance.parentComponent = parentCtx && parentCtx.instance`)
+        emitter.writeLine(`var parentCtx = ctx;`)
 
         // instance preraration
         if (info.hasMethod('initData')) {
             if (isTypedComponentInfo(info)) this.emitInitDataInRuntime()
             else this.emitInitDataInCompileTime(info)
         }
-        emitter.writeLine('ctx.instance.data = new sanSSRRuntime.SanData(ctx.data, ctx.instance.computed)')
-        emitter.writeLine(`ctx.instance.parentComponent = parentCtx && parentCtx.instance`)
 
         // call inited
         if (info.hasMethod('inited')) {
@@ -93,7 +93,7 @@ export class RendererCompiler {
     */
     private genComponentContextCode (componentInfo: ComponentInfo) {
         const { emitter } = this
-        emitter.writeLine(`let instance = _.createFromPrototype(sanSSRRuntime.proto${componentInfo.id});`)
+        emitter.writeLine(`let instance = _.createFromPrototype(runtime.resolver.getPrototype("${componentInfo.id}"));`)
         emitter.nextLine('let computedNames = [')
         emitter.write(componentInfo.getComputedNames().map(x => `'${x}'`).join(', '))
         emitter.feedLine('];')

@@ -1,4 +1,4 @@
-import { readFileSync, lstatSync, readdirSync, existsSync } from 'fs'
+import { writeFileSync, readFileSync, lstatSync, readdirSync, existsSync } from 'fs'
 import { join } from 'path'
 import { SanProject } from '../models/san-project'
 import ToJSCompiler from '../target-js'
@@ -9,6 +9,10 @@ const debug = debugFactory('case')
 export const caseRoot = join(__dirname, '../../node_modules/san-html-cases/src')
 const tsConfigFilePath = join(__dirname, '../../test/tsconfig.json')
 const sanProject = new SanProject(tsConfigFilePath)
+
+export function jsExists (caseName: string) {
+    return existsSync(join(caseRoot, caseName, 'component.js'))
+}
 
 export function tsExists (caseName: string) {
     return existsSync(join(caseRoot, caseName, 'component.ts'))
@@ -24,7 +28,8 @@ export function readExpected (caseName: string) {
     return readFileSync(htmlPath, 'utf8')
 }
 
-export function compile (caseName: string, bareFunctionBody: boolean) {
+export function compileJS (caseName: string, compileToFunctionBodyCode: true): string
+export function compileJS (caseName: string, compileToFunctionBodyCode: boolean) {
     debug('compile js', caseName)
     const caseDir = join(caseRoot, caseName)
     const jsFile = join(caseDir, 'component.js')
@@ -32,22 +37,27 @@ export function compile (caseName: string, bareFunctionBody: boolean) {
     const targetCode = sanProject.compile(
         jsFile,
         ToJSCompiler,
-        { ssrOnly, bareFunctionBody }
+        { ssrOnly, bareFunctionBody: compileToFunctionBodyCode }
     )
-    return targetCode
+    const targetFile = join(caseRoot, caseName, 'ssr.js')
+    return compileToFunctionBodyCode ? targetCode : writeFileSync(targetFile, targetCode)
 }
 
-export function compileTS (caseName: string, bareFunctionBody: boolean) {
+export function compileTS (caseName: string) {
     debug('compile ts', caseName)
     const caseDir = join(caseRoot, caseName)
-    const tsFile = join(caseDir, 'component.ts')
     const ssrOnly = /-so/.test(caseName)
-    const targetCode = sanProject.compile(
-        tsFile,
-        ToJSCompiler,
-        { ssrOnly, bareFunctionBody }
-    )
-    return targetCode
+    for (const file of readdirSync(caseDir).filter(file => /\.ts$/.test(file))) {
+        const targetCode = sanProject.compile(
+            join(caseDir, file),
+            ToJSCompiler,
+            { ssrOnly }
+        )
+        const targetFile = file === 'component.ts'
+            ? join(caseDir, 'ssr.js')
+            : join(caseDir, file.replace(/\.ts$/, '.js'))
+        writeFileSync(targetFile, targetCode)
+    }
 }
 
 export function compileCaseToRenderer (caseName: string) {

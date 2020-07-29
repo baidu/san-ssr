@@ -1,7 +1,8 @@
-import { SanComponent, ANode, ComponentConstructor } from 'san'
+import { SanComponent, ANode } from 'san'
 import { ClassDeclaration } from 'ts-morph'
 import { ComponentReference, DynamicComponentReference } from './component-reference'
 import { getObjectLiteralPropertyKeys } from '../utils/ast-util'
+import { ComponentClass } from '../models/component'
 
 export type TagName = string
 
@@ -45,7 +46,7 @@ export class DynamicComponentInfo extends ComponentInfoImpl<DynamicComponentRefe
         template: string,
         root: ANode,
         childComponents: Map<TagName | ANode, DynamicComponentReference>,
-        public readonly componentClass: ComponentConstructor<{}, {}>
+        public readonly componentClass: ComponentClass
     ) {
         super(id, template, root, childComponents)
         this.proto = Object.assign(componentClass.prototype, componentClass)

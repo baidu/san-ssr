@@ -20,7 +20,6 @@ export class ComponentClassCompiler {
      */
     public compile (componentInfo: DynamicComponentInfo) {
         const { emitter } = this
-
         for (const key of Object.getOwnPropertyNames(componentInfo.proto)) {
             const member = componentInfo.proto[key]
             if (COMPONENT_RESERVED_MEMBERS.has(key) || !member) continue

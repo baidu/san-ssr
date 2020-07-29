@@ -112,18 +112,19 @@ export class JSEmitter extends Emitter {
         this.writeLine('continue;')
     }
 
-    public writeBlock (expr: string, cb: Function = () => null) {
-        this.beginBlock(expr)
+    public writeBlock (expr: string, cb: Function = () => null, nl = true) {
+        this.beginBlock(expr, nl)
         cb()
-        this.endBlock()
+        this.endBlock(nl)
     }
-    public beginBlock (expr: string) {
-        this.writeLine(`${expr ? expr + ' ' : ''}{`)
+    public beginBlock (expr: string, nl = true) {
+        const text = `${expr ? expr + ' ' : ''}{`
+        nl ? this.writeLine(text) : this.feedLine(text)
         this.indent()
     }
-    public endBlock () {
+    public endBlock (nl = true) {
         this.clearStringLiteralBuffer()
         this.unindent()
-        this.writeLine(`}`)
+        nl ? this.writeLine(`}`) : this.nextLine('}')
     }
 }

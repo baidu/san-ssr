@@ -60,14 +60,14 @@ describe('utils/ast-util', function () {
             proj.createSourceFile('b.ts', `export class B {}`)
             const file = proj.createSourceFile('foo.ts', `import B from './b'; class Foo { components = { b: B } }`)
             expect([...getChildComponents(file.getClass('Foo')).entries()]).toEqual([
-                ['b', { specifier: './b', id: '0', isDefault: true }]
+                ['b', { specifier: './b', id: 'default', isDefault: true }]
             ])
         })
         it('should allow string literal as key', () => {
             proj.createSourceFile('b.ts', `export class B {}`)
             const file = proj.createSourceFile('foo.ts', `import B from './b'; class Foo { components = { 'x-b': B } }`)
             expect([...getChildComponents(file.getClass('Foo')).entries()]).toEqual([
-                ['x-b', { specifier: './b', id: '0', isDefault: true }]
+                ['x-b', { specifier: './b', id: 'default', isDefault: true }]
             ])
         })
         it('should allow child Components from current file', () => {

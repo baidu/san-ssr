@@ -27,7 +27,7 @@ describe('SanProject', function () {
             const code = proj.compile(resolve(stubRoot, './a.comp.ts'))
 
             expect(code).toContain('html += "A')
-            expect(code).toContain('exports = module.exports = function (data, noDataOutput) {')
+            expect(code).toContain('module.exports =')
         })
 
         it('should support TypeScriptFileDescriptor', function () {
@@ -44,7 +44,6 @@ describe('SanProject', function () {
             })
 
             expect(code).toContain('html += "B')
-            expect(code).toContain('exports = module.exports = function (data, noDataOutput) {')
         })
 
         it('should compile JavaScript to JavaScript renderer', function () {
@@ -52,7 +51,6 @@ describe('SanProject', function () {
             const code = proj.compile(resolve(stubRoot, './a.comp.js'))
 
             expect(code).toContain('html += "A')
-            expect(code).toContain('exports = module.exports = function (data, noDataOutput) {')
         })
 
         it('should compile ComponentClass to JavaScript renderer', function () {
@@ -61,7 +59,6 @@ describe('SanProject', function () {
             const code = proj.compile(componentClass as any)
 
             expect(code).toContain('html += "A')
-            expect(code).toMatch(/^exports = module.exports = function \(data, noDataOutput\) {/)
         })
 
         it('should support bare function output', function () {
@@ -72,7 +69,7 @@ describe('SanProject', function () {
             })
 
             expect(code).toContain('html += "A')
-            expect(code).toMatch(/^var sanSSRRuntime = /)
+            expect(code).toMatch(/var sanSSRRuntime = /)
         })
 
         it('should not throw if tsConfigFilePath not specified', function () {
@@ -106,7 +103,7 @@ describe('SanProject', function () {
             const proj = new SanProject()
             const code = proj.compileToSource(resolve(stubRoot, './a.comp.ts'))
 
-            expect(code).toContain('exports = function')
+            expect(code).toContain('module.exports = ')
         })
 
         it('should compile to a renderer function which accepts data', function () {

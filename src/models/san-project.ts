@@ -60,7 +60,7 @@ export class SanProject {
         if (/\.ts$/.test(filePath)) {
             if (!this.tsProject) throw new Error(`Error parsing ${input}, tsconfig not specified`)
             const sourceFile = this.createOrRefreshSourceFile(this.tsProject, filePath, fileContent)
-            return new TypeScriptSanParser(sourceFile).parse()
+            return new TypeScriptSanParser().parse(sourceFile)
         }
         return new ComponentClassParser(require(filePath), filePath).parse()
     }

@@ -1,3 +1,10 @@
+## [2.2.4](https://github.com/baidu/san-ssr/compare/v2.2.3...v2.2.4) (2020-07-31)
+
+
+### Bug Fixes
+
+* 输入为 TypeScript 时不调用构造函数 ([40bf654](https://github.com/baidu/san-ssr/commit/40bf654054f75b25e6a9782dea55f23644602662))
+
 ## [2.2.3](https://github.com/baidu/san-ssr/compare/v2.2.2...v2.2.3) (2020-07-27)
 
 

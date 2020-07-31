@@ -135,6 +135,9 @@ writeFileSync(<span class="hljs-string">'ssr.php'</span>, targetCode)</code></pr
 				<a href="#贡献指南" id="贡献指南" style="color: inherit; text-decoration: none;">
 					<h2>贡献指南</h2>
 				</a>
+				<a href="#开发起步" id="开发起步" style="color: inherit; text-decoration: none;">
+					<h3>开发起步</h3>
+				</a>
 				<p>欢迎任何类型的 Issue、完整的 Pull Request、或者不完整的 Pull Request。可以按照下面的步骤开始开发：</p>
 				<ol>
 					<li>克隆本仓库并 <code>npm install</code></li>
@@ -145,15 +148,34 @@ writeFileSync(<span class="hljs-string">'ssr.php'</span>, targetCode)</code></pr
 							<li>RENDER。compileToRenderer + render() 的结果。</li>
 						</ol>
 					</li>
-					<li>如果 debug 符合预期，可以运行 <code>npm run integration</code> 来查看其它样例是否仍然正常。</li>
+					<li>如果 debug 符合预期，可以运行 <code>npm run e2e</code> 来查看其它样例是否仍然正常。</li>
 					<li>如果一切正常，运行 <code>npm run check</code> 来做最后的编码风格检查，和完整的测试。</li>
 					<li>如果能够通过那么 Travis CI 就应该能通过，请发 PR 到本仓库。</li>
 				</ol>
-				<p>Tips:</p>
+				<a href="#debug-进阶" id="debug-进阶" style="color: inherit; text-decoration: none;">
+					<h3>debug 进阶</h3>
+				</a>
+				<p>准备步骤：</p>
 				<ol>
-					<li>请添加 <code>PATH=$PATH:./bin</code> 到你的 Shell 配置，就可以直接用 <code>debug array-literal</code> 了。</li>
-					<li>如果你在用 ZShell，先执行一次 ./bin/auto-complete 或把它添加到 .zshrc 里，<code>debug</code> 命令就可以自动补全样例名了。</li>
+					<li>添加 <code>export PATH=$PATH:./bin</code> 到你的 Shell 配置里。</li>
+					<li>让你的 zsh 进入项目目录后自动 <code>source ./bin/auto-complete</code>（如果你想自动补全 case 名字的话）。可以自定义 chpwd() 方法来实现。</li>
 				</ol>
+				<p>debug 命令：</p>
+				<ul>
+					<li><code>debug array-literal</code> 来执行这个 case 的所有编译方式：<ol>
+							<li>从 component.js 编译到 ssr.js 并执行 SSR 和 assert 结果</li>
+							<li>从 component.ts 编译到 ssr.js 并执行 SSR 和 assert 结果</li>
+							<li>从 component.js 编译到 render 函数并 SSR 和 assert 结果</li>
+						</ol>
+					</li>
+					<li><code>render-by-source.js array-literal</code> 来跳过编译，直接执行 ssr.js 并 assert 结果。用于手改 ssr.js 调试。</li>
+					<li><code>render-onthefly.js array-literal</code> 来把这个 case 编译到 render 函数并 SSR 和 assert 结果。</li>
+				</ul>
+				<p>注意：</p>
+				<ul>
+					<li>如果没能把 ./bin 添加到 PATH，则执行命令需要全路径，例如：<code>./bin/debug array-literal</code></li>
+					<li>如果没能执行 ./bin/auto-complete，则没法 Tab 自动补全 array-literal</li>
+				</ul>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -215,6 +237,9 @@ writeFileSync(<span class="hljs-string">'ssr.php'</span>, targetCode)</code></pr
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_runtime_index_.html">"runtime/index"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_runtime_resolver_.html">"runtime/resolver"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_runtime_san_data_.html">"runtime/san-<wbr>data"</a>

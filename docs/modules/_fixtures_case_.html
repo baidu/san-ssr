@@ -82,10 +82,11 @@
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_fixtures_case_.html#compile" class="tsd-kind-icon">compile</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_fixtures_case_.html#compilecasetorenderer" class="tsd-kind-icon">compile<wbr>Case<wbr>ToRenderer</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_fixtures_case_.html#compilejs" class="tsd-kind-icon">compileJS</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_fixtures_case_.html#compilets" class="tsd-kind-icon">compileTS</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_fixtures_case_.html#getrenderarguments" class="tsd-kind-icon">get<wbr>Render<wbr>Arguments</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_fixtures_case_.html#jsexists" class="tsd-kind-icon">js<wbr>Exists</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_fixtures_case_.html#ls" class="tsd-kind-icon">ls</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_fixtures_case_.html#readcasedata" class="tsd-kind-icon">read<wbr>Case<wbr>Data</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_fixtures_case_.html#readexpected" class="tsd-kind-icon">read<wbr>Expected</a></li>
@@ -104,7 +105,7 @@
 					<div class="tsd-signature tsd-kind-icon">case<wbr>Root<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;join(__dirname, &#x27;../../node_modules/san-html-cases/src&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ab0b036/src/fixtures/case.ts#L9">fixtures/case.ts:9</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/fixtures/case.ts#L9">fixtures/case.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -114,7 +115,7 @@
 					<div class="tsd-signature tsd-kind-icon">debug<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Debugger</span><span class="tsd-signature-symbol"> =&nbsp;debugFactory(&#x27;case&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ab0b036/src/fixtures/case.ts#L8">fixtures/case.ts:8</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/fixtures/case.ts#L8">fixtures/case.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -124,7 +125,7 @@
 					<div class="tsd-signature tsd-kind-icon">san<wbr>Project<span class="tsd-signature-symbol">:</span> <a href="../classes/_models_san_project_.sanproject.html" class="tsd-signature-type">SanProject</a><span class="tsd-signature-symbol"> =&nbsp;new SanProject(tsConfigFilePath)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ab0b036/src/fixtures/case.ts#L11">fixtures/case.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/fixtures/case.ts#L11">fixtures/case.ts:11</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -134,39 +135,13 @@
 					<div class="tsd-signature tsd-kind-icon">ts<wbr>Config<wbr>File<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> =&nbsp;join(__dirname, &#x27;../../test/tsconfig.json&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ab0b036/src/fixtures/case.ts#L10">fixtures/case.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/fixtures/case.ts#L10">fixtures/case.ts:10</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
-				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="compile" class="tsd-anchor"></a>
-					<h3>compile</h3>
-					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">compile<span class="tsd-signature-symbol">(</span>caseName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, bareFunctionBody<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ab0b036/src/fixtures/case.ts#L27">fixtures/case.ts:27</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>caseName: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>bareFunctionBody: <span class="tsd-signature-type">boolean</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
-						</li>
-					</ul>
-				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
 					<a name="compilecasetorenderer" class="tsd-anchor"></a>
 					<h3>compile<wbr>Case<wbr>ToRenderer</h3>
@@ -177,7 +152,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ab0b036/src/fixtures/case.ts#L53">fixtures/case.ts:53</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/fixtures/case.ts#L63">fixtures/case.ts:63</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -191,16 +166,16 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
-					<a name="compilets" class="tsd-anchor"></a>
-					<h3>compileTS</h3>
+					<a name="compilejs" class="tsd-anchor"></a>
+					<h3>compileJS</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
-						<li class="tsd-signature tsd-kind-icon">compileTS<span class="tsd-signature-symbol">(</span>caseName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, bareFunctionBody<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">compileJS<span class="tsd-signature-symbol">(</span>caseName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, compileToFunctionBodyCode<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ab0b036/src/fixtures/case.ts#L40">fixtures/case.ts:40</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/fixtures/case.ts#L31">fixtures/case.ts:31</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -209,10 +184,33 @@
 									<h5>caseName: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5>bareFunctionBody: <span class="tsd-signature-type">boolean</span></h5>
+									<h5>compileToFunctionBodyCode: <span class="tsd-signature-type">true</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="compilets" class="tsd-anchor"></a>
+					<h3>compileTS</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">compileTS<span class="tsd-signature-symbol">(</span>caseName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/fixtures/case.ts#L46">fixtures/case.ts:46</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>caseName: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -226,7 +224,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ab0b036/src/fixtures/case.ts#L71">fixtures/case.ts:71</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/fixtures/case.ts#L81">fixtures/case.ts:81</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -240,6 +238,29 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="jsexists" class="tsd-anchor"></a>
+					<h3>js<wbr>Exists</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">js<wbr>Exists<span class="tsd-signature-symbol">(</span>caseName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/fixtures/case.ts#L13">fixtures/case.ts:13</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>caseName: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
 					<a name="ls" class="tsd-anchor"></a>
 					<h3>ls</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
@@ -249,7 +270,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ab0b036/src/fixtures/case.ts#L17">fixtures/case.ts:17</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/fixtures/case.ts#L21">fixtures/case.ts:21</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
@@ -266,7 +287,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ab0b036/src/fixtures/case.ts#L61">fixtures/case.ts:61</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/fixtures/case.ts#L71">fixtures/case.ts:71</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -289,7 +310,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ab0b036/src/fixtures/case.ts#L22">fixtures/case.ts:22</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/fixtures/case.ts#L26">fixtures/case.ts:26</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -312,7 +333,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ab0b036/src/fixtures/case.ts#L77">fixtures/case.ts:77</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/fixtures/case.ts#L87">fixtures/case.ts:87</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -335,7 +356,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/ab0b036/src/fixtures/case.ts#L13">fixtures/case.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/fixtures/case.ts#L17">fixtures/case.ts:17</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -376,16 +397,19 @@
 						<a href="_fixtures_case_.html#tsconfigfilepath" class="tsd-kind-icon">ts<wbr>Config<wbr>File<wbr>Path</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="_fixtures_case_.html#compile" class="tsd-kind-icon">compile</a>
+						<a href="_fixtures_case_.html#compilecasetorenderer" class="tsd-kind-icon">compile<wbr>Case<wbr>ToRenderer</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="_fixtures_case_.html#compilecasetorenderer" class="tsd-kind-icon">compile<wbr>Case<wbr>ToRenderer</a>
+						<a href="_fixtures_case_.html#compilejs" class="tsd-kind-icon">compileJS</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_fixtures_case_.html#compilets" class="tsd-kind-icon">compileTS</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_fixtures_case_.html#getrenderarguments" class="tsd-kind-icon">get<wbr>Render<wbr>Arguments</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_fixtures_case_.html#jsexists" class="tsd-kind-icon">js<wbr>Exists</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
 						<a href="_fixtures_case_.html#ls" class="tsd-kind-icon">ls</a>

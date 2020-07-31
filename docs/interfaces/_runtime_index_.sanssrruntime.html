@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ComponentReference | san-ssr</title>
+	<title>SanSSRRuntime | san-ssr</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_models_component_reference_.html">&quot;models/component-reference&quot;</a>
+					<a href="../modules/_runtime_index_.html">&quot;runtime/index&quot;</a>
 				</li>
 				<li>
-					<a href="_models_component_reference_.componentreference.html">ComponentReference</a>
+					<a href="_runtime_index_.sanssrruntime.html">SanSSRRuntime</a>
 				</li>
 			</ul>
-			<h1>Interface ComponentReference</h1>
+			<h1>Interface SanSSRRuntime</h1>
 		</div>
 	</div>
 </header>
@@ -73,12 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ComponentReference</span>
-						<ul class="tsd-hierarchy">
-							<li>
-								<a href="_models_component_reference_.dynamiccomponentreference.html" class="tsd-signature-type">DynamicComponentReference</a>
-							</li>
-						</ul>
+						<span class="target">SanSSRRuntime</span>
 					</li>
 				</ul>
 			</section>
@@ -89,9 +84,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_models_component_reference_.componentreference.html#id" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_models_component_reference_.componentreference.html#isdefault" class="tsd-kind-icon">is<wbr>Default</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_models_component_reference_.componentreference.html#specifier" class="tsd-kind-icon">specifier</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_runtime_index_.sanssrruntime.html#sandata" class="tsd-kind-icon">San<wbr>Data</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_runtime_index_.sanssrruntime.html#_" class="tsd-kind-icon">_</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_runtime_index_.sanssrruntime.html#exports" class="tsd-kind-icon">exports</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_runtime_index_.sanssrruntime.html#resolver" class="tsd-kind-icon">resolver</a></li>
 							</ul>
 						</section>
 					</div>
@@ -100,47 +96,111 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="id" class="tsd-anchor"></a>
-					<h3>id</h3>
-					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="sandata" class="tsd-anchor"></a>
+					<h3>San<wbr>Data</h3>
+					<div class="tsd-signature tsd-kind-icon">San<wbr>Data<span class="tsd-signature-symbol">:</span> <a href="../classes/_runtime_san_data_.sandata.html" class="tsd-signature-type">SanData</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/models/component-reference.ts#L11">models/component-reference.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/runtime/index.ts#L25">runtime/index.ts:25</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>组件的 id。见下面的说明。</p>
+							<p>SanData 的 SSR 运行时替代品</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="isdefault" class="tsd-anchor"></a>
-					<h3>is<wbr>Default</h3>
-					<div class="tsd-signature tsd-kind-icon">is<wbr>Default<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<a name="_" class="tsd-anchor"></a>
+					<h3>_</h3>
+					<div class="tsd-signature tsd-kind-icon">_<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/models/component-reference.ts#L15">models/component-reference.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/runtime/index.ts#L21">runtime/index.ts:21</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>是否是该源文件的默认导出（export default 或 module.exports）</p>
+							<p>无状态的工具库，类似 lodash</p>
 						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter">
+								<h5>_class<wbr>Filter<span class="tsd-signature-symbol">: </span><a href="../modules/_runtime_underscore_.html#_classfilter" class="tsd-signature-type">_classFilter</a></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>_style<wbr>Filter<span class="tsd-signature-symbol">: </span><a href="../modules/_runtime_underscore_.html#_stylefilter" class="tsd-signature-type">_styleFilter</a></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>_xclass<wbr>Filter<span class="tsd-signature-symbol">: </span><a href="../modules/_runtime_underscore_.html#_xclassfilter" class="tsd-signature-type">_xclassFilter</a></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>_xstyle<wbr>Filter<span class="tsd-signature-symbol">: </span><a href="../modules/_runtime_underscore_.html#_xstylefilter" class="tsd-signature-type">_xstyleFilter</a></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>attr<wbr>Filter<span class="tsd-signature-symbol">: </span><a href="../modules/_runtime_underscore_.html#attrfilter" class="tsd-signature-type">attrFilter</a></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>bool<wbr>Attr<wbr>Filter<span class="tsd-signature-symbol">: </span><a href="../modules/_runtime_underscore_.html#boolattrfilter" class="tsd-signature-type">boolAttrFilter</a></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>create<wbr>From<wbr>Prototype<span class="tsd-signature-symbol">: </span><a href="../modules/_runtime_underscore_.html#createfromprototype" class="tsd-signature-type">createFromPrototype</a></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>create<wbr>Instance<wbr>From<wbr>Class<span class="tsd-signature-symbol">: </span><a href="../modules/_runtime_underscore_.html#createinstancefromclass" class="tsd-signature-type">createInstanceFromClass</a></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>default<wbr>Style<wbr>Filter<span class="tsd-signature-symbol">: </span><a href="../modules/_runtime_underscore_.html#defaultstylefilter" class="tsd-signature-type">defaultStyleFilter</a></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>escapeHTML<span class="tsd-signature-symbol">: </span><a href="../modules/_runtime_underscore_.html#escapehtml" class="tsd-signature-type">escapeHTML</a></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>get<wbr>Root<wbr>Ctx<span class="tsd-signature-symbol">: </span><a href="../modules/_runtime_underscore_.html#getrootctx" class="tsd-signature-type">getRootCtx</a></h5>
+							</li>
+							<li class="tsd-parameter">
+								<h5>includes<span class="tsd-signature-symbol">: </span><a href="../modules/_runtime_underscore_.html#includes" class="tsd-signature-type">includes</a></h5>
+							</li>
+						</ul>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="specifier" class="tsd-anchor"></a>
-					<h3>specifier</h3>
-					<div class="tsd-signature tsd-kind-icon">specifier<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="exports" class="tsd-anchor"></a>
+					<h3>exports</h3>
+					<div class="tsd-signature tsd-kind-icon">exports<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/models/component-reference.ts#L7">models/component-reference.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/runtime/index.ts#L33">runtime/index.ts:33</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>组件所在源文件的相对路径</p>
+							<p>当前目标文件的 exports 对象</p>
+						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-index-signature">
+								<h5><span class="tsd-signature-symbol">[</span>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">any</span></h5>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="resolver" class="tsd-anchor"></a>
+					<h3>resolver</h3>
+					<div class="tsd-signature tsd-kind-icon">resolver<span class="tsd-signature-symbol">:</span> <a href="_runtime_resolver_.resolver.html" class="tsd-signature-type">Resolver</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/runtime/index.ts#L29">runtime/index.ts:29</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>组件 render、Class 解析器</p>
 						</div>
 					</div>
 				</section>
@@ -153,7 +213,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_models_component_reference_.html">"models/component-<wbr>reference"</a>
+						<a href="../modules/_runtime_index_.html">"runtime/index"</a>
 					</li>
 				</ul>
 			</nav>
@@ -162,32 +222,32 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_models_component_reference_.componentreference.html" class="tsd-kind-icon">Component<wbr>Reference</a>
+						<a href="_runtime_index_.sanssrruntime.html" class="tsd-kind-icon">SanSSRRuntime</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_models_component_reference_.componentreference.html#id" class="tsd-kind-icon">id</a>
+								<a href="_runtime_index_.sanssrruntime.html#sandata" class="tsd-kind-icon">San<wbr>Data</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_models_component_reference_.componentreference.html#isdefault" class="tsd-kind-icon">is<wbr>Default</a>
+								<a href="_runtime_index_.sanssrruntime.html#_" class="tsd-kind-icon">_</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_models_component_reference_.componentreference.html#specifier" class="tsd-kind-icon">specifier</a>
+								<a href="_runtime_index_.sanssrruntime.html#exports" class="tsd-kind-icon">exports</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_runtime_index_.sanssrruntime.html#resolver" class="tsd-kind-icon">resolver</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_models_component_reference_.dynamiccomponentreference.html" class="tsd-kind-icon">Dynamic<wbr>Component<wbr>Reference</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_runtime_index_.html#runtime_files" class="tsd-kind-icon">RUNTIME_<wbr>FILES</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_models_component_reference_.html#getcomponentclassid" class="tsd-kind-icon">get<wbr>Component<wbr>ClassID</a>
+						<a href="../modules/_runtime_index_.html#createruntime" class="tsd-kind-icon">create<wbr>Runtime</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_models_component_reference_.html#getdefaultexportedcomponentid" class="tsd-kind-icon">get<wbr>Default<wbr>Exported<wbr>ComponentID</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_models_component_reference_.html#getexportedcomponentid" class="tsd-kind-icon">get<wbr>Exported<wbr>ComponentID</a>
+						<a href="../modules/_runtime_index_.html#emitruntime" class="tsd-kind-icon">emit<wbr>Runtime</a>
 					</li>
 				</ul>
 			</nav>

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ComponentReference | san-ssr</title>
+	<title>Resolver | san-ssr</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_models_component_reference_.html">&quot;models/component-reference&quot;</a>
+					<a href="../modules/_runtime_resolver_.html">&quot;runtime/resolver&quot;</a>
 				</li>
 				<li>
-					<a href="_models_component_reference_.componentreference.html">ComponentReference</a>
+					<a href="_runtime_resolver_.resolver.html">Resolver</a>
 				</li>
 			</ul>
-			<h1>Interface ComponentReference</h1>
+			<h1>Interface Resolver</h1>
 		</div>
 	</div>
 </header>
@@ -73,12 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ComponentReference</span>
-						<ul class="tsd-hierarchy">
-							<li>
-								<a href="_models_component_reference_.dynamiccomponentreference.html" class="tsd-signature-type">DynamicComponentReference</a>
-							</li>
-						</ul>
+						<span class="target">Resolver</span>
 					</li>
 				</ul>
 			</section>
@@ -89,9 +84,10 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_models_component_reference_.componentreference.html#id" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_models_component_reference_.componentreference.html#isdefault" class="tsd-kind-icon">is<wbr>Default</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_models_component_reference_.componentreference.html#specifier" class="tsd-kind-icon">specifier</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_runtime_resolver_.resolver.html#getprototype" class="tsd-kind-icon">get<wbr>Prototype</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_runtime_resolver_.resolver.html#getrenderer" class="tsd-kind-icon">get<wbr>Renderer</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_runtime_resolver_.resolver.html#setprototype" class="tsd-kind-icon">set<wbr>Prototype</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_runtime_resolver_.resolver.html#setrenderer" class="tsd-kind-icon">set<wbr>Renderer</a></li>
 							</ul>
 						</section>
 					</div>
@@ -100,48 +96,142 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="id" class="tsd-anchor"></a>
-					<h3>id</h3>
-					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="getprototype" class="tsd-anchor"></a>
+					<h3>get<wbr>Prototype</h3>
+					<div class="tsd-signature tsd-kind-icon">get<wbr>Prototype<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/models/component-reference.ts#L11">models/component-reference.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/runtime/resolver.ts#L22">runtime/resolver.ts:22</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>组件的 id。见下面的说明。</p>
+							<p>每个组件的每次 render 执行，共用同一个 prototype
+							避免每次创建 SanComponent 实例</p>
 						</div>
+					</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-siganture">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">SanComponent</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>id: <span class="tsd-signature-type">string</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">SanComponent</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="isdefault" class="tsd-anchor"></a>
-					<h3>is<wbr>Default</h3>
-					<div class="tsd-signature tsd-kind-icon">is<wbr>Default<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<a name="getrenderer" class="tsd-anchor"></a>
+					<h3>get<wbr>Renderer</h3>
+					<div class="tsd-signature tsd-kind-icon">get<wbr>Renderer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/models/component-reference.ts#L15">models/component-reference.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/runtime/resolver.ts#L16">runtime/resolver.ts:16</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>是否是该源文件的默认导出（export default 或 module.exports）</p>
-						</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-siganture">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, specifier<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>id: <span class="tsd-signature-type">string</span></h5>
+											</li>
+											<li>
+												<h5><span class="tsd-flag ts-flagOptional">Optional</span> specifier: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Function</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="specifier" class="tsd-anchor"></a>
-					<h3>specifier</h3>
-					<div class="tsd-signature tsd-kind-icon">specifier<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="setprototype" class="tsd-anchor"></a>
+					<h3>set<wbr>Prototype</h3>
+					<div class="tsd-signature tsd-kind-icon">set<wbr>Prototype<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/models/component-reference.ts#L7">models/component-reference.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/runtime/resolver.ts#L23">runtime/resolver.ts:23</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>组件所在源文件的相对路径</p>
-						</div>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-siganture">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, proto<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">SanComponent</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>id: <span class="tsd-signature-type">string</span></h5>
+											</li>
+											<li>
+												<h5>proto: <span class="tsd-signature-type">SanComponent</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="setrenderer" class="tsd-anchor"></a>
+					<h3>set<wbr>Renderer</h3>
+					<div class="tsd-signature tsd-kind-icon">set<wbr>Renderer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">function</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/40bf654/src/runtime/resolver.ts#L17">runtime/resolver.ts:17</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-siganture">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-property tsd-is-not-exported">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>id: <span class="tsd-signature-type">string</span></h5>
+											</li>
+											<li>
+												<h5>fn: <span class="tsd-signature-type">Function</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
 					</div>
 				</section>
 			</section>
@@ -153,7 +243,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_models_component_reference_.html">"models/component-<wbr>reference"</a>
+						<a href="../modules/_runtime_resolver_.html">"runtime/resolver"</a>
 					</li>
 				</ul>
 			</nav>
@@ -162,32 +252,26 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_models_component_reference_.componentreference.html" class="tsd-kind-icon">Component<wbr>Reference</a>
+						<a href="_runtime_resolver_.resolver.html" class="tsd-kind-icon">Resolver</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_models_component_reference_.componentreference.html#id" class="tsd-kind-icon">id</a>
+								<a href="_runtime_resolver_.resolver.html#getprototype" class="tsd-kind-icon">get<wbr>Prototype</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_models_component_reference_.componentreference.html#isdefault" class="tsd-kind-icon">is<wbr>Default</a>
+								<a href="_runtime_resolver_.resolver.html#getrenderer" class="tsd-kind-icon">get<wbr>Renderer</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_models_component_reference_.componentreference.html#specifier" class="tsd-kind-icon">specifier</a>
+								<a href="_runtime_resolver_.resolver.html#setprototype" class="tsd-kind-icon">set<wbr>Prototype</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_runtime_resolver_.resolver.html#setrenderer" class="tsd-kind-icon">set<wbr>Renderer</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_models_component_reference_.dynamiccomponentreference.html" class="tsd-kind-icon">Dynamic<wbr>Component<wbr>Reference</a>
-					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_models_component_reference_.html#getcomponentclassid" class="tsd-kind-icon">get<wbr>Component<wbr>ClassID</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_models_component_reference_.html#getdefaultexportedcomponentid" class="tsd-kind-icon">get<wbr>Default<wbr>Exported<wbr>ComponentID</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-external-module">
-						<a href="../modules/_models_component_reference_.html#getexportedcomponentid" class="tsd-kind-icon">get<wbr>Exported<wbr>ComponentID</a>
+						<a href="../modules/_runtime_resolver_.html#createresolver" class="tsd-kind-icon">create<wbr>Resolver</a>
 					</li>
 				</ul>
 			</nav>

@@ -13,15 +13,11 @@ const debug = debugFactory('ts-component-parser')
  * 把包含 San 组件定义的 TypeScript 源码，通过静态分析（AST），得到组件信息。
  */
 export class TypeScriptSanParser {
-    constructor (
-        private readonly sourceFile: SourceFile
-    ) {}
-
-    parse () {
-        const classDeclarations = getComponentDeclarations(this.sourceFile).map(normalizeComponentClass)
+    parse (sourceFile: SourceFile) {
+        const classDeclarations = getComponentDeclarations(sourceFile).map(normalizeComponentClass)
         const defaultClassDeclaration = classDeclarations.find(clazz => clazz.isDefaultExport())
         const componentInfos: TypedComponentInfo[] = classDeclarations.map(decl => this.parseComponentClassDeclaration(decl, defaultClassDeclaration))
-        return new TypedSanSourceFile(componentInfos, this.sourceFile, componentInfos.find(info => info.classDeclaration.isDefaultExport()))
+        return new TypedSanSourceFile(componentInfos, sourceFile, componentInfos.find(info => info.classDeclaration.isDefaultExport()))
     }
 
     private parseComponentClassDeclaration (classDeclaration: ClassDeclaration, defaultClassDeclaration?: ClassDeclaration): TypedComponentInfo {
@@ -29,6 +25,11 @@ export class TypeScriptSanParser {
         const trimWhitespace = getPropertyStringValue<'none' | 'blank' | 'all'>(classDeclaration, 'trimWhitespace')
         const delimiters = getPropertyStringArrayValue<[string, string]>(classDeclaration, 'delimiters')
         const childComponents = getChildComponents(classDeclaration, defaultClassDeclaration)
+
+        for (const constructorDelcaration of classDeclaration.getConstructors()) {
+            constructorDelcaration.remove()
+        }
+
         return new TypedComponentInfo(
             classDeclaration.isDefaultExport() ? getDefaultExportedComponentID() : getExportedComponentID(classDeclaration.getName()!),
             template,

@@ -12,7 +12,7 @@ describe('ToJSCompiler', () => {
                 import { Component } from 'san';
                 class Foo extends Component {}
             `)
-            expect(() => cc.compileToSource(new TypeScriptSanParser(sourceFile).parse())).not.toThrow()
+            expect(() => cc.compileToSource(new TypeScriptSanParser().parse(sourceFile))).not.toThrow()
         })
     })
 })

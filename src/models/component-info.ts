@@ -1,4 +1,4 @@
-import { SanComponent, ANode } from 'san'
+import { SanComponentConfig, ANode } from 'san'
 import { ClassDeclaration } from 'ts-morph'
 import { ComponentReference, DynamicComponentReference } from './component-reference'
 import { getObjectLiteralPropertyKeys } from '../utils/ast-util'
@@ -40,7 +40,7 @@ export abstract class ComponentInfoImpl<R extends ComponentReference = Component
 }
 
 export class DynamicComponentInfo extends ComponentInfoImpl<DynamicComponentReference> {
-    public readonly proto: SanComponent<{}>
+    public readonly proto: SanComponentConfig<{}, {}>
     constructor (
         id: string,
         template: string,
@@ -51,14 +51,17 @@ export class DynamicComponentInfo extends ComponentInfoImpl<DynamicComponentRefe
         super(id, template, root, childComponents)
         this.proto = Object.assign(componentClass.prototype, componentClass)
     }
+
     hasMethod (name: string) {
         return !!this.proto[name]
     }
+
     getComputedNames () {
-        return Object.keys(this.proto['computed'] || {})
+        return Object.keys(this.proto.computed || {})
     }
+
     getFilterNames () {
-        return Object.keys(this.proto['filters'] || {})
+        return Object.keys(this.proto.filters || {})
     }
 }
 
@@ -76,12 +79,15 @@ export class TypedComponentInfo extends ComponentInfoImpl {
         this.computedNames = getObjectLiteralPropertyKeys(this.classDeclaration, 'computed')
         this.filterNames = getObjectLiteralPropertyKeys(this.classDeclaration, 'filters')
     }
+
     hasMethod (name: string) {
         return !!this.classDeclaration.getMethod(name)
     }
+
     getComputedNames () {
         return this.computedNames
     }
+
     getFilterNames () {
         return this.filterNames
     }

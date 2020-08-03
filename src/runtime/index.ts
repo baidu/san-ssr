@@ -37,15 +37,15 @@ export interface SanSSRRuntime {
  * 产出运行时代码
  */
 export function emitRuntime (emitter: Emitter) {
-    emitter.writeLine(`var sanSSRRuntime = { exports };`)
+    emitter.writeLine('var sanSSRRuntime = { exports };')
     for (const file of RUNTIME_FILES) {
-        emitter.writeLine(`!(function (exports) {`)
+        emitter.writeLine('!(function (exports) {')
         emitter.indent()
         emitter.writeLines(readStringSync(file))
         emitter.unindent()
-        emitter.writeLine(`})(sanSSRRuntime);`)
+        emitter.writeLine('})(sanSSRRuntime);')
     }
-    emitter.writeLine(`sanSSRRuntime.resolver = sanSSRRuntime.createResolver(exports)`)
+    emitter.writeLine('sanSSRRuntime.resolver = sanSSRRuntime.createResolver(exports)')
 }
 
 /**

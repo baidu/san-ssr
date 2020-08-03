@@ -12,6 +12,7 @@
     "promise"
   ],
   "rules": {
+    "dot-notation": "off",
     "no-var": 2,
     "prefer-const": 2,
     "no-labels": "off",

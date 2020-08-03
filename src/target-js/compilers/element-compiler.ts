@@ -80,8 +80,8 @@ export class ElementCompiler {
             return emitter.writeHTMLExpression(`_.boolAttrFilter("${name}", ${expr(prop.expr)})`)
         }
 
-        const valueProp = propsIndex['value']
-        const inputType = propsIndex['type']
+        const valueProp = propsIndex.value
+        const inputType = propsIndex.type
         if (name === 'checked' && tagName === 'input' && valueProp && inputType) {
             switch (inputType.expr.value) {
             case 'checkbox':

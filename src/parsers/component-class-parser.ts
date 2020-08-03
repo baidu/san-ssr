@@ -92,6 +92,7 @@ export class ComponentClassParser {
         })
         return children
     }
+
     private getOrSetID (componentClass: ComponentConstructor<{}, {}>): string {
         if (!this.cids.has(componentClass)) this.cids.set(componentClass, getComponentClassID(this.id++))
         return this.cids.get(componentClass)!

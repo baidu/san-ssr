@@ -17,5 +17,5 @@ export const COMPONENT_RESERVED_MEMBERS = new Set(
 )
 
 export function isComponentLoader (cmpt: any): cmpt is {placeholder: ComponentClass} {
-    return cmpt && cmpt.hasOwnProperty('load') && cmpt.hasOwnProperty('placeholder')
+    return cmpt && Object.prototype.hasOwnProperty.call(cmpt, 'load') && Object.prototype.hasOwnProperty.call(cmpt, 'placeholder')
 }

@@ -1,9 +1,9 @@
 import { ComponentClass } from '../models/component'
 
 const BASE_PROPS = {
-    'class': 1,
-    'style': 1,
-    'id': 1
+    class: 1,
+    style: 1,
+    id: 1
 }
 
 export interface Context {

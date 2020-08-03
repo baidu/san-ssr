@@ -84,15 +84,19 @@ export class JSEmitter extends Emitter {
         cb()
         this.endIf()
     }
+
     public beginIf (expr: string) {
         this.beginBlock(`if (${expr})`)
     }
+
     public beginElseIf (expr: string) {
         this.beginBlock(`else if (${expr})`)
     }
+
     public beginElse () {
-        this.beginBlock(`else`)
+        this.beginBlock('else')
     }
+
     public endIf () {
         this.endBlock()
     }
@@ -102,12 +106,15 @@ export class JSEmitter extends Emitter {
         cb()
         this.endFor()
     }
+
     public beginFor (expr: string) {
         this.beginBlock(`for (${expr})`)
     }
+
     public endFor () {
         this.endBlock()
     }
+
     public writeContinue () {
         this.writeLine('continue;')
     }
@@ -117,14 +124,16 @@ export class JSEmitter extends Emitter {
         cb()
         this.endBlock(nl)
     }
+
     public beginBlock (expr: string, nl = true) {
         const text = `${expr ? expr + ' ' : ''}{`
         nl ? this.writeLine(text) : this.feedLine(text)
         this.indent()
     }
+
     public endBlock (nl = true) {
         this.clearStringLiteralBuffer()
         this.unindent()
-        nl ? this.writeLine(`}`) : this.nextLine('}')
+        nl ? this.writeLine('}') : this.nextLine('}')
     }
 }

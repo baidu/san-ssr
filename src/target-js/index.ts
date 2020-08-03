@@ -35,12 +35,12 @@ export default class ToJSCompiler implements Compiler {
         if (bareFunctionBody) {
             emitter.writeLine('let exports = {}, module = { exports };')
             this.doCompileToSource(sourceFile, ssrOnly, emitter)
-            emitter.writeLine(`return module.exports(data, noDataOutput);`)
+            emitter.writeLine('return module.exports(data, noDataOutput);')
         } else if (bareFunction) {
             emitter.writeFunction('render', ['data', 'noDataOutput'], () => {
                 emitter.writeLine('let exports = {}, module = { exports };')
                 this.doCompileToSource(sourceFile, ssrOnly, emitter)
-                emitter.writeLine(`return module.exports(data, noDataOutput);`)
+                emitter.writeLine('return module.exports(data, noDataOutput);')
             })
         } else {
             this.doCompileToSource(sourceFile, ssrOnly, emitter)
@@ -110,7 +110,7 @@ export default class ToJSCompiler implements Compiler {
         for (const info of sourceFile.componentInfos) {
             emitter.nextLine(`sanSSRRuntime.resolver.setPrototype("${info.id}", `)
             emitter.writeBlock('', () => cc.compile(info), false)
-            emitter.feedLine(`);`)
+            emitter.feedLine(');')
         }
     }
 }

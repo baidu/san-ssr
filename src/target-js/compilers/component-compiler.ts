@@ -30,6 +30,7 @@ export class ComponentClassCompiler {
             else this.emitObjectLiteral(member, emitter)
         }
     }
+
     private emitObjectLiteral (obj: any, emitter: JSEmitter) {
         emitter.feedLine('{')
         const members = Object.getOwnPropertyNames(obj).filter(key => isFunction(obj[key]))
@@ -39,6 +40,7 @@ export class ComponentClassCompiler {
         }
         emitter.writeLine('},')
     }
+
     private emitArray (arr: any[], emitter: JSEmitter) {
         emitter.feedLine('[')
         emitter.writeIndentedLines(
@@ -48,6 +50,7 @@ export class ComponentClassCompiler {
         )
         emitter.writeLine('],')
     }
+
     private emitMethod (fn: Function, emitter: JSEmitter) {
         const funcString = functionString(fn)
         emitter.feedLine(funcString + ',')

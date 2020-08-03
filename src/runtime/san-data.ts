@@ -29,6 +29,7 @@ export class SanData {
             this.data
         )
     }
+
     set (path: string, value: string) {
         const seq = this.parseExpr(path)
         let parent = this.data
@@ -43,10 +44,12 @@ export class SanData {
         parent[seq.pop()!] = value
         return value
     }
+
     removeAt (path: string, index: number) {
         const value: any[] = this.get(path)
         if (value && value.splice) value.splice(index, 1)
     }
+
     parseExpr (expr: string): string[] {
         return expr.split('.')
     }

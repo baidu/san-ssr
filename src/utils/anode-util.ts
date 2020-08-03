@@ -6,7 +6,7 @@ import { ANode, ExprType, ANodeProperty } from 'san'
 */
 export function getANodePropByName (aNode: ANode, name: string): ANodeProperty | undefined {
     for (const prop of aNode.props) {
-        if (prop['name'] === name) return prop
+        if (prop.name === name) return prop
     }
 }
 

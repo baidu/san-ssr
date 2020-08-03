@@ -91,8 +91,7 @@ function interp (interpExpr: ExprInterpNode, escapeHTML: boolean): string {
             break
 
         default:
-            const args = filter.args.map((arg: any) => expr(arg))
-            code = `ctx.instance.filters["${filterName}"].call(ctx.instance, ${code}, ${args.join(', ')})`
+            code = `ctx.instance.filters["${filterName}"].call(ctx.instance, ${code}, ${filter.args.map((arg: any) => expr(arg)).join(', ')})`
         }
     }
     return escapeHTML && !interpExpr.original ? '_.escapeHTML(' + code + ')' : code

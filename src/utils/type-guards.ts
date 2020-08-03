@@ -73,11 +73,11 @@ export function isASlotNode (aNode: ANode): aNode is ASlotNode {
 }
 
 export function isAIfNode (aNode: ANode): aNode is AIfNode {
-    return !!aNode.directives['if']
+    return !!aNode.directives.if
 }
 
 export function isAForNode (aNode: ANode): aNode is AForNode {
-    return !!aNode.directives['for']
+    return !!aNode.directives.for
 }
 
 export function isATextNode (aNode: ANode): aNode is ATextNode {

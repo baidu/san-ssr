@@ -14,6 +14,6 @@ describe('ComponentClassParser', () => {
         const coo = defineComponent({ template: 'COO', components: { foo, bar } })
         const { componentInfos } = new ComponentClassParser(coo).parse()
         expect(componentInfos).toHaveLength(3)
-        expect(componentInfos.map(x => x.proto['template'])).toEqual(['COO', 'BAR', 'FOO'])
+        expect(componentInfos.map(x => x.proto.template)).toEqual(['COO', 'BAR', 'FOO'])
     })
 })

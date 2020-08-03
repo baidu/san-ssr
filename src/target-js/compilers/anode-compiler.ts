@@ -75,9 +75,9 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
     private compileIf (aNode: AIfNode) {
         const { emitter } = this
         // output if
-        const ifDirective = aNode.directives['if']
+        const ifDirective = aNode.directives.if
         const aNodeWithoutIf = Object.assign({}, aNode)
-        delete aNodeWithoutIf.directives['if']
+        delete aNodeWithoutIf.directives.if
         emitter.writeIf(expr(ifDirective.value), () => this.compile(aNodeWithoutIf, false))
 
         // output elif and else
@@ -138,7 +138,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
     private compileSlot (aNode: ASlotNode) {
         const { emitter } = this
 
-        emitter.nextLine(`(`)
+        emitter.nextLine('(')
         emitter.writeAnonymousFunction([], () => {
             emitter.nextLine('const defaultRender = ')
             this.compileSlotRenderer(aNode.children)
@@ -156,8 +156,8 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
             const nameProp = getANodePropByName(aNode, 'name')
             const slotNameExpr = nameProp ? expr(nameProp.expr) : '""'
             emitter.writeLine(`let slotName = ${slotNameExpr};`)
-            emitter.writeLine(`let render = ctx.slots[slotName] || defaultRender;`)
-            emitter.writeLine(`html += render(parentCtx, data);`)
+            emitter.writeLine('let render = ctx.slots[slotName] || defaultRender;')
+            emitter.writeLine('html += render(parentCtx, data);')
         })
         emitter.feedLine(')();')
     }
@@ -213,7 +213,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         emitter.nextLine('html += ')
         emitter.writeFunctionCall(
             `runtime.resolver.getRenderer("${ref.id}", "${ref.specifier}")`,
-            [ this.componentDataCode(aNode), ndo, 'runtime', 'parentCtx', stringifier.str(aNode.tagName) + ', slots' ]
+            [this.componentDataCode(aNode), ndo, 'runtime', 'parentCtx', stringifier.str(aNode.tagName) + ', slots']
         )
     }
 

@@ -12,8 +12,8 @@ describe('target-js/compilers/renderer-compiler', () => {
             const sourceFile = new ComponentClassParser(ComponentClass, '/tmp/foo.js').parse()
             const compiler = new RendererCompiler(false)
             compiler.compileComponentRendererBody(sourceFile.componentInfos[0])
-            expect(compiler.emitter.fullText()).toContain(`html += "<div>"`)
-            expect(compiler.emitter.fullText()).toContain(`html += "</div>"`)
+            expect(compiler.emitter.fullText()).toContain('html += "<div>"')
+            expect(compiler.emitter.fullText()).toContain('html += "</div>"')
         })
     })
     describe('#emitInitDataInCompileTime()', () => {
@@ -26,7 +26,7 @@ describe('target-js/compilers/renderer-compiler', () => {
             })
             const sourceFile = new ComponentClassParser(ComponentClass, '/tmp/foo.js').parse()
             const compiler = new RendererCompiler(false)
-            compiler.emitInitDataInCompileTime(sourceFile.componentInfos[0])
+            compiler.emitInitDataInCompileTime(sourceFile.componentInfos[0].proto.initData)
             expect(compiler.emitter.fullText()).toMatch(/ctx.data\["foo"\] = ctx\.data\["foo"\] \|\|/)
         })
         it('should not throw if initData() returned a falsy value', () => {
@@ -38,7 +38,7 @@ describe('target-js/compilers/renderer-compiler', () => {
             })
             const sourceFile = new ComponentClassParser(ComponentClass, '/tmp/foo.js').parse()
             const compiler = new RendererCompiler(false)
-            expect(() => compiler.emitInitDataInCompileTime(sourceFile.componentInfos[0])).not.toThrow()
+            expect(() => compiler.emitInitDataInCompileTime(sourceFile.componentInfos[0].proto.initData)).not.toThrow()
         })
     })
 })

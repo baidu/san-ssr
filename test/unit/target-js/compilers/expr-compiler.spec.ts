@@ -4,7 +4,7 @@ import { parseExpr, parseTemplate } from 'san'
 describe('target-js/compilers/expr-compiler', () => {
     it('should compile a binary expression', () => {
         const e = parseExpr('a + b')
-        expect(expr(e)).toEqual(`ctx.data.a + ctx.data.b`)
+        expect(expr(e)).toEqual('ctx.data.a + ctx.data.b')
     })
     it('should throw for unexpected expression type', () => {
         const e = parseExpr('!b')
@@ -13,7 +13,7 @@ describe('target-js/compilers/expr-compiler', () => {
     })
     it('should throw for unexpected unary operator', () => {
         const e = parseExpr('!b')
-        e['operator'] = '~'.charCodeAt(0)
+        e.operator = '~'.charCodeAt(0)
         expect(() => expr(e)).toThrow('unexpected unary operator "~"')
     })
     it('should compile url filter', () => {

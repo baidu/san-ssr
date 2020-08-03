@@ -22,6 +22,7 @@ export abstract class SanSourceFileImpl<T extends ComponentInfo = ComponentInfo>
          */
         public readonly entryComponentInfo?: T
     ) {}
+
     /**
      * 文件路径对于命名空间（编译到非 JavaScript 时）很有用
      */
@@ -36,6 +37,7 @@ export class DynamicSanSourceFile extends SanSourceFileImpl<DynamicComponentInfo
     ) {
         super(componentInfos, entryComponentInfo)
     }
+
     getFilePath () {
         return this.filePath
     }
@@ -67,5 +69,5 @@ export class TypedSanSourceFile extends SanSourceFileImpl<TypedComponentInfo> {
 export type SanSourceFile = DynamicSanSourceFile | TypedSanSourceFile
 
 export function isTypedSanSourceFile (sourceFile: SanSourceFile): sourceFile is TypedSanSourceFile {
-    return !!sourceFile['tsSourceFile']
+    return Object.prototype.hasOwnProperty.call(sourceFile, 'tsSourceFile')
 }

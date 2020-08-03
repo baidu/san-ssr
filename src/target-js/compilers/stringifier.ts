@@ -4,7 +4,7 @@ export const stringifier = {
         let result = '{'
 
         for (const key in source) {
-            if (!source.hasOwnProperty(key) || typeof source[key] === 'undefined') {
+            if (!Object.prototype.hasOwnProperty.call(source, key) || typeof source[key] === 'undefined') {
                 continue
             }
 

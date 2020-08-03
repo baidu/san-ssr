@@ -40,7 +40,7 @@ describe('DynamicSanSourceFile', function () {
 describe('.isTypedComopnentInfo()', function () {
     it('should return true for typed component info', () => {
         const proj = new Project({ addFilesFromTsConfig: false })
-        const sourceFile = proj.createSourceFile('foo.ts', `class Foo {}`)
+        const sourceFile = proj.createSourceFile('foo.ts', 'class Foo {}')
         const file = new TypedSanSourceFile([], sourceFile)
         expect(isTypedSanSourceFile(file)).toBeTruthy()
     })

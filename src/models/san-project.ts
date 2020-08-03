@@ -114,8 +114,7 @@ export class SanProject {
         if (fileContent) {
             return tsProject.createSourceFile(filePath, fileContent, { overwrite: true })
         }
-        tsProject.addExistingSourceFileIfExists(filePath)
-        const sourceFile = tsProject.getSourceFileOrThrow(filePath)
+        const sourceFile = tsProject.addSourceFileAtPath(filePath)
         sourceFile.refreshFromFileSystemSync()
         return sourceFile
     }

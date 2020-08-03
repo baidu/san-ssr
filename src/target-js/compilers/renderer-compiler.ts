@@ -1,6 +1,6 @@
 import { ANodeCompiler } from './anode-compiler'
 import { stringifier } from './stringifier'
-import { DynamicComponentInfo, isTypedComponentInfo, ComponentInfo } from '../../models/component-info'
+import { isTypedComponentInfo, ComponentInfo } from '../../models/component-info'
 import { JSEmitter } from '../js-emitter'
 import { Renderer } from '../../models/renderer'
 
@@ -46,13 +46,13 @@ export class RendererCompiler {
 
         this.genComponentContextCode(info)
         emitter.writeLine('ctx.instance.data = new runtime.SanData(ctx.data, ctx.instance.computed)')
-        emitter.writeLine(`ctx.instance.parentComponent = parentCtx && parentCtx.instance`)
-        emitter.writeLine(`var parentCtx = ctx;`)
+        emitter.writeLine('ctx.instance.parentComponent = parentCtx && parentCtx.instance')
+        emitter.writeLine('var parentCtx = ctx;')
 
         // instance preraration
         if (info.hasMethod('initData')) {
             if (isTypedComponentInfo(info)) this.emitInitDataInRuntime()
-            else this.emitInitDataInCompileTime(info)
+            else this.emitInitDataInCompileTime(info.proto.initData!)
         }
 
         // call inited
@@ -73,8 +73,8 @@ export class RendererCompiler {
         return emitter.fullText()
     }
 
-    public emitInitDataInCompileTime (info: DynamicComponentInfo) {
-        const defaultData = info.proto['initData'].call({}) || {}
+    public emitInitDataInCompileTime (initData: () => Partial<{}>) {
+        const defaultData = initData.call({}) || {}
         for (const key of Object.keys(defaultData)) {
             this.emitter.writeLine('ctx.data["' + key + '"] = ctx.data["' + key + '"] || ' +
             stringifier.any(defaultData[key]) + ';')

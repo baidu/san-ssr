@@ -1,3 +1,15 @@
+# [3.0.0](https://github.com/baidu/san-ssr/compare/v2.2.4...v3.0.0) (2020-08-04)
+
+
+### Bug Fixes
+
+* trigger release ([815ae66](https://github.com/baidu/san-ssr/commit/815ae66c1d51fa6478491f2339359c8dad04a551))
+
+
+### BREAKING CHANGES
+
+* dependencies including ts-morph are all upgraded
+
 ## [2.2.4](https://github.com/baidu/san-ssr/compare/v2.2.3...v2.2.4) (2020-07-31)
 
 

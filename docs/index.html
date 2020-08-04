@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>san-ssr</title>
-	<meta name="description" content="">
+	<meta name="description" content="Documentation for san-ssr">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
 </head>
@@ -13,7 +13,7 @@
 	<div class="tsd-page-toolbar">
 		<div class="container">
 			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
 					<div class="field">
 						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
 						<input id="tsd-search-field" type="text" />
@@ -56,7 +56,7 @@
 					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1> san-ssr</h1>
+			<h1>san-ssr</h1>
 		</div>
 	</div>
 </header>
@@ -71,7 +71,6 @@
 					<a href="https://www.npmjs.org/package/san-ssr"><img src="https://img.shields.io/npm/dm/san-ssr.svg" alt="downloads"></a>
 					<a href="https://travis-ci.org/baidu/san-ssr"><img src="https://travis-ci.org/baidu/san-ssr.svg?branch=master" alt="Build Status"></a>
 					<a href="https://coveralls.io/github/baidu/san-ssr?branch=master"><img src="https://img.shields.io/coveralls/baidu/san-ssr.svg" alt="Coveralls"></a>
-					<a href="https://david-dm.org/baidu/san-ssr"><img src="https://img.shields.io/david/baidu/san-ssr.svg" alt="dependencies"></a>
 					<a href="https://github.com/baidu/san-ssr"><img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg" alt="semantic-release"></a>
 					<a href="https://github.com/baidu/san-ssr/issues"><img src="https://img.shields.io/github/issues-closed/baidu/san-ssr.svg" alt="GitHub issues"></a>
 					<a href="https://david-dm.org/baidu/san-ssr"><img src="https://img.shields.io/david/baidu/san-ssr.svg" alt="David"></a>
@@ -103,13 +102,13 @@
 					<li>输入是组件对象。</li>
 					<li>输出是一个 render 函数。该函数接受数据对象作为参数，返回 HTML 字符串。</li>
 				</ul>
-				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { SanProject } = <span class="hljs-built_in">require</span>(<span class="hljs-string">'san-ssr'</span>)
-<span class="hljs-keyword">const</span> app = <span class="hljs-built_in">require</span>(<span class="hljs-string">'src/component.js'</span>)
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { SanProject } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-ssr&#x27;</span>)
+<span class="hljs-keyword">const</span> app = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;src/component.js&#x27;</span>)
 
 <span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
 <span class="hljs-keyword">const</span> render = project.compileToRenderer(app)
 
-<span class="hljs-built_in">console</span>.log(render({<span class="hljs-attr">name</span>: <span class="hljs-string">'harttle'</span>}))</code></pre>
+<span class="hljs-built_in">console</span>.log(render({<span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;harttle&#x27;</span>}))</code></pre>
 				<p>详细请参考 API 文档：<a href="https://baidu.github.io/san-ssr/classes/_models_san_project_.sanproject.html">SanProject</a>，或 /demo 下的示例项目。</p>
 				<a href="#其他目标平台" id="其他目标平台" style="color: inherit; text-decoration: none;">
 					<h2>其他目标平台</h2>
@@ -123,13 +122,13 @@
 				<p>CLI 参数 <code>--target</code> 参数用来选择目标代码，默认为 <code>js</code>：</p>
 				<pre><code class="language-bash">san-ssr --target js ./component.js &gt; ssr.js</code></pre>
 				<p>编程接口也可以通过 <code>SanProject#compile()</code> 的第二个参数来指定目标，第三个参数来指定传给 Compiler 实现的参数：</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Target, SanProject } <span class="hljs-keyword">from</span> <span class="hljs-string">'san-ssr'</span>
-<span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">'fs'</span>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Target, SanProject } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;san-ssr&#x27;</span>
+<span class="hljs-keyword">import</span> { writeFileSync } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;fs&#x27;</span>
 
 <span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
-<span class="hljs-keyword">const</span> targetCode = project.compile(<span class="hljs-string">'src/component.ts'</span>, Target.PHP, { emitHeader: <span class="hljs-literal">true</span> })
+<span class="hljs-keyword">const</span> targetCode = project.compile(<span class="hljs-string">&#x27;src/component.ts&#x27;</span>, Target.PHP, { emitHeader: <span class="hljs-literal">true</span> })
 
-writeFileSync(<span class="hljs-string">'ssr.php'</span>, targetCode)</code></pre>
+writeFileSync(<span class="hljs-string">&#x27;ssr.php&#x27;</span>, targetCode)</code></pre>
 				<p>指定非 <code>js</code> 的目标时，san-ssr 会从 CWD 开始寻找 <code>san-ssr-target-${target}</code> 的包，因此需要作为 san-ssr 的 peer 来安装。例如：</p>
 				<pre><code class="language-bash">npm i san-ssr san-ssr-target-php</code></pre>
 				<a href="#贡献指南" id="贡献指南" style="color: inherit; text-decoration: none;">
@@ -184,122 +183,122 @@ writeFileSync(<span class="hljs-string">'ssr.php'</span>, targetCode)</code></pr
 					<li class="globals  ">
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_bin_ssr_.html">"bin/ssr"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_bin_ssr_.html">&quot;src/bin/ssr&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_fixtures_case_.html">"fixtures/case"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_fixtures_case_.html">&quot;src/fixtures/case&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_index_.html">"index"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_index_.html">&quot;src/index&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_models_compiler_.html">"models/compiler"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_models_compiler_.html">&quot;src/models/compiler&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_models_component_.html">"models/component"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_models_component_.html">&quot;src/models/component&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_models_component_id_.html">"models/component-<wbr>id"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_models_component_id_.html">&quot;src/models/component-<wbr>id&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_models_component_info_.html">"models/component-<wbr>info"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_models_component_info_.html">&quot;src/models/component-<wbr>info&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_models_component_reference_.html">"models/component-<wbr>reference"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_models_component_reference_.html">&quot;src/models/component-<wbr>reference&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_models_options_.html">"models/options"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_models_options_.html">&quot;src/models/options&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_models_renderer_.html">"models/renderer"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_models_renderer_.html">&quot;src/models/renderer&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_models_san_project_.html">"models/san-<wbr>project"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_models_san_project_.html">&quot;src/models/san-<wbr>project&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_models_san_source_file_.html">"models/san-<wbr>source-<wbr>file"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_models_san_source_file_.html">&quot;src/models/san-<wbr>source-<wbr>file&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_parsers_component_class_parser_.html">"parsers/component-<wbr>class-<wbr>parser"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_parsers_component_class_parser_.html">&quot;src/parsers/component-<wbr>class-<wbr>parser&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_parsers_normalize_component_.html">"parsers/normalize-<wbr>component"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_parsers_normalize_component_.html">&quot;src/parsers/normalize-<wbr>component&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_parsers_parse_template_.html">"parsers/parse-<wbr>template"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_parsers_parse_template_.html">&quot;src/parsers/parse-<wbr>template&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_parsers_tsconfig_.html">"parsers/tsconfig"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_parsers_tsconfig_.html">&quot;src/parsers/tsconfig&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_parsers_typescript_san_parser_.html">"parsers/typescript-<wbr>san-<wbr>parser"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_parsers_typescript_san_parser_.html">&quot;src/parsers/typescript-<wbr>san-<wbr>parser&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_runtime_index_.html">"runtime/index"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_runtime_index_.html">&quot;src/runtime/index&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_runtime_resolver_.html">"runtime/resolver"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_runtime_resolver_.html">&quot;src/runtime/resolver&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_runtime_san_data_.html">"runtime/san-<wbr>data"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_runtime_san_data_.html">&quot;src/runtime/san-<wbr>data&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_runtime_underscore_.html">"runtime/underscore"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_runtime_underscore_.html">&quot;src/runtime/underscore&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_js_compilers_anode_compiler_.html">"target-<wbr>js/compilers/anode-<wbr>compiler"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_target_js_compilers_anode_compiler_.html">&quot;src/target-<wbr>js/compilers/anode-<wbr>compiler&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_js_compilers_component_compiler_.html">"target-<wbr>js/compilers/component-<wbr>compiler"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_target_js_compilers_component_compiler_.html">&quot;src/target-<wbr>js/compilers/component-<wbr>compiler&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_js_compilers_element_compiler_.html">"target-<wbr>js/compilers/element-<wbr>compiler"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_target_js_compilers_element_compiler_.html">&quot;src/target-<wbr>js/compilers/element-<wbr>compiler&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_js_compilers_expr_compiler_.html">"target-<wbr>js/compilers/expr-<wbr>compiler"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_target_js_compilers_expr_compiler_.html">&quot;src/target-<wbr>js/compilers/expr-<wbr>compiler&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_js_compilers_renderer_compiler_.html">"target-<wbr>js/compilers/renderer-<wbr>compiler"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_target_js_compilers_renderer_compiler_.html">&quot;src/target-<wbr>js/compilers/renderer-<wbr>compiler&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_js_compilers_stringifier_.html">"target-<wbr>js/compilers/stringifier"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_target_js_compilers_stringifier_.html">&quot;src/target-<wbr>js/compilers/stringifier&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_js_index_.html">"target-<wbr>js/index"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_target_js_index_.html">&quot;src/target-<wbr>js/index&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_target_js_js_emitter_.html">"target-<wbr>js/js-<wbr>emitter"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_target_js_js_emitter_.html">&quot;src/target-<wbr>js/js-<wbr>emitter&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_transpilers_ts2js_.html">"transpilers/ts2js"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_transpilers_ts2js_.html">&quot;src/transpilers/ts2js&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_anode_util_.html">"utils/anode-<wbr>util"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_anode_util_.html">&quot;src/utils/anode-<wbr>util&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_ast_util_.html">"utils/ast-<wbr>util"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_ast_util_.html">&quot;src/utils/ast-<wbr>util&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_buffer_.html">"utils/buffer"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_buffer_.html">&quot;src/utils/buffer&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_case_.html">"utils/case"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_case_.html">&quot;src/utils/case&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_dom_util_.html">"utils/dom-<wbr>util"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_dom_util_.html">&quot;src/utils/dom-<wbr>util&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_emitter_.html">"utils/emitter"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_emitter_.html">&quot;src/utils/emitter&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_fs_.html">"utils/fs"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_fs_.html">&quot;src/utils/fs&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_lang_.html">"utils/lang"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_lang_.html">&quot;src/utils/lang&quot;</a>
 					</li>
-					<li class=" tsd-kind-external-module">
-						<a href="modules/_utils_type_guards_.html">"utils/type-<wbr>guards"</a>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_utils_type_guards_.html">&quot;src/utils/type-<wbr>guards&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -315,57 +314,19 @@ writeFileSync(<span class="hljs-string">'ssr.php'</span>, targetCode)</code></pr
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
-				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
 				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
-				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
 				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
 				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
-				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 		</div>
 	</div>
@@ -375,6 +336,5 @@ writeFileSync(<span class="hljs-string">'ssr.php'</span>, targetCode)</code></pr
 </div>
 <div class="overlay"></div>
 <script src="assets/js/main.js"></script>
-<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
 </body>
 </html>

@@ -102,7 +102,7 @@ export class ElementCompiler {
         }
 
         const onlyOneAccessor = prop.expr.type === ExprType.ACCESSOR
-        const escp = ((prop.x || onlyOneAccessor) && !prop.expr.original ? ', true' : '')
+        const escp = ((prop.x || onlyOneAccessor) && !prop.expr['original'] ? ', true' : '')
         emitter.writeHTML(`_.attrFilter("${name}", ${expr(prop.expr)}${escp})`)
     }
 

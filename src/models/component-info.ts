@@ -1,5 +1,5 @@
-import { SanComponentConfig, ANode } from 'san'
-import { ClassDeclaration } from 'ts-morph'
+import type { SanComponentConfig, ANode } from 'san'
+import type { ClassDeclaration } from 'ts-morph'
 import { ComponentReference, DynamicComponentReference } from './component-reference'
 import { getObjectLiteralPropertyKeys } from '../utils/ast-util'
 import { ComponentClass } from '../models/component'

@@ -1,4 +1,4 @@
-import { ComponentConstructor } from 'san'
+import type { ComponentConstructor } from 'san'
 import { Project } from 'ts-morph'
 import { ComponentClassParser } from '../parsers/component-class-parser'
 import { TypeScriptSanParser } from '../parsers/typescript-san-parser'

@@ -1,4 +1,4 @@
-import { ClassDeclaration } from 'ts-morph'
+import type { ClassDeclaration } from 'ts-morph'
 
 export function normalizeComponentClass (clazz: ClassDeclaration) {
     if (!clazz.getName()) {

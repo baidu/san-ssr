@@ -1,4 +1,5 @@
-import { CompilerOptions, transpileModule } from 'typescript'
+import { transpileModule } from 'typescript'
+import type { CompilerOptions } from 'typescript'
 import debugFactory from 'debug'
 import { SourceFile } from 'ts-morph'
 

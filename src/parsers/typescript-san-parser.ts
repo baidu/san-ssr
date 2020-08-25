@@ -1,4 +1,4 @@
-import { SourceFile, ClassDeclaration } from 'ts-morph'
+import type { SourceFile, ClassDeclaration } from 'ts-morph'
 import debugFactory from 'debug'
 import { getChildComponents, getPropertyStringArrayValue, getComponentDeclarations, getPropertyStringValue } from '../utils/ast-util'
 import { normalizeComponentClass } from './normalize-component'

@@ -1,4 +1,5 @@
-import { Node, MethodDeclaration, ShorthandPropertyAssignment, PropertyAssignment, TypeGuards, SyntaxKind, ImportDeclaration, ClassDeclaration, ts, SourceFile } from 'ts-morph'
+import type { Node, MethodDeclaration, ShorthandPropertyAssignment, PropertyAssignment, ImportDeclaration, ClassDeclaration, SourceFile } from 'ts-morph'
+import { TypeGuards, SyntaxKind } from 'ts-morph'
 import debugFactory from 'debug'
 import { TagName } from '../models/component-info'
 import { getExportedComponentID, getDefaultExportedComponentID, ComponentReference } from '../models/component-reference'
@@ -27,7 +28,7 @@ export function getComponentClassIdentifier (sourceFile: SourceFile): string | u
 }
 
 export function isChildClassOf (clazz: ClassDeclaration, parentClass: string) {
-    const extendClause = clazz.getHeritageClauseByKind(ts.SyntaxKind.ExtendsKeyword)
+    const extendClause = clazz.getHeritageClauseByKind(SyntaxKind.ExtendsKeyword)
     if (!extendClause) return false
 
     const typeNode = extendClause.getTypeNodes().find(x => x.getText() === parentClass)

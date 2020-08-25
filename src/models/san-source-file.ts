@@ -1,4 +1,4 @@
-import { SourceFile } from 'ts-morph'
+import type { SourceFile } from 'ts-morph'
 import debugFactory from 'debug'
 import { DynamicComponentInfo, ComponentInfo, TypedComponentInfo } from '../models/component-info'
 

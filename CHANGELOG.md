@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/baidu/san-ssr/compare/v3.0.0...v3.0.1) (2020-08-27)
+
+
+### Bug Fixes
+
+* undefined/null should be output as "" ([37e91b2](https://github.com/baidu/san-ssr/commit/37e91b2e47250030642bd1d900267bde419196c1))
+
 # [3.0.0](https://github.com/baidu/san-ssr/compare/v2.2.4...v3.0.0) (2020-08-04)
 
 

@@ -4,7 +4,7 @@ import { getANodePropByName } from '../../utils/anode-util'
 import { _ } from '../../runtime/underscore'
 import { autoCloseTags } from '../../utils/dom-util'
 import { ANodeCompiler } from './anode-compiler'
-import { ANodeProperty, Directive, ANode } from 'san'
+import { ExprNode, ANodeProperty, Directive, ANode } from 'san'
 import { isExprNumberNode, isExprStringNode, isExprBoolNode } from '../../utils/type-guards'
 
 /**
@@ -50,16 +50,10 @@ export class ElementCompiler {
     }
 
     private compileProperty (tagName: string, prop: ANodeProperty, propsIndex: { [key: string]: ANodeProperty }) {
-        const { name } = prop
         const { emitter } = this
-        if (name === 'slot') return
 
-        if (isExprBoolNode(prop.expr)) return emitter.writeHTMLLiteral(' ' + name)
-        if (isExprStringNode(prop.expr) || isExprNumberNode(prop.expr)) {
-            return emitter.writeHTMLLiteral(` ${name}="${_.escapeHTML(prop.expr.value)}"`)
-        }
-
-        if (name === 'value') {
+        if (prop.name === 'slot') return
+        if (prop.name === 'value') {
             if (tagName === 'textarea') return
             if (tagName === 'select') {
                 return emitter.writeLine(`$selectValue = ${expr(prop.expr)} || "";`)
@@ -76,13 +70,18 @@ export class ElementCompiler {
             }
         }
 
-        if (name === 'readonly' || name === 'disabled' || name === 'multiple') {
-            return emitter.writeHTMLExpression(`_.boolAttrFilter("${name}", ${expr(prop.expr)})`)
+        if (prop.name === 'readonly' || prop.name === 'disabled' || prop.name === 'multiple') {
+            if (this.isLiteral(prop.expr)) {
+                if (_.boolAttrFilter(prop.name, prop.expr.value)) emitter.writeHTMLLiteral(` ${prop.name}`)
+            } else {
+                emitter.writeHTMLExpression(`_.boolAttrFilter("${prop.name}", ${expr(prop.expr)})`)
+            }
+            return
         }
 
         const valueProp = propsIndex.value
         const inputType = propsIndex.type
-        if (name === 'checked' && tagName === 'input' && valueProp && inputType) {
+        if (prop.name === 'checked' && tagName === 'input' && valueProp && inputType) {
             switch (inputType.expr.value) {
             case 'checkbox':
                 return emitter.writeIf(`_.includes(${expr(prop.expr)}, ${expr(valueProp.expr)})`, () => {
@@ -94,7 +93,15 @@ export class ElementCompiler {
                 })
             }
         }
-        emitter.writeHTMLExpression(`_.attrFilter("${name}", ${expr(prop.expr)}, true)`)
+        if (this.isLiteral(prop.expr)) {
+            emitter.writeHTMLLiteral(_.attrFilter(prop.name, prop.expr.value, true))
+        } else {
+            emitter.writeHTMLExpression(`_.attrFilter("${prop.name}", ${expr(prop.expr)}, true)`)
+        }
+    }
+
+    private isLiteral (expr: ExprNode) {
+        return isExprBoolNode(expr) || isExprStringNode(expr) || isExprNumberNode(expr)
     }
 
     private compileBindProperties (tagName: string, bindDirective: Directive<any>) {
@@ -153,13 +160,13 @@ export class ElementCompiler {
         // inner content
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodePropByName(aNode, 'value')
-            if (valueProp) emitter.writeHTMLExpression(`_.escapeHTML(${expr(valueProp.expr)})`)
+            if (valueProp) emitter.writeHTMLExpression(expr(valueProp.expr, 'escape'))
             return
         }
 
         const htmlDirective = aNode.directives.html
         if (htmlDirective) {
-            emitter.writeHTMLExpression(expr(htmlDirective.value))
+            emitter.writeHTMLExpression(expr(htmlDirective.value, 'plain'))
             return
         }
         // only ATextNode#children is not defined, it has been taken over by ANodeCompiler#compileText()

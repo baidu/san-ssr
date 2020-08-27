@@ -96,6 +96,7 @@ declare namespace San {
         el?: Element;
         nodeType: NodeType;
         data: SanData<T>;
+        parentComponent?: SanComponent<{}>;
         fire(eventName: string, eventData: any): void;
         dispatch(eventName: string, eventData: any): void;
 
@@ -112,7 +113,7 @@ declare namespace San {
     }
 
     interface ComponentConstructor<T, D> {
-        new(option?: { data?: Partial<T> }): SanComponent<T> & D;
+        new(option?: { data?: Partial<T>, owner?: any, source?: string | ANode }): SanComponent<T> & D;
     }
 
     interface SanComponentLoaderOption<T, D> {
@@ -250,7 +251,7 @@ declare namespace San {
     interface ANode {
         isText?: boolean;
         text?: string;
-        textExpr?: ExprTextNode | ExprStringNode;
+        textExpr?: ExprTextNode | ExprStringNode | ExprAccessorNode;
         children?: ANode[];
         props: ANodeProperty[];
         events: SanIndexedList<ExprNode>;
@@ -263,7 +264,7 @@ declare namespace San {
     }
 
     interface ATextNode extends ANode {
-        textExpr: ExprTextNode | ExprStringNode;
+        textExpr: ExprTextNode | ExprStringNode | ExprAccessorNode;
     }
 
     interface ATemplateNode extends ANode {

@@ -36,11 +36,15 @@ const HTML_ENTITY = {
 const rENTITY = new RegExp(`[${Object.keys(HTML_ENTITY).join('')}]`, 'g')
 
 function escapeHTML (source: any) {
-    if (source == null) return ''
     if (typeof source === 'string') {
         return source.replace(rENTITY, (c: string) => HTML_ENTITY[c])
     }
     return '' + source
+}
+
+function output (value: any, needEscape: boolean) {
+    if (value == null) return ''
+    return needEscape ? escapeHTML(value) : value
 }
 
 function _classFilter (source: string | string[]) {
@@ -127,5 +131,5 @@ function getRootCtx<T extends {parentCtx?: T}> (ctx: T) {
 }
 
 export const _ = {
-    createInstanceFromClass, escapeHTML, defaultStyleFilter, boolAttrFilter, attrFilter, includes, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype, getRootCtx
+    output, createInstanceFromClass, escapeHTML, defaultStyleFilter, boolAttrFilter, attrFilter, includes, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype, getRootCtx
 }

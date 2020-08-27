@@ -49,16 +49,27 @@ function normalizeANodeProps (aNode: ANode) {
 
 function normalizeRootClassProp (clazz: ANodeProperty) {
     const parentClassExpr = clazz.expr
-    const expr = (parseTemplate('{{class | _xclass}}').children![0].textExpr! as any).segs[0] as ExprInterpNode
+    const expr = extractInterpNodeFromRootANode(parseTemplate('{{class | _xclass}}'))
     expr.filters[0].args.push(parentClassExpr)
     clazz.expr = expr
 }
 
 function normalizeRootStyleProp (style: ANodeProperty) {
     const parentStyleExpr = style.expr
-    const expr = (parseTemplate('{{style | _xstyle}}').children![0].textExpr! as any).segs[0] as ExprInterpNode
+    const expr = extractInterpNodeFromRootANode(parseTemplate('{{style | _xstyle}}'))
     expr.filters[0].args.push(parentStyleExpr)
     style.expr = expr
+}
+
+export function extractInterpNodeFromRootANode (root: ANode): ExprInterpNode {
+    const expr = root.children![0].textExpr!
+    if (TypeGuards.isExprInterpNode(expr)) {
+        return expr
+    }
+    if (TypeGuards.isExprTextNode(expr)) {
+        return expr.segs[0] as ExprInterpNode
+    }
+    throw new Error('root aNode not recognized')
 }
 
 function normalizeRootATemplateNode (rootANode: ANode) {

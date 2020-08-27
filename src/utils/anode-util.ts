@@ -17,11 +17,11 @@ export function getANodePropByName (aNode: ANode, name: string): ANodeProperty |
  */
 export function parseANodeProps (aNode: ANode) {
     return aNode.props.map(prop => {
-        const expr = prop.expr
         if (
-            TypeGuards.isExprTextNode(expr) &&
-            expr.segs.length === 0 &&
-            prop.noValue
+            (
+                TypeGuards.isExprTextNode(prop.expr) ||
+                TypeGuards.isExprStringNode(prop.expr)
+            ) && prop.noValue
         ) {
             prop.expr = {
                 type: ExprType.BOOL,

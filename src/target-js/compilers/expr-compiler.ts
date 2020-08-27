@@ -7,6 +7,9 @@ import * as TypeGuards from '../../utils/type-guards'
 import { _ } from '../../runtime/underscore'
 import { stringifier } from './stringifier'
 
+// 输出为 HTML 并转义、输出为 HTML 不转义、非输出表达式
+export type OutputType = 'escape' | 'plain' | 'none'
+
 // 二元表达式操作符映射表
 const binaryOp = {
     43: '+',
@@ -41,18 +44,18 @@ function tertiary (e: ExprTertiaryNode) {
 }
 
 // 生成数据访问表达式代码
-export function dataAccess (accessorExpr?: ExprAccessorNode, contextVariableName: string = 'ctx'): string {
+export function dataAccess (accessorExpr: ExprAccessorNode | undefined, outputType: OutputType, contextVariableName: string = 'ctx'): string {
     let code = `${contextVariableName}.data`
     if (!accessorExpr) return code
     for (const path of accessorExpr.paths) {
         code += TypeGuards.isExprStringNode(path) && isValidIdentifier(path.value)
             ? `.${path.value}` : `[${expr(path)}]`
     }
-    return code
+    return outputCode(code, outputType)
 }
 
 // 生成调用表达式代码
-function callExpr (callExpr: ExprCallNode): string {
+function callExpr (callExpr: ExprCallNode, outputType: OutputType): string {
     const paths = callExpr.name.paths
     let code = 'ctx.instance'
     for (const path of paths) {
@@ -61,15 +64,19 @@ function callExpr (callExpr: ExprCallNode): string {
     }
 
     code += '('
-    const argValues = callExpr.args.map(arg => expr(arg))
-    code += [...argValues, 'ctx'].join(', ')
+    code += [...callExpr.args.map(arg => expr(arg)), 'ctx'].join(', ')
     code += ')'
 
-    return code
+    return outputCode(code, outputType)
+}
+
+function outputCode (code: string, outputType: OutputType) {
+    if (outputType === 'none') return code
+    return `_.output(${code}, ${outputType === 'escape'})`
 }
 
 // 生成插值代码
-function interp (interpExpr: ExprInterpNode, escapeHTML: boolean): string {
+function interp (interpExpr: ExprInterpNode, outputType: OutputType): string {
     let code = expr(interpExpr.expr)
 
     for (const filter of interpExpr.filters) {
@@ -94,23 +101,21 @@ function interp (interpExpr: ExprInterpNode, escapeHTML: boolean): string {
             code = `ctx.instance.filters["${filterName}"].call(ctx.instance, ${code}, ${filter.args.map((arg: any) => expr(arg)).join(', ')})`
         }
     }
-    return escapeHTML && !interpExpr.original ? '_.escapeHTML(' + code + ')' : code
+    if (outputType === 'escape' && interpExpr.original) outputType = 'plain'
+    return outputCode(code, outputType)
 }
 
-function str (e: ExprStringNode, escapeHTML: boolean): string {
-    return escapeHTML
-        ? stringifier.str(_.escapeHTML(e.value))
-        : stringifier.str(e.value)
+function str (e: ExprStringNode, output: OutputType): string {
+    if (output === 'escape') return stringifier.str(_.escapeHTML(e.value))
+    return stringifier.str(e.value)
 }
 
 // 生成文本片段代码
-function text (textExpr: ExprTextNode, escapeHTML: boolean): string {
-    if (textExpr.segs.length === 0) return '""'
-
+function text (textExpr: ExprTextNode, output: OutputType): string {
     return textExpr.segs
-        .map(seg => expr(seg, escapeHTML))
-        .map(seg => `(${seg})`)
-        .join(' + ')
+        .map(seg => expr(seg, output))
+        .map(seg => `${seg}`)
+        .join(' + ') || '""'
 }
 
 // 生成数组字面量代码
@@ -137,25 +142,24 @@ function object (objExpr: ExprObjectNode): string {
     return '{\n' + code.join(',\n') + '\n}'
 }
 
-export function expr (e: ExprNode, escapeHTML = false): string {
-    const str = dispatch(e, escapeHTML)
-    return e.parenthesized ? `(${str})` : str
-}
+// expr 的 JavaScript 表达式
+export function expr (e: ExprNode, output: OutputType = 'none'): string {
+    let s
 
-// 根据表达式类型进行生成代码函数的中转分发
-function dispatch (e: ExprNode, escapeHTML: boolean): string {
-    if (TypeGuards.isExprUnaryNode(e)) return unary(e)
-    if (TypeGuards.isExprBinaryNode(e)) return binary(e)
-    if (TypeGuards.isExprTertiaryNode(e)) return tertiary(e)
-    if (TypeGuards.isExprStringNode(e)) return str(e, escapeHTML)
-    if (TypeGuards.isExprNumberNode(e)) return '' + e.value
-    if (TypeGuards.isExprBoolNode(e)) return e.value ? 'true' : 'false'
-    if (TypeGuards.isExprAccessorNode(e)) return dataAccess(e)
-    if (TypeGuards.isExprInterpNode(e)) return interp(e, escapeHTML)
-    if (TypeGuards.isExprTextNode(e)) return text(e, escapeHTML)
-    if (TypeGuards.isExprArrayNode(e)) return array(e)
-    if (TypeGuards.isExprObjectNode(e)) return object(e)
-    if (TypeGuards.isExprCallNode(e)) return callExpr(e)
-    if (TypeGuards.isExprNullNode(e)) return 'null'
-    throw new Error(`unexpected expression ${JSON.stringify(e)}`)
+    if (TypeGuards.isExprUnaryNode(e)) s = unary(e)
+    else if (TypeGuards.isExprBinaryNode(e)) s = binary(e)
+    else if (TypeGuards.isExprTertiaryNode(e)) s = tertiary(e)
+    else if (TypeGuards.isExprStringNode(e)) s = str(e, output)
+    else if (TypeGuards.isExprNumberNode(e)) s = '' + e.value
+    else if (TypeGuards.isExprBoolNode(e)) s = e.value ? 'true' : 'false'
+    else if (TypeGuards.isExprAccessorNode(e)) s = dataAccess(e, output)
+    else if (TypeGuards.isExprInterpNode(e)) s = interp(e, output)
+    else if (TypeGuards.isExprTextNode(e)) s = text(e, output)
+    else if (TypeGuards.isExprArrayNode(e)) s = array(e)
+    else if (TypeGuards.isExprObjectNode(e)) s = object(e)
+    else if (TypeGuards.isExprCallNode(e)) s = callExpr(e, output)
+    else if (TypeGuards.isExprNullNode(e)) s = 'null'
+    else throw new Error(`unexpected expression ${JSON.stringify(e)}`)
+
+    return e.parenthesized ? `(${s})` : s
 }

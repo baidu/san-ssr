@@ -52,7 +52,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         const shouldEmitComment = TypeGuards.isExprTextNode(aNode.textExpr) && aNode.textExpr.original && !this.ssrOnly
 
         if (shouldEmitComment) emitter.writeHTMLLiteral('<!--s-text-->')
-        emitter.writeHTMLExpression(expr(aNode.textExpr, true))
+        emitter.writeHTMLExpression(expr(aNode.textExpr, 'escape'))
         if (shouldEmitComment) emitter.writeHTMLLiteral('<!--/s-text-->')
     }
 
@@ -235,6 +235,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         const givenData = '{' + aNode.props.map(prop => {
             const key = stringifier.str(camelCase(prop.name))
             const val = expr(prop.expr)
+
             return `${key}: ${val}`
         }).join(', ') + '}'
 

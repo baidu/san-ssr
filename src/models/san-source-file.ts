@@ -1,6 +1,6 @@
 import type { SourceFile } from 'ts-morph'
 import debugFactory from 'debug'
-import { DynamicComponentInfo, ComponentInfo, TypedComponentInfo } from '../models/component-info'
+import { DynamicComponentInfo, ComponentInfo, JSComponentInfo, TypedComponentInfo } from '../models/component-info'
 
 const debug = debugFactory('san-source-file')
 
@@ -43,6 +43,25 @@ export class DynamicSanSourceFile extends SanSourceFileImpl<DynamicComponentInfo
     }
 }
 
+export class JSSanSourceFile extends SanSourceFileImpl<JSComponentInfo> {
+    constructor (
+        private readonly filePath: string,
+        private readonly fileContent: string,
+        componentInfos: JSComponentInfo[],
+        public readonly entryComponentInfo?: JSComponentInfo
+    ) {
+        super(componentInfos, entryComponentInfo)
+    }
+
+    getFilePath () {
+        return this.filePath
+    }
+
+    getFileContent () {
+        return this.fileContent
+    }
+}
+
 export class TypedSanSourceFile extends SanSourceFileImpl<TypedComponentInfo> {
     constructor (
         componentInfos: TypedComponentInfo[],
@@ -66,8 +85,11 @@ export class TypedSanSourceFile extends SanSourceFileImpl<TypedComponentInfo> {
     }
 }
 
-export type SanSourceFile = DynamicSanSourceFile | TypedSanSourceFile
+export type SanSourceFile = DynamicSanSourceFile | TypedSanSourceFile | JSSanSourceFile
 
 export function isTypedSanSourceFile (sourceFile: SanSourceFile): sourceFile is TypedSanSourceFile {
     return Object.prototype.hasOwnProperty.call(sourceFile, 'tsSourceFile')
+}
+export function isJSSanSourceFile (sourceFile: SanSourceFile): sourceFile is JSSanSourceFile {
+    return !isTypedSanSourceFile(sourceFile) && Object.prototype.hasOwnProperty.call(sourceFile, 'fileContent')
 }

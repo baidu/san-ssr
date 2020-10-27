@@ -53,7 +53,9 @@
     "@semantic-release/git": "^9.0.0",
     "@semantic-release/npm": "^7.0.5",
     "@semantic-release/release-notes-generator": "^9.0.1",
+    "@types/acorn": "^4.0.5",
     "@types/debug": "^4.1.5",
+    "@types/estree": "0.0.45",
     "@types/jest": "^26.0.8",
     "@types/lodash": "^4.14.158",
     "@types/yargs": "^15.0.5",
@@ -84,6 +86,8 @@
     "typedoc": "^0.17.8"
   },
   "dependencies": {
+    "acorn": "^8.0.1",
+    "acorn-walk": "^8.0.0",
     "camelcase": "^6.0.0",
     "chalk": "^4.1.0",
     "debug": "^4.1.1",

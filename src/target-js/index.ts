@@ -3,7 +3,7 @@ import debugFactory from 'debug'
 import { JSEmitter } from './js-emitter'
 import { createRuntime, emitRuntime } from '../runtime/index'
 import { ComponentClassCompiler } from './compilers/component-compiler'
-import { SanSourceFile, TypedSanSourceFile, DynamicSanSourceFile, isTypedSanSourceFile } from '../models/san-source-file'
+import { SanSourceFile, JSSanSourceFile, TypedSanSourceFile, DynamicSanSourceFile, isTypedSanSourceFile, isJSSanSourceFile } from '../models/san-source-file'
 import { Renderer } from '../models/renderer'
 import { Compiler } from '../models/compiler'
 import { RendererCompiler } from './compilers/renderer-compiler'
@@ -78,6 +78,8 @@ export default class ToJSCompiler implements Compiler {
 
         // 编译源文件到 JS
         if (isTypedSanSourceFile(sourceFile)) this.compileTSComponentToSource(sourceFile, emitter)
+        else if (isJSSanSourceFile(sourceFile)) this.compileJSComponentToSource(sourceFile, emitter)
+        // DynamicSanSourceFile
         else this.compileComponentClassToSource(sourceFile, emitter)
 
         // 编译 render 函数
@@ -102,6 +104,15 @@ export default class ToJSCompiler implements Compiler {
         for (const info of sourceFile.componentInfos) {
             const className = info.classDeclaration.getName()
             emitter.writeLine(`sanSSRRuntime.resolver.setPrototype("${info.id}", sanSSRRuntime._.createInstanceFromClass(${className}));`)
+        }
+    }
+
+    private compileJSComponentToSource (sourceFile: JSSanSourceFile, emitter: JSEmitter) {
+        emitter.writeLines(sourceFile.getFileContent())
+
+        for (const info of sourceFile.componentInfos) {
+            const proto = info.className ? info.className : info.sourceCode
+            emitter.writeLine(`sanSSRRuntime.resolver.setPrototype("${info.id}", sanSSRRuntime._.createInstanceFromClass(${proto}));`)
         }
     }
 

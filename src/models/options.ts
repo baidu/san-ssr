@@ -1,6 +1,9 @@
 import { ComponentConstructor } from 'san'
 
-export interface TypeScriptFileDescriptor {
+/**
+ * 文件尚未存在，但其内容已经在内存里的情况。比如 Webpack 编译时。
+ */
+export interface FileDescriptor {
     /**
      * 文件路径
      */
@@ -10,20 +13,41 @@ export interface TypeScriptFileDescriptor {
      */
     fileContent: string
 }
+
+/**
+ * .san 文件描述
+ *
+ * - 单独给 script 文件内容、template 文件内容的情况。
+ * - 一个 script 内只有一个组件。
+ */
+export interface SanFileDescriptor {
+    /**
+     * 文件路径
+     */
+    filePath: string
+    /**
+     * 脚本内容
+     */
+    scriptContent: string
+    /**
+     * 模板内容
+     */
+    templateContent: string
+}
 export type ComponentClass = ComponentConstructor<{}, any>
 
 export type FilePath = string
 
-export type CompileInput = TypeScriptFileDescriptor | FilePath | ComponentClass
+export type CompileInput = SanFileDescriptor | FileDescriptor | FilePath | ComponentClass
 
-export function isTypeScriptFileDescriptor (input: CompileInput): input is TypeScriptFileDescriptor {
+export function isFileDescriptor (input: CompileInput): input is FileDescriptor {
     return typeof input['filePath'] === 'string' && typeof input['fileContent'] === 'string'
 }
 
-export function isFilePath (input: CompileInput): input is FilePath {
-    return typeof input === 'string'
+export function isComponentClass (input: CompileInput): input is ComponentClass {
+    return typeof input === 'function'
 }
 
-export function isComponentClass (input: CompileInput): input is ComponentClass {
-    return !isFilePath(input) && !isTypeScriptFileDescriptor(input)
+export function isSanFileDescriptor (input: CompileInput): input is SanFileDescriptor {
+    return typeof input['templateContent'] === 'string'
 }

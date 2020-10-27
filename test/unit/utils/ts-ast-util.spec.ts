@@ -1,7 +1,7 @@
-import { getPropertyStringArrayValue, getComponentDeclarations, getObjectLiteralPropertyKeys, getChildComponents, getPropertyStringValue, getComponentClassIdentifier, isChildClassOf } from '../../../src/utils/ast-util'
+import { getPropertyStringArrayValue, getComponentDeclarations, getObjectLiteralPropertyKeys, getChildComponents, getPropertyStringValue, getComponentClassIdentifier, isChildClassOf } from '../../../src/utils/ts-ast-util'
 import { Project } from 'ts-morph'
 
-describe('utils/ast-util', function () {
+describe('utils/ts-ast-util', function () {
     let proj
     beforeEach(() => {
         proj = new Project({ addFilesFromTsConfig: false })
@@ -53,27 +53,27 @@ describe('utils/ast-util', function () {
             proj.createSourceFile('b.ts', 'export class B {}')
             const file = proj.createSourceFile('foo.ts', 'import {B} from \'./b\'; class Foo { components = { b: B } }')
             expect([...getChildComponents(file.getClass('Foo')).entries()]).toEqual([
-                ['b', { specifier: './b', id: 'B', isDefault: false }]
+                ['b', { specifier: './b', id: 'B' }]
             ])
         })
         it('should get default child component', () => {
             proj.createSourceFile('b.ts', 'export class B {}')
             const file = proj.createSourceFile('foo.ts', 'import B from \'./b\'; class Foo { components = { b: B } }')
             expect([...getChildComponents(file.getClass('Foo')).entries()]).toEqual([
-                ['b', { specifier: './b', id: 'default', isDefault: true }]
+                ['b', { specifier: './b', id: 'default' }]
             ])
         })
         it('should allow string literal as key', () => {
             proj.createSourceFile('b.ts', 'export class B {}')
             const file = proj.createSourceFile('foo.ts', 'import B from \'./b\'; class Foo { components = { \'x-b\': B } }')
             expect([...getChildComponents(file.getClass('Foo')).entries()]).toEqual([
-                ['x-b', { specifier: './b', id: 'default', isDefault: true }]
+                ['x-b', { specifier: './b', id: 'default' }]
             ])
         })
         it('should allow child Components from current file', () => {
             const file = proj.createSourceFile('foo.ts', 'class B {}; class Foo { components = { \'x-b\': B } }')
             expect([...getChildComponents(file.getClass('Foo')).entries()]).toEqual([
-                ['x-b', { specifier: '.', id: 'B', isDefault: false }]
+                ['x-b', { specifier: '.', id: 'B' }]
             ])
         })
         it('should throw for items not of PropertyAssignment type', () => {

@@ -1,4 +1,4 @@
-import { ls, caseRoot, compileJS, jsExists, tsExists, compileTS, getRenderArguments, readExpected, renderOnthefly } from '../src/fixtures/case'
+import { ls, caseRoot, compileComponent, compileJS, jsExists, tsExists, compileTS, getRenderArguments, readExpected, renderOnthefly } from '../src/fixtures/case'
 import { join } from 'path'
 import { parseSanHTML } from '../src/index'
 
@@ -18,7 +18,7 @@ for (const caseName of ls()) {
     }
 
     if (jsExists(caseName)) {
-        it('render to source: ' + caseName, async function () {
+        it('js to source: ' + caseName, async function () {
             const code = compileJS(caseName, true)
             // eslint-disable-next-line
             const render = new Function('data', 'noDataOutput', 'require', code)
@@ -30,7 +30,19 @@ for (const caseName of ls()) {
             expect(html).toEqual(expectedHtml)
         })
 
-        it('render to renderer: ' + caseName, async function () {
+        it('component to source: ' + caseName, async function () {
+            const code = compileComponent(caseName, true)
+            // eslint-disable-next-line
+            const render = new Function('data', 'noDataOutput', 'require', code)
+            // 测试在 strict mode，因此需要手动传入 require
+            const got = render(...getRenderArguments(caseName), require)
+            const [data, html] = parseSanHTML(got)
+
+            expect(data).toEqual(expectedData)
+            expect(html).toEqual(expectedHtml)
+        })
+
+        it('component to renderer: ' + caseName, async function () {
             const got = renderOnthefly(caseName)
             const [data, html] = parseSanHTML(got)
 

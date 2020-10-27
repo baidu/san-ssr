@@ -5,8 +5,9 @@ const { assertSanHTMLEqual } = require('../dist/index')
 const { execFileSync } = require('child_process')
 const chalk = require('chalk')
 const { readFileSync, readdirSync } = require('fs')
+const assert = require('assert')
 const { join } = require('path')
-const { caseRoot, jsExists, tsExists, compileJS, compileTS } = require('../dist/fixtures/case')
+const { caseRoot, jsExists, tsExists, compileComponent, compileJS, compileTS } = require('../dist/fixtures/case')
 
 const caseName = process.argv[2]
 if (!caseName) {
@@ -20,40 +21,71 @@ if (!caseName) {
 
 const htmlPath = join(caseRoot, caseName, 'expected.html')
 const expected = readFileSync(htmlPath, 'utf8')
-console.log(chalk.cyan(`[EXPECT] ${caseName}`), expected)
 
-if (jsExists(caseName)) debugCompileJSToSource()
-if (tsExists(caseName)) debugCompileTSToSource()
-if (jsExists(caseName)) debugCompileToRenderer()
-
-function debugCompileJSToSource () {
-    compileJS(caseName)
-    const got = execFileSync(join(__dirname, `./render-by-source.js`), [caseName], { encoding: 'utf8' }).toString()
-    try {
-        assertSanHTMLEqual(got, expected)
-        console.log(chalk.green(`[SRC JS] ${caseName}`), got)
-    } catch (err) {
-        console.log(chalk.red(`[SRC JS] ${caseName}`), got)
+const cases = {
+    jssrc: {
+        need: 'js',
+        desc: 'JS->源码->渲染',
+        fn: () => {
+            compileJS(caseName)
+            return exec('./render-by-source.js')
+        }
+    },
+    tssrc: {
+        need: 'ts',
+        desc: 'TS->源码->渲染',
+        fn: () => {
+            compileTS(caseName)
+            return exec('./render-by-source.js')
+        }
+    },
+    comsrc: {
+        need: 'js',
+        desc: '组件->源码->渲染',
+        fn: () => {
+            compileComponent(caseName)
+            return exec('./render-by-source.js')
+        }
+    },
+    comrdr: {
+        need: 'js',
+        desc: '组件->Renderer->渲染',
+        fn: () => exec('./render-onthefly.js')
     }
 }
 
-function debugCompileTSToSource () {
-    compileTS(caseName)
-    const got = execFileSync(join(__dirname, `./render-by-source.js`), [caseName], { encoding: 'utf8' }).toString()
+let enabled = Object.keys(cases).filter(k => {
+    if (process.argv.includes('-' + k)) {
+        assert(depsReady(k))
+        return true
+    }
+})
+if (!enabled.length) enabled = Object.keys(cases)
+enabled = enabled.filter(depsReady)
+
+console.log(chalk.cyan('CASE'), caseName)
+console.log('----------------------------------------')
+console.log(chalk.cyan('EXPECTED'))
+console.log(chalk.green(expected))
+for (const key of enabled) {
+    const { desc, fn } = cases[key]
+    console.log(chalk.cyan(desc))
+    let got = ''
+    try {
+        got = fn()
+    } catch (err) {}
     try {
         assertSanHTMLEqual(got, expected)
-        console.log(chalk.green(`[SRC TS] ${caseName}`), got)
+        console.log(chalk.green(got))
     } catch (err) {
-        console.log(chalk.red(`[SRC TS] ${caseName}`), got)
+        console.log(chalk.red(got))
     }
 }
 
-function debugCompileToRenderer () {
-    const got = execFileSync(join(__dirname, `./render-onthefly.js`), [caseName], { encoding: 'utf8' }).toString()
-    try {
-        assertSanHTMLEqual(got, expected)
-        console.log(chalk.green(`[RENDER] ${caseName}`), got)
-    } catch (err) {
-        console.log(chalk.red(`[RENDER] ${caseName}`), got)
-    }
+function depsReady (key) {
+    return cases[key].need === 'js' ? jsExists(caseName) : tsExists(caseName)
+}
+
+function exec (bin) {
+    return execFileSync(join(__dirname, bin), [caseName], { encoding: 'utf8' }).toString()
 }

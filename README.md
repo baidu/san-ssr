@@ -81,6 +81,10 @@ writeFileSync('ssr.php', targetCode)
 npm i san-ssr san-ssr-target-php
 ```
 
+## 已知问题
+
+* `Component#getComponentType()` 方法通过 SSR 时只能获取 `initData()` 提供的数据，无法通过在运行时传入的 data 进行不同的组件渲染。见 [#533](https://github.com/baidu/san/issues/533)
+
 ## 贡献指南
 
 ### 开发起步

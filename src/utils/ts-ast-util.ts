@@ -2,9 +2,9 @@ import type { Node, MethodDeclaration, ShorthandPropertyAssignment, PropertyAssi
 import { TypeGuards, SyntaxKind } from 'ts-morph'
 import debugFactory from 'debug'
 import { TagName } from '../models/component-info'
-import { getExportedComponentID, getDefaultExportedComponentID, ComponentReference } from '../models/component-reference'
+import { componentID, ComponentReference } from '../models/component-reference'
 
-const debug = debugFactory('ast-util')
+const debug = debugFactory('ts-ast-util')
 
 export function getSanImportDeclaration (sourceFile: SourceFile): ImportDeclaration | undefined {
     return sourceFile.getImportDeclaration(
@@ -120,7 +120,7 @@ export function getChildComponents (clazz: ClassDeclaration, defaultClassDeclara
     //     'x-list': XList
     // }
     // 解析后的子组件信息为
-    // 'x-list' => { specifier: './list', id: '0', isDefault: true }
+    // 'x-list' => { specifier: './list', id: '0' }
     const init = member.getInitializerIfKindOrThrow(SyntaxKind.ObjectLiteralExpression)
     for (const prop of init.getProperties()) {
         if (!TypeGuards.isPropertyAssignment(prop)) throw new Error(`${JSON.stringify(prop.getText())} not supported`)
@@ -130,14 +130,13 @@ export function getChildComponents (clazz: ClassDeclaration, defaultClassDeclara
             const { specifier, named } = importedNames.get(childComponentClassName)!
             ret.set(propName, {
                 specifier,
-                id: named ? getExportedComponentID(childComponentClassName) : getDefaultExportedComponentID(),
-                isDefault: !named
+                id: componentID(!named, childComponentClassName)
             })
         } else { // 子组件来自当前源文件
+            const isDefault = !!defaultClassDeclaration && defaultClassDeclaration.getName() === childComponentClassName
             ret.set(propName, {
                 specifier: '.',
-                id: getExportedComponentID(childComponentClassName),
-                isDefault: defaultClassDeclaration ? defaultClassDeclaration.getName() === childComponentClassName : false
+                id: componentID(isDefault, childComponentClassName)
             })
         }
     }

@@ -1,6 +1,6 @@
 import { ANodeCompiler } from './anode-compiler'
 import { stringifier } from './stringifier'
-import { isTypedComponentInfo, ComponentInfo } from '../../models/component-info'
+import { ComponentInfo } from '../../models/component-info'
 import { JSEmitter } from '../js-emitter'
 import { Renderer } from '../../models/renderer'
 
@@ -51,8 +51,8 @@ export class RendererCompiler {
 
         // instance preraration
         if (info.hasMethod('initData')) {
-            if (isTypedComponentInfo(info)) this.emitInitDataInRuntime()
-            else this.emitInitDataInCompileTime(info.proto.initData!)
+            if (info.initData) this.emitInitDataInCompileTime(info.initData())
+            else this.emitInitDataInRuntime()
         }
 
         // call inited
@@ -73,8 +73,8 @@ export class RendererCompiler {
         return emitter.fullText()
     }
 
-    public emitInitDataInCompileTime (initData: () => Partial<{}>) {
-        const defaultData = initData.call({}) || {}
+    public emitInitDataInCompileTime (initData: any) {
+        const defaultData = initData || {}
         for (const key of Object.keys(defaultData)) {
             this.emitter.writeLine('ctx.data["' + key + '"] = ctx.data["' + key + '"] || ' +
             stringifier.any(defaultData[key]) + ';')

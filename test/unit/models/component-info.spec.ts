@@ -1,4 +1,6 @@
-import { isTypedComponentInfo, TypedComponentInfo, DynamicComponentInfo } from '../../../src/models/component-info'
+import { JSComponentInfo, TypedComponentInfo, DynamicComponentInfo } from '../../../src/models/component-info'
+import { getPropertiesFromObject } from '../../../src/utils/js-ast-util'
+import { parse } from 'acorn'
 import { Project } from 'ts-morph'
 import { ANode, defineComponent } from 'san'
 
@@ -18,7 +20,7 @@ describe('TypedComponentInfo', function () {
                     b
                 }
             }`)
-            const info = new TypedComponentInfo('id', 'template', null as ANode, new Map(), file.getClass('Foo'))
+            const info = new TypedComponentInfo('id', null as ANode, new Map(), file.getClass('Foo'))
             expect(info.getFilterNames()).toEqual(['a', 'x-b', 'b'])
         })
     })
@@ -34,34 +36,78 @@ describe('DynamicComponentInfo', function () {
                 b
             }
         })
-        const info = new DynamicComponentInfo('id', 'template', null as ANode, new Map(), component)
+        const info = new DynamicComponentInfo('id', null as ANode, new Map(), component)
         expect(info.getFilterNames()).toEqual(['a', 'x-b', 'b'])
     })
     it('should return empty array if filters not defined', () => {
         const component = defineComponent({})
-        const info = new DynamicComponentInfo('id', 'template', null as ANode, new Map(), component)
+        const info = new DynamicComponentInfo('id', null as ANode, new Map(), component)
         expect(info.getFilterNames()).toEqual([])
+    })
+    describe('#initData()', () => {
+        it('should return {} when proto.initData() not defined', () => {
+            const component = defineComponent({})
+            const info = new DynamicComponentInfo('id', null as ANode, new Map(), component)
+            expect(info.initData()).toEqual({})
+        })
     })
 })
 
-describe('.isTypedComopnentInfo()', function () {
-    it('should return true for typed component info', () => {
-        const proj = new Project({ addFilesFromTsConfig: false })
-        const file = proj.createSourceFile('foo.ts', `
-        function b() {}
-        class Foo {
-            filters = {
-                a(){},
-                'x-b': function () {},
-                b
+describe('JSComponentInfo', function () {
+    it('should support custom delimiters', () => {
+        const obj = parse(`
+            defineComponent({
+                template: '<div>{%name%}</div>',
+                delimiters: ['{%', '%}']
+            })
+        `, { ecmaVersion: 2020 })['body'][0].expression.arguments[0]
+        const props = new Map(getPropertiesFromObject(obj))
+        const info = new JSComponentInfo('foo', 'foo', props, '')
+        expect(info.root).toHaveProperty('tagName', 'div')
+        expect(info.root.children[0]).toMatchObject({
+            textExpr: {
+                type: 7,
+                segs: [{
+                    type: 5,
+                    expr: {
+                        paths: [{ value: 'name' }]
+                    },
+                    filters: []
+                }]
             }
-        }`)
-        const info = new TypedComponentInfo('id', 'template', null as ANode, new Map(), file.getClass('Foo'))
-        expect(isTypedComponentInfo(info)).toBeTruthy()
+        })
     })
-    it('should return false for dynamic component info', () => {
-        const component = defineComponent({})
-        const info = new DynamicComponentInfo('id', 'template', null as ANode, new Map(), component)
-        expect(isTypedComponentInfo(info)).toBeFalsy()
+    it('should support hasMethod()', () => {
+        const obj = parse(`
+            defineComponent({
+                inited() {}
+            })
+        `, { ecmaVersion: 2020 })['body'][0].expression.arguments[0]
+        const props = new Map(getPropertiesFromObject(obj))
+        const info = new JSComponentInfo('foo', 'foo', props, '')
+        expect(info.hasMethod('inited')).toBeTruthy()
+        expect(info.hasMethod('attached')).toBeFalsy()
+    })
+    it('should support getFilterNames()', () => {
+        const obj = parse(`
+            defineComponent({
+                template: '<div>{{name}}</div>',
+                filters: { foo: () => false, bar: () => 0 }
+            })
+        `, { ecmaVersion: 2020 })['body'][0].expression.arguments[0]
+        const props = new Map(getPropertiesFromObject(obj))
+        const info = new JSComponentInfo('foo', 'foo', props, '')
+        expect(info.getFilterNames()).toEqual(['foo', 'bar'])
+    })
+    it('should support getComputedNames()', () => {
+        const obj = parse(`
+            defineComponent({
+                template: '<div>{{name}}</div>',
+                computed: { foo: () => false, bar: () => 0 }
+            })
+        `, { ecmaVersion: 2020 })['body'][0].expression.arguments[0]
+        const props = new Map(getPropertiesFromObject(obj))
+        const info = new JSComponentInfo('foo', 'foo', props, '')
+        expect(info.getComputedNames()).toEqual(['foo', 'bar'])
     })
 })

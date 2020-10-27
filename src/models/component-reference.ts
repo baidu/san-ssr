@@ -1,18 +1,27 @@
 import { ComponentConstructor } from 'san'
 
+/**
+ * 表示一个组件的引用，被引用组件可能在当前文件，也可能在外部文件。例如：
+ *
+ * // ComponentReference { specifier: './b.san', id: 'default' }
+ * import AComponent from './b.san'
+ *
+ * // ComponentReference { specifier: './b.san', id: 'AComponent' }
+ * import { AComponent } from './b.san'
+ */
 export interface ComponentReference {
     /**
      * 组件所在源文件的相对路径
      */
     specifier: string
     /**
-     * 组件的 id。见下面的说明。
+     * 组件在所属 SanSourceFile 中的唯一标识，用来文件间引用组件。
+     *
+     * - 默认导出为的 ID 为 default，包括 module.exports = Component, export default Component
+     * - 其他导出的 ID 为 class 名，对于 ComponentClass（没有 Class 名）为递增数字
+     * - ID 是语言无关的。不可直接用于目标语言文件中的标识符，后者需要解决名字冲突和标识符合法性的问题，是语言相关的。
      */
     id: string
-    /**
-     * 是否是该源文件的默认导出（export default 或 module.exports）
-     */
-    isDefault: boolean
 }
 
 /**
@@ -25,40 +34,6 @@ export interface DynamicComponentReference extends ComponentReference {
     componentClass: ComponentConstructor<{}, {}>
 }
 
-/**
- * 组件在所属 SanSourceFile 中的唯一标识。
- *
- * 1. 对于 ComponentClass 打包编译：可以从 ComponentClass 映射到 ID。
- *   - 此时不对源码的结构做任何要求，因此是一个包含递增数字的合法标识符名
- *   - 例如：0 为第一个，1 为第二个…
- *
- * 2. 对于 TypeScript San 源文件单独编译：可以从 import 语句映射到 ID。
- *   - 此时要求它是 sourceFile 内 top level 的名字，因此是唯一的
- *   - 例如：named export 组件，ID 为 ClassDeclaration#.getName()
- *   - 特例：default export 的组件，ID 为 "default"
- *
- * Note: ID 的作用只是确保文件中唯一，不可直接用于目标语言文件中的标识符
- */
-export function getComponentClassID (id: number) {
-    return '' + id
-}
-export function getExportedComponentID (name: string) {
-    return name
-}
-/**
- * 默认导出需要有固定的名字，因为它的引用不包含它的名字信息。
- *
- * 例如：
- * // a.san.ts
- * export default class A extends Component {}
- *
- * // b.san.ts
- * import AComponent from './a.san'
- *
- * // 对于如下 Component Reference，
- * // 如果 id 为 AComponent 将无法定位到 a.san.ts 中的 class A
- * { specifier: './a.san', id: 'default', isDefault: true }
- */
-export function getDefaultExportedComponentID () {
-    return 'default'
+export function componentID (isDefault: boolean, genID: string | (() => string)) {
+    return isDefault ? 'default' : (typeof genID === 'function' ? genID() : genID)
 }

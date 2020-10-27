@@ -1,11 +1,11 @@
 import type { SourceFile, ClassDeclaration } from 'ts-morph'
 import debugFactory from 'debug'
-import { getChildComponents, getPropertyStringArrayValue, getComponentDeclarations, getPropertyStringValue } from '../utils/ast-util'
+import { getChildComponents, getPropertyStringArrayValue, getComponentDeclarations, getPropertyStringValue } from '../utils/ts-ast-util'
 import { normalizeComponentClass } from './normalize-component'
 import { TypedSanSourceFile } from '../models/san-source-file'
 import { parseAndNormalizeTemplate } from './parse-template'
 import { TypedComponentInfo } from '../models/component-info'
-import { getExportedComponentID, getDefaultExportedComponentID } from '../models/component-reference'
+import { componentID } from '../models/component-reference'
 
 const debug = debugFactory('ts-component-parser')
 
@@ -31,8 +31,7 @@ export class TypeScriptSanParser {
         }
 
         return new TypedComponentInfo(
-            classDeclaration.isDefaultExport() ? getDefaultExportedComponentID() : getExportedComponentID(classDeclaration.getName()!),
-            template,
+            componentID(classDeclaration.isDefaultExport(), classDeclaration.getName()!),
             parseAndNormalizeTemplate(template, {
                 trimWhitespace, delimiters
             }),

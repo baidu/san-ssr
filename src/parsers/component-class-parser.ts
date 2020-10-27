@@ -6,7 +6,7 @@ import { getMember } from '../utils/lang'
 import { isComponentLoader, ComponentClass } from '../models/component'
 import { visitANodeRecursively } from '../utils/anode-util'
 import { parseAndNormalizeTemplate } from './parse-template'
-import { DynamicComponentReference, getComponentClassID } from '../models/component-reference'
+import { componentID, DynamicComponentReference } from '../models/component-reference'
 
 /*
  * 从根 ComponentClass 递归搜索和解析所有 ComponentClass，形成 ComponentInfo 列表，并放到单个 SanSourceFile 中。
@@ -24,7 +24,7 @@ export class ComponentClassParser {
 
     parse (): DynamicSanSourceFile {
         const componentInfos = []
-        const stack: DynamicComponentReference[] = [{ componentClass: this.root, id: '' + this.id++, specifier: '.', isDefault: true }]
+        const stack: DynamicComponentReference[] = [{ componentClass: this.root, id: '' + this.id++, specifier: '.' }]
         const parsed = new Set()
         while (stack.length) {
             const { id, componentClass } = stack.pop()!
@@ -54,7 +54,7 @@ export class ComponentClassParser {
         const rootANode = parseAndNormalizeTemplate(template, { trimWhitespace, delimiters })
         const childComponents = this.getChildComponentClasses(componentClass, rootANode)
 
-        return new DynamicComponentInfo(id, template, rootANode, childComponents, componentClass)
+        return new DynamicComponentInfo(id, rootANode, childComponents, componentClass)
     }
 
     /**
@@ -70,9 +70,8 @@ export class ComponentClassParser {
             // 可能是空，例如 var Foo = defineComponent({components: {foo: Foo}})
             children.set(tagName, {
                 specifier: '.',
-                id: this.getOrSetID(componentClass),
-                componentClass,
-                isDefault: componentClass === this.root
+                id: componentID(componentClass === this.root, () => this.getOrSetID(componentClass)),
+                componentClass
             })
         }
 
@@ -85,16 +84,15 @@ export class ComponentClassParser {
 
             children.set(aNode, {
                 specifier: '.',
-                id: this.getOrSetID(childClazz),
-                componentClass: childClazz,
-                isDefault: childClazz === this.root
+                id: componentID(childClazz === this.root, () => this.getOrSetID(childClazz)),
+                componentClass: childClazz
             })
         })
         return children
     }
 
     private getOrSetID (componentClass: ComponentConstructor<{}, {}>): string {
-        if (!this.cids.has(componentClass)) this.cids.set(componentClass, getComponentClassID(this.id++))
+        if (!this.cids.has(componentClass)) this.cids.set(componentClass, String(this.id++))
         return this.cids.get(componentClass)!
     }
 }

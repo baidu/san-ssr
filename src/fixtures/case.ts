@@ -43,6 +43,21 @@ export function compileJS (caseName: string, compileToFunctionBodyCode: boolean)
     return compileToFunctionBodyCode ? targetCode : writeFileSync(targetFile, targetCode)
 }
 
+export function compileComponent (caseName: string, compileToFunctionBodyCode: true): string
+export function compileComponent (caseName: string, compileToFunctionBodyCode: boolean) {
+    debug('compile js', caseName)
+    const caseDir = join(caseRoot, caseName)
+    const jsFile = join(caseDir, 'component.js')
+    const ssrOnly = /-so/.test(caseName)
+    const targetCode = sanProject.compile(
+        require(jsFile),
+        ToJSCompiler,
+        { ssrOnly, bareFunctionBody: compileToFunctionBodyCode }
+    )
+    const targetFile = join(caseRoot, caseName, 'ssr.js')
+    return compileToFunctionBodyCode ? targetCode : writeFileSync(targetFile, targetCode)
+}
+
 export function compileTS (caseName: string) {
     debug('compile ts', caseName)
     const caseDir = join(caseRoot, caseName)

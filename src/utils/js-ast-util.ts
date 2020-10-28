@@ -1,7 +1,7 @@
 import { simple } from 'acorn-walk'
 import assert, { equal } from 'assert'
 import { Node as AcornNode } from 'acorn'
-import { ImportDeclaration, Property, BinaryExpression, ClassExpression, ClassDeclaration, ThisExpression, ExpressionStatement, TemplateLiteral, Literal, Identifier, MemberExpression, ArrayExpression, CallExpression, ObjectExpression, Node, Program, Pattern, VariableDeclaration, ObjectPattern, Class, AssignmentExpression, Expression, ImportSpecifier, ImportDefaultSpecifier, VariableDeclarator } from 'estree'
+import { MethodDefinition, ExportDefaultDeclaration, ImportDeclaration, Property, BinaryExpression, ClassExpression, ClassDeclaration, ThisExpression, ExpressionStatement, TemplateLiteral, Literal, Identifier, MemberExpression, ArrayExpression, CallExpression, ObjectExpression, Node, Program, Pattern, VariableDeclaration, ObjectPattern, Class, AssignmentExpression, Expression, ImportSpecifier, ImportDefaultSpecifier, VariableDeclarator } from 'estree'
 
 const OPERATORS = {
     '+': (l: any, r: any) => l + r
@@ -143,6 +143,24 @@ export function * getMembersFromClassDeclaration (expr: Class): Generator<[strin
     }
 }
 
+export function getConstructor (expr: Class): undefined | MethodDefinition {
+    for (const method of expr.body.body) {
+        if (method.kind === 'constructor') return method
+    }
+}
+
+export function addStringPropertyForObject (expr: ObjectExpression, key: string, value: string) {
+    expr.properties.push({
+        type: 'Property',
+        method: false,
+        shorthand: false,
+        computed: false,
+        key: { type: 'Identifier', name: key },
+        value: { type: 'Literal', value: value, raw: JSON.stringify(value) },
+        kind: 'init'
+    })
+}
+
 export function getPropertyFromObject (obj: ObjectExpression | ObjectPattern, propertyName: string): Node | undefined {
     for (const [key, val] of getPropertiesFromObject(obj)) {
         if (key === propertyName) return val
@@ -206,6 +224,20 @@ export function getMemberAssignmentsTo (program: Program, objName: string) {
 
 export function location (node: Node) {
     return `[${node['start']},${node['end']})`
+}
+
+export function findDefaultExport (node: Program): undefined | Node {
+    let result
+    simple(node as any as AcornNode, {
+        ExportDefaultDeclaration (node) {
+            result = (node as any as ExportDefaultDeclaration).declaration
+        },
+        AssignmentExpression (node) {
+            const expr = node as any as AssignmentExpression
+            if (isModuleExports(expr.left)) result = expr.right
+        }
+    })
+    return result
 }
 
 export function isRequire (node: Node): node is CallExpression {
@@ -283,6 +315,11 @@ export function isClassExpression (expr: Node): expr is ClassExpression {
 export function isProperty (expr: Node): expr is Property {
     return expr.type === 'Property'
 }
+
+export function isExportDefaultDeclaration (node: Node): node is ExportDefaultDeclaration {
+    return node.type === 'ExportDefaultDeclaration'
+}
+
 export function isArrayExpression (expr: Node): expr is ArrayExpression {
     return expr.type === 'ArrayExpression'
 }

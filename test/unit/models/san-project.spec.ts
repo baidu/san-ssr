@@ -30,7 +30,7 @@ describe('SanProject', function () {
             expect(code).toContain('module.exports =')
         })
 
-        it('should support TypeScriptFileDescriptor', function () {
+        it('should support TypeScript FileDescriptor', function () {
             const proj = new SanProject()
             const code = proj.compile({
                 filePath: resolve(stubRoot, './a.comp.ts'),
@@ -76,6 +76,22 @@ describe('SanProject', function () {
             const proj = new SanProject(null)
             const componentClass = require(resolve(stubRoot, './a.comp.js'))
             expect(() => proj.compile(componentClass, 'js')).not.toThrow()
+        })
+
+        it('should support SanFileDescriptor', function () {
+            const proj = new SanProject()
+            const code = proj.compile({
+                filePath: resolve(stubRoot, './a.san'),
+                templateContent: '<div>{{name}}</div>',
+                scriptContent: `
+                    import { Component } from 'san'
+                    export default { inited() { this.data.set('name', 'san') } }
+                `
+            })
+
+            expect(code).toContain('html += "<div>"')
+            expect(code).toContain('html += _.output(ctx.data.name, true)')
+            expect(code).toContain('html += "</div>"')
         })
     })
 

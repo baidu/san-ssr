@@ -40,7 +40,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         if (TypeGuards.isATemplateNode(aNode)) return this.compileTemplate(aNode)
         if (TypeGuards.isAFragmentNode(aNode)) return this.compileFragment(aNode)
 
-        const ref = this.componentInfo.getChildComponentRenference(aNode)
+        const ref = this.componentInfo.getChildComponentRenference(aNode.tagName)
         if (ref) {
             return this.compileComponent(aNode, ref, isRootElement)
         }

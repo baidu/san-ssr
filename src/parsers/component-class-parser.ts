@@ -4,7 +4,6 @@ import { DynamicSanSourceFile } from '../models/san-source-file'
 import { DynamicComponentInfo } from '../models/component-info'
 import { getMember } from '../utils/lang'
 import { isComponentLoader, ComponentClass } from '../models/component'
-import { visitANodeRecursively } from '../utils/anode-util'
 import { parseAndNormalizeTemplate } from './parse-template'
 import { componentID, DynamicComponentReference } from '../models/component-reference'
 
@@ -52,18 +51,16 @@ export class ComponentClassParser {
         const trimWhitespace = getMember<'none' | 'blank' | 'all'>(componentClass, 'trimWhitespace')
         const delimiters = getMember<[string, string]>(componentClass, 'delimiters')
         const rootANode = parseAndNormalizeTemplate(template, { trimWhitespace, delimiters })
-        const childComponents = this.getChildComponentClasses(componentClass, rootANode)
+        const childComponents = this.getChildComponentClasses(componentClass)
 
         return new DynamicComponentInfo(id, rootANode, childComponents, componentClass)
     }
 
     /**
      * 从组件 class 得到子组件 class
-     * - 从 .components 属性获取
-     * - 从 .getComponentType() 方法获取
      */
-    getChildComponentClasses (parentComponentClass: ComponentClass, rootANode: ANode): Map<string | ANode, DynamicComponentReference> {
-        const children: Map<string | ANode, DynamicComponentReference> = new Map()
+    getChildComponentClasses (parentComponentClass: ComponentClass): Map<string, DynamicComponentReference> {
+        const children: Map<string, DynamicComponentReference> = new Map()
 
         const components: { [key: string]: ComponentConstructor<{}, {}> } = getMember(parentComponentClass, 'components', {})
         for (const [tagName, componentClass] of Object.entries(components)) {
@@ -74,20 +71,6 @@ export class ComponentClassParser {
                 componentClass
             })
         }
-
-        const getComponentType = parentComponentClass.prototype.getComponentType
-        if (typeof getComponentType !== 'function') return children
-
-        visitANodeRecursively(rootANode, (aNode: ANode) => {
-            const childClazz: ComponentClass = getComponentType(aNode)
-            if (!childClazz) return
-
-            children.set(aNode, {
-                specifier: '.',
-                id: componentID(childClazz === this.root, () => this.getOrSetID(childClazz)),
-                componentClass: childClazz
-            })
-        })
         return children
     }
 

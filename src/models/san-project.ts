@@ -58,7 +58,7 @@ export class SanProject {
     public parseSanSourceFile (input: CompileInput): SanSourceFile {
         if (isComponentClass(input)) return new ComponentClassParser(input, '').parse()
         if (isSanFileDescriptor(input)) {
-            return new SanFileParser(input.scriptContent, input.templateContent).parse()
+            return new SanFileParser(input.scriptContent, input.templateContent, input.filePath).parse()
         }
         const filePath = isFileDescriptor(input) ? input.filePath : input
         const fileContent = isFileDescriptor(input) ? input.fileContent : undefined

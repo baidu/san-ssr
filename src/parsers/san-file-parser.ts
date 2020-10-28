@@ -32,8 +32,11 @@ export class SanFileParser {
         return this.parser.parse()
     }
 
-    expandToSanComponent (options: ObjectExpression) {
-        const opts = { ...options }
+    /**
+     * 把简写的 san options 替换为 san Component。
+     * { inited(){} } -> require('san').defineComponent({ inited(){} })
+     */
+    private expandToSanComponent (options: ObjectExpression) {
         const defineComponent: CallExpression = {
             type: 'CallExpression',
             callee: {
@@ -48,12 +51,17 @@ export class SanFileParser {
                 computed: false,
                 optional: false
             },
-            arguments: [opts],
+            arguments: [{ ...options }],
             optional: false
         }
         Object.assign(options, defineComponent)
     }
 
+    /**
+     * 把模板字符串插入到 san 组件定义中
+     * - 情况一：defineComponent({ inited(){} }) -> defineComponent({ inited(){}, template: '<div>...</div>' })
+     * - 情况二：class XComponent { constructor() {} } -> class XComponent { constructor() { this.template='<div>...</div>' } }
+     */
     private insertTemplate (expr: Node) {
         if (isCallExpression(expr)) {
             assert(expr.arguments[0], 'cannot parse san script')
@@ -83,6 +91,9 @@ export class SanFileParser {
         }
     }
 
+    /**
+     * 创建给 this.template 赋值为 this.templateContent 的表达式
+     */
     private createTemplateAssignmentExpression (): ExpressionStatement {
         return {
             type: 'ExpressionStatement',

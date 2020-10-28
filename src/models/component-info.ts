@@ -13,12 +13,12 @@ type TrimWhitespace = 'none' | 'blank' | 'all' | undefined
 export interface ComponentInfo {
     id: string,
     root: ANode,
-    childComponents: Map<TagName | ANode, ComponentReference>
+    childComponents: Map<TagName, ComponentReference>
     hasMethod (name: string): boolean
     initData?(): any,
     getComputedNames (): string[]
     getFilterNames (): string[]
-    getChildComponentRenference (aNode: ANode): ComponentReference | undefined
+    getChildComponentRenference (tagName: string): ComponentReference | undefined
 }
 
 /**
@@ -35,15 +35,15 @@ abstract class ComponentInfoImpl<R extends ComponentReference = ComponentReferen
          */
         public readonly id: string,
         public readonly root: ANode,
-        public readonly childComponents: Map<TagName | ANode, R>
+        public readonly childComponents: Map<TagName, R>
     ) {}
 
     abstract hasMethod (name: string): boolean
     abstract getComputedNames (): string[]
     abstract getFilterNames (): string[]
 
-    getChildComponentRenference (aNode: ANode): R | undefined {
-        return this.childComponents.get(aNode) || this.childComponents.get(aNode.tagName)
+    getChildComponentRenference (tagName: string): R | undefined {
+        return this.childComponents.get(tagName)
     }
 }
 
@@ -58,7 +58,7 @@ export class DynamicComponentInfo extends ComponentInfoImpl<DynamicComponentRefe
     constructor (
         id: string,
         root: ANode,
-        childComponents: Map<TagName | ANode, DynamicComponentReference>,
+        childComponents: Map<TagName, DynamicComponentReference>,
         public readonly componentClass: ComponentClass
     ) {
         super(id, root, childComponents)
@@ -136,7 +136,7 @@ export class TypedComponentInfo extends ComponentInfoImpl implements ComponentIn
     constructor (
         id: string,
         root: ANode,
-        childComponents: Map<TagName | ANode, ComponentReference>,
+        childComponents: Map<TagName, ComponentReference>,
         public readonly classDeclaration: ClassDeclaration
     ) {
         super(id, root, childComponents)

@@ -40,11 +40,21 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         if (TypeGuards.isATemplateNode(aNode)) return this.compileTemplate(aNode)
         if (TypeGuards.isAFragmentNode(aNode)) return this.compileFragment(aNode)
 
-        const ref = this.componentInfo.getChildComponentRenference(aNode.tagName)
-        if (ref) {
-            return this.compileComponent(aNode, ref, isRootElement)
+        const childComponentReference = this.generateRef(aNode)
+        if (childComponentReference) {
+            return this.compileComponent(aNode, childComponentReference, isRootElement)
         }
         return this.compileElement(aNode, isRootElement)
+    }
+
+    private generateRef (aNode: ANode) {
+        if (aNode.directives.is) {
+            this.emitter.writeLine(`let ref = refs[${expr(aNode.directives.is.value)}];`)
+            return 'ref'
+        }
+        if (this.componentInfo.childComponents.has(aNode.tagName)) {
+            return this.componentInfo.childComponents.get(aNode.tagName)!.toString()
+        }
     }
 
     private compileText (aNode: ATextNode) {
@@ -173,7 +183,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         this.emitter.writeIf('!noDataOutput', () => this.emitter.writeDataComment())
     }
 
-    private compileComponent (aNode: ANode, ref: ComponentReference, isRootElement: boolean) {
+    private compileComponent (aNode: ANode, ref: string, isRootElement: boolean) {
         const { emitter } = this
 
         const defaultSourceSlots: ANode[] = []
@@ -212,7 +222,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
 
         emitter.nextLine('html += ')
         emitter.writeFunctionCall(
-            `runtime.resolver.getRenderer("${ref.id}", "${ref.specifier}")`,
+            `runtime.resolver.getRenderer(${ref})`,
             [this.componentDataCode(aNode), ndo, 'runtime', 'parentCtx', stringifier.str(aNode.tagName) + ', slots']
         )
     }

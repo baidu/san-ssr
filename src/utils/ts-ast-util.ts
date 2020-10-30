@@ -128,16 +128,16 @@ export function getChildComponents (clazz: ClassDeclaration, defaultClassDeclara
         const childComponentClassName = prop.getInitializerIfKindOrThrow(SyntaxKind.Identifier).getText()
         if (importedNames.has(childComponentClassName)) { // 子组件来自外部源文件
             const { specifier, named } = importedNames.get(childComponentClassName)!
-            ret.set(propName, {
+            ret.set(propName, new ComponentReference(
                 specifier,
-                id: componentID(!named, childComponentClassName)
-            })
+                componentID(!named, childComponentClassName)
+            ))
         } else { // 子组件来自当前源文件
             const isDefault = !!defaultClassDeclaration && defaultClassDeclaration.getName() === childComponentClassName
-            ret.set(propName, {
-                specifier: '.',
-                id: componentID(isDefault, childComponentClassName)
-            })
+            ret.set(propName, new ComponentReference(
+                '.',
+                componentID(isDefault, childComponentClassName)
+            ))
         }
     }
     return ret

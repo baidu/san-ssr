@@ -67,7 +67,7 @@ export default class ToJSCompiler implements Compiler {
             runtime.resolver.setRenderer(id, cc.compileComponentRenderer(info))
         }
         return (data: any, noDataOutput: boolean = false) => {
-            const render = runtime.resolver.getRenderer(entryComponentInfo.id)
+            const render = runtime.resolver.getRenderer({ id: entryComponentInfo.id })
             return render(data, noDataOutput, runtime)
         }
     }
@@ -93,7 +93,7 @@ export default class ToJSCompiler implements Compiler {
         // 导出入口 render 函数
         const entryInfo = sourceFile.entryComponentInfo
         if (entryInfo) {
-            emitter.writeLine(`module.exports = Object.assign(sanSSRRuntime.resolver.getRenderer("${entryInfo.id}"), exports)`)
+            emitter.writeLine(`module.exports = Object.assign(sanSSRRuntime.resolver.getRenderer({id:"${entryInfo.id}"}), exports)`)
         }
     }
 

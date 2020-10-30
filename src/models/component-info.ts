@@ -18,7 +18,6 @@ export interface ComponentInfo {
     initData?(): any,
     getComputedNames (): string[]
     getFilterNames (): string[]
-    getChildComponentRenference (tagName: string): ComponentReference | undefined
 }
 
 /**
@@ -41,10 +40,6 @@ abstract class ComponentInfoImpl<R extends ComponentReference = ComponentReferen
     abstract hasMethod (name: string): boolean
     abstract getComputedNames (): string[]
     abstract getFilterNames (): string[]
-
-    getChildComponentRenference (tagName: string): R | undefined {
-        return this.childComponents.get(tagName)
-    }
 }
 
 export class DynamicComponentInfo extends ComponentInfoImpl<DynamicComponentReference> implements ComponentInfo {

@@ -3,7 +3,6 @@ import { camelCase } from 'lodash'
 import { JSEmitter } from '../js-emitter'
 import { ANode, AIfNode, AForNode, ASlotNode, ATemplateNode, AFragmentNode, ATextNode } from 'san'
 import { ComponentInfo } from '../../models/component-info'
-import { ComponentReference } from '../../models/component-reference'
 import { ElementCompiler } from './element-compiler'
 import { stringifier } from './stringifier'
 import { getANodePropByName } from '../../utils/anode-util'
@@ -49,7 +48,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
 
     private generateRef (aNode: ANode) {
         if (aNode.directives.is) {
-            this.emitter.writeLine(`let ref = refs[${expr(aNode.directives.is.value)}];`)
+            this.emitter.writeLine(`let ref = ctx.refs[${expr(aNode.directives.is.value)}];`)
             return 'ref'
         }
         if (this.componentInfo.childComponents.has(aNode.tagName)) {
@@ -116,29 +115,26 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         }
         delete forElementANode.directives.for
 
-        const forDirective = aNode.directives.for
-        const itemName = forDirective.item
-        const indexName = forDirective.index || this.nextID()
-        const listName = this.nextID()
+        const { item, index, value } = aNode.directives.for
+        const list = emitter.genID('list')
+        const i = emitter.genID('i')
 
-        emitter.writeLine('var ' + listName + ' = ' + expr(forDirective.value) + ';')
-        emitter.writeIf(listName + ' instanceof Array', () => {
+        emitter.writeLine('let ' + list + ' = ' + expr(value) + ';')
+        emitter.writeIf(list + ' instanceof Array', () => {
             // for array
-            emitter.writeFor('var ' + indexName + ' = 0; ' +
-            indexName + ' < ' + listName + '.length; ' +
-            indexName + '++', () => {
-                emitter.writeLine('ctx.data.' + indexName + '=' + indexName + ';')
-                emitter.writeLine('ctx.data.' + itemName + '= ' + listName + '[' + indexName + '];')
+            emitter.writeFor(`let ${i} = 0; ${i} < ${list}.length; ${i}++`, () => {
+                if (index) emitter.writeLine(`ctx.data.${index} = ${i};`)
+                emitter.writeLine(`ctx.data.${item} = ${list}[${i}];`)
                 this.compile(forElementANode, false)
             })
         })
 
         // for object
-        emitter.beginElseIf('typeof ' + listName + ' === "object"')
-        emitter.writeFor('var ' + indexName + ' in ' + listName, () => {
-            emitter.writeIf(listName + '[' + indexName + '] != null', () => {
-                emitter.writeLine('ctx.data.' + indexName + '=' + indexName + ';')
-                emitter.writeLine('ctx.data.' + itemName + '= ' + listName + '[' + indexName + '];')
+        emitter.beginElseIf(`typeof ${list} === "object"`)
+        emitter.writeFor(`let ${i} in ${list}`, () => {
+            emitter.writeIf(`${list}[${i}] != null`, () => {
+                if (index) emitter.writeLine(`ctx.data.${index} = ${i};`)
+                emitter.writeLine(`ctx.data.${item} = ${list}[${i}];`)
                 this.compile(forElementANode, false)
             })
         })
@@ -205,15 +201,16 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
             }
         }
 
-        emitter.writeLine('var slots = {};')
+        const slots = emitter.genID('slots')
+        emitter.writeLine(`let ${slots} = {};`)
         if (defaultSourceSlots.length) {
-            emitter.nextLine('slots[""] = ')
+            emitter.nextLine(`${slots}[""] = `)
             this.compileSlotRenderer(defaultSourceSlots)
             emitter.feedLine(';')
         }
 
         for (const sourceSlotCode of sourceSlotCodes.values()) {
-            emitter.nextLine(`slots[${expr(sourceSlotCode.prop.expr)}] = `)
+            emitter.nextLine(`${slots}[${expr(sourceSlotCode.prop.expr)}] = `)
             this.compileSlotRenderer(sourceSlotCode.children)
             emitter.feedLine(';')
         }
@@ -223,7 +220,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         emitter.nextLine('html += ')
         emitter.writeFunctionCall(
             `runtime.resolver.getRenderer(${ref})`,
-            [this.componentDataCode(aNode), ndo, 'runtime', 'parentCtx', stringifier.str(aNode.tagName) + ', slots']
+            [this.componentDataCode(aNode), ndo, 'runtime', 'parentCtx', stringifier.str(aNode.tagName) + `, ${slots}`]
         )
     }
 
@@ -234,7 +231,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
                 emitter.writeLine('return "";')
                 return
             }
-            emitter.writeLine('var html = "";')
+            emitter.writeLine('let html = "";')
             emitter.writeLine('ctx = {...ctx, data: Object.assign({}, ctx.data, data)};')
             for (const child of content) this.compile(child, false)
             emitter.writeLine('return html;')
@@ -251,9 +248,5 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
 
         const bindDirective = aNode.directives.bind
         return bindDirective ? `Object.assign(${expr(bindDirective.value)}, ${givenData})` : givenData
-    }
-
-    private nextID () {
-        return 'sanSSRID' + (this.ssrIndex++)
     }
 }

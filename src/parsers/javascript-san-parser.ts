@@ -3,7 +3,7 @@ import { ancestor } from 'acorn-walk'
 import { Node as AcornNode, parse } from 'acorn'
 import { CallExpression, Program, Node, Class } from 'estree'
 import { JSComponentInfo } from '../models/component-info'
-import { location, isMemberExpression, isObjectExpression, isCallExpression, isIdentifier, getMemberAssignmentsTo, getPropertyFromObject, getPropertiesFromObject, getMembersFromClassDeclaration, isClass, getClassName, getStringValue, isExportsMemberExpression, isRequireSpecifier, findExportNames, isModuleExports, findESMImports, findScriptRequires } from '../utils/js-ast-util'
+import { isVariableDeclarator, isProperty, isAssignmentExpression, isExportDefaultDeclaration, location, isMemberExpression, isObjectExpression, isCallExpression, isIdentifier, getMemberAssignmentsTo, getPropertyFromObject, getPropertiesFromObject, getMembersFromClassDeclaration, isClass, getClassName, getStringValue, isExportsMemberExpression, isRequireSpecifier, findExportNames, isModuleExports, findESMImports, findScriptRequires } from '../utils/js-ast-util'
 import { JSSanSourceFile } from '../models/san-source-file'
 import { componentID, ComponentReference } from '../models/component-reference'
 import { readFileSync } from 'fs'
@@ -102,27 +102,27 @@ export class JavaScriptSanParser {
 
     private parseComponentFromNode (node: Node, parent: Node) {
         // export default Component
-        if (parent.type === 'ExportDefaultDeclaration') {
+        if (isExportDefaultDeclaration(parent)) {
             return (this.entryComponentInfo = this.createComponent(node, undefined, true))
         }
         // module.exports = Component
-        if (parent.type === 'AssignmentExpression' && isModuleExports(parent.left)) {
+        if (isAssignmentExpression(parent) && isModuleExports(parent.left)) {
             return (this.entryComponentInfo = this.createComponent(node, undefined, true))
         }
         // exports.Foo = Component
-        if (parent.type === 'AssignmentExpression' && isExportsMemberExpression(parent.left)) {
+        if (isAssignmentExpression(parent) && isExportsMemberExpression(parent.left)) {
             return this.createComponent(node, getStringValue(parent.left['property']))
         }
         // const Foo = Component
-        if (parent.type === 'VariableDeclarator') {
+        if (isVariableDeclarator(parent)) {
             return this.createComponent(node, parent.id['name'])
         }
         // Foo = Component
-        if (parent.type === 'AssignmentExpression' && isIdentifier(parent.left)) {
+        if (isAssignmentExpression(parent) && isIdentifier(parent.left)) {
             return this.createComponent(node, parent.left.name)
         }
         // { 'x-list': san.defineComponent() }
-        if (parent.type === 'Property' && this.isComponent(parent.value)) {
+        if (isProperty(parent) && this.isComponent(parent.value)) {
             return this.createComponent(node)
         }
         return this.createComponent(node)

@@ -2,6 +2,7 @@ import type { SanComponentConfig, ANode } from 'san'
 import { parseAndNormalizeTemplate } from '../parsers/parse-template'
 import type { ClassDeclaration } from 'ts-morph'
 import { Node } from 'estree'
+import { visitANodeRecursively } from '../utils/anode-util'
 import { ComponentReference, DynamicComponentReference } from './component-reference'
 import { getObjectLiteralPropertyKeys } from '../utils/ts-ast-util'
 import { assertObjectExpression, getLiteralValue, getPropertiesFromObject, getStringArrayValue } from '../utils/js-ast-util'
@@ -18,6 +19,7 @@ export interface ComponentInfo {
     initData?(): any,
     getComputedNames (): string[]
     getFilterNames (): string[]
+    hasDynamicComponent (): boolean
 }
 
 /**
@@ -40,6 +42,13 @@ abstract class ComponentInfoImpl<R extends ComponentReference = ComponentReferen
     abstract hasMethod (name: string): boolean
     abstract getComputedNames (): string[]
     abstract getFilterNames (): string[]
+    hasDynamicComponent (): boolean {
+        let found = false
+        visitANodeRecursively(this.root, (node) => {
+            if (node.directives && node.directives.is) found = true
+        })
+        return found
+    }
 }
 
 export class DynamicComponentInfo extends ComponentInfoImpl<DynamicComponentReference> implements ComponentInfo {

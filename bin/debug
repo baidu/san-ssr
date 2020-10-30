@@ -62,6 +62,7 @@ let enabled = Object.keys(cases).filter(k => {
 })
 if (!enabled.length) enabled = Object.keys(cases)
 enabled = enabled.filter(depsReady)
+let exitCode = 0
 
 console.log(chalk.cyan('CASE'), caseName)
 console.log('----------------------------------------')
@@ -69,18 +70,21 @@ console.log(chalk.cyan('EXPECTED'))
 console.log(chalk.green(expected))
 for (const key of enabled) {
     const { desc, fn } = cases[key]
-    console.log(chalk.cyan(desc))
     let got = ''
     try {
         got = fn()
     } catch (err) {}
     try {
         assertSanHTMLEqual(got, expected)
+        console.log(chalk.cyan(desc))
         console.log(chalk.green(got))
     } catch (err) {
+        console.log(chalk.red(desc))
         console.log(chalk.red(got))
+        exitCode = 1
     }
 }
+process.exit(exitCode)
 
 function depsReady (key) {
     return cases[key].need === 'js' ? jsExists(caseName) : tsExists(caseName)

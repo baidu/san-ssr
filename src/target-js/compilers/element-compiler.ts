@@ -109,8 +109,8 @@ export class ElementCompiler {
         emitter.writeLine('(function ($bindObj) {')
         emitter.indent()
 
-        emitter.writeFor('var $key in $bindObj', () => {
-            emitter.writeLine('var $value = $bindObj[$key]')
+        emitter.writeFor('let $key in $bindObj', () => {
+            emitter.writeLine('let $value = $bindObj[$key]')
             emitter.writeSwitch('$key', () => {
                 emitter.writeCase('"readonly"')
                 emitter.writeCase('"disabled"')

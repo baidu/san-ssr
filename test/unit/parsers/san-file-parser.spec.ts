@@ -1,11 +1,11 @@
 import { SanFileParser } from '../../../src/parsers/san-file-parser'
 
 describe('SanFileParser', () => {
-    describe('#wireChildComponents()', () => {
+    describe('#parse()', () => {
         it('should parse a single defineComponent', () => {
             const script = `
             import { defineComponent } from 'san'
-            export default defineComponent({
+            module.exports = defineComponent({
                 inited() {}
             })`
             const template = '<div>Foo</div>'
@@ -38,6 +38,48 @@ describe('SanFileParser', () => {
             expect(sourceFile.componentInfos[0].root.children[0]).toMatchObject({
                 textExpr: { type: 1, value: 'Foo' }
             })
+        })
+        it('should parse a single Component class', () => {
+            const script = `
+            import { Component } from 'san'
+            export default class extends Component {
+                inited() {}
+                constructor() {
+                    this.computed = {one: () => 1}
+                }
+            }`
+            const template = '<div>Foo</div>'
+            const parser = new SanFileParser(script, template, '/tmp/foo.san')
+            const sourceFile = parser.parse()
+
+            expect(sourceFile.componentInfos).toHaveLength(1)
+            expect(sourceFile.componentInfos[0]).toEqual(sourceFile.entryComponentInfo)
+            expect(sourceFile.componentInfos[0].getComputedNames()).toEqual(['one'])
+            expect(sourceFile.componentInfos[0].root.children[0]).toMatchObject({
+                textExpr: { type: 1, value: 'Foo' }
+            })
+        })
+        it('should parse a single Component class without constructor', () => {
+            const script = `
+            import { Component } from 'san'
+            export default class extends Component {}`
+            const template = '<div>Foo</div>'
+            const parser = new SanFileParser(script, template, '/tmp/foo.san')
+            const sourceFile = parser.parse()
+
+            expect(sourceFile.componentInfos).toHaveLength(1)
+            expect(sourceFile.componentInfos[0]).toEqual(sourceFile.entryComponentInfo)
+            expect(sourceFile.componentInfos[0].root.children[0]).toMatchObject({
+                textExpr: { type: 1, value: 'Foo' }
+            })
+        })
+        it('should throw if component not found', () => {
+            const script = `
+            const val = 3
+            export default val`
+            const template = '<div>Foo</div>'
+            const parser = new SanFileParser(script, template, '/tmp/foo.san')
+            expect(() => parser.parse()).toThrow('entry component not found')
         })
     })
 })

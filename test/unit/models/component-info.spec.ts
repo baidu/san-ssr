@@ -66,14 +66,8 @@ describe('JSComponentInfo', function () {
         expect(info.root).toHaveProperty('tagName', 'div')
         expect(info.root.children[0]).toMatchObject({
             textExpr: {
-                type: 7,
-                segs: [{
-                    type: 5,
-                    expr: {
-                        paths: [{ value: 'name' }]
-                    },
-                    filters: []
-                }]
+                type: 4,
+                paths: [{ value: 'name' }]
             }
         })
     })

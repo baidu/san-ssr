@@ -1,5 +1,5 @@
 import { parse } from 'acorn'
-import { getStringValue, findExportNames, isModuleExports, findESMImports, findScriptRequires } from '../../../src/utils/js-ast-util'
+import { getLiteralValue, getStringValue, findExportNames, isModuleExports, findESMImports, findScriptRequires } from '../../../src/utils/js-ast-util'
 
 const pm = (script: string) => parse(script, { sourceType: 'module', ecmaVersion: 2020 }) as any
 const p = (script: string) => parse(script, { ecmaVersion: 2020 }) as any
@@ -89,6 +89,13 @@ describe('js-ast-util', () => {
             const script = 'function a() {}'
             const fn = p(script).body[0]
             expect(() => getStringValue(fn)).toThrow('[0,15) cannot evaluate string value')
+        })
+    })
+    describe('.getLiteralValue()', () => {
+        it('should thorw if not supported', () => {
+            const script = 'function a() {}'
+            const fn = p(script).body[0]
+            expect(() => getLiteralValue(fn)).toThrow('[0,15) expected literal')
         })
     })
 })

@@ -68,8 +68,14 @@ export class SanFileParser {
             assertObjectExpression(expr.arguments[0])
             addStringPropertyForObject(expr.arguments[0], 'template', this.templateContent)
         } else if (isClass(expr)) {
-            const fn = getConstructor(expr) || this.createEmptyConstructor()
+            let fn = getConstructor(expr)
+            if (!fn) {
+                fn = this.createEmptyConstructor()
+                expr.body.body.push(fn)
+            }
             fn.value.body.body.push(this.createTemplateAssignmentExpression())
+        } else {
+            throw new Error('entry component not found')
         }
     }
 

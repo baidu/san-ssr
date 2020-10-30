@@ -77,14 +77,14 @@ export class JavaScriptSanParser {
 
     private createChildComponentReference (child: Node): ComponentReference {
         if (this.componentIDs.has(child)) {
-            return { specifier: '.', id: this.componentIDs.get(child)! }
+            return new ComponentReference('.', this.componentIDs.get(child)!)
         }
         if (isIdentifier(child)) {
             if (this.imports.has(child.name)) {
                 const [specifier, id] = this.imports.get(child.name)!
-                return { specifier, id }
+                return new ComponentReference(specifier, id)
             }
-            return { specifier: '.', id: child.name }
+            return new ComponentReference('.', child.name)
         }
         if (this.isCreateComponentLoaderCall(child)) {
             const options = child.arguments[0]
@@ -95,7 +95,7 @@ export class JavaScriptSanParser {
 
             // placeholder 未定义，生成一个默认的组件
             const cmpt = this.getOrCreateDefaultLoaderComponent()
-            return { specifier: '.', id: cmpt.id }
+            return new ComponentReference('.', cmpt.id)
         }
         throw new Error(`${location(child)} cannot parse components`)
     }

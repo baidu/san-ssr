@@ -11,9 +11,10 @@
  * - 也不能利用 exports 引用当前文件的其他组件： exports.sanSSRRenderX()
  */
 import { SanComponent } from 'san'
+import { ComponentReference } from '../models/component-reference'
 
 export interface Resolver {
-    getRenderer: (id: string, specifier?: string) => Function
+    getRenderer: (ref: { id: string, specifier?: string }) => Function
     setRenderer: (id: string, fn: Function) => void
     /**
      * 每个组件的每次 render 执行，共用同一个 prototype
@@ -23,9 +24,9 @@ export interface Resolver {
     setPrototype: (id: string, proto: SanComponent<{}>) => void
 }
 
-export function createResolver (exports: {[key: string]: any}) {
+export function createResolver (exports: {[key: string]: any}): Resolver {
     return {
-        getRenderer: function (id: string, specifier: string = '.') {
+        getRenderer: function ({ id, specifier = '.' }: Partial<ComponentReference>) {
             const mod = specifier === '.' ? exports : require(specifier)
             return mod[`sanSSRRender${id}`]
         },
@@ -33,11 +34,11 @@ export function createResolver (exports: {[key: string]: any}) {
             exports[`sanSSRRender${id}`] = fn
         },
         getPrototype: function (id: string) {
-            return this.prototypes[id]
+            return this['prototypes'][id]
         },
         setPrototype: function (id: string, proto: any) {
-            this.prototypes[id] = proto
+            this['prototypes'][id] = proto
         },
         prototypes: {}
-    }
+    } as Resolver
 }

@@ -5,7 +5,7 @@ describe('runtime/resolver', () => {
     const resolver = createResolver({})
 
     it('should resolve render from external module', () => {
-        const render = resolver.getRenderer('0', join(__dirname, '../../stub/ssr.js'))
+        const render = resolver.getRenderer({ id: '0', specifier: join(__dirname, '../../stub/ssr.js') })
         expect(render()).toEqual('hello')
     })
 })

@@ -1,9 +1,15 @@
+import { IDGenerator } from '../utils/id-generator'
 import { Emitter } from '../utils/emitter'
 import { dataAccess } from './compilers/expr-compiler'
 import { stringifier } from './compilers/stringifier'
 
 export class JSEmitter extends Emitter {
-    buffer: string = ''
+    private buffer: string = ''
+    private idGen = new IDGenerator()
+
+    public genID (name: string) {
+        return this.idGen.generate(name)
+    }
 
     public fullText () {
         this.clearStringLiteralBuffer()

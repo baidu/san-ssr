@@ -1,5 +1,5 @@
 import debugFactory from 'debug'
-import { ComponentConstructor, defineComponent, ANode } from 'san'
+import { ComponentConstructor, defineComponent } from 'san'
 import { DynamicSanSourceFile } from '../models/san-source-file'
 import { DynamicComponentInfo } from '../models/component-info'
 import { getMember } from '../utils/lang'

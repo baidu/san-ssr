@@ -69,7 +69,7 @@ describe('SanProject', function () {
             })
 
             expect(code).toContain('html += "A')
-            expect(code).toMatch(/var sanSSRRuntime = /)
+            expect(code).toMatch(/let sanSSRRuntime = /)
         })
 
         it('should not throw if tsConfigFilePath not specified', function () {

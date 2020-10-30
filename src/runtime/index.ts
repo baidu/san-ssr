@@ -37,7 +37,7 @@ export interface SanSSRRuntime {
  * 产出运行时代码
  */
 export function emitRuntime (emitter: Emitter) {
-    emitter.writeLine('var sanSSRRuntime = { exports };')
+    emitter.writeLine('let sanSSRRuntime = { exports };')
     for (const file of RUNTIME_FILES) {
         emitter.writeLine('!(function (exports) {')
         emitter.indent()

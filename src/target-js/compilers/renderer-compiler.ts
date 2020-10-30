@@ -41,11 +41,11 @@ export class RendererCompiler {
             emitter.writeLine('return ""')
             return emitter.fullText()
         }
-        emitter.writeLine('var _ = runtime._;')
-        emitter.writeLine('var html = "";')
+        emitter.writeLine('let _ = runtime._;')
+        emitter.writeLine('let html = "";')
 
         this.genComponentContextCode(info)
-        emitter.writeLine('var parentCtx = ctx;')
+        emitter.writeLine('parentCtx = ctx;')
 
         // instance preraration
         if (info.hasMethod('initData')) {
@@ -59,11 +59,12 @@ export class RendererCompiler {
         }
 
         // calc computed
-        // TODO remove ctx.computedNames
-        emitter.writeFor('var i = 0; i < ctx.computedNames.length; i++', () => {
-            emitter.writeLine('var name = ctx.computedNames[i];')
-            emitter.writeLine('data[name] = ctx.instance.computed[name].apply(ctx.instance);')
-        })
+        const computedNames = info.getComputedNames()
+        if (computedNames.length) {
+            emitter.writeFor(`let name of [${computedNames.map(x => `'${x}'`).join(', ')}]`, () => {
+                emitter.writeLine('data[name] = ctx.instance.computed[name].apply(ctx.instance);')
+            })
+        }
 
         const aNodeCompiler = new ANodeCompiler(info, this.ssrOnly, emitter)
         aNodeCompiler.compile(info.root, true)
@@ -81,8 +82,8 @@ export class RendererCompiler {
     }
 
     public emitInitDataInRuntime () {
-        this.emitter.writeLine('var sanSSRInitData = ctx.instance.initData() || {}')
-        this.emitter.writeFor('var key of Object.keys(sanSSRInitData)', () => {
+        this.emitter.writeLine('let sanSSRInitData = ctx.instance.initData() || {}')
+        this.emitter.writeFor('let key of Object.keys(sanSSRInitData)', () => {
             this.emitter.writeLine('ctx.data[key] = ctx.data[key] || sanSSRInitData[key]')
         })
     }
@@ -95,14 +96,11 @@ export class RendererCompiler {
         emitter.writeLine(`let instance = _.createFromPrototype(runtime.resolver.getPrototype("${componentInfo.id}"));`)
         emitter.writeLine('instance.data = new runtime.SanData(data, instance.computed)')
         emitter.writeLine('instance.parentComponent = parentCtx && parentCtx.instance')
+        emitter.writeLine('let ctx = {instance, slots, data, parentCtx}')
 
-        emitter.nextLine('let computedNames = [')
-        emitter.write(componentInfo.getComputedNames().map(x => `'${x}'`).join(', '))
-        emitter.feedLine('];')
-
-        const refs = [...componentInfo.childComponents.entries()].map(([key, val]) => `"${key}": ${val}`).join(', ')
-        emitter.writeLine(`let refs = {${refs}}`)
-
-        emitter.writeLine('var ctx = {instance, slots, data, parentCtx, computedNames, refs}')
+        if (componentInfo.hasDynamicComponent()) {
+            const refs = [...componentInfo.childComponents.entries()].map(([key, val]) => `"${key}": ${val}`).join(', ')
+            emitter.writeLine(`ctx.refs = {${refs}}`)
+        }
     }
 }

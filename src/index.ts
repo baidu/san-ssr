@@ -5,6 +5,7 @@ import { ToJSCompileOptions } from './target-js/index'
 import * as TypeGuards from './utils/type-guards'
 
 // util functions
+export { IDGenerator } from './utils/id-generator'
 export { parseSanHTML, compareSanHTML, assertDeepEqual, assertSanHTMLEqual } from './utils/case'
 export { autoCloseTags, booleanAttributes } from './utils/dom-util'
 export { getANodePropByName } from './utils/anode-util'

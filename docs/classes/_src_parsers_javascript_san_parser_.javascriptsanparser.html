@@ -1,0 +1,849 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>JavaScriptSanParser | san-ssr</title>
+	<meta name="description" content="Documentation for san-ssr">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">san-ssr</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="../modules/_src_parsers_javascript_san_parser_.html">&quot;src/parsers/javascript-san-parser&quot;</a>
+				</li>
+				<li>
+					<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html">JavaScriptSanParser</a>
+				</li>
+			</ul>
+			<h1>Class JavaScriptSanParser</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>把包含 San 组件定义的 JavaScript 源码，通过静态分析（AST），得到组件信息。</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">JavaScriptSanParser</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#componentids" class="tsd-kind-icon">componentIDs</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#componentinfos" class="tsd-kind-icon">component<wbr>Infos</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#defaultexport" class="tsd-kind-icon">default<wbr>Export</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#defaultplaceholdercomponent" class="tsd-kind-icon">default<wbr>Placeholder<wbr>Component</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#definecomponentidentifier" class="tsd-kind-icon">define<wbr>Component<wbr>Identifier</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#entrycomponentinfo" class="tsd-kind-icon">entry<wbr>Component<wbr>Info</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#exports" class="tsd-kind-icon">exports</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#filepath" class="tsd-kind-icon">file<wbr>Path</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#imports" class="tsd-kind-icon">imports</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#root" class="tsd-kind-icon">root</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#sancomponentidentifier" class="tsd-kind-icon">san<wbr>Component<wbr>Identifier</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#createchildcomponentreference" class="tsd-kind-icon">create<wbr>Child<wbr>Component<wbr>Reference</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#createcomponent" class="tsd-kind-icon">create<wbr>Component</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#getorcreatedefaultloadercomponent" class="tsd-kind-icon">get<wbr>OrCreate<wbr>Default<wbr>Loader<wbr>Component</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#getpropertiesfromcomponentdeclaration" class="tsd-kind-icon">get<wbr>Properties<wbr>From<wbr>Component<wbr>Declaration</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#iscomponent" class="tsd-kind-icon">is<wbr>Component</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#iscomponentclass" class="tsd-kind-icon">is<wbr>Component<wbr>Class</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#iscreatecomponentloadercall" class="tsd-kind-icon">is<wbr>Create<wbr>Component<wbr>Loader<wbr>Call</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#isdefinecomponentcall" class="tsd-kind-icon">is<wbr>Define<wbr>Component<wbr>Call</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#isimportedfrom" class="tsd-kind-icon">is<wbr>Imported<wbr>From</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#isimportedfromsan" class="tsd-kind-icon">is<wbr>Imported<wbr>From<wbr>San</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#parse" class="tsd-kind-icon">parse</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#parsecomponentfromnode" class="tsd-kind-icon">parse<wbr>Component<wbr>From<wbr>Node</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#parsecomponents" class="tsd-kind-icon">parse<wbr>Components</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#parseimportednames" class="tsd-kind-icon">parse<wbr>Imported<wbr>Names</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#parsenames" class="tsd-kind-icon">parse<wbr>Names</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#stringify" class="tsd-kind-icon">stringify</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#wirechildcomponents" class="tsd-kind-icon">wire<wbr>Child<wbr>Components</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Java<wbr>Script<wbr>San<wbr>Parser<span class="tsd-signature-symbol">(</span>filePath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, fileContent<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span>, sourceType<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">"module"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"script"</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html" class="tsd-signature-type">JavaScriptSanParser</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L35">src/parsers/javascript-san-parser.ts:35</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>filePath: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> fileContent: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> sourceType: <span class="tsd-signature-type">"module"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"script"</span><span class="tsd-signature-symbol"> = &quot;script&quot;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html" class="tsd-signature-type">JavaScriptSanParser</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="componentids" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> componentIDs</h3>
+					<div class="tsd-signature tsd-kind-icon">componentIDs<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Node</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L33">src/parsers/javascript-san-parser.ts:33</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="componentinfos" class="tsd-anchor"></a>
+					<h3>component<wbr>Infos</h3>
+					<div class="tsd-signature tsd-kind-icon">component<wbr>Infos<span class="tsd-signature-symbol">:</span> <a href="_src_models_component_info_.jscomponentinfo.html" class="tsd-signature-type">JSComponentInfo</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L25">src/parsers/javascript-san-parser.ts:25</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="defaultexport" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagOptional">Optional</span> default<wbr>Export</h3>
+					<div class="tsd-signature tsd-kind-icon">default<wbr>Export<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L30">src/parsers/javascript-san-parser.ts:30</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="defaultplaceholdercomponent" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagOptional">Optional</span> default<wbr>Placeholder<wbr>Component</h3>
+					<div class="tsd-signature tsd-kind-icon">default<wbr>Placeholder<wbr>Component<span class="tsd-signature-symbol">:</span> <a href="_src_models_component_info_.jscomponentinfo.html" class="tsd-signature-type">JSComponentInfo</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L34">src/parsers/javascript-san-parser.ts:34</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="definecomponentidentifier" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagOptional">Optional</span> define<wbr>Component<wbr>Identifier</h3>
+					<div class="tsd-signature tsd-kind-icon">define<wbr>Component<wbr>Identifier<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L29">src/parsers/javascript-san-parser.ts:29</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="entrycomponentinfo" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> entry<wbr>Component<wbr>Info</h3>
+					<div class="tsd-signature tsd-kind-icon">entry<wbr>Component<wbr>Info<span class="tsd-signature-symbol">:</span> <a href="_src_models_component_info_.jscomponentinfo.html" class="tsd-signature-type">JSComponentInfo</a></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L26">src/parsers/javascript-san-parser.ts:26</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="exports" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> exports</h3>
+					<div class="tsd-signature tsd-kind-icon">exports<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_src_parsers_javascript_san_parser_.html#localname" class="tsd-signature-type">LocalName</a><span class="tsd-signature-symbol">, </span><a href="../modules/_src_parsers_javascript_san_parser_.html#exportname" class="tsd-signature-type">ExportName</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L32">src/parsers/javascript-san-parser.ts:32</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="filepath" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagReadonly">Readonly</span> file<wbr>Path</h3>
+					<div class="tsd-signature tsd-kind-icon">file<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L38">src/parsers/javascript-san-parser.ts:38</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="id" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> id</h3>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 0</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L35">src/parsers/javascript-san-parser.ts:35</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="imports" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> imports</h3>
+					<div class="tsd-signature tsd-kind-icon">imports<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_src_parsers_javascript_san_parser_.html#localname" class="tsd-signature-type">LocalName</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-symbol">[</span><a href="../modules/_src_parsers_javascript_san_parser_.html#importspecifier" class="tsd-signature-type">ImportSpecifier</a><span class="tsd-signature-symbol">, </span><a href="../modules/_src_parsers_javascript_san_parser_.html#importname" class="tsd-signature-type">ImportName</a><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> = new Map()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L31">src/parsers/javascript-san-parser.ts:31</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="root" class="tsd-anchor"></a>
+					<h3>root</h3>
+					<div class="tsd-signature tsd-kind-icon">root<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Program</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L24">src/parsers/javascript-san-parser.ts:24</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="sancomponentidentifier" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagOptional">Optional</span> san<wbr>Component<wbr>Identifier</h3>
+					<div class="tsd-signature tsd-kind-icon">san<wbr>Component<wbr>Identifier<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L28">src/parsers/javascript-san-parser.ts:28</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="createchildcomponentreference" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> create<wbr>Child<wbr>Component<wbr>Reference</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Child<wbr>Component<wbr>Reference<span class="tsd-signature-symbol">(</span>child<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Node</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_models_component_reference_.componentreference.html" class="tsd-signature-type">ComponentReference</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L80">src/parsers/javascript-san-parser.ts:80</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>child: <span class="tsd-signature-type">Node</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_src_models_component_reference_.componentreference.html" class="tsd-signature-type">ComponentReference</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="createcomponent" class="tsd-anchor"></a>
+					<h3>create<wbr>Component</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Component<span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Node</span>, name<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span>, isDefault<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_models_component_info_.jscomponentinfo.html" class="tsd-signature-type">JSComponentInfo</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L157">src/parsers/javascript-san-parser.ts:157</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>node: <span class="tsd-signature-type">Node</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> name: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = getClassName(node)</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> isDefault: <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = false</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_src_models_component_info_.jscomponentinfo.html" class="tsd-signature-type">JSComponentInfo</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="getorcreatedefaultloadercomponent" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> get<wbr>OrCreate<wbr>Default<wbr>Loader<wbr>Component</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>OrCreate<wbr>Default<wbr>Loader<wbr>Component<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_models_component_info_.jscomponentinfo.html" class="tsd-signature-type">JSComponentInfo</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L169">src/parsers/javascript-san-parser.ts:169</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="_src_models_component_info_.jscomponentinfo.html" class="tsd-signature-type">JSComponentInfo</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="getpropertiesfromcomponentdeclaration" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> get<wbr>Properties<wbr>From<wbr>Component<wbr>Declaration</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Properties<wbr>From<wbr>Component<wbr>Declaration<span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Node</span>, name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Generator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Identifier</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SimpleLiteral</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RegExpLiteral</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Program</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">FunctionDeclaration</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">FunctionExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ArrowFunctionExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SwitchCase</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">CatchClause</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VariableDeclarator</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ExpressionStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">BlockStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">EmptyStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">DebuggerStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">WithStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ReturnStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">LabeledStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">BreakStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ContinueStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">IfStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SwitchStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ThrowStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">TryStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">WhileStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">DoWhileStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ForStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ForInStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ForOfStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VariableDeclaration</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ClassDeclaration</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ThisExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ArrayExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ObjectExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">YieldExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">UnaryExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">UpdateExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">BinaryExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">AssignmentExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">LogicalExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">MemberExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ConditionalExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SimpleCallExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">NewExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SequenceExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">TemplateLiteral</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">TaggedTemplateExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ClassExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">MetaProperty</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">AwaitExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ImportExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ChainExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Property</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">AssignmentProperty</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Super</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">TemplateElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SpreadElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ObjectPattern</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ArrayPattern</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RestElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">AssignmentPattern</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ClassBody</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">MethodDefinition</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ImportDeclaration</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ExportNamedDeclaration</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ExportDefaultDeclaration</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ExportAllDeclaration</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ImportSpecifier</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ImportDefaultSpecifier</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ImportNamespaceSpecifier</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ExportSpecifier</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L177">src/parsers/javascript-san-parser.ts:177</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>node: <span class="tsd-signature-type">Node</span></h5>
+								</li>
+								<li>
+									<h5>name: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Generator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">Identifier</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SimpleLiteral</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RegExpLiteral</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Program</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">FunctionDeclaration</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">FunctionExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ArrowFunctionExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SwitchCase</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">CatchClause</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VariableDeclarator</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ExpressionStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">BlockStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">EmptyStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">DebuggerStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">WithStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ReturnStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">LabeledStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">BreakStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ContinueStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">IfStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SwitchStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ThrowStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">TryStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">WhileStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">DoWhileStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ForStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ForInStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ForOfStatement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">VariableDeclaration</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ClassDeclaration</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ThisExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ArrayExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ObjectExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">YieldExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">UnaryExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">UpdateExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">BinaryExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">AssignmentExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">LogicalExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">MemberExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ConditionalExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SimpleCallExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">NewExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SequenceExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">TemplateLiteral</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">TaggedTemplateExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ClassExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">MetaProperty</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">AwaitExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ImportExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ChainExpression</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Property</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">AssignmentProperty</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Super</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">TemplateElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">SpreadElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ObjectPattern</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ArrayPattern</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">RestElement</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">AssignmentPattern</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ClassBody</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">MethodDefinition</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ImportDeclaration</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ExportNamedDeclaration</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ExportDefaultDeclaration</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ExportAllDeclaration</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ImportSpecifier</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ImportDefaultSpecifier</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ImportNamespaceSpecifier</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">ExportSpecifier</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="iscomponent" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> is<wbr>Component</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Component<span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Node</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L183">src/parsers/javascript-san-parser.ts:183</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>node: <span class="tsd-signature-type">Node</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="iscomponentclass" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> is<wbr>Component<wbr>Class</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Component<wbr>Class<span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Node</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">node</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">Class</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L195">src/parsers/javascript-san-parser.ts:195</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>node: <span class="tsd-signature-type">Node</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">node</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">Class</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="iscreatecomponentloadercall" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> is<wbr>Create<wbr>Component<wbr>Loader<wbr>Call</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Create<wbr>Component<wbr>Loader<wbr>Call<span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Node</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">node</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">CallExpression</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L191">src/parsers/javascript-san-parser.ts:191</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>node: <span class="tsd-signature-type">Node</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">node</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">CallExpression</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="isdefinecomponentcall" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> is<wbr>Define<wbr>Component<wbr>Call</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Define<wbr>Component<wbr>Call<span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Node</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">node</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">CallExpression</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L187">src/parsers/javascript-san-parser.ts:187</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>node: <span class="tsd-signature-type">Node</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">node</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">CallExpression</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="isimportedfrom" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> is<wbr>Imported<wbr>From</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Imported<wbr>From<span class="tsd-signature-symbol">(</span>localName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, packageSpec<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, importedName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L206">src/parsers/javascript-san-parser.ts:206</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>localName: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>packageSpec: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>importedName: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="isimportedfromsan" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> is<wbr>Imported<wbr>From<wbr>San</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Imported<wbr>From<wbr>San<span class="tsd-signature-symbol">(</span>expr<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Node</span>, sanExport<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L199">src/parsers/javascript-san-parser.ts:199</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>expr: <span class="tsd-signature-type">Node</span></h5>
+								</li>
+								<li>
+									<h5>sanExport: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="parse" class="tsd-anchor"></a>
+					<h3>parse</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">parse<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_models_san_source_file_.jssansourcefile.html" class="tsd-signature-type">JSSanSourceFile</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L48">src/parsers/javascript-san-parser.ts:48</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="_src_models_san_source_file_.jssansourcefile.html" class="tsd-signature-type">JSSanSourceFile</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="parsecomponentfromnode" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> parse<wbr>Component<wbr>From<wbr>Node</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">parse<wbr>Component<wbr>From<wbr>Node<span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Node</span>, parent<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Node</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_models_component_info_.jscomponentinfo.html" class="tsd-signature-type">JSComponentInfo</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L105">src/parsers/javascript-san-parser.ts:105</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>node: <span class="tsd-signature-type">Node</span></h5>
+								</li>
+								<li>
+									<h5>parent: <span class="tsd-signature-type">Node</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_src_models_component_info_.jscomponentinfo.html" class="tsd-signature-type">JSComponentInfo</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="parsecomponents" class="tsd-anchor"></a>
+					<h3>parse<wbr>Components</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">parse<wbr>Components<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">[</span><a href="_src_models_component_info_.jscomponentinfo.html" class="tsd-signature-type">JSComponentInfo</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">, </span><a href="_src_models_component_info_.jscomponentinfo.html" class="tsd-signature-type">JSComponentInfo</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L55">src/parsers/javascript-san-parser.ts:55</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">[</span><a href="_src_models_component_info_.jscomponentinfo.html" class="tsd-signature-type">JSComponentInfo</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">, </span><a href="_src_models_component_info_.jscomponentinfo.html" class="tsd-signature-type">JSComponentInfo</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="parseimportednames" class="tsd-anchor"></a>
+					<h3>parse<wbr>Imported<wbr>Names</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">parse<wbr>Imported<wbr>Names<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Generator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L152">src/parsers/javascript-san-parser.ts:152</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Generator</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="parsenames" class="tsd-anchor"></a>
+					<h3>parse<wbr>Names</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">parse<wbr>Names<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L136">src/parsers/javascript-san-parser.ts:136</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>解析文件中出现的名字：找到重要的类名、方法名以及它们的来源</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="stringify" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> stringify</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">stringify<span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Node</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L213">src/parsers/javascript-san-parser.ts:213</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>node: <span class="tsd-signature-type">Node</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="wirechildcomponents" class="tsd-anchor"></a>
+					<h3>wire<wbr>Child<wbr>Components</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">wire<wbr>Child<wbr>Components<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/parsers/javascript-san-parser.ts#L72">src/parsers/javascript-san-parser.ts:72</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class="current tsd-kind-module">
+						<a href="../modules/_src_parsers_javascript_san_parser_.html">&quot;src/parsers/javascript-<wbr>san-<wbr>parser&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-module">
+						<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html" class="tsd-kind-icon">Java<wbr>Script<wbr>San<wbr>Parser</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#componentids" class="tsd-kind-icon">componentIDs</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#componentinfos" class="tsd-kind-icon">component<wbr>Infos</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#defaultexport" class="tsd-kind-icon">default<wbr>Export</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#defaultplaceholdercomponent" class="tsd-kind-icon">default<wbr>Placeholder<wbr>Component</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#definecomponentidentifier" class="tsd-kind-icon">define<wbr>Component<wbr>Identifier</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#entrycomponentinfo" class="tsd-kind-icon">entry<wbr>Component<wbr>Info</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#exports" class="tsd-kind-icon">exports</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#filepath" class="tsd-kind-icon">file<wbr>Path</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#id" class="tsd-kind-icon">id</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#imports" class="tsd-kind-icon">imports</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#root" class="tsd-kind-icon">root</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#sancomponentidentifier" class="tsd-kind-icon">san<wbr>Component<wbr>Identifier</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#createchildcomponentreference" class="tsd-kind-icon">create<wbr>Child<wbr>Component<wbr>Reference</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#createcomponent" class="tsd-kind-icon">create<wbr>Component</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#getorcreatedefaultloadercomponent" class="tsd-kind-icon">get<wbr>OrCreate<wbr>Default<wbr>Loader<wbr>Component</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#getpropertiesfromcomponentdeclaration" class="tsd-kind-icon">get<wbr>Properties<wbr>From<wbr>Component<wbr>Declaration</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#iscomponent" class="tsd-kind-icon">is<wbr>Component</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#iscomponentclass" class="tsd-kind-icon">is<wbr>Component<wbr>Class</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#iscreatecomponentloadercall" class="tsd-kind-icon">is<wbr>Create<wbr>Component<wbr>Loader<wbr>Call</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#isdefinecomponentcall" class="tsd-kind-icon">is<wbr>Define<wbr>Component<wbr>Call</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#isimportedfrom" class="tsd-kind-icon">is<wbr>Imported<wbr>From</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#isimportedfromsan" class="tsd-kind-icon">is<wbr>Imported<wbr>From<wbr>San</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#parse" class="tsd-kind-icon">parse</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#parsecomponentfromnode" class="tsd-kind-icon">parse<wbr>Component<wbr>From<wbr>Node</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#parsecomponents" class="tsd-kind-icon">parse<wbr>Components</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#parseimportednames" class="tsd-kind-icon">parse<wbr>Imported<wbr>Names</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#parsenames" class="tsd-kind-icon">parse<wbr>Names</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#stringify" class="tsd-kind-icon">stringify</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_src_parsers_javascript_san_parser_.javascriptsanparser.html#wirechildcomponents" class="tsd-kind-icon">wire<wbr>Child<wbr>Components</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_src_parsers_javascript_san_parser_.html#exportname" class="tsd-kind-icon">Export<wbr>Name</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_src_parsers_javascript_san_parser_.html#importname" class="tsd-kind-icon">Import<wbr>Name</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_src_parsers_javascript_san_parser_.html#importspecifier" class="tsd-kind-icon">Import<wbr>Specifier</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_src_parsers_javascript_san_parser_.html#localname" class="tsd-kind-icon">Local<wbr>Name</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_src_parsers_javascript_san_parser_.html#default_loader_cmp" class="tsd-kind-icon">DEFAULT_<wbr>LOADER_<wbr>CMP</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_src_parsers_javascript_san_parser_.html#debug" class="tsd-kind-icon">debug</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

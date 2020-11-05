@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ComponentReference | san-ssr</title>
+	<title>SanFileDescriptor | san-ssr</title>
 	<meta name="description" content="Documentation for san-ssr">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,29 +56,35 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_src_models_component_reference_.html">&quot;src/models/component-reference&quot;</a>
+					<a href="../modules/_src_models_options_.html">&quot;src/models/options&quot;</a>
 				</li>
 				<li>
-					<a href="_src_models_component_reference_.componentreference.html">ComponentReference</a>
+					<a href="_src_models_options_.sanfiledescriptor.html">SanFileDescriptor</a>
 				</li>
 			</ul>
-			<h1>Interface ComponentReference</h1>
+			<h1>Interface SanFileDescriptor</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>.san 文件描述</p>
+					</div>
+					<ul>
+						<li>单独给 script 文件内容、template 文件内容的情况。</li>
+						<li>一个 script 内只有一个组件。</li>
+					</ul>
+				</div>
+			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ComponentReference</span>
-						<ul class="tsd-hierarchy">
-							<li>
-								<a href="_src_models_component_reference_.dynamiccomponentreference.html" class="tsd-signature-type">DynamicComponentReference</a>
-							</li>
-						</ul>
+						<span class="target">SanFileDescriptor</span>
 					</li>
 				</ul>
 			</section>
@@ -89,9 +95,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_models_component_reference_.componentreference.html#id" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_models_component_reference_.componentreference.html#isdefault" class="tsd-kind-icon">is<wbr>Default</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_models_component_reference_.componentreference.html#specifier" class="tsd-kind-icon">specifier</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_models_options_.sanfiledescriptor.html#filepath" class="tsd-kind-icon">file<wbr>Path</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_models_options_.sanfiledescriptor.html#scriptcontent" class="tsd-kind-icon">script<wbr>Content</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_models_options_.sanfiledescriptor.html#templatecontent" class="tsd-kind-icon">template<wbr>Content</a></li>
 							</ul>
 						</section>
 					</div>
@@ -100,47 +106,47 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="id" class="tsd-anchor"></a>
-					<h3>id</h3>
-					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="filepath" class="tsd-anchor"></a>
+					<h3>file<wbr>Path</h3>
+					<div class="tsd-signature tsd-kind-icon">file<wbr>Path<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/models/component-reference.ts#L11">src/models/component-reference.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/models/options.ts#L27">src/models/options.ts:27</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>组件的 id。见下面的说明。</p>
+							<p>文件路径</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="isdefault" class="tsd-anchor"></a>
-					<h3>is<wbr>Default</h3>
-					<div class="tsd-signature tsd-kind-icon">is<wbr>Default<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<a name="scriptcontent" class="tsd-anchor"></a>
+					<h3>script<wbr>Content</h3>
+					<div class="tsd-signature tsd-kind-icon">script<wbr>Content<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/models/component-reference.ts#L15">src/models/component-reference.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/models/options.ts#L31">src/models/options.ts:31</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>是否是该源文件的默认导出（export default 或 module.exports）</p>
+							<p>脚本内容</p>
 						</div>
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="specifier" class="tsd-anchor"></a>
-					<h3>specifier</h3>
-					<div class="tsd-signature tsd-kind-icon">specifier<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="templatecontent" class="tsd-anchor"></a>
+					<h3>template<wbr>Content</h3>
+					<div class="tsd-signature tsd-kind-icon">template<wbr>Content<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/models/component-reference.ts#L7">src/models/component-reference.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/models/options.ts#L35">src/models/options.ts:35</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
 						<div class="lead">
-							<p>组件所在源文件的相对路径</p>
+							<p>模板内容</p>
 						</div>
 					</div>
 				</section>
@@ -153,41 +159,50 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="../modules/_src_models_component_reference_.html">&quot;src/models/component-<wbr>reference&quot;</a>
+						<a href="../modules/_src_models_options_.html">&quot;src/models/options&quot;</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="_src_models_options_.filedescriptor.html" class="tsd-kind-icon">File<wbr>Descriptor</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-module">
-						<a href="_src_models_component_reference_.componentreference.html" class="tsd-kind-icon">Component<wbr>Reference</a>
+						<a href="_src_models_options_.sanfiledescriptor.html" class="tsd-kind-icon">San<wbr>File<wbr>Descriptor</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_src_models_component_reference_.componentreference.html#id" class="tsd-kind-icon">id</a>
+								<a href="_src_models_options_.sanfiledescriptor.html#filepath" class="tsd-kind-icon">file<wbr>Path</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_src_models_component_reference_.componentreference.html#isdefault" class="tsd-kind-icon">is<wbr>Default</a>
+								<a href="_src_models_options_.sanfiledescriptor.html#scriptcontent" class="tsd-kind-icon">script<wbr>Content</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_src_models_component_reference_.componentreference.html#specifier" class="tsd-kind-icon">specifier</a>
+								<a href="_src_models_options_.sanfiledescriptor.html#templatecontent" class="tsd-kind-icon">template<wbr>Content</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="_src_models_component_reference_.dynamiccomponentreference.html" class="tsd-kind-icon">Dynamic<wbr>Component<wbr>Reference</a>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/_src_models_options_.html#compileinput" class="tsd-kind-icon">Compile<wbr>Input</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/_src_models_options_.html#componentclass" class="tsd-kind-icon">Component<wbr>Class</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module">
+						<a href="../modules/_src_models_options_.html#filepath" class="tsd-kind-icon">File<wbr>Path</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="../modules/_src_models_component_reference_.html#getcomponentclassid" class="tsd-kind-icon">get<wbr>Component<wbr>ClassID</a>
+						<a href="../modules/_src_models_options_.html#iscomponentclass" class="tsd-kind-icon">is<wbr>Component<wbr>Class</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="../modules/_src_models_component_reference_.html#getdefaultexportedcomponentid" class="tsd-kind-icon">get<wbr>Default<wbr>Exported<wbr>ComponentID</a>
+						<a href="../modules/_src_models_options_.html#isfiledescriptor" class="tsd-kind-icon">is<wbr>File<wbr>Descriptor</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="../modules/_src_models_component_reference_.html#getexportedcomponentid" class="tsd-kind-icon">get<wbr>Exported<wbr>ComponentID</a>
+						<a href="../modules/_src_models_options_.html#issanfiledescriptor" class="tsd-kind-icon">is<wbr>San<wbr>File<wbr>Descriptor</a>
 					</li>
 				</ul>
 			</nav>

@@ -71,18 +71,16 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Interfaces</h3>
+							<h3>Classes</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_src_models_component_reference_.componentreference.html" class="tsd-kind-icon">Component<wbr>Reference</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_src_models_component_reference_.dynamiccomponentreference.html" class="tsd-kind-icon">Dynamic<wbr>Component<wbr>Reference</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_src_models_component_reference_.componentreference.html" class="tsd-kind-icon">Component<wbr>Reference</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_src_models_component_reference_.dynamiccomponentreference.html" class="tsd-kind-icon">Dynamic<wbr>Component<wbr>Reference</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_src_models_component_reference_.html#getcomponentclassid" class="tsd-kind-icon">get<wbr>Component<wbr>ClassID</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_src_models_component_reference_.html#getdefaultexportedcomponentid" class="tsd-kind-icon">get<wbr>Default<wbr>Exported<wbr>ComponentID</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_src_models_component_reference_.html#getexportedcomponentid" class="tsd-kind-icon">get<wbr>Exported<wbr>ComponentID</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_src_models_component_reference_.html#componentid" class="tsd-kind-icon">componentID</a></li>
 							</ul>
 						</section>
 					</div>
@@ -91,96 +89,25 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
-					<a name="getcomponentclassid" class="tsd-anchor"></a>
-					<h3>get<wbr>Component<wbr>ClassID</h3>
+					<a name="componentid" class="tsd-anchor"></a>
+					<h3>componentID</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Component<wbr>ClassID<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+						<li class="tsd-signature tsd-kind-icon">componentID<span class="tsd-signature-symbol">(</span>isDefault<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, genID<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/models/component-reference.ts#L42">src/models/component-reference.ts:42</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/models/component-reference.ts#L50">src/models/component-reference.ts:50</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>组件在所属 SanSourceFile 中的唯一标识。</p>
-								</div>
-								<ol>
-									<li><p>对于 ComponentClass 打包编译：可以从 ComponentClass 映射到 ID。</p>
-										<ul>
-											<li>此时不对源码的结构做任何要求，因此是一个包含递增数字的合法标识符名</li>
-											<li>例如：0 为第一个，1 为第二个…</li>
-										</ul>
-									</li>
-									<li><p>对于 TypeScript San 源文件单独编译：可以从 import 语句映射到 ID。</p>
-										<ul>
-											<li>此时要求它是 sourceFile 内 top level 的名字，因此是唯一的</li>
-											<li>例如：named export 组件，ID 为 ClassDeclaration#.getName()</li>
-											<li>特例：default export 的组件，ID 为 &quot;default&quot;</li>
-										</ul>
-									</li>
-								</ol>
-								<p>Note: ID 的作用只是确保文件中唯一，不可直接用于目标语言文件中的标识符</p>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>id: <span class="tsd-signature-type">number</span></h5>
+									<h5>isDefault: <span class="tsd-signature-type">boolean</span></h5>
 								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
-					<a name="getdefaultexportedcomponentid" class="tsd-anchor"></a>
-					<h3>get<wbr>Default<wbr>Exported<wbr>ComponentID</h3>
-					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Default<wbr>Exported<wbr>ComponentID<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/models/component-reference.ts#L62">src/models/component-reference.ts:62</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>默认导出需要有固定的名字，因为它的引用不包含它的名字信息。</p>
-								</div>
-								<p>例如：
-									// a.san.ts
-								export default class A extends Component {}</p>
-								<p>// b.san.ts
-								import AComponent from &#39;./a.san&#39;</p>
-								<p>// 对于如下 Component Reference，
-									// 如果 id 为 AComponent 将无法定位到 a.san.ts 中的 class A
-								{ specifier: &#39;./a.san&#39;, id: &#39;default&#39;, isDefault: true }</p>
-							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
-					<a name="getexportedcomponentid" class="tsd-anchor"></a>
-					<h3>get<wbr>Exported<wbr>ComponentID</h3>
-					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Exported<wbr>ComponentID<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/models/component-reference.ts#L45">src/models/component-reference.ts:45</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
 								<li>
-									<h5>name: <span class="tsd-signature-type">string</span></h5>
+									<h5>genID: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
@@ -202,20 +129,14 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/_src_models_component_reference_.componentreference.html" class="tsd-kind-icon">Component<wbr>Reference</a>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_src_models_component_reference_.componentreference.html" class="tsd-kind-icon">Component<wbr>Reference</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/_src_models_component_reference_.dynamiccomponentreference.html" class="tsd-kind-icon">Dynamic<wbr>Component<wbr>Reference</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="_src_models_component_reference_.html#getcomponentclassid" class="tsd-kind-icon">get<wbr>Component<wbr>ClassID</a>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_src_models_component_reference_.dynamiccomponentreference.html" class="tsd-kind-icon">Dynamic<wbr>Component<wbr>Reference</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="_src_models_component_reference_.html#getdefaultexportedcomponentid" class="tsd-kind-icon">get<wbr>Default<wbr>Exported<wbr>ComponentID</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="_src_models_component_reference_.html#getexportedcomponentid" class="tsd-kind-icon">get<wbr>Exported<wbr>ComponentID</a>
+						<a href="_src_models_component_reference_.html#componentid" class="tsd-kind-icon">componentID</a>
 					</li>
 				</ul>
 			</nav>

@@ -91,13 +91,13 @@
 					<a name="createresolver" class="tsd-anchor"></a>
 					<h3>create<wbr>Resolver</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Resolver<span class="tsd-signature-symbol">(</span>exports<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>prototypes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol">; </span>getPrototype<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>getRenderer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>setPrototype<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>setRenderer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Resolver<span class="tsd-signature-symbol">(</span>exports<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_runtime_resolver_.resolver.html" class="tsd-signature-type">Resolver</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/runtime/resolver.ts#L26">src/runtime/resolver.ts:26</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/runtime/resolver.ts#L27">src/runtime/resolver.ts:27</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -111,111 +111,7 @@
 									</ul>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">{ </span>prototypes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{}</span><span class="tsd-signature-symbol">; </span>getPrototype<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>getRenderer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>setPrototype<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">; </span>setRenderer<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> }</span></h4>
-							<ul class="tsd-parameters">
-								<li class="tsd-parameter">
-									<h5>prototypes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{}</span></h5>
-									<ul class="tsd-parameters">
-									</ul>
-								</li>
-								<li class="tsd-parameter">
-									<h5>get<wbr>Prototype<span class="tsd-signature-symbol">: </span>function</h5>
-									<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-type-literal">
-										<li class="tsd-signature tsd-kind-icon">get<wbr>Prototype<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-									</ul>
-									<ul class="tsd-descriptions">
-										<li class="tsd-description">
-											<aside class="tsd-sources">
-												<ul>
-													<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/runtime/resolver.ts#L35">src/runtime/resolver.ts:35</a></li>
-												</ul>
-											</aside>
-											<h4 class="tsd-parameters-title">Parameters</h4>
-											<ul class="tsd-parameters">
-												<li>
-													<h5>id: <span class="tsd-signature-type">string</span></h5>
-												</li>
-											</ul>
-											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-										</li>
-									</ul>
-								</li>
-								<li class="tsd-parameter">
-									<h5>get<wbr>Renderer<span class="tsd-signature-symbol">: </span>function</h5>
-									<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-type-literal">
-										<li class="tsd-signature tsd-kind-icon">get<wbr>Renderer<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, specifier<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-									</ul>
-									<ul class="tsd-descriptions">
-										<li class="tsd-description">
-											<aside class="tsd-sources">
-												<ul>
-													<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/runtime/resolver.ts#L28">src/runtime/resolver.ts:28</a></li>
-												</ul>
-											</aside>
-											<h4 class="tsd-parameters-title">Parameters</h4>
-											<ul class="tsd-parameters">
-												<li>
-													<h5>id: <span class="tsd-signature-type">string</span></h5>
-												</li>
-												<li>
-													<h5><span class="tsd-flag ts-flagDefault value">Default value</span> specifier: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;.&quot;</span></h5>
-												</li>
-											</ul>
-											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-										</li>
-									</ul>
-								</li>
-								<li class="tsd-parameter">
-									<h5>set<wbr>Prototype<span class="tsd-signature-symbol">: </span>function</h5>
-									<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-type-literal">
-										<li class="tsd-signature tsd-kind-icon">set<wbr>Prototype<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, proto<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-									</ul>
-									<ul class="tsd-descriptions">
-										<li class="tsd-description">
-											<aside class="tsd-sources">
-												<ul>
-													<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/runtime/resolver.ts#L38">src/runtime/resolver.ts:38</a></li>
-												</ul>
-											</aside>
-											<h4 class="tsd-parameters-title">Parameters</h4>
-											<ul class="tsd-parameters">
-												<li>
-													<h5>id: <span class="tsd-signature-type">string</span></h5>
-												</li>
-												<li>
-													<h5>proto: <span class="tsd-signature-type">any</span></h5>
-												</li>
-											</ul>
-											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-										</li>
-									</ul>
-								</li>
-								<li class="tsd-parameter">
-									<h5>set<wbr>Renderer<span class="tsd-signature-symbol">: </span>function</h5>
-									<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-type-literal">
-										<li class="tsd-signature tsd-kind-icon">set<wbr>Renderer<span class="tsd-signature-symbol">(</span>id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, fn<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-									</ul>
-									<ul class="tsd-descriptions">
-										<li class="tsd-description">
-											<aside class="tsd-sources">
-												<ul>
-													<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/runtime/resolver.ts#L32">src/runtime/resolver.ts:32</a></li>
-												</ul>
-											</aside>
-											<h4 class="tsd-parameters-title">Parameters</h4>
-											<ul class="tsd-parameters">
-												<li>
-													<h5>id: <span class="tsd-signature-type">string</span></h5>
-												</li>
-												<li>
-													<h5>fn: <span class="tsd-signature-type">Function</span></h5>
-												</li>
-											</ul>
-											<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-										</li>
-									</ul>
-								</li>
-							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_src_runtime_resolver_.resolver.html" class="tsd-signature-type">Resolver</a></h4>
 						</li>
 					</ul>
 				</section>

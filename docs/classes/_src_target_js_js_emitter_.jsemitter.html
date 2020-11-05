@@ -92,11 +92,12 @@
 								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><a href="_src_target_js_js_emitter_.jsemitter.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_target_js_js_emitter_.jsemitter.html#buffer" class="tsd-kind-icon">buffer</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_target_js_js_emitter_.jsemitter.html#buffer" class="tsd-kind-icon">buffer</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_src_target_js_js_emitter_.jsemitter.html#code" class="tsd-kind-icon">code</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_target_js_js_emitter_.jsemitter.html#idgen" class="tsd-kind-icon">id<wbr>Gen</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -116,6 +117,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_target_js_js_emitter_.jsemitter.html#endif" class="tsd-kind-icon">end<wbr>If</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_src_target_js_js_emitter_.jsemitter.html#feedline" class="tsd-kind-icon">feed<wbr>Line</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_src_target_js_js_emitter_.jsemitter.html#fulltext" class="tsd-kind-icon">full<wbr>Text</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_target_js_js_emitter_.jsemitter.html#genid" class="tsd-kind-icon">genID</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_src_target_js_js_emitter_.jsemitter.html#indent" class="tsd-kind-icon">indent</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_src_target_js_js_emitter_.jsemitter.html#nextline" class="tsd-kind-icon">next<wbr>Line</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_src_target_js_js_emitter_.jsemitter.html#unindent" class="tsd-kind-icon">unindent</a></li>
@@ -156,7 +158,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_src_utils_emitter_.emitter.html">Emitter</a>.<a href="_src_utils_emitter_.emitter.html#constructor">constructor</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/utils/emitter.ts#L4">src/utils/emitter.ts:4</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/utils/emitter.ts#L4">src/utils/emitter.ts:4</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -170,15 +172,15 @@
 					</ul>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-private-protected">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="buffer" class="tsd-anchor"></a>
-					<h3>buffer</h3>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> buffer</h3>
 					<div class="tsd-signature tsd-kind-icon">buffer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = &quot;&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L6">src/target-js/js-emitter.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L7">src/target-js/js-emitter.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -189,7 +191,17 @@
 					<aside class="tsd-sources">
 						<p>Inherited from <a href="_src_utils_emitter_.emitter.html">Emitter</a>.<a href="_src_utils_emitter_.emitter.html#code">code</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/utils/emitter.ts#L4">src/utils/emitter.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/utils/emitter.ts#L4">src/utils/emitter.ts:4</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="idgen" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> id<wbr>Gen</h3>
+					<div class="tsd-signature tsd-kind-icon">id<wbr>Gen<span class="tsd-signature-symbol">:</span> <a href="_src_utils_id_generator_.idgenerator.html" class="tsd-signature-type">IDGenerator</a><span class="tsd-signature-symbol"> = new IDGenerator()</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L8">src/target-js/js-emitter.ts:8</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -206,7 +218,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L128">src/target-js/js-emitter.ts:128</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L134">src/target-js/js-emitter.ts:134</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -232,7 +244,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L96">src/target-js/js-emitter.ts:96</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L102">src/target-js/js-emitter.ts:102</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -249,7 +261,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L92">src/target-js/js-emitter.ts:92</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L98">src/target-js/js-emitter.ts:98</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -272,7 +284,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L110">src/target-js/js-emitter.ts:110</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L116">src/target-js/js-emitter.ts:116</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -295,7 +307,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L88">src/target-js/js-emitter.ts:88</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L94">src/target-js/js-emitter.ts:94</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -319,7 +331,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_src_utils_emitter_.emitter.html">Emitter</a>.<a href="_src_utils_emitter_.emitter.html#carriagereturn">carriageReturn</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/utils/emitter.ts#L71">src/utils/emitter.ts:71</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/utils/emitter.ts#L71">src/utils/emitter.ts:71</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -337,7 +349,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_src_utils_emitter_.emitter.html">Emitter</a>.<a href="_src_utils_emitter_.emitter.html#clear">clear</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/utils/emitter.ts#L10">src/utils/emitter.ts:10</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/utils/emitter.ts#L10">src/utils/emitter.ts:10</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -354,7 +366,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L31">src/target-js/js-emitter.ts:31</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L37">src/target-js/js-emitter.ts:37</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -372,7 +384,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_src_utils_emitter_.emitter.html">Emitter</a>.<a href="_src_utils_emitter_.emitter.html#defaultwrite">defaultWrite</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/utils/emitter.ts#L78">src/utils/emitter.ts:78</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/utils/emitter.ts#L78">src/utils/emitter.ts:78</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -395,7 +407,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L134">src/target-js/js-emitter.ts:134</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L140">src/target-js/js-emitter.ts:140</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -418,7 +430,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L114">src/target-js/js-emitter.ts:114</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L120">src/target-js/js-emitter.ts:120</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -435,7 +447,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L100">src/target-js/js-emitter.ts:100</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L106">src/target-js/js-emitter.ts:106</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -453,7 +465,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_src_utils_emitter_.emitter.html">Emitter</a>.<a href="_src_utils_emitter_.emitter.html#feedline">feedLine</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/utils/emitter.ts#L39">src/utils/emitter.ts:39</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/utils/emitter.ts#L39">src/utils/emitter.ts:39</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -477,9 +489,32 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_src_utils_emitter_.emitter.html">Emitter</a>.<a href="_src_utils_emitter_.emitter.html#fulltext">fullText</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L8">src/target-js/js-emitter.ts:8</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L14">src/target-js/js-emitter.ts:14</a></li>
 								</ul>
 							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="genid" class="tsd-anchor"></a>
+					<h3>genID</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">genID<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L10">src/target-js/js-emitter.ts:10</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>name: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
@@ -495,7 +530,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_src_utils_emitter_.emitter.html">Emitter</a>.<a href="_src_utils_emitter_.emitter.html#indent">indent</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/utils/emitter.ts#L20">src/utils/emitter.ts:20</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/utils/emitter.ts#L20">src/utils/emitter.ts:20</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -513,7 +548,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_src_utils_emitter_.emitter.html">Emitter</a>.<a href="_src_utils_emitter_.emitter.html#nextline">nextLine</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/utils/emitter.ts#L32">src/utils/emitter.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/utils/emitter.ts#L32">src/utils/emitter.ts:32</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -537,7 +572,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_src_utils_emitter_.emitter.html">Emitter</a>.<a href="_src_utils_emitter_.emitter.html#unindent">unindent</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/utils/emitter.ts#L24">src/utils/emitter.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/utils/emitter.ts#L24">src/utils/emitter.ts:24</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -555,7 +590,7 @@
 							<aside class="tsd-sources">
 								<p>Overrides <a href="_src_utils_emitter_.emitter.html">Emitter</a>.<a href="_src_utils_emitter_.emitter.html#write">write</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L13">src/target-js/js-emitter.ts:13</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L19">src/target-js/js-emitter.ts:19</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -578,7 +613,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L78">src/target-js/js-emitter.ts:78</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L84">src/target-js/js-emitter.ts:84</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -604,7 +639,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L122">src/target-js/js-emitter.ts:122</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L128">src/target-js/js-emitter.ts:128</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -633,7 +668,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L53">src/target-js/js-emitter.ts:53</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L59">src/target-js/js-emitter.ts:59</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -650,7 +685,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L46">src/target-js/js-emitter.ts:46</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L52">src/target-js/js-emitter.ts:52</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -676,7 +711,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L118">src/target-js/js-emitter.ts:118</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L124">src/target-js/js-emitter.ts:124</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -693,7 +728,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L23">src/target-js/js-emitter.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L29">src/target-js/js-emitter.ts:29</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -710,7 +745,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L57">src/target-js/js-emitter.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L63">src/target-js/js-emitter.ts:63</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -733,7 +768,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L104">src/target-js/js-emitter.ts:104</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L110">src/target-js/js-emitter.ts:110</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -759,7 +794,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L64">src/target-js/js-emitter.ts:64</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L70">src/target-js/js-emitter.ts:70</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -788,7 +823,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L74">src/target-js/js-emitter.ts:74</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L80">src/target-js/js-emitter.ts:80</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -814,7 +849,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L19">src/target-js/js-emitter.ts:19</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L25">src/target-js/js-emitter.ts:25</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -837,7 +872,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L27">src/target-js/js-emitter.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L33">src/target-js/js-emitter.ts:33</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -860,7 +895,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L82">src/target-js/js-emitter.ts:82</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L88">src/target-js/js-emitter.ts:88</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -887,7 +922,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_src_utils_emitter_.emitter.html">Emitter</a>.<a href="_src_utils_emitter_.emitter.html#writeindentedlines">writeIndentedLines</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/utils/emitter.ts#L65">src/utils/emitter.ts:65</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/utils/emitter.ts#L65">src/utils/emitter.ts:65</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -911,7 +946,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_src_utils_emitter_.emitter.html">Emitter</a>.<a href="_src_utils_emitter_.emitter.html#writeline">writeLine</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/utils/emitter.ts#L49">src/utils/emitter.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/utils/emitter.ts#L49">src/utils/emitter.ts:49</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -935,7 +970,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_src_utils_emitter_.emitter.html">Emitter</a>.<a href="_src_utils_emitter_.emitter.html#writelines">writeLines</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/utils/emitter.ts#L57">src/utils/emitter.ts:57</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/utils/emitter.ts#L57">src/utils/emitter.ts:57</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -959,7 +994,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from <a href="_src_utils_emitter_.emitter.html">Emitter</a>.<a href="_src_utils_emitter_.emitter.html#writenewline">writeNewLine</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/utils/emitter.ts#L28">src/utils/emitter.ts:28</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/utils/emitter.ts#L28">src/utils/emitter.ts:28</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -976,7 +1011,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/target-js/js-emitter.ts#L38">src/target-js/js-emitter.ts:38</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/target-js/js-emitter.ts#L44">src/target-js/js-emitter.ts:44</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1015,11 +1050,14 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited">
 								<a href="_src_target_js_js_emitter_.jsemitter.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
 								<a href="_src_target_js_js_emitter_.jsemitter.html#buffer" class="tsd-kind-icon">buffer</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
 								<a href="_src_target_js_js_emitter_.jsemitter.html#code" class="tsd-kind-icon">code</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_src_target_js_js_emitter_.jsemitter.html#idgen" class="tsd-kind-icon">id<wbr>Gen</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_src_target_js_js_emitter_.jsemitter.html#beginblock" class="tsd-kind-icon">begin<wbr>Block</a>
@@ -1062,6 +1100,9 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
 								<a href="_src_target_js_js_emitter_.jsemitter.html#fulltext" class="tsd-kind-icon">full<wbr>Text</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_src_target_js_js_emitter_.jsemitter.html#genid" class="tsd-kind-icon">genID</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 								<a href="_src_target_js_js_emitter_.jsemitter.html#indent" class="tsd-kind-icon">indent</a>
@@ -1153,7 +1194,6 @@
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
 				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
@@ -1162,6 +1202,9 @@
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
 			</ul>
 		</div>
 	</div>

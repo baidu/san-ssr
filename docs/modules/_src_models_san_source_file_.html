@@ -74,6 +74,7 @@
 							<h3>Classes</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_src_models_san_source_file_.dynamicsansourcefile.html" class="tsd-kind-icon">Dynamic<wbr>San<wbr>Source<wbr>File</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_src_models_san_source_file_.jssansourcefile.html" class="tsd-kind-icon">JSSan<wbr>Source<wbr>File</a></li>
 								<li class="tsd-kind-class tsd-parent-kind-module tsd-has-type-parameter"><a href="../classes/_src_models_san_source_file_.sansourcefileimpl.html" class="tsd-kind-icon">San<wbr>Source<wbr>File<wbr>Impl</a></li>
 								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_src_models_san_source_file_.typedsansourcefile.html" class="tsd-kind-icon">Typed<wbr>San<wbr>Source<wbr>File</a></li>
 							</ul>
@@ -93,6 +94,7 @@
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_src_models_san_source_file_.html#isjssansourcefile" class="tsd-kind-icon">isJSSan<wbr>Source<wbr>File</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_src_models_san_source_file_.html#istypedsansourcefile" class="tsd-kind-icon">is<wbr>Typed<wbr>San<wbr>Source<wbr>File</a></li>
 							</ul>
 						</section>
@@ -104,10 +106,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module">
 					<a name="sansourcefile" class="tsd-anchor"></a>
 					<h3>San<wbr>Source<wbr>File</h3>
-					<div class="tsd-signature tsd-kind-icon">San<wbr>Source<wbr>File<span class="tsd-signature-symbol">:</span> <a href="../classes/_src_models_san_source_file_.dynamicsansourcefile.html" class="tsd-signature-type">DynamicSanSourceFile</a><span class="tsd-signature-symbol"> | </span><a href="../classes/_src_models_san_source_file_.typedsansourcefile.html" class="tsd-signature-type">TypedSanSourceFile</a></div>
+					<div class="tsd-signature tsd-kind-icon">San<wbr>Source<wbr>File<span class="tsd-signature-symbol">:</span> <a href="../classes/_src_models_san_source_file_.dynamicsansourcefile.html" class="tsd-signature-type">DynamicSanSourceFile</a><span class="tsd-signature-symbol"> | </span><a href="../classes/_src_models_san_source_file_.typedsansourcefile.html" class="tsd-signature-type">TypedSanSourceFile</a><span class="tsd-signature-symbol"> | </span><a href="../classes/_src_models_san_source_file_.jssansourcefile.html" class="tsd-signature-type">JSSanSourceFile</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/models/san-source-file.ts#L69">src/models/san-source-file.ts:69</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/models/san-source-file.ts#L88">src/models/san-source-file.ts:88</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -120,13 +122,36 @@
 					<div class="tsd-signature tsd-kind-icon">debug<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Debugger</span><span class="tsd-signature-symbol"> = debugFactory(&#x27;san-source-file&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/models/san-source-file.ts#L5">src/models/san-source-file.ts:5</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/models/san-source-file.ts#L5">src/models/san-source-file.ts:5</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="isjssansourcefile" class="tsd-anchor"></a>
+					<h3>isJSSan<wbr>Source<wbr>File</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">isJSSan<wbr>Source<wbr>File<span class="tsd-signature-symbol">(</span>sourceFile<span class="tsd-signature-symbol">: </span><a href="_src_models_san_source_file_.html#sansourcefile" class="tsd-signature-type">SanSourceFile</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">sourceFile</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">JSSanSourceFile</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/models/san-source-file.ts#L93">src/models/san-source-file.ts:93</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>sourceFile: <a href="_src_models_san_source_file_.html#sansourcefile" class="tsd-signature-type">SanSourceFile</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">sourceFile</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">JSSanSourceFile</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
 					<a name="istypedsansourcefile" class="tsd-anchor"></a>
 					<h3>is<wbr>Typed<wbr>San<wbr>Source<wbr>File</h3>
@@ -137,7 +162,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/37e91b2/src/models/san-source-file.ts#L71">src/models/san-source-file.ts:71</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17e19d2/src/models/san-source-file.ts#L90">src/models/san-source-file.ts:90</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -168,6 +193,9 @@
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="../classes/_src_models_san_source_file_.dynamicsansourcefile.html" class="tsd-kind-icon">Dynamic<wbr>San<wbr>Source<wbr>File</a>
 					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="../classes/_src_models_san_source_file_.jssansourcefile.html" class="tsd-kind-icon">JSSan<wbr>Source<wbr>File</a>
+					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-module tsd-has-type-parameter">
 						<a href="../classes/_src_models_san_source_file_.sansourcefileimpl.html" class="tsd-kind-icon">San<wbr>Source<wbr>File<wbr>Impl</a>
 					</li>
@@ -179,6 +207,9 @@
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
 						<a href="_src_models_san_source_file_.html#debug" class="tsd-kind-icon">debug</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_src_models_san_source_file_.html#isjssansourcefile" class="tsd-kind-icon">isJSSan<wbr>Source<wbr>File</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="_src_models_san_source_file_.html#istypedsansourcefile" class="tsd-kind-icon">is<wbr>Typed<wbr>San<wbr>Source<wbr>File</a>

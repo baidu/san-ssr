@@ -1,3 +1,24 @@
+# [4.0.0](https://github.com/baidu/san-ssr/compare/v3.0.1...v4.0.0) (2020-11-05)
+
+
+### Documentation
+
+* more use cases in demo/ ([17e19d2](https://github.com/baidu/san-ssr/commit/17e19d25ef1ea5b03657e704db77d117afc12186))
+
+
+### Features
+
+* is directive ([f8c2b81](https://github.com/baidu/san-ssr/commit/f8c2b81fe175b44a147a1ab24da0419316a9ccbe))
+* JSSanSourceFile ([549531e](https://github.com/baidu/san-ssr/commit/549531ed4c491b6a64e1196f1b37f06eace462bf))
+* SanFileParser ([50c7387](https://github.com/baidu/san-ssr/commit/50c7387a6ca99855ed32e15d47a888a5001e1733))
+* support s-is, see https://github.com/baidu/san/issues/533 ([df78670](https://github.com/baidu/san-ssr/commit/df786702ea1654a6b6c537790ec148b1cdd1423b))
+
+
+### BREAKING CHANGES
+
+* 不再支持 getComponentType
+* SanSourceFile ComponentInfo 类型有变
+
 ## [3.0.1](https://github.com/baidu/san-ssr/compare/v3.0.0...v3.0.1) (2020-08-27)
 
 

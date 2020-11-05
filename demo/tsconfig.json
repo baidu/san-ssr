@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "declaration": true,
+    "module": "CommonJS",
+    "outDir": "dist",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "Node",
+    "resolveJsonModule": true,
+    "downlevelIteration": true,
+    "strict": true,
+    "sourceMap": true,
+    "baseUrl": "types",
+    "suppressImplicitAnyIndexErrors": true
+  }
+}

@@ -5,13 +5,12 @@
   "description": "demo for san-ssr",
   "main": "index.js",
   "scripts": {
-    "render": "node server.js"
+    "start": "node index.js"
   },
-  "author": "",
-  "license": "MIT",
+  "author": "harttle<yangjvn@126.com>",
   "dependencies": {
-    "san": "^3.7.9",
-    "san-ssr": "*",
+    "jsdom": "^16.4.0",
+    "san": "^3.10.0",
     "ts-node": "^8.5.4"
   }
 }

@@ -2,6 +2,7 @@ import debugFactory from 'debug'
 import { ancestor } from 'acorn-walk'
 import { Node as AcornNode, parse } from 'acorn'
 import { CallExpression, Program, Node, Class } from 'estree'
+import { generate } from 'astring'
 import { JSComponentInfo } from '../models/component-info'
 import { isVariableDeclarator, isProperty, isAssignmentExpression, isExportDefaultDeclaration, location, isMemberExpression, isObjectExpression, isCallExpression, isIdentifier, getMemberAssignmentsTo, getPropertyFromObject, getPropertiesFromObject, getMembersFromClassDeclaration, isClass, getClassName, getStringValue, isExportsMemberExpression, isRequireSpecifier, findExportNames, isModuleExports, findESMImports, findScriptRequires } from '../utils/js-ast-util'
 import { JSSanSourceFile } from '../models/san-source-file'
@@ -23,7 +24,6 @@ export class JavaScriptSanParser {
     root: Program
     componentInfos: JSComponentInfo[] = []
     entryComponentInfo?: JSComponentInfo
-    readonly fileContent: string
 
     private sanComponentIdentifier?: string
     private defineComponentIdentifier?: string
@@ -39,15 +39,17 @@ export class JavaScriptSanParser {
         fileContent?: string,
         sourceType: 'module' | 'script' = 'script'
     ) {
-        this.fileContent = fileContent === undefined ? readFileSync(filePath, 'utf8') : fileContent
-        this.root = parse(this.fileContent, { ecmaVersion: 2020, sourceType }) as any as Program
+        this.root = parse(
+            fileContent === undefined ? readFileSync(filePath, 'utf8') : fileContent,
+            { ecmaVersion: 2020, sourceType }
+        ) as any as Program
     }
 
     parse () {
         this.parseNames()
         this.parseComponents()
         this.wireChildComponents()
-        return new JSSanSourceFile(this.filePath, this.fileContent, this.componentInfos, this.entryComponentInfo)
+        return new JSSanSourceFile(this.filePath, this.stringify(this.root), this.componentInfos, this.entryComponentInfo)
     }
 
     parseComponents (): [JSComponentInfo[], JSComponentInfo | undefined] {
@@ -209,6 +211,6 @@ export class JavaScriptSanParser {
     }
 
     private stringify (node: Node) {
-        return this.fileContent.slice(node['start'], node['end'])
+        return generate(node, { indent: '    ' })
     }
 }

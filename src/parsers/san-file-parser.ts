@@ -2,11 +2,8 @@ import { ExpressionStatement, MethodDefinition, ObjectExpression, CallExpression
 import { JavaScriptSanParser } from './javascript-san-parser'
 import assert from 'assert'
 import { isClass, getConstructor, addStringPropertyForObject, assertObjectExpression, isCallExpression, isObjectExpression, findDefaultExport } from '../utils/js-ast-util'
-import { generate } from 'astring'
 
 export class SanFileParser {
-    fileContent: string
-
     private readonly parser: JavaScriptSanParser
 
     constructor (
@@ -15,7 +12,6 @@ export class SanFileParser {
         private readonly filePath: string
     ) {
         this.parser = new JavaScriptSanParser(filePath, scriptContent, 'module')
-        this.fileContent = 'not parsed yet'
     }
 
     parse () {
@@ -28,7 +24,6 @@ export class SanFileParser {
         // defineComponent({}) -> defineComponent({ template: `${templateContent}` })
         this.insertTemplate(expr)
 
-        this.fileContent = generate(this.parser.root)
         return this.parser.parse()
     }
 

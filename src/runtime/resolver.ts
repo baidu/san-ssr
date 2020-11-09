@@ -8,7 +8,7 @@
  * 后者没有文件的概念，因此不得依赖 require、exports 等文件级别的概念。
  *
  * - 不能引用文件系统的其他组件 render：require(ref.specifier)
- * - 也不能利用 exports 引用当前文件的其他组件： exports.sanSSRRenderX()
+ * - 也不能利用 exports 引用当前文件的其他组件： exports.sanSSRRenders.X()
  */
 import { SanComponent } from 'san'
 import { ComponentReference } from '../models/component-reference'
@@ -26,12 +26,13 @@ export interface Resolver {
 
 export function createResolver (exports: {[key: string]: any}): Resolver {
     return {
-        getRenderer: function ({ id, specifier = '.' }: Partial<ComponentReference>) {
+        getRenderer: function ({ id, specifier = '.' }: ComponentReference) {
             const mod = specifier === '.' ? exports : require(specifier)
-            return mod[`sanSSRRender${id}`]
+            return mod.sanSSRRenders[id]
         },
         setRenderer: function (id: string, fn: Function) {
-            exports[`sanSSRRender${id}`] = fn
+            exports.sanSSRRenders = exports.sanSSRRenders || {}
+            exports.sanSSRRenders[id] = fn
         },
         getPrototype: function (id: string) {
             return this['prototypes'][id]

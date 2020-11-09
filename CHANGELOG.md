@@ -1,3 +1,10 @@
+## [4.0.1](https://github.com/baidu/san-ssr/compare/v4.0.0...v4.0.1) (2020-11-09)
+
+
+### Bug Fixes
+
+* move all render functions to exports.sanSSRRenders ([74536c9](https://github.com/baidu/san-ssr/commit/74536c901656ce64e2275ebdbc94cef415b8ee03))
+
 # [4.0.0](https://github.com/baidu/san-ssr/compare/v3.0.1...v4.0.0) (2020-11-05)
 
 

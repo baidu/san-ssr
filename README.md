@@ -88,11 +88,13 @@ npm i san-ssr san-ssr-target-php
 欢迎任何类型的 Issue、完整的 Pull Request、或者不完整的 Pull Request。可以按照下面的步骤开始开发：
 
 1. 克隆本仓库并 `npm install`
-2. 在 test/cases 下添加你的测试样例，以 test/cases/array-literal 为例
-3. 通过 `./bin/debug array-literal` 来查看 SSR 结果。此时会输出三种 HTML：
-    1. EXPECTED。test/cases/array-literal/expected.html 的内容。
-    2. SOURCE。compileToSource + render() 的结果，test/cases/array-literal/ssr.js 可查看生成的 ssr 代码。
-    3. RENDER。compileToRenderer + render() 的结果。
+2. 在 [san-html-cases][san-html-cases] 下添加你的测试样例，以 node_modules/san-html-cases/src/array-literal 为例
+3. 通过 `./bin/debug array-literal` 来查看 SSR 结果。输出包括：
+    1. 预期输出。即 node_modules/san-html-cases/src/array-literal/expected.html 的内容。
+    2. 从 JavaScript 组件代码编译到 render 代码并渲染得到的内容。
+    3. 从 TypeScript 组件代码编译到 render 代码并渲染得到的内容。
+    4. 从组件 Class 编译到 render 代码并渲染得到的内容。
+    5. 从组件 Class 编译到 render 函数并渲染得到的内容。
 4. 如果 debug 符合预期，可以运行 `npm run e2e` 来查看其它样例是否仍然正常。
 5. 如果一切正常，运行 `npm run check` 来做最后的编码风格检查，和完整的测试。
 6. 如果能够通过那么 Travis CI 就应该能通过，请发 PR 到本仓库。
@@ -122,3 +124,4 @@ debug 命令：
 [sanproject]: https://baidu.github.io/san-ssr/classes/_models_san_project_.sanproject.html
 [target-compile]: https://baidu.github.io/san-ssr/interfaces/_models_compiler_.compiler.html#compile
 [compiler]: https://github.com/baidu/san-ssr/blob/809fc8eb710253f6e5aa3bd1afc0b7f615ef572e/src/models/compiler.ts#L3
+[san-html-cases]: https://github.com/ecomfe/san-html-cases

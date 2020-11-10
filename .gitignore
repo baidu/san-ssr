@@ -5,6 +5,6 @@ npm-debug.log
 /test/karma-context.html
 coverage
 vendor/
-dist/
+/dist/
 test/cases/*/ssr.js
 test/cases/*/ssr.php

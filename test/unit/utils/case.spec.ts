@@ -40,6 +40,10 @@ describe('utils/case', function () {
             expect(data).toEqual({})
             expect(html).toEqual('<div><!--s-data:{"foo":"bar"}<input></div>')
         })
+        it('should ignore backslash(\\) when parsing data', () => {
+            const [data] = parseSanHTML('<div><!--s-data:{"foo":"-\\-"}--><input></div>')
+            expect(data).toEqual({ foo: '--' })
+        })
     })
     describe('.compareSanHTML()', function () {
         it('should return true if identical', () => {

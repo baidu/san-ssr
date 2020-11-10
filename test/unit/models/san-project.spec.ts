@@ -112,6 +112,19 @@ describe('SanProject', function () {
             expect(render).toBeInstanceOf(Function)
             expect(render({ name: 'Harttle' })).toEqual('<div><!--s-data:{"name":"Harttle"}-->Harttle</div>')
         })
+
+        it('should escape consecutive hyphen', function () {
+            const proj = new SanProject()
+            const componentClass = defineComponent({ template: '<div>{{ a + b + c + d }}</div>' })
+            const render = proj.compileToRenderer(componentClass)
+
+            expect(render({
+                a: -3,
+                b: '---',
+                c: '-',
+                d: '\\--'
+            })).toEqual('<div><!--s-data:{"a":-3,"b":"-\\-\\-","c":"-","d":"\\\\-\\-"}-->-3----\\--</div>')
+        })
     })
 
     describe('#compileToSource()', function () {

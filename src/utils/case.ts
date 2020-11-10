@@ -16,7 +16,8 @@ export function parseSanHTML (str: string) {
     if (begin !== -1) {
         const end = str.indexOf('-->', begin)
         if (end !== -1) {
-            data = JSON.parse(str.slice(begin + 11, end))
+            // eslint-disable-next-line no-new-func
+            data = (new Function('return ' + str.slice(begin + 11, end)))()
             html = str.slice(0, begin) + str.slice(end + 3)
         }
     }

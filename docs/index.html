@@ -140,11 +140,13 @@ writeFileSync(<span class="hljs-string">&#x27;ssr.php&#x27;</span>, targetCode)<
 				<p>欢迎任何类型的 Issue、完整的 Pull Request、或者不完整的 Pull Request。可以按照下面的步骤开始开发：</p>
 				<ol>
 					<li>克隆本仓库并 <code>npm install</code></li>
-					<li>在 test/cases 下添加你的测试样例，以 test/cases/array-literal 为例</li>
-					<li>通过 <code>./bin/debug array-literal</code> 来查看 SSR 结果。此时会输出三种 HTML：<ol>
-							<li>EXPECTED。test/cases/array-literal/expected.html 的内容。</li>
-							<li>SOURCE。compileToSource + render() 的结果，test/cases/array-literal/ssr.js 可查看生成的 ssr 代码。</li>
-							<li>RENDER。compileToRenderer + render() 的结果。</li>
+					<li>在 <a href="https://github.com/ecomfe/san-html-cases">san-html-cases</a> 下添加你的测试样例，以 node_modules/san-html-cases/src/array-literal 为例</li>
+					<li>通过 <code>./bin/debug array-literal</code> 来查看 SSR 结果。输出包括：<ol>
+							<li>预期输出。即 node_modules/san-html-cases/src/array-literal/expected.html 的内容。</li>
+							<li>从 JavaScript 组件代码编译到 render 代码并渲染得到的内容。</li>
+							<li>从 TypeScript 组件代码编译到 render 代码并渲染得到的内容。</li>
+							<li>从组件 Class 编译到 render 代码并渲染得到的内容。</li>
+							<li>从组件 Class 编译到 render 函数并渲染得到的内容。</li>
 						</ol>
 					</li>
 					<li>如果 debug 符合预期，可以运行 <code>npm run e2e</code> 来查看其它样例是否仍然正常。</li>

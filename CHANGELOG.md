@@ -1,3 +1,10 @@
+## [4.0.2](https://github.com/baidu/san-ssr/compare/v4.0.1...v4.0.2) (2020-11-11)
+
+
+### Bug Fixes
+
+* add estree type (which is exported) as a dependency ([e8d0f90](https://github.com/baidu/san-ssr/commit/e8d0f9037ca2998b7c8b74b00c6362b4e11eef4c))
+
 ## [4.0.1](https://github.com/baidu/san-ssr/compare/v4.0.0...v4.0.1) (2020-11-09)
 
 

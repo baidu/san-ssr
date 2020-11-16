@@ -160,13 +160,13 @@ export class ElementCompiler {
         // inner content
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodePropByName(aNode, 'value')
-            if (valueProp) emitter.writeHTMLExpression(expr(valueProp.expr, 'escape'))
+            if (valueProp) emitter.writeHTMLExpression(expr(valueProp.expr, 'html'))
             return
         }
 
         const htmlDirective = aNode.directives.html
         if (htmlDirective) {
-            emitter.writeHTMLExpression(expr(htmlDirective.value, 'plain'))
+            emitter.writeHTMLExpression(expr(htmlDirective.value, 'rawhtml'))
             return
         }
         // only ATextNode#children is not defined, it has been taken over by ANodeCompiler#compileText()

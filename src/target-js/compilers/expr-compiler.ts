@@ -8,7 +8,7 @@ import { _ } from '../../runtime/underscore'
 import { stringifier } from './stringifier'
 
 // 输出为 HTML 并转义、输出为 HTML 不转义、非输出表达式
-export type OutputType = 'escape' | 'plain' | 'none'
+export type OutputType = 'html' | 'rawhtml' | 'expr'
 
 // 二元表达式操作符映射表
 const binaryOp = {
@@ -71,8 +71,9 @@ function callExpr (callExpr: ExprCallNode, outputType: OutputType): string {
 }
 
 function outputCode (code: string, outputType: OutputType) {
-    if (outputType === 'none') return code
-    return `_.output(${code}, ${outputType === 'escape'})`
+    if (outputType === 'expr') return code
+    if (outputType === 'html') return `_.output(${code}, true)`
+    return `_.output(${code}, false)`
 }
 
 // 生成插值代码
@@ -101,12 +102,15 @@ function interp (interpExpr: ExprInterpNode, outputType: OutputType): string {
             code = `ctx.instance.filters["${filterName}"].call(ctx.instance, ${code}, ${filter.args.map((arg: any) => expr(arg)).join(', ')})`
         }
     }
-    if (outputType === 'escape' && interpExpr.original) outputType = 'plain'
+    // {{ | raw }}
+    if (outputType === 'html' && interpExpr.original) {
+        return outputCode(code, 'rawhtml')
+    }
     return outputCode(code, outputType)
 }
 
 function str (e: ExprStringNode, output: OutputType): string {
-    if (output === 'escape') return stringifier.str(_.escapeHTML(e.value))
+    if (output === 'html') return stringifier.str(_.escapeHTML(e.value))
     return stringifier.str(e.value)
 }
 
@@ -143,7 +147,7 @@ function object (objExpr: ExprObjectNode): string {
 }
 
 // expr 的 JavaScript 表达式
-export function expr (e: ExprNode, output: OutputType = 'none'): string {
+export function expr (e: ExprNode, output: OutputType = 'expr'): string {
     let s
 
     if (TypeGuards.isExprUnaryNode(e)) s = unary(e)

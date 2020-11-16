@@ -61,7 +61,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         const shouldEmitComment = TypeGuards.isExprTextNode(aNode.textExpr) && aNode.textExpr.original && !this.ssrOnly
 
         if (shouldEmitComment) emitter.writeHTMLLiteral('<!--s-text-->')
-        emitter.writeHTMLExpression(expr(aNode.textExpr, 'escape'))
+        emitter.writeHTMLExpression(expr(aNode.textExpr, 'html'))
         if (shouldEmitComment) emitter.writeHTMLLiteral('<!--/s-text-->')
     }
 

@@ -44,6 +44,7 @@ function escapeHTML (source: any) {
 
 function output (value: any, needEscape: boolean) {
     if (value == null) return ''
+    value = String(value)
     return needEscape ? escapeHTML(value) : value
 }
 

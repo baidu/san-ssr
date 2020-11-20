@@ -1,11 +1,7 @@
 name: Release
-on:
-  push:
-    branches:
-      - master
+on: workflow_dispatch
 jobs:
   release:
-    needs: build
     name: Release
     runs-on: ubuntu-18.04
     steps:
@@ -18,9 +14,10 @@ jobs:
         with:
           node-version: 10
       - name: Unit Test
-        run: npm ci
-        run: npm run build
-        run: npm test
+        run: |
+          npm ci
+          npm run build
+          npm test
       - name: Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

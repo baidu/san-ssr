@@ -1,3 +1,10 @@
+## [4.0.3](https://github.com/baidu/san-ssr/compare/v4.0.2...v4.0.3) (2020-11-20)
+
+
+### Bug Fixes
+
+* script 内容跳过转义，见 [#73](https://github.com/baidu/san-ssr/issues/73) ([3ea06a4](https://github.com/baidu/san-ssr/commit/3ea06a4b0b66b367513541b9903e8d422e8d87ce))
+
 ## [4.0.2](https://github.com/baidu/san-ssr/compare/v4.0.1...v4.0.2) (2020-11-11)
 
 

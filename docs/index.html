@@ -131,6 +131,12 @@
 writeFileSync(<span class="hljs-string">&#x27;ssr.php&#x27;</span>, targetCode)</code></pre>
 				<p>指定非 <code>js</code> 的目标时，san-ssr 会从 CWD 开始寻找 <code>san-ssr-target-${target}</code> 的包，因此需要作为 san-ssr 的 peer 来安装。例如：</p>
 				<pre><code class="language-bash">npm i san-ssr san-ssr-target-php</code></pre>
+				<a href="#已知问题" id="已知问题" style="color: inherit; text-decoration: none;">
+					<h2>已知问题</h2>
+				</a>
+				<ul>
+					<li>script 元素内容不可在组件间传递。即 script 内不可引用组件，也不可包含 slot。</li>
+				</ul>
 				<a href="#贡献指南" id="贡献指南" style="color: inherit; text-decoration: none;">
 					<h2>贡献指南</h2>
 				</a>

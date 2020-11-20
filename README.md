@@ -81,6 +81,10 @@ writeFileSync('ssr.php', targetCode)
 npm i san-ssr san-ssr-target-php
 ```
 
+## 已知问题
+
+- script 元素内容不可在组件间传递。即 script 内不可引用组件，也不可包含 slot。
+
 ## 贡献指南
 
 ### 开发起步

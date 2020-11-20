@@ -1,4 +1,5 @@
 import { expr } from './expr-compiler'
+import assert from 'assert'
 import { camelCase } from 'lodash'
 import { JSEmitter } from '../js-emitter'
 import { ANode, AIfNode, AForNode, ASlotNode, ATemplateNode, AFragmentNode, ATextNode } from 'san'
@@ -16,6 +17,7 @@ import * as TypeGuards from '../../utils/type-guards'
 export class ANodeCompiler<T extends 'none' | 'typed'> {
     private ssrIndex = 0
     private elementCompiler: ElementCompiler
+    private inScript = false
 
     /**
      * @param componentInfo 要被编译的节点所在组件的信息
@@ -58,10 +60,11 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
 
     private compileText (aNode: ATextNode) {
         const { emitter } = this
-        const shouldEmitComment = TypeGuards.isExprTextNode(aNode.textExpr) && aNode.textExpr.original && !this.ssrOnly
+        const shouldEmitComment = TypeGuards.isExprTextNode(aNode.textExpr) && aNode.textExpr.original && !this.ssrOnly && !this.inScript
+        const outputType = this.inScript ? 'rawhtml' : 'html'
 
         if (shouldEmitComment) emitter.writeHTMLLiteral('<!--s-text-->')
-        emitter.writeHTMLExpression(expr(aNode.textExpr, 'html'))
+        emitter.writeHTMLExpression(expr(aNode.textExpr, outputType))
         if (shouldEmitComment) emitter.writeHTMLLiteral('<!--/s-text-->')
     }
 
@@ -72,11 +75,11 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
     }
 
     compileFragment (aNode: AFragmentNode) {
-        if (TypeGuards.isATextNode(aNode.children[0]) && !this.ssrOnly) {
+        if (TypeGuards.isATextNode(aNode.children[0]) && !this.ssrOnly && !this.inScript) {
             this.emitter.writeHTMLLiteral('<!--s-frag-->')
         }
         this.elementCompiler.inner(aNode)
-        if (TypeGuards.isATextNode(aNode.children[aNode.children.length - 1]) && !this.ssrOnly) {
+        if (TypeGuards.isATextNode(aNode.children[aNode.children.length - 1]) && !this.ssrOnly && !this.inScript) {
             this.emitter.writeHTMLLiteral('<!--/s-frag-->')
         }
     }
@@ -143,6 +146,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
 
     private compileSlot (aNode: ASlotNode) {
         const { emitter } = this
+        assert(!this.inScript, '<slot> is not allowed inside <script>')
 
         emitter.nextLine('(')
         emitter.writeAnonymousFunction([], () => {
@@ -170,20 +174,21 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
 
     private compileElement (aNode: ANode, isRootElement: boolean) {
         this.elementCompiler.tagStart(aNode)
-        if (isRootElement && !this.ssrOnly) this.outputData()
+        if (aNode.tagName === 'script') this.inScript = true
+        if (isRootElement && !this.ssrOnly && !this.inScript) {
+            this.emitter.writeIf('!noDataOutput', () => this.emitter.writeDataComment())
+        }
         this.elementCompiler.inner(aNode)
+        this.inScript = false
         this.elementCompiler.tagEnd(aNode)
-    }
-
-    private outputData () {
-        this.emitter.writeIf('!noDataOutput', () => this.emitter.writeDataComment())
     }
 
     private compileComponent (aNode: ANode, ref: string, isRootElement: boolean) {
         const { emitter } = this
-
         const defaultSourceSlots: ANode[] = []
         const sourceSlotCodes = new Map()
+
+        assert(!this.inScript, 'component reference is not allowed inside <script>')
 
         for (const child of aNode.children!) { // nodes without children (like pATextNode) has been taken over by other methods
             const slotBind = !child.textExpr && getANodePropByName(child, 'slot')

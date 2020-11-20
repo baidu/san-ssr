@@ -31,6 +31,16 @@ describe('target-js/compilers/expr-compiler', () => {
             const exp = e.children[0].textExpr
             expect(expr(exp)).toContain('ctx.instance.filters["bar"].call(ctx.instance, "foo", "coo")')
         })
+        it('should escape text value by default', () => {
+            const e = parseTemplate('{{"<"}}<')
+            const exp = e.children[0].textExpr
+            expect(expr(exp, 'html')).toEqual('_.output("<", true) + "&lt;"')
+        })
+        it('should not escape text value if raw specified', () => {
+            const e = parseTemplate('{{"\'foo\'" | raw}}')
+            const exp = e.children[0].textExpr
+            expect(expr(exp, 'html')).toEqual('_.output("\'foo\'", false)')
+        })
     })
     describe('.text()', () => {
         it('should compile to empty string for empty text', () => {

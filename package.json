@@ -28,8 +28,8 @@
     "e2e": "jest test/e2e.spec.ts",
     "perf": "node ./test/perf/index.js",
     "check": "npm test && npm run lint",
-    "test": "npm run build && npm run unit && npm run e2e",
-    "coveralls": "npm run build && npm run coverage && cat coverage/lcov.info | coveralls",
+    "test": "jest test/unit test/e2e.spec.ts",
+    "coveralls": "npm run coverage && cat coverage/lcov.info | coveralls",
     "coverage": "jest test/unit test/e2e.spec.ts --coverage",
     "version": "npm run build && npm run docs",
     "semantic-release": "semantic-release"

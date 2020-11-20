@@ -1,7 +1,7 @@
 # San SSR
 [![npm version](https://img.shields.io/npm/v/san-ssr.svg)](https://www.npmjs.org/package/san-ssr)
 [![downloads](https://img.shields.io/npm/dm/san-ssr.svg)](https://www.npmjs.org/package/san-ssr)
-[![Build Status](https://travis-ci.org/baidu/san-ssr.svg?branch=master)](https://travis-ci.org/baidu/san-ssr)
+[![Build Status](https://github.com/baidu/san-ssr/workflows/check.yml/badge.svg)](https://github.com/baidu/san-ssr/actions?query=workflow:Check)
 [![Coveralls](https://img.shields.io/coveralls/baidu/san-ssr.svg)](https://coveralls.io/github/baidu/san-ssr?branch=master)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/baidu/san-ssr)
 [![GitHub issues](https://img.shields.io/github/issues-closed/baidu/san-ssr.svg)](https://github.com/baidu/san-ssr/issues)
@@ -101,7 +101,7 @@ npm i san-ssr san-ssr-target-php
     5. 从组件 Class 编译到 render 函数并渲染得到的内容。
 4. 如果 debug 符合预期，可以运行 `npm run e2e` 来查看其它样例是否仍然正常。
 5. 如果一切正常，运行 `npm run check` 来做最后的编码风格检查，和完整的测试。
-6. 如果能够通过那么 Travis CI 就应该能通过，请发 PR 到本仓库。
+6. 如果能够通过那么 CI 就应该能通过，请发 PR 到本仓库。
 
 ### debug 进阶
 

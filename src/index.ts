@@ -1,6 +1,6 @@
 import { SanProject } from './models/san-project'
 import { Renderer } from './models/renderer'
-import { SanComponent } from 'san'
+import { ComponentConstructor } from 'san'
 import { ToJSCompileOptions } from './target-js/index'
 import * as TypeGuards from './utils/type-guards'
 
@@ -24,7 +24,7 @@ export { CompileInput } from './models/options'
 
 let defaultProject: SanProject
 
-export function compileToSource (ComponentClass: string | typeof SanComponent): string {
+export function compileToSource (ComponentClass: string | ComponentConstructor<any, any>): string {
     const proj = new SanProject()
     const targetCode = proj.compileToSource(ComponentClass, 'js', {
         bareFunction: true
@@ -32,7 +32,7 @@ export function compileToSource (ComponentClass: string | typeof SanComponent): 
     return targetCode
 }
 
-export function compileToRenderer (ComponentClass: typeof SanComponent, options?: ToJSCompileOptions): Renderer {
+export function compileToRenderer (ComponentClass: ComponentConstructor<any, any>, options?: ToJSCompileOptions): Renderer {
     defaultProject = defaultProject || new SanProject()
     const renderer = defaultProject.compileToRenderer(ComponentClass, options)
     return renderer

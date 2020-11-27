@@ -1,13 +1,13 @@
-import { expr } from './expr-compiler'
+import { expr } from '../target-js/compilers/expr-compiler'
 import assert from 'assert'
 import { camelCase } from 'lodash'
-import { JSEmitter } from '../js-emitter'
+import { JSEmitter } from '../target-js/js-emitter'
 import { ANode, AIfNode, AForNode, ASlotNode, ATemplateNode, AFragmentNode, ATextNode } from 'san'
-import { ComponentInfo } from '../../models/component-info'
+import { ComponentInfo } from '../models/component-info'
 import { ElementCompiler } from './element-compiler'
-import { stringifier } from './stringifier'
-import { getANodePropByName } from '../../utils/anode-util'
-import * as TypeGuards from '../../utils/type-guards'
+import { stringifier } from '../target-js/compilers/stringifier'
+import { getANodePropByName } from '../utils/anode-util'
+import * as TypeGuards from '../utils/type-guards'
 
 /**
  * ANode 编译
@@ -224,8 +224,8 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
 
         emitter.nextLine('html += ')
         emitter.writeFunctionCall(
-            `runtime.resolver.getRenderer(${ref})`,
-            [this.componentDataCode(aNode), ndo, 'runtime', 'parentCtx', stringifier.str(aNode.tagName) + `, ${slots}`]
+            `helpers.resolver.getRenderer(${ref})`,
+            [this.componentDataCode(aNode), ndo, 'helpers', 'parentCtx', stringifier.str(aNode.tagName) + `, ${slots}`]
         )
     }
 

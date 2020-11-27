@@ -1,11 +1,11 @@
-import { expr } from './expr-compiler'
-import { JSEmitter } from '../js-emitter'
-import { getANodePropByName } from '../../utils/anode-util'
-import { _ } from '../../runtime/underscore'
-import { autoCloseTags } from '../../utils/dom-util'
+import { expr } from '../target-js/compilers/expr-compiler'
+import { JSEmitter } from '../target-js/js-emitter'
+import { getANodePropByName } from '../utils/anode-util'
+import { _ } from '../runtime/underscore'
+import { autoCloseTags } from '../utils/dom-util'
 import { ANodeCompiler } from './anode-compiler'
 import { ExprNode, ANodeProperty, Directive, ANode } from 'san'
-import { isExprNumberNode, isExprStringNode, isExprBoolNode } from '../../utils/type-guards'
+import { isExprNumberNode, isExprStringNode, isExprBoolNode } from '../utils/type-guards'
 
 /**
  * 编译一个 HTML 标签

@@ -8,17 +8,17 @@ const mustache = require('mustache')
 const handlebars = require('handlebars')
 
 const App = san.defineComponent({
-    template: `<div id='app'><ul><li s-for='item in items'>{{item}}</li></ul></div>`
+    template: '<div id=\'app\'><ul><li s-for=\'item in items\'>{{item}}</li></ul></div>'
 })
 
 const Item = san.defineComponent({
-    template: `<li>{{item}}</li>`
+    template: '<li>{{item}}</li>'
 })
 const App2 = san.defineComponent({
     components: {
         'x-item': Item
     },
-    template: `<div id='app'><ul><x-item s-for='item in items' item="{{item}}"/></ul></div>`
+    template: '<div id=\'app\'><ul><x-item s-for=\'item in items\' item="{{item}}"/></ul></div>'
 })
 
 const data = { items: [] }
@@ -28,11 +28,11 @@ for (let i = 0; i < 10000; i++) {
 
 const renderer = compileToRenderer(App)
 const renderer2 = compileToRenderer(App2)
-const swigRenderer = swig.compile(`<div id='app'><ul>{% for item in items %}<li>{{item}}</li>{% endfor %}</ul></div>`)
-const artRenderer = art.compile(`<div id='app'><ul><% for(let i = 0; i < items.length; i++){ %><li><%= items[i] %></li><% } %></ul></div>`)
+const swigRenderer = swig.compile('<div id=\'app\'><ul>{% for item in items %}<li>{{item}}</li>{% endfor %}</ul></div>')
+const artRenderer = art.compile('<div id=\'app\'><ul><% for(let i = 0; i < items.length; i++){ %><li><%= items[i] %></li><% } %></ul></div>')
 const etplRenderer = etpl.compile('<div id=\'app\'><ul><!-- for: ${items} as ${item} --><li>${item}</li><!-- /for --></ul></div>')
-const ejsRenderer = ejs.compile(`<div id='app'><ul>{<% for(let i = 0; i < items.length; i++){ %><li><%= items[i] %></li><% } %></ul></div>`)
-const handlebarsRenderer = handlebars.compile(`<div id='app'><ul>{{#items}}<li>{{.}}</li>{{/items}}</ul></div>`)
+const ejsRenderer = ejs.compile('<div id=\'app\'><ul>{<% for(let i = 0; i < items.length; i++){ %><li><%= items[i] %></li><% } %></ul></div>')
+const handlebarsRenderer = handlebars.compile('<div id=\'app\'><ul>{{#items}}<li>{{.}}</li>{{/items}}</ul></div>')
 
 console.log('----- Simple List SSR Perf (10000 items x 100 times) -----')
 
@@ -80,6 +80,6 @@ console.timeEnd('handlebars')
 
 console.time('mustache')
 for (let i = 0; i < 100; i++) {
-    mustache.render(`<div id='app'><ul>{{#items}}<li>{{.}}</li>{{/items}}</ul></div>`, data)
+    mustache.render('<div id=\'app\'><ul>{{#items}}<li>{{.}}</li>{{/items}}</ul></div>', data)
 }
 console.timeEnd('mustache')

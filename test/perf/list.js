@@ -215,61 +215,61 @@ const MyComponent = san.defineComponent({
 })
 
 const data = {
-    'todos': [
+    todos: [
     ],
-    'categories': [
+    categories: [
         {
-            'id': 8,
-            'title': 'category8',
-            'color': '#c23531'
+            id: 8,
+            title: 'category8',
+            color: '#c23531'
         },
         {
-            'id': 7,
-            'title': 'category7',
-            'color': '#314656'
+            id: 7,
+            title: 'category7',
+            color: '#314656'
         },
         {
-            'id': 6,
-            'title': 'category6',
-            'color': '#dd8668'
+            id: 6,
+            title: 'category6',
+            color: '#dd8668'
         },
         {
-            'id': 5,
-            'title': 'category5',
-            'color': '#91c7ae'
+            id: 5,
+            title: 'category5',
+            color: '#91c7ae'
         },
         {
-            'id': 4,
-            'title': 'category4',
-            'color': '#6e7074'
+            id: 4,
+            title: 'category4',
+            color: '#6e7074'
         },
         {
-            'id': 3,
-            'title': 'category3',
-            'color': '#bda29a'
+            id: 3,
+            title: 'category3',
+            color: '#bda29a'
         },
         {
-            'id': 2,
-            'title': 'category2',
-            'color': '#44525d'
+            id: 2,
+            title: 'category2',
+            color: '#44525d'
         },
         {
-            'id': 1,
-            'title': 'category1',
-            'color': '#c4ccd3'
+            id: 1,
+            title: 'category1',
+            color: '#c4ccd3'
         }
     ]
 }
 
 for (let i = 500; i > 0; i--) {
     data.todos.push({
-        'id': i,
-        'title': 'TodoTitle' + i,
-        'desc': 'Todo Description' + i,
-        'endTime': 1548149025190,
-        'category': data.categories[i % 8],
-        'addTime': 1548062625190,
-        'done': i === 100
+        id: i,
+        title: 'TodoTitle' + i,
+        desc: 'Todo Description' + i,
+        endTime: 1548149025190,
+        category: data.categories[i % 8],
+        addTime: 1548062625190,
+        done: i === 100
     })
 }
 

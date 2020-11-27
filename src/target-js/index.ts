@@ -1,13 +1,13 @@
 import { SanProject } from '../models/san-project'
 import debugFactory from 'debug'
 import { JSEmitter } from './js-emitter'
-import { createRuntime, emitRuntime } from '../runtime/index'
+import { createHelpers, emitHelpers } from '../runtime/index'
 import { ComponentClassCompiler } from './compilers/component-compiler'
 import { SanSourceFile, JSSanSourceFile, TypedSanSourceFile, DynamicSanSourceFile, isTypedSanSourceFile, isJSSanSourceFile } from '../models/san-source-file'
 import { Renderer } from '../models/renderer'
 import { Compiler } from '../models/compiler'
-import { RendererCompiler } from './compilers/renderer-compiler'
-import { tsSourceFile2js } from '../transpilers/ts2js'
+import { RendererCompiler } from '../compilers/renderer-compiler'
+import { tsSourceFile2js } from '../compilers/ts2js'
 
 const debug = debugFactory('target-js')
 
@@ -59,22 +59,22 @@ export default class ToJSCompiler implements Compiler {
     }: ToJSCompileOptions = {}): Renderer {
         const { componentInfos, entryComponentInfo } = sourceFile
         const cc = new RendererCompiler(ssrOnly)
-        const runtime = createRuntime()
+        const helpers = createHelpers()
 
         for (const info of componentInfos) {
             const { id } = info
-            runtime.resolver.setPrototype(id, info.componentClass.prototype)
-            runtime.resolver.setRenderer(id, cc.compileComponentRenderer(info))
+            helpers.resolver.setPrototype(id, info.componentClass.prototype)
+            helpers.resolver.setRenderer(id, cc.compileComponentRenderer(info))
         }
         return (data: any, noDataOutput: boolean = false) => {
-            const render = runtime.resolver.getRenderer({ id: entryComponentInfo.id })
-            return render(data, noDataOutput, runtime)
+            const render = helpers.resolver.getRenderer({ id: entryComponentInfo.id })
+            return render(data, noDataOutput, helpers)
         }
     }
 
     private doCompileToSource (sourceFile: SanSourceFile, ssrOnly: boolean, emitter: JSEmitter) {
         // 如果源文件中有 san 组件，才输出一个运行时
-        if (sourceFile.componentInfos.length) emitRuntime(emitter)
+        if (sourceFile.componentInfos.length) emitHelpers(emitter)
 
         // 编译源文件到 JS
         if (isTypedSanSourceFile(sourceFile)) this.compileTSComponentToSource(sourceFile, emitter)
@@ -85,7 +85,7 @@ export default class ToJSCompiler implements Compiler {
         // 编译 render 函数
         const cc = new RendererCompiler(ssrOnly, emitter)
         for (const info of sourceFile.componentInfos) {
-            emitter.nextLine(`sanSSRRuntime.resolver.setRenderer("${info.id}", `)
+            emitter.nextLine(`sanSSRHelpers.resolver.setRenderer("${info.id}", `)
             cc.compileComponentRendererSource(info)
             emitter.feedLine(');')
         }
@@ -93,7 +93,7 @@ export default class ToJSCompiler implements Compiler {
         // 导出入口 render 函数
         const entryInfo = sourceFile.entryComponentInfo
         if (entryInfo) {
-            emitter.writeLine(`module.exports = Object.assign(sanSSRRuntime.resolver.getRenderer({id:"${entryInfo.id}"}), exports)`)
+            emitter.writeLine(`module.exports = Object.assign(sanSSRHelpers.resolver.getRenderer({id:"${entryInfo.id}"}), exports)`)
         }
     }
 
@@ -103,7 +103,7 @@ export default class ToJSCompiler implements Compiler {
 
         for (const info of sourceFile.componentInfos) {
             const className = info.classDeclaration.getName()
-            emitter.writeLine(`sanSSRRuntime.resolver.setPrototype("${info.id}", sanSSRRuntime._.createInstanceFromClass(${className}));`)
+            emitter.writeLine(`sanSSRHelpers.resolver.setPrototype("${info.id}", sanSSRHelpers._.createInstanceFromClass(${className}));`)
         }
     }
 
@@ -112,14 +112,14 @@ export default class ToJSCompiler implements Compiler {
 
         for (const info of sourceFile.componentInfos) {
             const proto = info.className ? info.className : info.sourceCode
-            emitter.writeLine(`sanSSRRuntime.resolver.setPrototype("${info.id}", sanSSRRuntime._.createInstanceFromClass(${proto}));`)
+            emitter.writeLine(`sanSSRHelpers.resolver.setPrototype("${info.id}", sanSSRHelpers._.createInstanceFromClass(${proto}));`)
         }
     }
 
     private compileComponentClassToSource (sourceFile: DynamicSanSourceFile, emitter: JSEmitter) {
         const cc = new ComponentClassCompiler(emitter)
         for (const info of sourceFile.componentInfos) {
-            emitter.nextLine(`sanSSRRuntime.resolver.setPrototype("${info.id}", `)
+            emitter.nextLine(`sanSSRHelpers.resolver.setPrototype("${info.id}", `)
             emitter.writeBlock('', () => cc.compile(info), false)
             emitter.feedLine(');')
         }

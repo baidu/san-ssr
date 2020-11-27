@@ -3,7 +3,6 @@ import { Emitter } from '../../src/utils/emitter'
 describe('Emitter', function () {
     let emitter
     class XEmitter extends Emitter {
-        writeRuntime () {}
         write (str) {
             this.defaultWrite(str)
         }

@@ -1,10 +1,10 @@
 import { ANodeCompiler } from './anode-compiler'
-import { stringifier } from './stringifier'
-import { ComponentInfo } from '../../models/component-info'
-import { JSEmitter } from '../js-emitter'
-import { Renderer } from '../../models/renderer'
+import { stringifier } from '../target-js/compilers/stringifier'
+import { ComponentInfo } from '../models/component-info'
+import { JSEmitter } from '../target-js/js-emitter'
+import { Renderer } from '../models/renderer'
 
-const RENDERER_ARGS = ['data = {}', 'noDataOutput', 'runtime = sanSSRRuntime', 'parentCtx', 'tagName = "div"', 'slots']
+const RENDERER_ARGS = ['data = {}', 'noDataOutput', 'helpers = sanSSRHelpers', 'parentCtx', 'tagName = "div"', 'slots']
 
 /**
  * Each ComponentClass is compiled to a render function
@@ -41,7 +41,7 @@ export class RendererCompiler {
             emitter.writeLine('return ""')
             return emitter.fullText()
         }
-        emitter.writeLine('let _ = runtime._;')
+        emitter.writeLine('let _ = helpers._;')
         emitter.writeLine('let html = "";')
 
         this.genComponentContextCode(info)
@@ -93,8 +93,8 @@ export class RendererCompiler {
     */
     private genComponentContextCode (componentInfo: ComponentInfo) {
         const { emitter } = this
-        emitter.writeLine(`let instance = _.createFromPrototype(runtime.resolver.getPrototype("${componentInfo.id}"));`)
-        emitter.writeLine('instance.data = new runtime.SanData(data, instance.computed)')
+        emitter.writeLine(`let instance = _.createFromPrototype(helpers.resolver.getPrototype("${componentInfo.id}"));`)
+        emitter.writeLine('instance.data = new helpers.SanData(data, instance.computed)')
         emitter.writeLine('instance.parentComponent = parentCtx && parentCtx.instance')
         emitter.writeLine('let ctx = {instance, slots, data, parentCtx}')
 

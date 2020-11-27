@@ -1,6 +1,6 @@
-import { RendererCompiler } from '../../../../src/target-js/compilers/renderer-compiler'
+import { RendererCompiler } from '../../../src/compilers/renderer-compiler'
 import { defineComponent } from 'san'
-import { ComponentClassParser } from '../../../../src/parsers/component-class-parser'
+import { ComponentClassParser } from '../../../src/parsers/component-class-parser'
 
 describe('target-js/compilers/renderer-compiler', () => {
     describe('#compileComponentRendererBody()', () => {

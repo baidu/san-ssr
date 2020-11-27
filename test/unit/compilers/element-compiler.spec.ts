@@ -1,4 +1,4 @@
-import { ElementCompiler } from '../../../../src/target-js/compilers/element-compiler'
+import { ElementCompiler } from '../../../src/compilers/element-compiler'
 import { parseTemplate } from 'san'
 
 describe('target-js/compilers/element-compiler', () => {

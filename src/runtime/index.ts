@@ -8,13 +8,13 @@ import { readStringSync } from '../utils/fs'
 /**
  * 编译成源代码时，需要包含的运行时文件
  */
-const RUNTIME_FILES = [
+const HELPER_FILES = [
     resolve(__dirname, '../../dist/runtime/underscore.js'),
     resolve(__dirname, '../../dist/runtime/san-data.js'),
     resolve(__dirname, '../../dist/runtime/resolver.js')
 ]
 
-export interface SanSSRRuntime {
+export interface SanSSRHelpers {
     /**
      * 无状态的工具库，类似 lodash
      */
@@ -36,22 +36,22 @@ export interface SanSSRRuntime {
 /**
  * 产出运行时代码
  */
-export function emitRuntime (emitter: Emitter) {
-    emitter.writeLine('let sanSSRRuntime = { exports };')
-    for (const file of RUNTIME_FILES) {
+export function emitHelpers (emitter: Emitter) {
+    emitter.writeLine('let sanSSRHelpers = { exports };')
+    for (const file of HELPER_FILES) {
         emitter.writeLine('!(function (exports) {')
         emitter.indent()
         emitter.writeLines(readStringSync(file))
         emitter.unindent()
-        emitter.writeLine('})(sanSSRRuntime);')
+        emitter.writeLine('})(sanSSRHelpers);')
     }
-    emitter.writeLine('sanSSRRuntime.resolver = sanSSRRuntime.createResolver(exports)')
+    emitter.writeLine('sanSSRHelpers.resolver = sanSSRHelpers.createResolver(exports)')
 }
 
 /**
  * 编译成 render 函数时，使用的 helper
  */
-export function createRuntime (): SanSSRRuntime {
+export function createHelpers (): SanSSRHelpers {
     const exports = {}
     return { _, SanData, resolver: createResolver(exports), exports }
 }

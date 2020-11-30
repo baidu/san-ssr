@@ -1,4 +1,5 @@
 import type { ComponentConstructor } from 'san'
+import assert from 'assert'
 import { Project } from 'ts-morph'
 import { ComponentClassParser } from '../parsers/component-class-parser'
 import { TypeScriptSanParser } from '../parsers/typescript-san-parser'
@@ -86,6 +87,15 @@ export class SanProject {
         const sanSourceFile = new ComponentClassParser(componentClass, '').parse()
         const compiler = this.getOrCreateCompilerInstance(ToJSCompiler)
         return compiler.compileToRenderer(sanSourceFile, options)
+    }
+
+    /**
+     * 输出工具库：组件渲染时需要使用的公共工具。
+     */
+    public emitHelpers (target: string, options: any = {}) {
+        const compiler = this.getOrCreateCompilerInstance(target)
+        assert(compiler.emitHelpers, `emit helpers not supported by "${target}"`)
+        return compiler.emitHelpers(options)
     }
 
     public getCompilerOptionsOrThrow () {

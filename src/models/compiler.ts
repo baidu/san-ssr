@@ -4,4 +4,5 @@ import { Renderer } from '../models/renderer'
 export interface Compiler {
     compileToSource (sourceFile: SanSourceFile, options?: any): string;
     compileToRenderer? (sourceFile: DynamicSanSourceFile, options?: any): Renderer;
+    emitHelpers? (options?: any): string;
 }

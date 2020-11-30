@@ -1,8 +1,8 @@
 import { resolve } from 'path'
 import { _ } from './underscore'
-import { Resolver, createResolver } from './resolver'
+import { createResolver } from './resolver'
 import { SanData } from './san-data'
-import { Emitter } from '../utils/emitter'
+import { JSEmitter } from '../target-js/js-emitter'
 import { readStringSync } from '../utils/fs'
 
 /**
@@ -26,32 +26,36 @@ export interface SanSSRHelpers {
     /**
      * 组件 render、Class 解析器
      */
-    resolver: Resolver
-    /**
-     * 当前目标文件的 exports 对象
-     */
-    exports: { [key: string]: any }
+    createResolver: typeof createResolver
 }
 
 /**
  * 产出运行时代码
  */
-export function emitHelpers (emitter: Emitter) {
-    emitter.writeLine('let sanSSRHelpers = { exports };')
+export function emitHelpersAsIIFE (emitter: JSEmitter) {
+    emitter.feedLine('(function (exports) {')
+    emitter.indent()
+
+    emitHelpers(emitter)
+    emitter.writeLine('return exports;')
+
+    emitter.unindent()
+    emitter.writeLine('})({});')
+}
+
+/**
+ * 产出运行时代码
+ */
+export function emitHelpers (emitter: JSEmitter) {
     for (const file of HELPER_FILES) {
-        emitter.writeLine('!(function (exports) {')
-        emitter.indent()
         emitter.writeLines(readStringSync(file))
-        emitter.unindent()
-        emitter.writeLine('})(sanSSRHelpers);')
+        emitter.carriageReturn()
     }
-    emitter.writeLine('sanSSRHelpers.resolver = sanSSRHelpers.createResolver(exports)')
 }
 
 /**
  * 编译成 render 函数时，使用的 helper
  */
 export function createHelpers (): SanSSRHelpers {
-    const exports = {}
-    return { _, SanData, resolver: createResolver(exports), exports }
+    return { _, SanData, createResolver }
 }

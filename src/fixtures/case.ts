@@ -9,6 +9,7 @@ const debug = debugFactory('case')
 export const caseRoot = join(__dirname, '../../node_modules/san-html-cases/src')
 const tsConfigFilePath = join(__dirname, '../../test/tsconfig.json')
 const sanProject = new SanProject(tsConfigFilePath)
+const importHelpers = join(__dirname, '../../dist/runtime/helpers')
 
 export function jsExists (caseName: string) {
     return existsSync(join(caseRoot, caseName, 'component.js'))
@@ -37,7 +38,7 @@ export function compileJS (caseName: string, compileToFunctionBodyCode: boolean)
     const targetCode = sanProject.compile(
         jsFile,
         ToJSCompiler,
-        { ssrOnly, bareFunctionBody: compileToFunctionBodyCode }
+        { ssrOnly, bareFunctionBody: compileToFunctionBodyCode, importHelpers }
     )
     const targetFile = join(caseRoot, caseName, 'ssr.js')
     return compileToFunctionBodyCode ? targetCode : writeFileSync(targetFile, targetCode)
@@ -52,7 +53,7 @@ export function compileComponent (caseName: string, compileToFunctionBodyCode: b
     const targetCode = sanProject.compile(
         require(jsFile),
         ToJSCompiler,
-        { ssrOnly, bareFunctionBody: compileToFunctionBodyCode }
+        { ssrOnly, bareFunctionBody: compileToFunctionBodyCode, importHelpers }
     )
     const targetFile = join(caseRoot, caseName, 'ssr.js')
     return compileToFunctionBodyCode ? targetCode : writeFileSync(targetFile, targetCode)
@@ -66,7 +67,7 @@ export function compileTS (caseName: string) {
         const targetCode = sanProject.compile(
             join(caseDir, file),
             ToJSCompiler,
-            { ssrOnly }
+            { ssrOnly, importHelpers }
         )
         const targetFile = file === 'component.ts'
             ? join(caseDir, 'ssr.js')

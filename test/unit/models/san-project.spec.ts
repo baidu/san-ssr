@@ -69,7 +69,7 @@ describe('SanProject', function () {
             })
 
             expect(code).toContain('html += "A')
-            expect(code).toMatch(/let sanSSRHelpers = /)
+            expect(code).toMatch(/sanSSRHelpers = /)
         })
 
         it('should not throw if tsConfigFilePath not specified', function () {
@@ -148,6 +148,15 @@ describe('SanProject', function () {
         it('should throw if compiler not found', () => {
             expect(() => proj.loadCompilerClass('rust'))
                 .toThrow('failed to load "san-ssr-target-rust"')
+        })
+    })
+    describe('#emitHelpers()', function () {
+        it('should emit js helpers by default', function () {
+            const proj = new SanProject(null)
+            const helpers = proj.emitHelpers('js')
+            expect(helpers).toContain('exports._ = ')
+            expect(helpers).toContain('exports.SanData = ')
+            expect(helpers).toContain('exports.createResolver = ')
         })
     })
 })

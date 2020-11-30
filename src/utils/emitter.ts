@@ -7,11 +7,6 @@ export abstract class Emitter {
         this.shiftWidth = shiftWidth
     }
 
-    public clear () {
-        this.code = ''
-        this.indentLevel = 0
-    }
-
     public abstract write (str: string): void
     public fullText () {
         return this.code

@@ -24,7 +24,7 @@ export interface Resolver {
     setPrototype: (id: string, proto: SanComponent<{}>) => void
 }
 
-export function createResolver (exports: {[key: string]: any}): Resolver {
+export function createResolver (exports: {[key: string]: any}, require: (spec: string) => any): Resolver {
     return {
         getRenderer: function ({ id, specifier = '.' }: ComponentReference) {
             const mod = specifier === '.' ? exports : require(specifier)

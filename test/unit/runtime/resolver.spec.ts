@@ -2,7 +2,7 @@ import { createResolver } from '../../../src/runtime/resolver'
 import { join } from 'path'
 
 describe('runtime/resolver', () => {
-    const resolver = createResolver({})
+    const resolver = createResolver({}, require)
 
     it('should resolve render from external module', () => {
         const render = resolver.getRenderer({ id: '0', specifier: join(__dirname, '../../stub/ssr.js') })

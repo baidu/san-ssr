@@ -224,8 +224,8 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
 
         emitter.nextLine('html += ')
         emitter.writeFunctionCall(
-            `helpers.resolver.getRenderer(${ref})`,
-            [this.componentDataCode(aNode), ndo, 'helpers', 'parentCtx', stringifier.str(aNode.tagName) + `, ${slots}`]
+            `sanSSRResolver.getRenderer(${ref})`,
+            [this.componentDataCode(aNode), ndo, 'parentCtx', stringifier.str(aNode.tagName) + `, ${slots}`]
         )
     }
 

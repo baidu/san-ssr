@@ -2,9 +2,8 @@ import { ANodeCompiler } from './anode-compiler'
 import { stringifier } from '../target-js/compilers/stringifier'
 import { ComponentInfo } from '../models/component-info'
 import { JSEmitter } from '../target-js/js-emitter'
-import { Renderer } from '../models/renderer'
 
-const RENDERER_ARGS = ['data = {}', 'noDataOutput', 'helpers = sanSSRHelpers', 'parentCtx', 'tagName = "div"', 'slots']
+export const RENDERER_ARGS = ['data = {}', 'noDataOutput', 'parentCtx', 'tagName = "div"', 'slots']
 
 /**
  * Each ComponentClass is compiled to a render function
@@ -14,15 +13,6 @@ export class RendererCompiler {
         private ssrOnly: boolean,
         public emitter = new JSEmitter()
     ) {}
-
-    /**
-     * 把 ComponentInfo 编译成 Render 函数
-     */
-    public compileComponentRenderer (componentInfo: ComponentInfo): Renderer {
-        this.emitter.clear()
-        const body = this.compileComponentRendererBody(componentInfo)
-        return new Function(...RENDERER_ARGS, body) as Renderer // eslint-disable-line no-new-func
-    }
 
     /**
      * 把 ComponentInfo 编译成 Render JS 匿名函数源码
@@ -41,7 +31,7 @@ export class RendererCompiler {
             emitter.writeLine('return ""')
             return emitter.fullText()
         }
-        emitter.writeLine('let _ = helpers._;')
+        emitter.writeLine('const { _, SanData } = sanSSRHelpers;')
         emitter.writeLine('let html = "";')
 
         this.genComponentContextCode(info)
@@ -93,8 +83,8 @@ export class RendererCompiler {
     */
     private genComponentContextCode (componentInfo: ComponentInfo) {
         const { emitter } = this
-        emitter.writeLine(`let instance = _.createFromPrototype(helpers.resolver.getPrototype("${componentInfo.id}"));`)
-        emitter.writeLine('instance.data = new helpers.SanData(data, instance.computed)')
+        emitter.writeLine(`let instance = _.createFromPrototype(sanSSRResolver.getPrototype("${componentInfo.id}"));`)
+        emitter.writeLine('instance.data = new SanData(data, instance.computed)')
         emitter.writeLine('instance.parentComponent = parentCtx && parentCtx.instance')
         emitter.writeLine('let ctx = {instance, slots, data, parentCtx}')
 

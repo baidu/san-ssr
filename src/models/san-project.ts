@@ -6,7 +6,8 @@ import { TypeScriptSanParser } from '../parsers/typescript-san-parser'
 import { JavaScriptSanParser } from '../parsers/javascript-san-parser'
 import { SanFileParser } from '../parsers/san-file-parser'
 import { TypedSanSourceFile, DynamicSanSourceFile, SanSourceFile } from '../models/san-source-file'
-import ToJSCompiler, { ToJSCompileOptions } from '../target-js/index'
+import ToJSCompiler from '../target-js/index'
+import { CompileOptions } from '../target-js/compilers/compile-options'
 import { Renderer } from './renderer'
 import { getDefaultTSConfigPath } from '../parsers/tsconfig'
 import { Compiler } from '../models/compiler'
@@ -82,7 +83,7 @@ export class SanProject {
      */
     public compileToRenderer (
         componentClass: ComponentConstructor<{}, any>,
-        options?: ToJSCompileOptions
+        options?: CompileOptions
     ): Renderer {
         const sanSourceFile = new ComponentClassParser(componentClass, '').parse()
         const compiler = this.getOrCreateCompilerInstance(ToJSCompiler)

@@ -1,6 +1,6 @@
 import type { SourceFile, ClassDeclaration } from 'ts-morph'
 import debugFactory from 'debug'
-import { getChildComponents, getPropertyStringArrayValue, getComponentDeclarations, getPropertyStringValue } from '../utils/ts-ast-util'
+import { getChildComponents, getPropertyStringArrayValue, getComponentDeclarations, getPropertyStringValue } from '../ast/ts-ast-util'
 import { normalizeComponentClass } from './normalize-component'
 import { TypedSanSourceFile } from '../models/san-source-file'
 import { parseAndNormalizeTemplate } from './parse-template'

@@ -1,25 +1,18 @@
+/**
+ * 抗冲突变量名产生器
+ *
+ * 产生一个带有 name 的不重复的变量名。例如 key，key1，key2，...
+ */
 export class IDGenerator {
     private counts = new Map()
 
-    /**
-     * 从 name 产生一个 ID。例如 name="key"：
-     * 第一次调用：key0，第二次调用：key1，第三次调用：key2，...
-     */
-    public generate (name: string) {
-        const id = this.get(name)
+    public next (name: string) {
         this.increaseCount(name)
-        return id
-    }
-
-    /**
-     * 获取最近一次 name 对应的 id
-     */
-    public get (name: string) {
-        return name + this.getCount(name)
+        return name + (this.getCount(name) || '')
     }
 
     private getCount (name: string) {
-        return this.counts.get(name) || 0
+        return this.counts.has(name) ? this.counts.get(name) : -1
     }
 
     private increaseCount (name: string) {

@@ -10,14 +10,6 @@ export interface Context {
     parentCtx?: Context;
 }
 
-function includes<T> (array: T[], value: T) {
-    if (!array) return false
-    for (let i = 0; i < array.length; i++) {
-        if (array[i] === value) return true
-    }
-    return false
-}
-
 const HTML_ENTITY = {
     '<': '&lt;',
     '>': '&gt;',
@@ -42,6 +34,14 @@ function escapeHTML (source: any) {
     return '' + source
 }
 
+function isObject (source: any) {
+    return typeof source === 'object' && source !== null
+}
+
+function isArray (source: any): source is any[] {
+    return source && source instanceof Array
+}
+
 function output (value: any, needEscape: boolean) {
     if (value == null) return ''
     value = String(value)
@@ -49,15 +49,11 @@ function output (value: any, needEscape: boolean) {
 }
 
 function _classFilter (source: string | string[]) {
-    if (!(source instanceof Array)) source = [source]
+    if (!isArray(source)) source = [source]
     return source.filter(x => x != null).join(' ')
 }
 
-function isObject (source: any) {
-    return typeof source === 'object' && source !== null
-}
-
-function _styleFilter (source: object) {
+function _styleFilter (source: object | string) {
     if (isObject(source)) {
         return Object.keys(source)
             .map(key => key + ':' + source[key] + ';')
@@ -67,7 +63,7 @@ function _styleFilter (source: object) {
 }
 
 function _xclassFilter (inherits: string | string[], own: string) {
-    if (!(inherits instanceof Array)) inherits = [inherits]
+    if (!isArray(inherits)) inherits = [inherits]
     const inheritStr = inherits = inherits.filter(x => x != null).join(' ')
     if (inheritStr) {
         if (own) return own + ' ' + inheritStr
@@ -76,8 +72,8 @@ function _xclassFilter (inherits: string | string[], own: string) {
     return own
 }
 
-function _xstyleFilter (inherits: object | string | string[], own: string) {
-    inherits = inherits && defaultStyleFilter(inherits)
+function _xstyleFilter (inherits: object | string, own: string) {
+    inherits = inherits && _styleFilter(inherits)
     if (inherits) {
         if (own) return own + ';' + inherits
         return inherits
@@ -99,13 +95,8 @@ function boolAttrFilter (name: string, value: string) {
     return value ? ' ' + name : ''
 }
 
-function defaultStyleFilter (source: object | string | string[]) {
-    if (isObject(source)) {
-        return Object.keys(source)
-            .map(key => key + ':' + source[key] + ';')
-            .join('')
-    }
-    return source
+function iterate (val: any[] | object) {
+    return isArray(val) ? val.entries() : Object.entries(val)
 }
 
 function createFromPrototype (proto: object) {
@@ -117,12 +108,15 @@ function createFromPrototype (proto: object) {
 function createInstanceFromClass (Clazz: ComponentClass) {
     const inited = Clazz.prototype.inited
     const computed = Clazz['computed']
+    const template = Clazz.prototype.template
     delete Clazz.prototype.inited
     delete Clazz['computed']
+    Clazz.prototype.template = '<div></div>'
 
     const instance = new Clazz()
     if (inited) Clazz.prototype.inited = inited
     if (computed) instance['computed'] = Clazz.prototype.computed = Clazz['computed'] = computed
+    Clazz.prototype.template = template
     return instance
 }
 
@@ -132,5 +126,5 @@ function getRootCtx<T extends {parentCtx?: T}> (ctx: T) {
 }
 
 export const _ = {
-    output, createInstanceFromClass, escapeHTML, defaultStyleFilter, boolAttrFilter, attrFilter, includes, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype, getRootCtx
+    output, createInstanceFromClass, escapeHTML, boolAttrFilter, attrFilter, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype, getRootCtx, iterate
 }

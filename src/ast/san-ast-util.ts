@@ -1,4 +1,4 @@
-import * as TypeGuards from './type-guards'
+import * as TypeGuards from './san-type-guards'
 import { ANode, ExprType, ANodeProperty } from 'san'
 
 /**

@@ -7,7 +7,10 @@ export abstract class Emitter {
         this.shiftWidth = shiftWidth
     }
 
-    public abstract write (str: string): void
+    public write (str: string) {
+        this.code += str
+    }
+
     public fullText () {
         return this.code
     }
@@ -68,10 +71,6 @@ export abstract class Emitter {
         for (let i = 0; i < this.indentLevel * this.shiftWidth; i++) {
             this.write(' ')
         }
-    }
-
-    protected defaultWrite (str: string) {
-        this.code += str
     }
 
     private atLineBegin () {

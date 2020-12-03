@@ -1,7 +1,7 @@
 import { ExpressionStatement, MethodDefinition, ObjectExpression, CallExpression, Node } from 'estree'
 import { JavaScriptSanParser } from './javascript-san-parser'
 import assert from 'assert'
-import { isClass, getConstructor, addStringPropertyForObject, assertObjectExpression, isCallExpression, isObjectExpression, findDefaultExport } from '../utils/js-ast-util'
+import { isClass, getConstructor, addStringPropertyForObject, assertObjectExpression, isCallExpression, isObjectExpression, findDefaultExport } from '../ast/js-ast-util'
 
 export class SanFileParser {
     private readonly parser: JavaScriptSanParser

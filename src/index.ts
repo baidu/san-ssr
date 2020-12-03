@@ -1,14 +1,14 @@
 import { SanProject } from './models/san-project'
 import { Renderer } from './models/renderer'
 import { ComponentConstructor } from 'san'
-import { ToJSCompileOptions } from './target-js/index'
-import * as TypeGuards from './utils/type-guards'
+import { CompileOptions } from './target-js/compilers/compile-options'
+import * as TypeGuards from './ast/san-type-guards'
 
 // util functions
 export { IDGenerator } from './utils/id-generator'
 export { parseSanHTML, compareSanHTML, assertDeepEqual, assertSanHTMLEqual } from './utils/case'
 export { autoCloseTags, booleanAttributes } from './utils/dom-util'
-export { getANodePropByName } from './utils/anode-util'
+export { getANodePropByName } from './ast/san-ast-util'
 export { Emitter } from './utils/emitter'
 export { TypeGuards }
 export { _ } from './runtime/underscore'
@@ -32,7 +32,7 @@ export function compileToSource (ComponentClass: string | ComponentConstructor<a
     return targetCode
 }
 
-export function compileToRenderer (ComponentClass: ComponentConstructor<any, any>, options?: ToJSCompileOptions): Renderer {
+export function compileToRenderer (ComponentClass: ComponentConstructor<any, any>, options?: CompileOptions): Renderer {
     defaultProject = defaultProject || new SanProject()
     const renderer = defaultProject.compileToRenderer(ComponentClass, options)
     return renderer

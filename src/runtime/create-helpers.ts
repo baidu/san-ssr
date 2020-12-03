@@ -1,7 +1,7 @@
 import { resolve } from 'path'
 import { _ } from './underscore'
 import { createResolver } from './resolver'
-import { SanData } from './san-data'
+import { SanSSRData } from './san-ssr-data'
 import { JSEmitter } from '../target-js/js-emitter'
 import { readStringSync } from '../utils/fs'
 
@@ -20,9 +20,9 @@ export interface SanSSRHelpers {
      */
     _: typeof _
     /**
-     * SanData 的 SSR 运行时替代品
+     * SanSSRData 的 SSR 运行时替代品
      */
-    SanData: typeof SanData
+    SanSSRData: typeof SanSSRData
     /**
      * 组件 render、Class 解析器
      */
@@ -57,5 +57,5 @@ export function emitHelpers (emitter: JSEmitter) {
  * 编译成 render 函数时，使用的 helper
  */
 export function createHelpers (): SanSSRHelpers {
-    return { _, SanData, createResolver }
+    return { _, SanSSRData, createResolver }
 }

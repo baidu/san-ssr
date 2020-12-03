@@ -1,11 +1,15 @@
-import { expr } from '../target-js/compilers/expr-compiler'
-import { JSEmitter } from '../target-js/js-emitter'
-import { getANodePropByName } from '../utils/anode-util'
+import { getANodePropByName } from '../ast/san-ast-util'
 import { _ } from '../runtime/underscore'
+import { IDGenerator } from '../utils/id-generator'
 import { autoCloseTags } from '../utils/dom-util'
 import { ANodeCompiler } from './anode-compiler'
 import { ExprNode, ANodeProperty, Directive, ANode } from 'san'
-import { isExprNumberNode, isExprStringNode, isExprBoolNode } from '../utils/type-guards'
+import { isExprNumberNode, isExprStringNode, isExprBoolNode } from '../ast/san-type-guards'
+import { createUtilCall, createIfStrictEqual, createIfNotNull, createDefaultValue, createHTMLLiteralAppend, createHTMLExpressionAppend, NULL, L, I, ASSIGN, DEF } from '../ast/syntax-util'
+import { ArrayIncludes, Else, Foreach, If } from '../ast/syntax-node'
+import { sanExpr } from './san-expr-compiler'
+
+const BOOL_ATTRIBUTES = ['readonly', 'disabled', 'multiple', 'checked']
 
 /**
  * 编译一个 HTML 标签
@@ -15,66 +19,69 @@ import { isExprNumberNode, isExprStringNode, isExprBoolNode } from '../utils/typ
 export class ElementCompiler {
     /**
      * @param aNodeCompiler 编译 aNode 的对象，编译标签内容时用
-     * @param emitter 代码输出器，产出代码塞到这里面
+     * @param id 抗冲突变量名产生器
      */
     constructor (
         private aNodeCompiler: ANodeCompiler<never>,
-        private emitter: JSEmitter = new JSEmitter()
+        private id: IDGenerator
     ) {}
 
     /**
      * 编译元素标签头
      */
-    tagStart (aNode: ANode) {
+    * tagStart (aNode: ANode) {
         const props = aNode.props
         const bindDirective = aNode.directives.bind
         const tagName = aNode.tagName
-        const { emitter } = this
 
         // element start '<'
         if (tagName) {
-            emitter.writeHTMLLiteral('<' + tagName)
+            yield createHTMLLiteralAppend('<' + tagName)
         } else {
-            emitter.writeHTMLLiteral('<')
-            emitter.writeHTMLExpression('tagName')
+            yield createHTMLLiteralAppend('<')
+            yield createHTMLExpressionAppend(I('tagName'))
         }
 
         // element properties
         const propsIndex = {}
         for (const prop of props) propsIndex[prop.name] = prop
-        for (const prop of props) this.compileProperty(tagName, prop, propsIndex)
-        if (bindDirective) this.compileBindProperties(tagName, bindDirective)
+        for (const prop of props) yield * this.compileProperty(tagName, prop, propsIndex)
+        if (bindDirective) yield * this.compileBindProperties(tagName, bindDirective)
 
         // element end '>'
-        emitter.writeHTMLLiteral('>')
+        yield createHTMLLiteralAppend('>')
     }
 
-    private compileProperty (tagName: string, prop: ANodeProperty, propsIndex: { [key: string]: ANodeProperty }) {
-        const { emitter } = this
-
+    private * compileProperty (tagName: string, prop: ANodeProperty, propsIndex: { [key: string]: ANodeProperty }) {
         if (prop.name === 'slot') return
         if (prop.name === 'value') {
             if (tagName === 'textarea') return
             if (tagName === 'select') {
-                return emitter.writeLine(`$selectValue = ${expr(prop.expr)} || "";`)
+                yield DEF('selectValue', sanExpr(prop.expr))
+                yield createDefaultValue(I('selectValue'), L(''))
+                return
             }
             if (tagName === 'option') {
-                emitter.writeLine(`$optionValue = ${expr(prop.expr)};`)
-                emitter.writeIf('$optionValue != null', () => {
-                    emitter.writeHTMLExpression('" value=\\"" + $optionValue + "\\""') // value attr
-                })
-                emitter.writeIf('$optionValue === $selectValue', () => {
-                    emitter.writeHTMLLiteral(' selected') // selected attr
-                })
+                yield DEF('optionValue', sanExpr(prop.expr))
+                yield createIfNotNull(I('optionValue'), [
+                    createHTMLLiteralAppend(' value="'),
+                    createHTMLExpressionAppend(I('optionValue')),
+                    createHTMLLiteralAppend('"')
+                ])
+                yield createIfStrictEqual(I('optionValue'), I('selectValue'), [
+                    createHTMLLiteralAppend(' selected')
+                ])
                 return
             }
         }
 
         if (prop.name === 'readonly' || prop.name === 'disabled' || prop.name === 'multiple') {
             if (this.isLiteral(prop.expr)) {
-                if (_.boolAttrFilter(prop.name, prop.expr.value)) emitter.writeHTMLLiteral(` ${prop.name}`)
+                if (_.boolAttrFilter(prop.name, prop.expr.value)) {
+                    yield createHTMLLiteralAppend(` ${prop.name}`)
+                }
             } else {
-                emitter.writeHTMLExpression(`_.boolAttrFilter("${prop.name}", ${expr(prop.expr)})`)
+                yield createHTMLExpressionAppend(createUtilCall('boolAttrFilter', [L(prop.name), sanExpr(prop.expr)]))
             }
             return
         }
@@ -84,19 +91,20 @@ export class ElementCompiler {
         if (prop.name === 'checked' && tagName === 'input' && valueProp && inputType) {
             switch (inputType.expr.value) {
             case 'checkbox':
-                return emitter.writeIf(`_.includes(${expr(prop.expr)}, ${expr(valueProp.expr)})`, () => {
-                    emitter.writeHTMLLiteral(' checked')
-                })
+                return yield new If(
+                    new ArrayIncludes(sanExpr(prop.expr), sanExpr(valueProp.expr)),
+                    [createHTMLLiteralAppend(' checked')]
+                )
             case 'radio':
-                return emitter.writeIf(`${expr(prop.expr)} === ${expr(valueProp.expr)}`, () => {
-                    emitter.writeHTMLLiteral(' checked')
-                })
+                return yield createIfStrictEqual(sanExpr(prop.expr), sanExpr(valueProp.expr), [
+                    createHTMLLiteralAppend(' checked')
+                ])
             }
         }
         if (this.isLiteral(prop.expr)) {
-            emitter.writeHTMLLiteral(_.attrFilter(prop.name, prop.expr.value, true))
+            yield createHTMLLiteralAppend(_.attrFilter(prop.name, prop.expr.value, true))
         } else {
-            emitter.writeHTMLExpression(`_.attrFilter("${prop.name}", ${expr(prop.expr)}, true)`)
+            yield createHTMLExpressionAppend(createUtilCall('attrFilter', [L(prop.name), sanExpr(prop.expr), L(true)]))
         }
     }
 
@@ -104,72 +112,62 @@ export class ElementCompiler {
         return isExprBoolNode(expr) || isExprStringNode(expr) || isExprNumberNode(expr)
     }
 
-    private compileBindProperties (tagName: string, bindDirective: Directive<any>) {
-        const { emitter } = this
-        emitter.writeLine('(function ($bindObj) {')
-        emitter.indent()
+    private * compileBindProperties (tagName: string, bindDirective: Directive<any>) {
+        const bindProps = this.id.next('bindProps')
+        yield DEF(bindProps, sanExpr(bindDirective.value))
 
-        emitter.writeFor('let $key in $bindObj', () => {
-            emitter.writeLine('let $value = $bindObj[$key]')
-            emitter.writeSwitch('$key', () => {
-                emitter.writeCase('"readonly"')
-                emitter.writeCase('"disabled"')
-                emitter.writeCase('"multiple"')
-                emitter.writeCase('"checked"', () => {
-                    emitter.writeHTMLExpression('_.boolAttrFilter($key, $value)')
-                    emitter.writeBreak()
-                })
-                emitter.writeDefault(() => {
-                    emitter.writeHTMLExpression('_.attrFilter($key, $value, true)')
-                })
-            })
-        })
-        emitter.unindent()
-        emitter.writeLine(`})(${expr(bindDirective.value)})`)
+        const key = I('key')
+        const value = I('value')
+        const iterable = I(bindProps)
+        yield new Foreach(key, value, iterable, [
+            new If(new ArrayIncludes(L(BOOL_ATTRIBUTES), key), [
+                createHTMLExpressionAppend(createUtilCall('boolAttrFilter', [key, value]))
+            ]),
+            new Else([
+                createHTMLExpressionAppend(createUtilCall('attrFilter', [key, value, L(true)]))
+            ])
+        ])
     }
 
     /**
      * 编译元素闭合
      */
-    tagEnd (aNode: ANode) {
-        const { emitter } = this
+    * tagEnd (aNode: ANode) {
         const tagName = aNode.tagName
 
         if (tagName) {
             if (!autoCloseTags.has(tagName)) {
-                emitter.writeHTMLLiteral('</' + tagName + '>')
+                yield createHTMLLiteralAppend('</' + tagName + '>')
             }
             if (tagName === 'select') {
-                emitter.writeLine('$selectValue = null;')
+                yield ASSIGN(I('selectValue'), NULL)
             }
             if (tagName === 'option') {
-                emitter.writeLine('$optionValue = null;')
+                yield ASSIGN(I('optionValue'), NULL)
             }
         } else {
-            emitter.writeHTMLLiteral('</')
-            emitter.writeHTMLExpression('tagName')
-            emitter.writeHTMLLiteral('>')
+            yield createHTMLLiteralAppend('</')
+            yield createHTMLExpressionAppend(I('tagName'))
+            yield createHTMLLiteralAppend('>')
         }
     }
 
     /**
      * 编译元素内容
      */
-    inner (aNode: ANode) {
-        const { emitter } = this
+    * inner (aNode: ANode) {
         // inner content
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodePropByName(aNode, 'value')
-            if (valueProp) emitter.writeHTMLExpression(expr(valueProp.expr, 'html'))
+            if (valueProp) yield createHTMLExpressionAppend(sanExpr(valueProp.expr, 'html'))
             return
         }
 
         const htmlDirective = aNode.directives.html
         if (htmlDirective) {
-            emitter.writeHTMLExpression(expr(htmlDirective.value, 'rawhtml'))
-            return
+            return yield createHTMLExpressionAppend(sanExpr(htmlDirective.value, 'rawhtml'))
         }
         // only ATextNode#children is not defined, it has been taken over by ANodeCompiler#compileText()
-        for (const aNodeChild of aNode.children!) this.aNodeCompiler.compile(aNodeChild, false)
+        for (const aNodeChild of aNode.children!) yield * this.aNodeCompiler.compile(aNodeChild, false)
     }
 }

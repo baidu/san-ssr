@@ -40,3 +40,6 @@ export function functionString (fn: Function) {
     )
     return [firstLine, ...lines.map(line => line.slice(minIndent))].join('\n')
 }
+
+export function assertNever (arg: never) {
+}

@@ -26,7 +26,7 @@ export interface Resolver {
 
 export function createResolver (exports: {[key: string]: any}, require: (spec: string) => any): Resolver {
     return {
-        getRenderer: function ({ id, specifier = '.' }: ComponentReference) {
+        getRenderer: function ({ id, specifier = '.' }) {
             const mod = specifier === '.' ? exports : require(specifier)
             return mod.sanSSRRenders[id]
         },

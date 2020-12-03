@@ -1,13 +1,14 @@
-import { expr } from '../target-js/compilers/expr-compiler'
 import assert from 'assert'
 import { camelCase } from 'lodash'
-import { JSEmitter } from '../target-js/js-emitter'
 import { ANode, AIfNode, AForNode, ASlotNode, ATemplateNode, AFragmentNode, ATextNode } from 'san'
 import { ComponentInfo } from '../models/component-info'
 import { ElementCompiler } from './element-compiler'
-import { stringifier } from '../target-js/compilers/stringifier'
-import { getANodePropByName } from '../utils/anode-util'
-import * as TypeGuards from '../utils/type-guards'
+import { getANodePropByName } from '../ast/san-ast-util'
+import * as TypeGuards from '../ast/san-type-guards'
+import { IDGenerator } from '../utils/id-generator'
+import { JSONStringify, RegexpReplace, Statement, FunctionDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral, ComponentRendererReference, FunctionCall, Expression } from '../ast/syntax-node'
+import { createUtilCall, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATMENT, UNARY, DEF, BINARY, RETURN } from '../ast/syntax-util'
+import { sanExpr } from '../compilers/san-expr-compiler'
 
 /**
  * ANode 编译
@@ -15,25 +16,23 @@ import * as TypeGuards from '../utils/type-guards'
  * 负责单个 ComponentClass 的编译，每个 ANodeCompiler 对应于一个 ComponentInfo。
  */
 export class ANodeCompiler<T extends 'none' | 'typed'> {
-    private ssrIndex = 0
     private elementCompiler: ElementCompiler
     private inScript = false
 
     /**
      * @param componentInfo 要被编译的节点所在组件的信息
-     * @param componentTree 当前组件所在的组件树
      * @param ssrOnly san-ssr 当做模板引擎来使用（产出 HTML 更简单，但无法反解）
-     * @param emitter 代码输出器，产出代码塞到这里面
+     * @param id 抗冲突变量名产生器
      */
     constructor (
         private componentInfo: ComponentInfo,
         private ssrOnly: boolean,
-        public emitter: JSEmitter
+        private id: IDGenerator
     ) {
-        this.elementCompiler = new ElementCompiler(this, emitter)
+        this.elementCompiler = new ElementCompiler(this, this.id)
     }
 
-    compile (aNode: ANode, isRootElement: boolean) {
+    compile (aNode: ANode, isRootElement: boolean): Generator<Statement> {
         if (TypeGuards.isATextNode(aNode)) return this.compileText(aNode)
         if (TypeGuards.isAIfNode(aNode)) return this.compileIf(aNode)
         if (TypeGuards.isAForNode(aNode)) return this.compileFor(aNode)
@@ -50,65 +49,56 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
 
     private generateRef (aNode: ANode) {
         if (aNode.directives.is) {
-            this.emitter.writeLine(`let ref = ctx.refs[${expr(aNode.directives.is.value)}];`)
-            return 'ref'
+            const refs = BINARY(I('ctx'), '.', I('refs'))
+            return BINARY(refs, '[]', sanExpr(aNode.directives.is.value))
         }
         if (this.componentInfo.childComponents.has(aNode.tagName)) {
-            return this.componentInfo.childComponents.get(aNode.tagName)!.toString()
+            return this.componentInfo.childComponents.get(aNode.tagName)!.toAST()
         }
     }
 
-    private compileText (aNode: ATextNode) {
-        const { emitter } = this
+    private * compileText (aNode: ATextNode): Generator<Statement> {
         const shouldEmitComment = TypeGuards.isExprTextNode(aNode.textExpr) && aNode.textExpr.original && !this.ssrOnly && !this.inScript
         const outputType = this.inScript ? 'rawhtml' : 'html'
-
-        if (shouldEmitComment) emitter.writeHTMLLiteral('<!--s-text-->')
-        emitter.writeHTMLExpression(expr(aNode.textExpr, outputType))
-        if (shouldEmitComment) emitter.writeHTMLLiteral('<!--/s-text-->')
+        if (shouldEmitComment) yield createHTMLLiteralAppend('<!--s-text-->')
+        yield createHTMLExpressionAppend(sanExpr(aNode.textExpr, outputType))
+        if (shouldEmitComment) yield createHTMLLiteralAppend('<!--/s-text-->')
     }
 
-    compileTemplate (aNode: ATemplateNode) {
+    private * compileTemplate (aNode: ATemplateNode) {
         // if、for 等区块 wrap，只渲染内容。
         // 注意：<template> 为组件根节点时，tagName=null, isATemplateNode=false
-        this.elementCompiler.inner(aNode)
+        yield * this.elementCompiler.inner(aNode)
     }
 
-    compileFragment (aNode: AFragmentNode) {
+    private * compileFragment (aNode: AFragmentNode) {
         if (TypeGuards.isATextNode(aNode.children[0]) && !this.ssrOnly && !this.inScript) {
-            this.emitter.writeHTMLLiteral('<!--s-frag-->')
+            yield createHTMLLiteralAppend('<!--s-frag-->')
         }
-        this.elementCompiler.inner(aNode)
+        yield * this.elementCompiler.inner(aNode)
         if (TypeGuards.isATextNode(aNode.children[aNode.children.length - 1]) && !this.ssrOnly && !this.inScript) {
-            this.emitter.writeHTMLLiteral('<!--/s-frag-->')
+            yield createHTMLLiteralAppend('<!--/s-frag-->')
         }
     }
 
-    private compileIf (aNode: AIfNode) {
-        const { emitter } = this
-        // output if
+    private * compileIf (aNode: AIfNode): Generator<Statement> {
         const ifDirective = aNode.directives.if
         const aNodeWithoutIf = Object.assign({}, aNode)
-        delete aNodeWithoutIf.directives.if
-        emitter.writeIf(expr(ifDirective.value), () => this.compile(aNodeWithoutIf, false))
 
-        // output elif and else
+        // 防止重新进入 compileIf：删掉 if 指令，再递归进入当前 aNode
+        delete aNodeWithoutIf.directives.if
+
+        yield new If(sanExpr(ifDirective.value), this.compile(aNodeWithoutIf, false))
+
         for (const elseANode of aNode.elses || []) {
             const elifDirective = elseANode.directives.elif
-            if (elifDirective) {
-                emitter.writeLine('else if (' + expr(elifDirective.value) + ') {')
-            } else {
-                emitter.writeLine('else {')
-            }
-            emitter.indent()
-            this.compile(elseANode, false)
-            emitter.unindent()
-            emitter.writeLine('}')
+            const body = this.compile(elseANode, false)
+            yield elifDirective ? new ElseIf(sanExpr(elifDirective.value), body) : new Else(body)
         }
     }
 
-    private compileFor (aNode: AForNode) {
-        const { emitter } = this
+    private * compileFor (aNode: AForNode): Generator<Statement> {
+        const { id } = this
         const forElementANode = {
             children: aNode.children,
             props: aNode.props,
@@ -116,77 +106,81 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
             tagName: aNode.tagName,
             directives: { ...aNode.directives }
         }
+        // 防止重新进入 compileFor
         delete forElementANode.directives.for
 
         const { item, index, value } = aNode.directives.for
-        const list = emitter.genID('list')
-        const i = emitter.genID('i')
+        const key = I(id.next('key'))
+        const val = I(id.next('val'))
+        const data = BINARY(I('ctx'), '.', I('data'))
+        const list = id.next('list')
 
-        emitter.writeLine('let ' + list + ' = ' + expr(value) + ';')
-        emitter.writeIf(list + ' instanceof Array', () => {
-            // for array
-            emitter.writeFor(`let ${i} = 0; ${i} < ${list}.length; ${i}++`, () => {
-                if (index) emitter.writeLine(`ctx.data.${index} = ${i};`)
-                emitter.writeLine(`ctx.data.${item} = ${list}[${i}];`)
-                this.compile(forElementANode, false)
-            })
-        })
-
-        // for object
-        emitter.beginElseIf(`typeof ${list} === "object"`)
-        emitter.writeFor(`let ${i} in ${list}`, () => {
-            emitter.writeIf(`${list}[${i}] != null`, () => {
-                if (index) emitter.writeLine(`ctx.data.${index} = ${i};`)
-                emitter.writeLine(`ctx.data.${item} = ${list}[${i}];`)
-                this.compile(forElementANode, false)
-            })
-        })
-        emitter.endIf()
+        yield DEF(list, sanExpr(value))
+        yield new Foreach(key, val, I(list), [
+            ...index ? [ASSIGN(BINARY(data, '[]', L(index)), key)] : [],
+            ASSIGN(BINARY(data, '.', I(item!)), val),
+            ...this.compile(forElementANode, false)
+        ])
     }
 
-    private compileSlot (aNode: ASlotNode) {
-        const { emitter } = this
+    private * compileSlot (aNode: ASlotNode): Generator<Statement> {
+        const { id } = this
         assert(!this.inScript, '<slot> is not allowed inside <script>')
 
-        emitter.nextLine('(')
-        emitter.writeAnonymousFunction([], () => {
-            emitter.nextLine('const defaultRender = ')
-            this.compileSlotRenderer(aNode.children)
-            emitter.feedLine(';')
+        const defaultRender = I(id.next('defaultRender'))
+        yield DEF(defaultRender.name, this.compileSlotRenderer(aNode.children))
 
-            emitter.writeBlock('let data =', () => {
-                if (aNode.directives.bind) {
-                    emitter.writeLine('...' + expr(aNode.directives.bind.value) + ',')
-                }
-                for (const item of aNode.vars || []) {
-                    emitter.writeLine(`"${item.name}": ${expr(item.expr)},`)
-                }
-            })
+        const slotData = I(id.next('slotData'))
+        yield DEF(slotData.name, new MapLiteral([]))
+        if (aNode.directives.bind) {
+            yield STATMENT(new MapAssign(slotData, [sanExpr(aNode.directives.bind.value)]))
+        }
 
-            const nameProp = getANodePropByName(aNode, 'name')
-            const slotNameExpr = nameProp ? expr(nameProp.expr) : '""'
-            emitter.writeLine(`let slotName = ${slotNameExpr};`)
-            emitter.writeLine('let render = ctx.slots[slotName] || defaultRender;')
-            emitter.writeLine('html += render(parentCtx, data);')
-        })
-        emitter.feedLine(')();')
+        const props = aNode.vars || []
+        if (props.length) {
+            yield STATMENT(new MapAssign(
+                slotData,
+                [new MapLiteral(props.map(prop => [L(prop.name), sanExpr(prop.expr)]))]
+            ))
+        }
+
+        const slotName = I(id.next('slotName'))
+        const render = I(id.next('render'))
+
+        const nameProp = getANodePropByName(aNode, 'name')
+        yield DEF(slotName.name, nameProp ? sanExpr(nameProp.expr) : L(''))
+        yield (DEF(render.name, BINARY(
+            BINARY(BINARY(I('ctx'), '.', I('slots')), '[]', slotName),
+            '||',
+            defaultRender
+        )))
+        yield createHTMLExpressionAppend(new FunctionCall(render, [I('parentCtx'), slotData]))
     }
 
-    private compileElement (aNode: ANode, isRootElement: boolean) {
-        this.elementCompiler.tagStart(aNode)
+    private * compileElement (aNode: ANode, isRootElement: boolean): Generator<Statement> {
+        yield * this.elementCompiler.tagStart(aNode)
         if (aNode.tagName === 'script') this.inScript = true
         if (isRootElement && !this.ssrOnly && !this.inScript) {
-            this.emitter.writeIf('!noDataOutput', () => this.emitter.writeDataComment())
+            yield new If(UNARY('!', I('noDataOutput')), this.createDataComment())
         }
-        this.elementCompiler.inner(aNode)
+
+        yield * this.elementCompiler.inner(aNode)
         this.inScript = false
-        this.elementCompiler.tagEnd(aNode)
+        yield * this.elementCompiler.tagEnd(aNode)
     }
 
-    private compileComponent (aNode: ANode, ref: string, isRootElement: boolean) {
-        const { emitter } = this
-        const defaultSourceSlots: ANode[] = []
-        const sourceSlotCodes = new Map()
+    private createDataComment () {
+        const dataExpr = BINARY(createUtilCall('getRootCtx', [I('ctx')]), '.', I('data'))
+        return [
+            createHTMLLiteralAppend('<!--s-data:'),
+            createHTMLExpressionAppend(new RegexpReplace(new JSONStringify(dataExpr), '(?<=-)-', L('\\-'))),
+            createHTMLLiteralAppend('-->')
+        ]
+    }
+
+    private * compileComponent (aNode: ANode, ref: Expression, isRootElement: boolean) {
+        const defaultSlotContents: ANode[] = []
+        const namedSlotContents = new Map()
 
         assert(!this.inScript, 'component reference is not allowed inside <script>')
 
@@ -194,64 +188,66 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
             const slotBind = !child.textExpr && getANodePropByName(child, 'slot')
             if (slotBind) {
                 const slotName = slotBind.expr.value
-                if (!sourceSlotCodes.has(slotName)) {
-                    sourceSlotCodes.set(slotName, {
-                        children: [],
-                        prop: slotBind
-                    })
+                if (!namedSlotContents.has(slotName)) {
+                    namedSlotContents.set(slotName, { children: [], prop: slotBind })
                 }
-                sourceSlotCodes.get(slotName).children.push(child)
+                namedSlotContents.get(slotName).children.push(child)
             } else {
-                defaultSourceSlots.push(child)
+                defaultSlotContents.push(child)
             }
         }
 
-        const slots = emitter.genID('slots')
-        emitter.writeLine(`let ${slots} = {};`)
-        if (defaultSourceSlots.length) {
-            emitter.nextLine(`${slots}[""] = `)
-            this.compileSlotRenderer(defaultSourceSlots)
-            emitter.feedLine(';')
+        const childSlots = I(this.id.next('childSlots'))
+        yield DEF(childSlots.name, new MapLiteral([]))
+        if (defaultSlotContents.length) {
+            yield ASSIGN(
+                BINARY(childSlots, '[]', L('')),
+                this.compileSlotRenderer(defaultSlotContents)
+            )
         }
 
-        for (const sourceSlotCode of sourceSlotCodes.values()) {
-            emitter.nextLine(`${slots}[${expr(sourceSlotCode.prop.expr)}] = `)
-            this.compileSlotRenderer(sourceSlotCode.children)
-            emitter.feedLine(';')
+        for (const sourceSlotCode of namedSlotContents.values()) {
+            yield ASSIGN(
+                BINARY(childSlots, '[]', sanExpr(sourceSlotCode.prop.expr)),
+                this.compileSlotRenderer(sourceSlotCode.children)
+            )
         }
 
-        const ndo = isRootElement ? 'noDataOutput' : 'true'
+        const ndo = isRootElement ? I('noDataOutput') : L(true)
 
-        emitter.nextLine('html += ')
-        emitter.writeFunctionCall(
-            `sanSSRResolver.getRenderer(${ref})`,
-            [this.componentDataCode(aNode), ndo, 'parentCtx', stringifier.str(aNode.tagName) + `, ${slots}`]
+        const childRenderCall = new FunctionCall(
+            new ComponentRendererReference(ref),
+            [this.childRenderData(aNode), ndo, I('parentCtx'), L(aNode.tagName), childSlots]
         )
+        yield createHTMLExpressionAppend(childRenderCall)
     }
 
     private compileSlotRenderer (content: ANode[]) {
-        const { emitter } = this
-        emitter.writeAnonymousFunction(['parentCtx', 'data'], () => {
-            if (!content.length) {
-                emitter.writeLine('return "";')
-                return
-            }
-            emitter.writeLine('let html = "";')
-            emitter.writeLine('ctx = {...ctx, data: Object.assign({}, ctx.data, data)};')
-            for (const child of content) this.compile(child, false)
-            emitter.writeLine('return html;')
-        })
+        const args = [DEF('parentCtx'), DEF('data')]
+        const body: Statement[] = []
+        if (content.length) {
+            body.push(DEF('html', L('')))
+
+            const ctxData = BINARY(I('ctx'), '.', I('data'))
+            const compData = this.id.next('compData')
+            body.push(DEF(compData, ctxData))
+            body.push(ASSIGN(ctxData, new MapAssign(new MapLiteral(), [ctxData, I('data')])))
+
+            for (const child of content) body.push(...this.compile(child, false))
+
+            body.push(ASSIGN(ctxData, I(compData)))
+            body.push(RETURN(I('html')))
+        } else {
+            body.push(RETURN(L('')))
+        }
+        return new FunctionDefinition('', args, body)
     }
 
-    private componentDataCode (aNode: ANode) {
-        const givenData = '{' + aNode.props.map(prop => {
-            const key = stringifier.str(camelCase(prop.name))
-            const val = expr(prop.expr)
-
-            return `${key}: ${val}`
-        }).join(', ') + '}'
-
+    private childRenderData (aNode: ANode) {
+        const propData = new MapLiteral(
+            aNode.props.map(prop => [L(camelCase(prop.name)), sanExpr(prop.expr)])
+        )
         const bindDirective = aNode.directives.bind
-        return bindDirective ? `Object.assign(${expr(bindDirective.value)}, ${givenData})` : givenData
+        return bindDirective ? new MapAssign(sanExpr(bindDirective.value), [propData]) : propData
     }
 }

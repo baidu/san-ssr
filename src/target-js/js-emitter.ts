@@ -1,128 +1,272 @@
-import { IDGenerator } from '../utils/id-generator'
+import { FilterCall, Foreach, FunctionDefinition, ComputedCall, ArrayLiteral, UnaryExpression, MapLiteral, Statement, SyntaxKind, Expression, VariableDefinition } from '../ast/syntax-node'
 import { Emitter } from '../utils/emitter'
-import { dataAccess } from './compilers/expr-compiler'
-import { stringifier } from './compilers/stringifier'
+import { assertNever } from '../utils/lang'
 
 export class JSEmitter extends Emitter {
-    private buffer: string = ''
-    private idGen = new IDGenerator()
-
-    public genID (name: string) {
-        return this.idGen.generate(name)
+    public writeExpression (node: Expression) {
+        switch (node.kind) {
+        case SyntaxKind.Literal:
+            return this.write(node.value instanceof Date
+                ? `new Date(${node.value.getTime()})`
+                : JSON.stringify(node.value, (k, v) => {
+                    if (v instanceof Date) return `new Date(${v.getTime()})`
+                    return v
+                }))
+        case SyntaxKind.Identifier:
+            return this.write(node.name)
+        case SyntaxKind.ArrayIncludes:
+            this.writeExpression(node.arr)
+            this.write('.includes(')
+            this.writeExpression(node.item)
+            this.write(')')
+            break
+        case SyntaxKind.MapAssign:
+            this.write('Object.assign(')
+            this.writeExpressionList([node.dest, ...node.srcs])
+            this.write(')')
+            break
+        case SyntaxKind.RegexpReplace:
+            this.writeExpression(node.original)
+            this.write(`.replace(/${node.pattern}/g, `)
+            this.writeExpression(node.replacement)
+            this.write(')')
+            break
+        case SyntaxKind.JSONStringify:
+            this.write('JSON.stringify(')
+            this.writeExpression(node.value)
+            this.write(')')
+            break
+        case SyntaxKind.BinaryExpression:
+            if (node.op === '.') {
+                this.writeExpression(node.lhs)
+                this.write('.')
+                this.writeExpression(node.rhs)
+            } else if (node.op === '[]') {
+                this.writeExpression(node.lhs)
+                this.write('[')
+                this.writeExpression(node.rhs)
+                this.write(']')
+            } else {
+                this.writeExpression(node.lhs)
+                this.write(` ${node.op} `)
+                this.writeExpression(node.rhs)
+            }
+            break
+        case SyntaxKind.ConditionalExpression:
+            this.writeExpression(node.cond)
+            this.write(' ? ')
+            this.writeExpression(node.trueValue)
+            this.write(' : ')
+            this.writeExpression(node.falseValue)
+            break
+        case SyntaxKind.EncodeURIComponent:
+            this.write('encodeURIComponent(')
+            this.writeExpression(node.str)
+            this.write(')')
+            break
+        case SyntaxKind.ComputedCall:
+            return this.writeComputedCall(node)
+        case SyntaxKind.FilterCall:
+            return this.writeFilterCall(node)
+        case SyntaxKind.FunctionDefinition:
+            return this.writeFunctionDefinition(node)
+        case SyntaxKind.FunctionCall:
+            this.writeExpression(node.fn)
+            this.write('(')
+            this.writeExpressionList(node.args)
+            this.write(')')
+            break
+        case SyntaxKind.CreateComponentInstance:
+            this.write(`_.createFromPrototype(sanSSRResolver.getPrototype("${node.info.id}"));`)
+            break
+        case SyntaxKind.Null:
+            this.write('null')
+            break
+        case SyntaxKind.NewExpression:
+            this.write('new ')
+            this.writeExpression(node.name)
+            this.write('(')
+            this.writeExpressionList(node.args)
+            this.write(')')
+            break
+        case SyntaxKind.UnaryExpression:
+            return this.writeUnaryExpression(node)
+        case SyntaxKind.ArrayLiteral:
+            return this.writeArrayLiteral(node)
+        case SyntaxKind.MapLiteral:
+            return this.writeMapLiteral(node)
+        case SyntaxKind.ComponentRendererReference:
+            this.write('sanSSRResolver.getRenderer(')
+            this.writeExpression(node.ref)
+            this.write(')')
+            break
+        default: assertNever(node)
+        }
     }
 
-    public fullText () {
-        this.clearStringLiteralBuffer()
-        return super.fullText()
+    public writeStatement (node: Statement) {
+        switch (node.kind) {
+        case SyntaxKind.ReturnStatement:
+            this.nextLine('return ')
+            this.writeExpression(node.expression)
+            this.feedLine(';')
+            break
+        case SyntaxKind.ExpressionStatement:
+            this.nextLine('')
+            this.writeExpression(node.expression)
+            this.feedLine(';')
+            break
+        case SyntaxKind.ImportHelper:
+            this.writeLine(`const ${node.name} = sanSSRHelpers.${node.name};`)
+            break
+        case SyntaxKind.AssignmentStatement:
+            this.nextLine('')
+            this.writeExpression(node.lhs)
+            this.write(' = ')
+            this.writeExpression(node.rhs)
+            this.feedLine(';')
+            break
+        case SyntaxKind.VariableDefinition:
+            this.writeVariableDefinition(node)
+            break
+        case SyntaxKind.If:
+            this.nextLine('if (')
+            this.writeExpression(node.cond)
+            this.write(') ')
+            this.writeBlockStatements(node.body)
+            break
+        case SyntaxKind.ElseIf:
+            this.nextLine('else if (')
+            this.writeExpression(node.cond)
+            this.write(') ')
+            this.writeBlockStatements(node.body)
+            break
+        case SyntaxKind.Else:
+            this.nextLine('else ')
+            this.writeBlockStatements(node.body)
+            break
+        case SyntaxKind.Foreach:
+            return this.writeForeachStatement(node)
+        default: assertNever(node)
+        }
     }
 
-    public write (str: string) {
-        this.clearStringLiteralBuffer()
-
-        return this.defaultWrite(str)
+    private writeForeachStatement (node: Foreach) {
+        this.nextLine('for (let [')
+        this.writeExpression(node.key)
+        this.write(', ')
+        this.writeExpression(node.value)
+        this.write('] of _.iterate(')
+        this.writeExpression(node.iterable)
+        this.write(')) ')
+        this.writeBlockStatements(node.body)
     }
 
-    public writeHTMLExpression (code: string) {
-        this.writeLine(`html += ${code};`)
-    }
-
-    public writeDataComment () {
-        this.writeHTMLExpression(`"<!--s-data:" + JSON.stringify(${dataAccess(undefined, 'expr', '_.getRootCtx(ctx)')}).replace(/(?<=-)-/g, '\\\\-') + "-->"`)
-    }
-
-    public writeHTMLLiteral (str: string) {
-        this.buffer += str
-    }
-
-    public clearStringLiteralBuffer () {
-        if (this.buffer === '') return
-        const buffer = this.buffer
-        this.buffer = ''
-        this.writeHTMLExpression(stringifier.str(buffer))
-    }
-
-    public writeSwitch (expr: string, body: Function) {
-        this.writeLine(`switch (${expr}) {`)
+    public writeFunctionDefinition (node: FunctionDefinition) {
+        this.write(`function ${node.name} (`)
+        let first = true
+        for (const arg of node.args) {
+            if (!first) this.write(', ')
+            this.write(arg.name)
+            if (arg.initial) {
+                this.write(' = ')
+                this.writeExpression(arg.initial)
+            }
+            first = false
+        }
+        this.write(') {')
         this.indent()
-        body()
+        for (const stmt of node.body) this.writeStatement(stmt)
+        this.unindent()
+        this.write('}')
+    }
+
+    private writeBlockStatements (body: Iterable<Statement>) {
+        this.feedLine('{')
+        this.indent()
+        for (const stmt of body) this.writeStatement(stmt)
         this.unindent()
         this.writeLine('}')
     }
 
-    public writeCase (expr: string, body: Function = () => null) {
-        this.writeLine(`case ${expr}:`)
-        this.indent()
-        body()
-        this.unindent()
+    private writeVariableDefinition (node: VariableDefinition) {
+        this.nextLine(`let ${node.name}`)
+        if (node.initial) {
+            this.write(' = ')
+            this.writeExpression(node.initial)
+        }
     }
 
-    public writeBreak () {
-        this.writeLine('break;')
+    private writeComputedCall (node: ComputedCall) {
+        this.write('ctx.instance.computed[')
+        this.writeExpression(node.name)
+        this.write('].apply(ctx.instance)')
     }
 
-    public writeDefault (body: Function = () => null) {
-        this.writeLine('default:')
-        this.indent()
-        body()
-        this.unindent()
+    private writeFilterCall (node: FilterCall) {
+        if (['_style', '_class', '_xstyle', '_xclass'].includes(node.name)) {
+            this.write(`_.${node.name}Filter(`)
+        } else {
+            this.write(`ctx.instance.filters["${node.name}"].call(ctx.instance, `)
+        }
+        this.writeExpressionList(node.args)
+        this.write(')')
+    }
+
+    private writeArrayLiteral (node: ArrayLiteral) {
+        let first = true
+        this.write('[')
+        for (const [item, spread] of node.items) {
+            if (!first) this.write(', ')
+            if (spread) this.write('...')
+            this.writeExpression(item)
+            first = false
+        }
+        this.write(']')
+    }
+
+    private writeUnaryExpression (node: UnaryExpression) {
+        if (node.op === '()') {
+            this.write('(')
+            this.writeExpression(node.value)
+            this.write(')')
+        } else {
+            this.write(node.op)
+            this.writeExpression(node.value)
+        }
+    }
+
+    private writeMapLiteral (node: MapLiteral) {
+        let first = true
+        this.write('{')
+        for (const [k, v, spread] of node.items) {
+            if (!first) this.write(', ')
+            if (spread) {
+                this.write('...')
+                this.writeExpression(v)
+            } else if (k === v) {
+                this.writeExpression(k)
+            } else {
+                this.writeExpression(k)
+                this.write(': ')
+                this.writeExpression(v)
+            }
+            first = false
+        }
+        this.write('}')
+    }
+
+    private writeExpressionList (list: Expression[]) {
+        for (let i = 0; i < list.length; i++) {
+            this.writeExpression(list[i])
+            if (i !== list.length - 1) this.write(', ')
+        }
     }
 
     public writeFunction (name = '', args: string[] = [], body: Function = () => null) {
         const nameStr = name ? `${name} ` : ''
         const argsStr = args.join(', ')
-        this.feedLine(`function ${nameStr}(${argsStr}) {`)
-        this.indent()
-        body()
-        this.unindent()
-        this.nextLine('}')
-    }
-
-    public writeFunctionCall (name: string, args: string[]) {
-        this.write(`${name}(${args.join(', ')})`)
-    }
-
-    public writeAnonymousFunction (args: string[] = [], body: Function = () => null) {
-        return this.writeFunction('', args, body)
-    }
-
-    public writeIf (expr: string, cb: Function) {
-        this.beginIf(expr)
-        cb()
-        this.endIf()
-    }
-
-    public beginIf (expr: string) {
-        this.beginBlock(`if (${expr})`)
-    }
-
-    public beginElseIf (expr: string) {
-        this.beginBlock(`else if (${expr})`)
-    }
-
-    public beginElse () {
-        this.beginBlock('else')
-    }
-
-    public endIf () {
-        this.endBlock()
-    }
-
-    public writeFor (expr: string, cb: Function) {
-        this.beginFor(expr)
-        cb()
-        this.endFor()
-    }
-
-    public beginFor (expr: string) {
-        this.beginBlock(`for (${expr})`)
-    }
-
-    public endFor () {
-        this.endBlock()
-    }
-
-    public writeContinue () {
-        this.writeLine('continue;')
+        this.writeBlock(`function ${nameStr}(${argsStr})`, () => body(), false)
     }
 
     public writeBlock (expr: string, cb: Function = () => null, nl = true) {
@@ -138,7 +282,6 @@ export class JSEmitter extends Emitter {
     }
 
     public endBlock (nl = true) {
-        this.clearStringLiteralBuffer()
         this.unindent()
         nl ? this.writeLine('}') : this.nextLine('}')
     }

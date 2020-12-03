@@ -73,13 +73,16 @@ for (const key of enabled) {
     let got = ''
     try {
         got = fn()
-    } catch (err) {}
+    } catch (err) {
+        console.error(err.stack)
+        continue
+    }
     try {
         assertSanHTMLEqual(got, expected)
-        console.log(chalk.cyan(desc))
+        console.log(chalk.cyan(desc) + ' ' + key)
         console.log(chalk.green(got))
     } catch (err) {
-        console.log(chalk.red(desc))
+        console.log(chalk.red(desc) + ' ' + key)
         console.log(chalk.red(got))
         exitCode = 1
     }

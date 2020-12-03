@@ -1,6 +1,6 @@
 import { ParseTemplateOption, ANodeProperty, ExprInterpNode, parseTemplate, ANode } from 'san'
-import * as TypeGuards from '../utils/type-guards'
-import { parseANodeProps, visitANodeRecursively } from '../utils/anode-util'
+import * as TypeGuards from '../ast/san-type-guards'
+import { parseANodeProps, visitANodeRecursively } from '../ast/san-ast-util'
 
 export function parseAndNormalizeTemplate (template: string, options: ParseTemplateOption) {
     const rootANode = parseTemplate(template, options).children![0]

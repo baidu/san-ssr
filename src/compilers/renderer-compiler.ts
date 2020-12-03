@@ -1,96 +1,116 @@
 import { ANodeCompiler } from './anode-compiler'
-import { stringifier } from '../target-js/compilers/stringifier'
 import { ComponentInfo } from '../models/component-info'
-import { JSEmitter } from '../target-js/js-emitter'
-
-export const RENDERER_ARGS = ['data = {}', 'noDataOutput', 'parentCtx', 'tagName = "div"', 'slots']
+import { RenderOptions } from './renderer-options'
+import { FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper } from '../ast/syntax-node'
+import { STATMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I } from '../ast/syntax-util'
+import { IDGenerator } from '../utils/id-generator'
 
 /**
- * Each ComponentClass is compiled to a render function
+ * 每个 ComponentClass 对应一个 Render 函数，由 RendererCompiler 生成。
  */
 export class RendererCompiler {
+    private id = new IDGenerator()
+
     constructor (
-        private ssrOnly: boolean,
-        public emitter = new JSEmitter()
+        private options: RenderOptions
     ) {}
 
     /**
-     * 把 ComponentInfo 编译成 Render JS 匿名函数源码
+     * 把 ComponentInfo 编译成函数源码，返回 Renderer 函数的 AST
      */
-    public compileComponentRendererSource (componentInfo: ComponentInfo) {
-        this.emitter.writeAnonymousFunction(RENDERER_ARGS, () => {
+    public compileToRenderer (componentInfo: ComponentInfo) {
+        const args = [DEF('data'), DEF('noDataOutput'), DEF('parentCtx'), DEF('tagName', L('div')), DEF('slots')]
+        return new FunctionDefinition(this.options.functionName || '', args,
             this.compileComponentRendererBody(componentInfo)
-        })
-        return this.emitter.fullText()
+        )
     }
 
-    public compileComponentRendererBody (info: ComponentInfo) {
-        const { emitter } = this
+    private compileComponentRendererBody (info: ComponentInfo) {
+        const body = []
         // 没有 ANode 的组件，比如 load-success 样例
         if (!info.root) {
-            emitter.writeLine('return ""')
-            return emitter.fullText()
+            body.push(RETURN(L('')))
+            return body
         }
-        emitter.writeLine('const { _, SanData } = sanSSRHelpers;')
-        emitter.writeLine('let html = "";')
-
-        this.genComponentContextCode(info)
-        emitter.writeLine('parentCtx = ctx;')
+        body.push(new ImportHelper('_'))
+        body.push(new ImportHelper('SanSSRData'))
+        body.push(...this.compileContext(info))
 
         // instance preraration
         if (info.hasMethod('initData')) {
-            if (info.initData) this.emitInitDataInCompileTime(info.initData())
-            else this.emitInitDataInRuntime()
+            body.push(...(info.initData
+                ? this.emitInitDataInCompileTime(info.initData())
+                : this.emitInitDataInRuntime())
+            )
         }
 
         // call inited
         if (info.hasMethod('inited')) {
-            emitter.writeLine('ctx.instance.inited()')
+            body.push(STATMENT(new FunctionCall(
+                BINARY(BINARY(I('ctx'), '.', I('instance')), '.', I('inited')),
+                []
+            )))
         }
 
         // calc computed
         const computedNames = info.getComputedNames()
         if (computedNames.length) {
-            emitter.writeFor(`let name of [${computedNames.map(x => `'${x}'`).join(', ')}]`, () => {
-                emitter.writeLine('data[name] = ctx.instance.computed[name].apply(ctx.instance);')
-            })
+            body.push(new Foreach(I('i'), I('name'), L(computedNames), [
+                ASSIGN(BINARY(I('data'), '[]', I('name')), new ComputedCall(I('name')))
+            ]))
         }
 
-        const aNodeCompiler = new ANodeCompiler(info, this.ssrOnly, emitter)
-        aNodeCompiler.compile(info.root, true)
+        body.push(DEF('html', L('')))
+        body.push(ASSIGN(I('parentCtx'), I('ctx')))
+        const aNodeCompiler = new ANodeCompiler(info, !!this.options.ssrOnly, this.id)
+        body.push(...aNodeCompiler.compile(info.root, true))
 
-        emitter.writeLine('return html;')
-        return emitter.fullText()
+        body.push(RETURN(I('html')))
+        return body
     }
 
-    public emitInitDataInCompileTime (initData: any) {
+    private compileContext (info: ComponentInfo) {
+        const refs = info.hasDynamicComponent()
+            ? new MapLiteral([...info.childComponents.entries()].map(([key, val]) => [L(key), val.toAST()]))
+            : new MapLiteral()
+        return [
+            DEF('instance', new CreateComponentInstance(info)),
+            ASSIGN(
+                BINARY(I('instance'), '.', I('data')),
+                NEW(I('SanSSRData'), [I('data'), I('instance')])
+            ),
+            new If(
+                I('parentCtx'), [ASSIGN(
+                    BINARY(I('instance'), '.', I('parentComponent')),
+                    BINARY(I('parentCtx'), '.', I('instance'))
+                )]
+            ),
+            DEF('refs', refs),
+            DEF('ctx', new MapLiteral([I('instance'), I('slots'), I('data'), I('parentCtx'), I('refs')]))
+        ]
+    }
+
+    private emitInitDataInCompileTime (initData: any) {
         const defaultData = initData || {}
-        for (const key of Object.keys(defaultData)) {
-            this.emitter.writeLine('ctx.data["' + key + '"] = ctx.data["' + key + '"] || ' +
-            stringifier.any(defaultData[key]) + ';')
-        }
-    }
-
-    public emitInitDataInRuntime () {
-        this.emitter.writeLine('let sanSSRInitData = ctx.instance.initData() || {}')
-        this.emitter.writeFor('let key of Object.keys(sanSSRInitData)', () => {
-            this.emitter.writeLine('ctx.data[key] = ctx.data[key] || sanSSRInitData[key]')
+        return Object.entries(defaultData).map(([key, value]) => {
+            const item = BINARY(I('data'), '[]', L(key))
+            const rhs = BINARY(item, '||', L(value))
+            return ASSIGN(item, rhs)
         })
     }
 
-    /**
-    * 生成组件 renderer 时 ctx 对象构建的代码
-    */
-    private genComponentContextCode (componentInfo: ComponentInfo) {
-        const { emitter } = this
-        emitter.writeLine(`let instance = _.createFromPrototype(sanSSRResolver.getPrototype("${componentInfo.id}"));`)
-        emitter.writeLine('instance.data = new SanData(data, instance.computed)')
-        emitter.writeLine('instance.parentComponent = parentCtx && parentCtx.instance')
-        emitter.writeLine('let ctx = {instance, slots, data, parentCtx}')
+    private emitInitDataInRuntime () {
+        const item = BINARY(I('data'), '[]', I('key'))
 
-        if (componentInfo.hasDynamicComponent()) {
-            const refs = [...componentInfo.childComponents.entries()].map(([key, val]) => `"${key}": ${val}`).join(', ')
-            emitter.writeLine(`ctx.refs = {${refs}}`)
-        }
+        return [
+            ASSIGN(
+                I('initData'),
+                new FunctionCall(BINARY(I('instance'), '.', I('initData')), [])
+            ),
+            createDefaultValue(I('initData'), new MapLiteral([])),
+            new Foreach(I('key'), I('value'), I('initData'), [
+                ASSIGN(item, BINARY(item, '||', I('value')))
+            ])
+        ]
     }
 }

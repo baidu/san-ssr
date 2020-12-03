@@ -1,11 +1,14 @@
 import type { SanComponentConfig, ANode } from 'san'
+import { FunctionDefinition } from '../ast/syntax-node'
 import { parseAndNormalizeTemplate } from '../parsers/parse-template'
 import type { ClassDeclaration } from 'ts-morph'
 import { Node } from 'estree'
-import { visitANodeRecursively } from '../utils/anode-util'
+import { visitANodeRecursively } from '../ast/san-ast-util'
 import { ComponentReference, DynamicComponentReference } from './component-reference'
-import { getObjectLiteralPropertyKeys } from '../utils/ts-ast-util'
-import { assertObjectExpression, getLiteralValue, getPropertiesFromObject, getStringArrayValue } from '../utils/js-ast-util'
+import { getObjectLiteralPropertyKeys } from '../ast/ts-ast-util'
+import { assertObjectExpression, getLiteralValue, getPropertiesFromObject, getStringArrayValue } from '../ast/js-ast-util'
+import type { RenderOptions } from '../compilers/renderer-options'
+import { RendererCompiler } from '../compilers/renderer-compiler'
 import { ComponentClass } from './component'
 
 export type TagName = string
@@ -20,6 +23,7 @@ export interface ComponentInfo {
     getComputedNames (): string[]
     getFilterNames (): string[]
     hasDynamicComponent (): boolean
+    compileToRenderer (options: RenderOptions): FunctionDefinition
 }
 
 /**
@@ -48,6 +52,10 @@ abstract class ComponentInfoImpl<R extends ComponentReference = ComponentReferen
             if (node.directives && node.directives.is) found = true
         })
         return found
+    }
+
+    compileToRenderer (options: RenderOptions): FunctionDefinition {
+        return new RendererCompiler(options).compileToRenderer(this)
     }
 }
 

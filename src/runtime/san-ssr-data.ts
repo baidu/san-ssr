@@ -3,22 +3,22 @@ interface DataObject {
 }
 
 interface Computed {
-    [k: string]: (this: { data: SanData }) => any
+    [k: string]: (this: { data: SanSSRData }) => any
 }
 
 /**
- * SSR 期间的 Data 实现，替代 import('san').SanData
+ * SSR 期间的 Data 实现，替代 import('san').SanSSRData
  *
  * * 不涉及视图更新
  * * 便于编译期优化
  */
-export class SanData {
+export class SanSSRData {
     data: DataObject
     computed: Computed
 
-    constructor (data: DataObject, computed: Computed = {}) {
+    constructor (data: DataObject, instance: any) {
         this.data = data
-        this.computed = computed
+        this.computed = instance.computed || {}
     }
 
     get (path: string): any {

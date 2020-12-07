@@ -69,7 +69,7 @@
 				</a>
 				<p><a href="https://www.npmjs.org/package/san-ssr"><img src="https://img.shields.io/npm/v/san-ssr.svg" alt="npm version"></a>
 					<a href="https://www.npmjs.org/package/san-ssr"><img src="https://img.shields.io/npm/dm/san-ssr.svg" alt="downloads"></a>
-					<a href="https://travis-ci.org/baidu/san-ssr"><img src="https://travis-ci.org/baidu/san-ssr.svg?branch=master" alt="Build Status"></a>
+					<a href="https://github.com/baidu/san-ssr/actions?query=workflow:Check"><img src="https://github.com/baidu/san-ssr/workflows/check.yml/badge.svg" alt="Build Status"></a>
 					<a href="https://coveralls.io/github/baidu/san-ssr?branch=master"><img src="https://img.shields.io/coveralls/baidu/san-ssr.svg" alt="Coveralls"></a>
 					<a href="https://github.com/baidu/san-ssr"><img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg" alt="semantic-release"></a>
 					<a href="https://github.com/baidu/san-ssr/issues"><img src="https://img.shields.io/github/issues-closed/baidu/san-ssr.svg" alt="GitHub issues"></a>
@@ -157,7 +157,7 @@ writeFileSync(<span class="hljs-string">&#x27;ssr.php&#x27;</span>, targetCode)<
 					</li>
 					<li>如果 debug 符合预期，可以运行 <code>npm run e2e</code> 来查看其它样例是否仍然正常。</li>
 					<li>如果一切正常，运行 <code>npm run check</code> 来做最后的编码风格检查，和完整的测试。</li>
-					<li>如果能够通过那么 Travis CI 就应该能通过，请发 PR 到本仓库。</li>
+					<li>如果能够通过那么 CI 就应该能通过，请发 PR 到本仓库。</li>
 				</ol>
 				<a href="#debug-进阶" id="debug-进阶" style="color: inherit; text-decoration: none;">
 					<h3>debug 进阶</h3>
@@ -193,6 +193,18 @@ writeFileSync(<span class="hljs-string">&#x27;ssr.php&#x27;</span>, targetCode)<
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_src_bin_ssr_.html">&quot;src/bin/ssr&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_compilers_anode_compiler_.html">&quot;src/compilers/anode-<wbr>compiler&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_compilers_element_compiler_.html">&quot;src/compilers/element-<wbr>compiler&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_compilers_renderer_compiler_.html">&quot;src/compilers/renderer-<wbr>compiler&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_compilers_ts2js_.html">&quot;src/compilers/ts2js&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_src_fixtures_case_.html">&quot;src/fixtures/case&quot;</a>
@@ -249,7 +261,10 @@ writeFileSync(<span class="hljs-string">&#x27;ssr.php&#x27;</span>, targetCode)<
 						<a href="modules/_src_parsers_typescript_san_parser_.html">&quot;src/parsers/typescript-<wbr>san-<wbr>parser&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_src_runtime_index_.html">&quot;src/runtime/index&quot;</a>
+						<a href="modules/_src_runtime_create_helpers_.html">&quot;src/runtime/create-<wbr>helpers&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_src_runtime_helpers_.html">&quot;src/runtime/helpers&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_src_runtime_resolver_.html">&quot;src/runtime/resolver&quot;</a>
@@ -261,19 +276,10 @@ writeFileSync(<span class="hljs-string">&#x27;ssr.php&#x27;</span>, targetCode)<
 						<a href="modules/_src_runtime_underscore_.html">&quot;src/runtime/underscore&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_src_target_js_compilers_anode_compiler_.html">&quot;src/target-<wbr>js/compilers/anode-<wbr>compiler&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
 						<a href="modules/_src_target_js_compilers_component_compiler_.html">&quot;src/target-<wbr>js/compilers/component-<wbr>compiler&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
-						<a href="modules/_src_target_js_compilers_element_compiler_.html">&quot;src/target-<wbr>js/compilers/element-<wbr>compiler&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
 						<a href="modules/_src_target_js_compilers_expr_compiler_.html">&quot;src/target-<wbr>js/compilers/expr-<wbr>compiler&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_src_target_js_compilers_renderer_compiler_.html">&quot;src/target-<wbr>js/compilers/renderer-<wbr>compiler&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_src_target_js_compilers_stringifier_.html">&quot;src/target-<wbr>js/compilers/stringifier&quot;</a>
@@ -283,9 +289,6 @@ writeFileSync(<span class="hljs-string">&#x27;ssr.php&#x27;</span>, targetCode)<
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_src_target_js_js_emitter_.html">&quot;src/target-<wbr>js/js-<wbr>emitter&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="modules/_src_transpilers_ts2js_.html">&quot;src/transpilers/ts2js&quot;</a>
 					</li>
 					<li class=" tsd-kind-module">
 						<a href="modules/_src_utils_anode_util_.html">&quot;src/utils/anode-<wbr>util&quot;</a>

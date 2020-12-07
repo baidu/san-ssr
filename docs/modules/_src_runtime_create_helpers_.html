@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;src/runtime/index&quot; | san-ssr</title>
+	<title>&quot;src/runtime/create-helpers&quot; | san-ssr</title>
 	<meta name="description" content="Documentation for san-ssr">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="_src_runtime_index_.html">&quot;src/runtime/index&quot;</a>
+					<a href="_src_runtime_create_helpers_.html">&quot;src/runtime/create-helpers&quot;</a>
 				</li>
 			</ul>
-			<h1>Module &quot;src/runtime/index&quot;</h1>
+			<h1>Module &quot;src/runtime/create-helpers&quot;</h1>
 		</div>
 	</div>
 </header>
@@ -73,20 +73,21 @@
 						<section class="tsd-index-section ">
 							<h3>Interfaces</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_src_runtime_index_.sanssrruntime.html" class="tsd-kind-icon">SanSSRRuntime</a></li>
+								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_src_runtime_create_helpers_.sanssrhelpers.html" class="tsd-kind-icon">SanSSRHelpers</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section tsd-is-not-exported">
 							<h3>Variables</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported"><a href="_src_runtime_index_.html#runtime_files" class="tsd-kind-icon">RUNTIME_<wbr>FILES</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported"><a href="_src_runtime_create_helpers_.html#helper_files" class="tsd-kind-icon">HELPER_<wbr>FILES</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_src_runtime_index_.html#createruntime" class="tsd-kind-icon">create<wbr>Runtime</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_src_runtime_index_.html#emitruntime" class="tsd-kind-icon">emit<wbr>Runtime</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_src_runtime_create_helpers_.html#createhelpers" class="tsd-kind-icon">create<wbr>Helpers</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_src_runtime_create_helpers_.html#emithelpers" class="tsd-kind-icon">emit<wbr>Helpers</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_src_runtime_create_helpers_.html#emithelpersasiife" class="tsd-kind-icon">emit<wbr>Helpers<wbr>AsIIFE</a></li>
 							</ul>
 						</section>
 					</div>
@@ -95,12 +96,12 @@
 			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
 				<h2>Variables</h2>
 				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-					<a name="runtime_files" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> RUNTIME_<wbr>FILES</h3>
-					<div class="tsd-signature tsd-kind-icon">RUNTIME_<wbr>FILES<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = [resolve(__dirname, &#x27;../../dist/runtime/underscore.js&#x27;),resolve(__dirname, &#x27;../../dist/runtime/san-data.js&#x27;),resolve(__dirname, &#x27;../../dist/runtime/resolver.js&#x27;)]</span></div>
+					<a name="helper_files" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> HELPER_<wbr>FILES</h3>
+					<div class="tsd-signature tsd-kind-icon">HELPER_<wbr>FILES<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = [resolve(__dirname, &#x27;../../dist/runtime/underscore.js&#x27;),resolve(__dirname, &#x27;../../dist/runtime/san-data.js&#x27;),resolve(__dirname, &#x27;../../dist/runtime/resolver.js&#x27;)]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/3ea06a4/src/runtime/index.ts#L11">src/runtime/index.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/c29c22f/src/runtime/create-helpers.ts#L11">src/runtime/create-helpers.ts:11</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -113,16 +114,16 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
-					<a name="createruntime" class="tsd-anchor"></a>
-					<h3>create<wbr>Runtime</h3>
+					<a name="createhelpers" class="tsd-anchor"></a>
+					<h3>create<wbr>Helpers</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Runtime<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_runtime_index_.sanssrruntime.html" class="tsd-signature-type">SanSSRRuntime</a></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Helpers<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_runtime_create_helpers_.sanssrhelpers.html" class="tsd-signature-type">SanSSRHelpers</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/3ea06a4/src/runtime/index.ts#L54">src/runtime/index.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/c29c22f/src/runtime/create-helpers.ts#L59">src/runtime/create-helpers.ts:59</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -130,21 +131,21 @@
 									<p>编译成 render 函数时，使用的 helper</p>
 								</div>
 							</div>
-							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_src_runtime_index_.sanssrruntime.html" class="tsd-signature-type">SanSSRRuntime</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_src_runtime_create_helpers_.sanssrhelpers.html" class="tsd-signature-type">SanSSRHelpers</a></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
-					<a name="emitruntime" class="tsd-anchor"></a>
-					<h3>emit<wbr>Runtime</h3>
+					<a name="emithelpers" class="tsd-anchor"></a>
+					<h3>emit<wbr>Helpers</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">emit<wbr>Runtime<span class="tsd-signature-symbol">(</span>emitter<span class="tsd-signature-symbol">: </span><a href="../classes/_src_utils_emitter_.emitter.html" class="tsd-signature-type">Emitter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">emit<wbr>Helpers<span class="tsd-signature-symbol">(</span>emitter<span class="tsd-signature-symbol">: </span><a href="../classes/_src_target_js_js_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/3ea06a4/src/runtime/index.ts#L39">src/runtime/index.ts:39</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/c29c22f/src/runtime/create-helpers.ts#L49">src/runtime/create-helpers.ts:49</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -155,7 +156,35 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>emitter: <a href="../classes/_src_utils_emitter_.emitter.html" class="tsd-signature-type">Emitter</a></h5>
+									<h5>emitter: <a href="../classes/_src_target_js_js_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="emithelpersasiife" class="tsd-anchor"></a>
+					<h3>emit<wbr>Helpers<wbr>AsIIFE</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">emit<wbr>Helpers<wbr>AsIIFE<span class="tsd-signature-symbol">(</span>emitter<span class="tsd-signature-symbol">: </span><a href="../classes/_src_target_js_js_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/c29c22f/src/runtime/create-helpers.ts#L35">src/runtime/create-helpers.ts:35</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>产出运行时代码</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>emitter: <a href="../classes/_src_target_js_js_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -171,23 +200,26 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="_src_runtime_index_.html">&quot;src/runtime/index&quot;</a>
+						<a href="_src_runtime_create_helpers_.html">&quot;src/runtime/create-<wbr>helpers&quot;</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
-						<a href="../interfaces/_src_runtime_index_.sanssrruntime.html" class="tsd-kind-icon">SanSSRRuntime</a>
+						<a href="../interfaces/_src_runtime_create_helpers_.sanssrhelpers.html" class="tsd-kind-icon">SanSSRHelpers</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="_src_runtime_index_.html#runtime_files" class="tsd-kind-icon">RUNTIME_<wbr>FILES</a>
+						<a href="_src_runtime_create_helpers_.html#helper_files" class="tsd-kind-icon">HELPER_<wbr>FILES</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="_src_runtime_index_.html#createruntime" class="tsd-kind-icon">create<wbr>Runtime</a>
+						<a href="_src_runtime_create_helpers_.html#createhelpers" class="tsd-kind-icon">create<wbr>Helpers</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="_src_runtime_index_.html#emitruntime" class="tsd-kind-icon">emit<wbr>Runtime</a>
+						<a href="_src_runtime_create_helpers_.html#emithelpers" class="tsd-kind-icon">emit<wbr>Helpers</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_src_runtime_create_helpers_.html#emithelpersasiife" class="tsd-kind-icon">emit<wbr>Helpers<wbr>AsIIFE</a>
 					</li>
 				</ul>
 			</nav>

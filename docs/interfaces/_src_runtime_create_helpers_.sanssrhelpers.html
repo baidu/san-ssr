@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>SanSSRRuntime | san-ssr</title>
+	<title>SanSSRHelpers | san-ssr</title>
 	<meta name="description" content="Documentation for san-ssr">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_src_runtime_index_.html">&quot;src/runtime/index&quot;</a>
+					<a href="../modules/_src_runtime_create_helpers_.html">&quot;src/runtime/create-helpers&quot;</a>
 				</li>
 				<li>
-					<a href="_src_runtime_index_.sanssrruntime.html">SanSSRRuntime</a>
+					<a href="_src_runtime_create_helpers_.sanssrhelpers.html">SanSSRHelpers</a>
 				</li>
 			</ul>
-			<h1>Interface SanSSRRuntime</h1>
+			<h1>Interface SanSSRHelpers</h1>
 		</div>
 	</div>
 </header>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">SanSSRRuntime</span>
+						<span class="target">SanSSRHelpers</span>
 					</li>
 				</ul>
 			</section>
@@ -84,10 +84,9 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_runtime_index_.sanssrruntime.html#sandata" class="tsd-kind-icon">San<wbr>Data</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_runtime_index_.sanssrruntime.html#_" class="tsd-kind-icon">_</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_runtime_index_.sanssrruntime.html#exports" class="tsd-kind-icon">exports</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_runtime_index_.sanssrruntime.html#resolver" class="tsd-kind-icon">resolver</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_runtime_create_helpers_.sanssrhelpers.html#sandata" class="tsd-kind-icon">San<wbr>Data</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_runtime_create_helpers_.sanssrhelpers.html#_" class="tsd-kind-icon">_</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_runtime_create_helpers_.sanssrhelpers.html#createresolver" class="tsd-kind-icon">create<wbr>Resolver</a></li>
 							</ul>
 						</section>
 					</div>
@@ -101,7 +100,7 @@
 					<div class="tsd-signature tsd-kind-icon">San<wbr>Data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">SanData</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/3ea06a4/src/runtime/index.ts#L25">src/runtime/index.ts:25</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/c29c22f/src/runtime/create-helpers.ts#L25">src/runtime/create-helpers.ts:25</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -116,7 +115,7 @@
 					<div class="tsd-signature tsd-kind-icon">_<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">_</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/3ea06a4/src/runtime/index.ts#L21">src/runtime/index.ts:21</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/c29c22f/src/runtime/create-helpers.ts#L21">src/runtime/create-helpers.ts:21</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -126,35 +125,12 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="exports" class="tsd-anchor"></a>
-					<h3>exports</h3>
-					<div class="tsd-signature tsd-kind-icon">exports<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{}</span></div>
+					<a name="createresolver" class="tsd-anchor"></a>
+					<h3>create<wbr>Resolver</h3>
+					<div class="tsd-signature tsd-kind-icon">create<wbr>Resolver<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">createResolver</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/3ea06a4/src/runtime/index.ts#L33">src/runtime/index.ts:33</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>当前目标文件的 exports 对象</p>
-						</div>
-					</div>
-					<div class="tsd-type-declaration">
-						<h4>Type declaration</h4>
-						<ul class="tsd-parameters">
-							<li class="tsd-parameter-index-signature">
-								<h5><span class="tsd-signature-symbol">[</span>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">any</span></h5>
-							</li>
-						</ul>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="resolver" class="tsd-anchor"></a>
-					<h3>resolver</h3>
-					<div class="tsd-signature tsd-kind-icon">resolver<span class="tsd-signature-symbol">:</span> <a href="_src_runtime_resolver_.resolver.html" class="tsd-signature-type">Resolver</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/3ea06a4/src/runtime/index.ts#L29">src/runtime/index.ts:29</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/c29c22f/src/runtime/create-helpers.ts#L29">src/runtime/create-helpers.ts:29</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -172,7 +148,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="../modules/_src_runtime_index_.html">&quot;src/runtime/index&quot;</a>
+						<a href="../modules/_src_runtime_create_helpers_.html">&quot;src/runtime/create-<wbr>helpers&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -181,32 +157,32 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-module">
-						<a href="_src_runtime_index_.sanssrruntime.html" class="tsd-kind-icon">SanSSRRuntime</a>
+						<a href="_src_runtime_create_helpers_.sanssrhelpers.html" class="tsd-kind-icon">SanSSRHelpers</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_src_runtime_index_.sanssrruntime.html#sandata" class="tsd-kind-icon">San<wbr>Data</a>
+								<a href="_src_runtime_create_helpers_.sanssrhelpers.html#sandata" class="tsd-kind-icon">San<wbr>Data</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_src_runtime_index_.sanssrruntime.html#_" class="tsd-kind-icon">_</a>
+								<a href="_src_runtime_create_helpers_.sanssrhelpers.html#_" class="tsd-kind-icon">_</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_src_runtime_index_.sanssrruntime.html#exports" class="tsd-kind-icon">exports</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_src_runtime_index_.sanssrruntime.html#resolver" class="tsd-kind-icon">resolver</a>
+								<a href="_src_runtime_create_helpers_.sanssrhelpers.html#createresolver" class="tsd-kind-icon">create<wbr>Resolver</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_index_.html#runtime_files" class="tsd-kind-icon">RUNTIME_<wbr>FILES</a>
+						<a href="../modules/_src_runtime_create_helpers_.html#helper_files" class="tsd-kind-icon">HELPER_<wbr>FILES</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="../modules/_src_runtime_index_.html#createruntime" class="tsd-kind-icon">create<wbr>Runtime</a>
+						<a href="../modules/_src_runtime_create_helpers_.html#createhelpers" class="tsd-kind-icon">create<wbr>Helpers</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="../modules/_src_runtime_index_.html#emitruntime" class="tsd-kind-icon">emit<wbr>Runtime</a>
+						<a href="../modules/_src_runtime_create_helpers_.html#emithelpers" class="tsd-kind-icon">emit<wbr>Helpers</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_src_runtime_create_helpers_.html#emithelpersasiife" class="tsd-kind-icon">emit<wbr>Helpers<wbr>AsIIFE</a>
 					</li>
 				</ul>
 			</nav>

@@ -1,3 +1,11 @@
+# [4.1.0](https://github.com/baidu/san-ssr/compare/v4.0.3...v4.1.0) (2020-12-07)
+
+
+### Features
+
+* emitHelpers ([0cd221f](https://github.com/baidu/san-ssr/commit/0cd221f01a504344c849f9fd188ac8b94a387d93))
+* s-data 注释转义特殊字符消除 XSS 隐患 ([c29c22f](https://github.com/baidu/san-ssr/commit/c29c22fe91232abb3a9badb73b4f752d28e57569))
+
 ## [4.0.3](https://github.com/baidu/san-ssr/compare/v4.0.2...v4.0.3) (2020-11-20)
 
 

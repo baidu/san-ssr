@@ -4,6 +4,7 @@ import { RenderOptions } from './renderer-options'
 import { FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper } from '../ast/syntax-node'
 import { STATMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I } from '../ast/syntax-util'
 import { IDGenerator } from '../utils/id-generator'
+import { mergeLiteralAdd } from '../optimizers/merge-literal-add'
 
 /**
  * 每个 ComponentClass 对应一个 Render 函数，由 RendererCompiler 生成。
@@ -20,9 +21,11 @@ export class RendererCompiler {
      */
     public compileToRenderer (componentInfo: ComponentInfo) {
         const args = [DEF('data'), DEF('noDataOutput'), DEF('parentCtx'), DEF('tagName', L('div')), DEF('slots')]
-        return new FunctionDefinition(this.options.functionName || '', args,
+        const fn = new FunctionDefinition(this.options.functionName || '', args,
             this.compileComponentRendererBody(componentInfo)
         )
+        mergeLiteralAdd(fn)
+        return fn
     }
 
     private compileComponentRendererBody (info: ComponentInfo) {

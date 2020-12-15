@@ -38,6 +38,8 @@ export function I (name: string) {
 
 export const NULL = new Null()
 
+export const CTX_DATA = BINARY(I('ctx'), '.', I('data'))
+
 export function BINARY (lhs: Expression, op: BinaryOperator, rhs: Expression) {
     return new BinaryExpression(lhs, op, rhs)
 }

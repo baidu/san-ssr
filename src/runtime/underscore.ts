@@ -8,6 +8,7 @@ const BASE_PROPS = {
 
 export interface Context {
     parentCtx?: Context;
+    instance: any
 }
 
 const HTML_ENTITY = {
@@ -81,7 +82,7 @@ function _xstyleFilter (inherits: object | string, own: string) {
     return own
 }
 
-function attrFilter (name: string, value: string, needHTMLEscape: boolean) {
+function _attrFilter (name: string, value: string, needHTMLEscape: boolean) {
     if (value) {
         return ' ' + name + '="' + (needHTMLEscape ? escapeHTML(value) : value) + '"'
     }
@@ -91,8 +92,16 @@ function attrFilter (name: string, value: string, needHTMLEscape: boolean) {
     return ''
 }
 
-function boolAttrFilter (name: string, value: string) {
+function _boolAttrFilter (name: string, value: string) {
     return value ? ' ' + name : ''
+}
+
+function callFilter (ctx: Context, name: string, ...args: any[]) {
+    return ctx.instance.filters[name].call(ctx.instance, ...args)
+}
+
+function callComputed (ctx: Context, name: string) {
+    return ctx.instance.computed[name].apply(ctx.instance)
 }
 
 function iterate (val: any[] | object) {
@@ -126,5 +135,5 @@ function getRootCtx<T extends {parentCtx?: T}> (ctx: T) {
 }
 
 export const _ = {
-    output, createInstanceFromClass, escapeHTML, boolAttrFilter, attrFilter, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype, getRootCtx, iterate
+    output, createInstanceFromClass, escapeHTML, _boolAttrFilter, _attrFilter, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype, getRootCtx, iterate, callFilter, callComputed
 }

@@ -198,14 +198,14 @@ export class JSEmitter extends Emitter {
     }
 
     private writeComputedCall (node: ComputedCall) {
-        this.write(`ctx.instance.computed["${node.name}"].apply(ctx.instance)`)
+        this.write(`_.callComputed(ctx, "${node.name}")`)
     }
 
     private writeFilterCall (node: FilterCall) {
-        if (['_style', '_class', '_xstyle', '_xclass'].includes(node.name)) {
+        if (['_style', '_class', '_xstyle', '_xclass', '_attr', '_boolAttr'].includes(node.name)) {
             this.write(`_.${node.name}Filter(`)
         } else {
-            this.write(`ctx.instance.filters["${node.name}"].call(ctx.instance, `)
+            this.write(`_.callFilter(ctx, "${node.name}", `)
         }
         this.writeExpressionList(node.args)
         this.write(')')

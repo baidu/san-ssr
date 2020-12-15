@@ -7,7 +7,7 @@ import { getANodePropByName } from '../ast/san-ast-util'
 import * as TypeGuards from '../ast/san-type-guards'
 import { IDGenerator } from '../utils/id-generator'
 import { JSONStringify, RegexpReplace, Statement, FunctionDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral, ComponentRendererReference, FunctionCall, Expression } from '../ast/syntax-node'
-import { createUtilCall, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATMENT, UNARY, DEF, BINARY, RETURN } from '../ast/syntax-util'
+import { CTX_DATA, createUtilCall, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATMENT, UNARY, DEF, BINARY, RETURN } from '../ast/syntax-util'
 import { sanExpr } from '../compilers/san-expr-compiler'
 
 /**
@@ -112,13 +112,12 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         const { item, index, value } = aNode.directives.for
         const key = I(id.next('key'))
         const val = I(id.next('val'))
-        const data = BINARY(I('ctx'), '.', I('data'))
         const list = id.next('list')
 
         yield DEF(list, sanExpr(value))
         yield new Foreach(key, val, I(list), [
-            ...index ? [ASSIGN(BINARY(data, '[]', L(index)), key)] : [],
-            ASSIGN(BINARY(data, '.', I(item!)), val),
+            ...index ? [ASSIGN(BINARY(CTX_DATA, '[]', L(index)), key)] : [],
+            ASSIGN(BINARY(CTX_DATA, '.', I(item!)), val),
             ...this.compile(forElementANode, false)
         ])
     }
@@ -228,14 +227,13 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         if (content.length) {
             body.push(DEF('html', L('')))
 
-            const ctxData = BINARY(I('ctx'), '.', I('data'))
             const compData = this.id.next('compData')
-            body.push(DEF(compData, ctxData))
-            body.push(ASSIGN(ctxData, new MapAssign(new MapLiteral(), [ctxData, I('data')])))
+            body.push(DEF(compData, CTX_DATA))
+            body.push(ASSIGN(CTX_DATA, new MapAssign(new MapLiteral(), [CTX_DATA, I('data')])))
 
             for (const child of content) body.push(...this.compile(child, false))
 
-            body.push(ASSIGN(ctxData, I(compData)))
+            body.push(ASSIGN(CTX_DATA, I(compData)))
             body.push(RETURN(I('html')))
         } else {
             body.push(RETURN(L('')))

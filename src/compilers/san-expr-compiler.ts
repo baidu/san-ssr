@@ -2,11 +2,10 @@
  * 编译源码的 helper 方法集合
  */
 import { ExprStringNode, ExprNode, ExprTertiaryNode, ExprBinaryNode, ExprUnaryNode, ExprInterpNode, ExprAccessorNode, ExprCallNode, ExprTextNode, ExprObjectNode, ExprArrayNode } from 'san'
-import { isValidIdentifier } from '../utils/lang'
 import * as TypeGuards from '../ast/san-type-guards'
 import { _ } from '../runtime/underscore'
 import { MapLiteral, ArrayLiteral, FilterCall, FunctionCall, Literal, Identifier, ConditionalExpression, BinaryExpression, UnaryExpression, Expression } from '../ast/syntax-node'
-import { L, NULL, createUtilCall } from '../ast/syntax-util'
+import { CTX_DATA, L, NULL, createUtilCall } from '../ast/syntax-util'
 
 // 输出为 HTML 并转义、输出为 HTML 不转义、非输出表达式
 export type OutputType = 'html' | 'rawhtml' | 'expr'
@@ -46,14 +45,10 @@ function tertiary (e: ExprTertiaryNode) {
 
 // 生成数据访问表达式代码
 export function dataAccess (accessorExpr: ExprAccessorNode | undefined, outputType: OutputType) {
-    let data = new BinaryExpression(new Identifier('ctx'), '.', new Identifier('data'))
-    if (!accessorExpr) return data
+    if (!accessorExpr) return CTX_DATA
+    let data = CTX_DATA
     for (const path of accessorExpr.paths) {
-        if (TypeGuards.isExprStringNode(path) && isValidIdentifier(path.value)) {
-            data = new BinaryExpression(data, '.', new Identifier(path.value))
-        } else {
-            data = new BinaryExpression(data, '[]', sanExpr(path))
-        }
+        data = new BinaryExpression(data, '[]', sanExpr(path))
     }
     return outputCode(data, outputType)
 }
@@ -63,11 +58,7 @@ function callExpr (callExpr: ExprCallNode, outputType: OutputType) {
     const paths = callExpr.name.paths
     let fn = new BinaryExpression(new Identifier('ctx'), '.', new Identifier('instance'))
     for (const path of paths) {
-        if (TypeGuards.isExprStringNode(path) && isValidIdentifier(path.value)) {
-            fn = new BinaryExpression(fn, '.', new Identifier(path.value))
-        } else {
-            fn = new BinaryExpression(fn, '[]', sanExpr(path))
-        }
+        fn = new BinaryExpression(fn, '[]', sanExpr(path))
     }
     return outputCode(new FunctionCall(fn, callExpr.args.map(arg => sanExpr(arg))), outputType)
 }

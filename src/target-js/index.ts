@@ -9,6 +9,8 @@ import { Compiler } from '../models/compiler'
 import { tsSourceFile2js } from '../compilers/ts2js'
 import { RenderOptions } from '../compilers/renderer-options'
 import { CompileOptions } from './compilers/compile-options'
+import { FunctionDefinition } from '../ast/syntax-node'
+import { bracketToDot } from '../optimizers/bracket-to-dot'
 
 const debug = debugFactory('target-js')
 
@@ -54,7 +56,7 @@ export default class ToJSCompiler implements Compiler {
 
         for (const info of componentInfos) {
             const emitter = new JSEmitter()
-            emitter.writeFunctionDefinition(info.compileToRenderer(options))
+            emitter.writeFunctionDefinition(this.optimize(info.compileToRenderer(options)))
 
             const rawRendererText = emitter.fullText()
             const resolvedRenderer = this.createRenderer(rawRendererText, { sanSSRHelpers, sanSSRResolver })
@@ -96,7 +98,7 @@ export default class ToJSCompiler implements Compiler {
         // 编译 render 函数
         for (const info of sourceFile.componentInfos) {
             emitter.nextLine(`sanSSRResolver.setRenderer("${info.id}", `)
-            emitter.writeFunctionDefinition(info.compileToRenderer(options))
+            emitter.writeFunctionDefinition(this.optimize(info.compileToRenderer(options)))
             emitter.feedLine(');')
         }
 
@@ -143,5 +145,10 @@ export default class ToJSCompiler implements Compiler {
             emitter.writeBlock('', () => cc.compile(info), false)
             emitter.feedLine(');')
         }
+    }
+
+    private optimize (root: FunctionDefinition) {
+        bracketToDot(root)
+        return root
     }
 }

@@ -13,6 +13,7 @@ export function * walk (node: Expression | Statement): Iterable<Expression | Sta
     case SyntaxKind.CreateComponentInstance:
     case SyntaxKind.Null:
     case SyntaxKind.ImportHelper:
+    case SyntaxKind.ComputedCall:
         break
     case SyntaxKind.ArrayIncludes:
         yield * walk(node.arr)
@@ -33,10 +34,6 @@ export function * walk (node: Expression | Statement): Iterable<Expression | Sta
         break
     case SyntaxKind.EncodeURIComponent:
         yield * walk(node.str)
-        break
-    case SyntaxKind.ComputedCall:
-        // TODO static computed call
-        yield * walk(node.name)
         break
     case SyntaxKind.FilterCall:
         for (const arg of node.args) yield * walk(arg)

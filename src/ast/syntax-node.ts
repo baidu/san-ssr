@@ -205,7 +205,7 @@ export class EncodeURIComponent implements SyntaxNode {
 export class ComputedCall implements SyntaxNode {
     public readonly kind = SyntaxKind.ComputedCall
     constructor (
-        public name: Expression
+        public name: string
     ) {}
 }
 

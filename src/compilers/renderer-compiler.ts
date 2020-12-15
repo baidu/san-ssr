@@ -56,11 +56,8 @@ export class RendererCompiler {
         }
 
         // calc computed
-        const computedNames = info.getComputedNames()
-        if (computedNames.length) {
-            body.push(new Foreach(I('i'), I('name'), L(computedNames), [
-                ASSIGN(BINARY(I('data'), '[]', I('name')), new ComputedCall(I('name')))
-            ]))
+        for (const name of info.getComputedNames()) {
+            body.push(ASSIGN(BINARY(I('data'), '[]', L(name)), new ComputedCall(name)))
         }
 
         body.push(DEF('html', L('')))

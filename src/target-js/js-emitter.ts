@@ -198,9 +198,7 @@ export class JSEmitter extends Emitter {
     }
 
     private writeComputedCall (node: ComputedCall) {
-        this.write('ctx.instance.computed[')
-        this.writeExpression(node.name)
-        this.write('].apply(ctx.instance)')
+        this.write(`ctx.instance.computed["${node.name}"].apply(ctx.instance)`)
     }
 
     private writeFilterCall (node: FilterCall) {

@@ -26,11 +26,6 @@ export class ComponentReference {
         public readonly id: string
     ) {}
 
-    toString () {
-        const { specifier, id } = this
-        return `{specifier: "${specifier}", id: "${id}"}`
-    }
-
     toAST () {
         const { specifier, id } = this
         return new MapLiteral([

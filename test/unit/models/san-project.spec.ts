@@ -168,7 +168,7 @@ describe('SanProject', function () {
             const proj = new SanProject(null)
             const helpers = proj.emitHelpers('js')
             expect(helpers).toContain('exports._ = ')
-            expect(helpers).toContain('exports.SanData = ')
+            expect(helpers).toContain('exports.SanSSRData = ')
             expect(helpers).toContain('exports.createResolver = ')
         })
     })

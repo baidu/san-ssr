@@ -10,7 +10,7 @@ describe('optimizers/merge-literal-add', () => {
         ])
         mergeLiteralAdd(fn)
         expect(fn.body).toHaveLength(1)
-        expect(fn.body[0]).toHaveProperty('expression.rhs.value', 'foobar')
+        expect(fn.body[0]).toHaveProperty('value.rhs.value', 'foobar')
     })
     it('should not merge if not successive', () => {
         const fn = new FunctionDefinition('', [], [

@@ -4,11 +4,15 @@ import { assertNever } from '../utils/lang'
 export function * walk (node: Expression | Statement): Iterable<Expression | Statement> {
     yield node
     switch (node.kind) {
-    case SyntaxKind.Literal:
     case SyntaxKind.JSONStringify:
     case SyntaxKind.UnaryExpression:
+    case SyntaxKind.ComponentRendererReference:
+    case SyntaxKind.EncodeURIComponent:
+    case SyntaxKind.ReturnStatement:
+    case SyntaxKind.ExpressionStatement:
         yield * walk(node.value)
         break
+    case SyntaxKind.Literal:
     case SyntaxKind.Identifier:
     case SyntaxKind.CreateComponentInstance:
     case SyntaxKind.Null:
@@ -32,10 +36,8 @@ export function * walk (node: Expression | Statement): Iterable<Expression | Sta
         yield * walk(node.falseValue)
         yield * walk(node.trueValue)
         break
-    case SyntaxKind.EncodeURIComponent:
-        yield * walk(node.str)
-        break
     case SyntaxKind.FilterCall:
+    case SyntaxKind.HelperCall:
         for (const arg of node.args) yield * walk(arg)
         break
     case SyntaxKind.FunctionDefinition:
@@ -58,13 +60,6 @@ export function * walk (node: Expression | Statement): Iterable<Expression | Sta
             yield * walk(key)
             yield * walk(val)
         }
-        break
-    case SyntaxKind.ComponentRendererReference:
-        yield * walk(node.ref)
-        break
-    case SyntaxKind.ReturnStatement:
-    case SyntaxKind.ExpressionStatement:
-        yield * walk(node.expression)
         break
     case SyntaxKind.AssignmentStatement:
     case SyntaxKind.BinaryExpression:

@@ -1,5 +1,5 @@
 import { parse } from 'acorn'
-import { getLiteralValue, getStringValue, findExportNames, isModuleExports, findESMImports, findScriptRequires } from '../../../src/utils/js-ast-util'
+import { getLiteralValue, getStringValue, findExportNames, isModuleExports, findESMImports, findScriptRequires } from '../../../src/ast/js-ast-util'
 
 const pm = (script: string) => parse(script, { sourceType: 'module', ecmaVersion: 2020 }) as any
 const p = (script: string) => parse(script, { ecmaVersion: 2020 }) as any

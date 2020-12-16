@@ -1,4 +1,4 @@
-import { getPropertyStringArrayValue, getComponentDeclarations, getObjectLiteralPropertyKeys, getChildComponents, getPropertyStringValue, getComponentClassIdentifier, isChildClassOf } from '../../../src/utils/ts-ast-util'
+import { getPropertyStringArrayValue, getComponentDeclarations, getObjectLiteralPropertyKeys, getChildComponents, getPropertyStringValue, getComponentClassIdentifier, isChildClassOf } from '../../../src/ast/ts-ast-util'
 import { Project } from 'ts-morph'
 
 describe('utils/ts-ast-util', function () {

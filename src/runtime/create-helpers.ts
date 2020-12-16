@@ -10,7 +10,7 @@ import { readStringSync } from '../utils/fs'
  */
 const HELPER_FILES = [
     resolve(__dirname, '../../dist/runtime/underscore.js'),
-    resolve(__dirname, '../../dist/runtime/san-data.js'),
+    resolve(__dirname, '../../dist/runtime/san-ssr-data.js'),
     resolve(__dirname, '../../dist/runtime/resolver.js')
 ]
 

@@ -4,8 +4,8 @@
 import { ExprStringNode, ExprNode, ExprTertiaryNode, ExprBinaryNode, ExprUnaryNode, ExprInterpNode, ExprAccessorNode, ExprCallNode, ExprTextNode, ExprObjectNode, ExprArrayNode } from 'san'
 import * as TypeGuards from '../ast/san-type-guards'
 import { _ } from '../runtime/underscore'
-import { MapLiteral, ArrayLiteral, FilterCall, FunctionCall, Literal, Identifier, ConditionalExpression, BinaryExpression, UnaryExpression, Expression } from '../ast/syntax-node'
-import { CTX_DATA, L, NULL, createUtilCall } from '../ast/syntax-util'
+import { EncodeURIComponent, MapLiteral, HelperCall, ArrayLiteral, FilterCall, FunctionCall, Literal, Identifier, ConditionalExpression, BinaryExpression, UnaryExpression, Expression } from '../ast/syntax-node'
+import { CTX_DATA, L, NULL } from '../ast/syntax-util'
 
 // 输出为 HTML 并转义、输出为 HTML 不转义、非输出表达式
 export type OutputType = 'html' | 'rawhtml' | 'expr'
@@ -44,8 +44,7 @@ function tertiary (e: ExprTertiaryNode) {
 }
 
 // 生成数据访问表达式代码
-export function dataAccess (accessorExpr: ExprAccessorNode | undefined, outputType: OutputType) {
-    if (!accessorExpr) return CTX_DATA
+export function dataAccess (accessorExpr: ExprAccessorNode, outputType: OutputType) {
     let data = CTX_DATA
     for (const path of accessorExpr.paths) {
         data = new BinaryExpression(data, '[]', sanExpr(path))
@@ -65,8 +64,8 @@ function callExpr (callExpr: ExprCallNode, outputType: OutputType) {
 
 function outputCode (data: Expression, outputType: OutputType) {
     if (outputType === 'expr') return data
-    if (outputType === 'html') return createUtilCall('output', [data, new Literal(true)])
-    return createUtilCall('output', [data, new Literal(false)])
+    if (outputType === 'html') return new HelperCall('output', [data, new Literal(true)])
+    return new HelperCall('output', [data, new Literal(false)])
 }
 
 // 生成插值代码
@@ -75,7 +74,14 @@ function interp (interpExpr: ExprInterpNode, outputType: OutputType) {
 
     for (const filter of interpExpr.filters) {
         const filterName = filter.name.paths[0].value
-        code = new FilterCall(filterName, [code, ...filter.args.map(arg => sanExpr(arg, 'expr'))])
+
+        if (['_style', '_class', '_xstyle', '_xclass', '_attr', '_boolAttr'].includes(filterName)) {
+            code = new HelperCall(filterName.slice(1) + 'Filter' as any, [code, ...filter.args.map(arg => sanExpr(arg, 'expr'))])
+        } else if (filterName === 'url') {
+            code = new EncodeURIComponent(code)
+        } else {
+            code = new FilterCall(filterName, [code, ...filter.args.map(arg => sanExpr(arg, 'expr'))])
+        }
     }
     // {{ | raw }}
     if (outputType === 'html' && interpExpr.original) {

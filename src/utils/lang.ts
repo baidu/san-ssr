@@ -42,4 +42,5 @@ export function functionString (fn: Function) {
 }
 
 export function assertNever (arg: never) {
+    throw new Error(`"${JSON.stringify(arg)}" not supported`)
 }

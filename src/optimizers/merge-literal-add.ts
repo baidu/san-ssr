@@ -2,7 +2,7 @@ import { Expression, Literal, Statement, Identifier, Block, SyntaxNode } from '.
 import { isLiteral, isIdentifier, isBlock, isBinaryExpression, isExpressionStatement } from '../ast/syntax-util'
 import { walk } from '../ast/syntax-tree-walker'
 
-type HTMLAddEqualLiteral = Statement & { expression: { lhs: Identifier, op: '+=', rhs: Literal } }
+type HTMLAddEqualLiteral = Statement & { value: { lhs: Identifier, op: '+=', rhs: Literal } }
 
 export function mergeLiteralAdd (node: Expression | Statement): void {
     for (const descendant of walk(node)) {
@@ -16,7 +16,7 @@ function doMergeLiteralAdd (node: Block) {
     for (const child of node.body) {
         if (isHTMLAddEqualLiteral(child)) {
             if (prevHTMLAddEqualLiteral !== null) {
-                prevHTMLAddEqualLiteral.expression.rhs.value += child.expression.rhs.value
+                prevHTMLAddEqualLiteral.value.rhs.value += child.value.rhs.value
                 continue
             }
             prevHTMLAddEqualLiteral = child
@@ -31,7 +31,7 @@ function doMergeLiteralAdd (node: Block) {
 function isHTMLAddEqualLiteral (statement: SyntaxNode): statement is HTMLAddEqualLiteral {
     if (!isExpressionStatement(statement)) return false
 
-    const expr = statement.expression
+    const expr = statement.value
     return isBinaryExpression(expr) &&
         isIdentifier(expr.lhs) && expr.lhs.name === 'html' &&
         expr.op === '+=' &&

@@ -6,8 +6,8 @@ import { ElementCompiler } from './element-compiler'
 import { getANodePropByName } from '../ast/san-ast-util'
 import * as TypeGuards from '../ast/san-type-guards'
 import { IDGenerator } from '../utils/id-generator'
-import { JSONStringify, RegexpReplace, Statement, FunctionDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral, ComponentRendererReference, FunctionCall, Expression } from '../ast/syntax-node'
-import { CTX_DATA, createUtilCall, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATMENT, UNARY, DEF, BINARY, RETURN } from '../ast/syntax-util'
+import { HelperCall, JSONStringify, RegexpReplace, Statement, FunctionDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral, ComponentRendererReference, FunctionCall, Expression } from '../ast/syntax-node'
+import { CTX_DATA, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATMENT, UNARY, DEF, BINARY, RETURN } from '../ast/syntax-util'
 import { sanExpr } from '../compilers/san-expr-compiler'
 
 /**
@@ -169,7 +169,8 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
     }
 
     private createDataComment () {
-        const dataExpr = BINARY(createUtilCall('getRootCtx', [I('ctx')]), '.', I('data'))
+        const dataExpr = BINARY(new HelperCall('getRootCtx', [I('ctx')]), '.', I('data'))
+        // TODO add case for san-html-cases
         return [
             createHTMLLiteralAppend('<!--s-data:'),
             createHTMLExpressionAppend(new RegexpReplace(new JSONStringify(dataExpr), '(?<=-)-', L('\\-'))),

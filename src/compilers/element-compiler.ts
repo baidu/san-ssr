@@ -5,8 +5,8 @@ import { autoCloseTags } from '../utils/dom-util'
 import { ANodeCompiler } from './anode-compiler'
 import { ExprNode, ANodeProperty, Directive, ANode } from 'san'
 import { isExprNumberNode, isExprStringNode, isExprBoolNode } from '../ast/san-type-guards'
-import { createUtilCall, createIfStrictEqual, createIfNotNull, createDefaultValue, createHTMLLiteralAppend, createHTMLExpressionAppend, NULL, L, I, ASSIGN, DEF } from '../ast/syntax-util'
-import { FilterCall, ArrayIncludes, Else, Foreach, If } from '../ast/syntax-node'
+import { createIfStrictEqual, createIfNotNull, createDefaultValue, createHTMLLiteralAppend, createHTMLExpressionAppend, NULL, L, I, ASSIGN, DEF } from '../ast/syntax-util'
+import { HelperCall, ArrayIncludes, Else, Foreach, If } from '../ast/syntax-node'
 import { sanExpr } from './san-expr-compiler'
 
 const BOOL_ATTRIBUTES = ['readonly', 'disabled', 'multiple', 'checked']
@@ -77,11 +77,11 @@ export class ElementCompiler {
 
         if (prop.name === 'readonly' || prop.name === 'disabled' || prop.name === 'multiple') {
             if (this.isLiteral(prop.expr)) {
-                if (_._boolAttrFilter(prop.name, prop.expr.value)) {
+                if (_.boolAttrFilter(prop.name, prop.expr.value)) {
                     yield createHTMLLiteralAppend(` ${prop.name}`)
                 }
             } else {
-                yield createHTMLExpressionAppend(new FilterCall('_boolAttr', [L(prop.name), sanExpr(prop.expr)]))
+                yield createHTMLExpressionAppend(new HelperCall('boolAttrFilter', [L(prop.name), sanExpr(prop.expr)]))
             }
             return
         }
@@ -102,9 +102,9 @@ export class ElementCompiler {
             }
         }
         if (this.isLiteral(prop.expr)) {
-            yield createHTMLLiteralAppend(_._attrFilter(prop.name, prop.expr.value, true))
+            yield createHTMLLiteralAppend(_.attrFilter(prop.name, prop.expr.value, true))
         } else {
-            yield createHTMLExpressionAppend(new FilterCall('_attr', [L(prop.name), sanExpr(prop.expr), L(true)]))
+            yield createHTMLExpressionAppend(new HelperCall('attrFilter', [L(prop.name), sanExpr(prop.expr), L(true)]))
         }
     }
 
@@ -121,10 +121,10 @@ export class ElementCompiler {
         const iterable = I(bindProps)
         yield new Foreach(key, value, iterable, [
             new If(new ArrayIncludes(L(BOOL_ATTRIBUTES), key), [
-                createHTMLExpressionAppend(createUtilCall('_boolAttrFilter', [key, value]))
+                createHTMLExpressionAppend(new HelperCall('boolAttrFilter', [key, value]))
             ]),
             new Else([
-                createHTMLExpressionAppend(new FilterCall('_attr', [key, value, L(true)]))
+                createHTMLExpressionAppend(new HelperCall('attrFilter', [key, value, L(true)]))
             ])
         ])
     }

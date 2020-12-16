@@ -1,4 +1,4 @@
-export abstract class Emitter {
+export class Emitter {
     private indentLevel = 0
     private shiftWidth: number
     protected code = ''

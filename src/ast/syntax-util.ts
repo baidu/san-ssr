@@ -1,4 +1,4 @@
-import { SyntaxKind, SyntaxNode, Block, UnaryOperator, UnaryExpression, NewExpression, VariableDefinition, ReturnStatement, BinaryOperator, FunctionCall, If, Null, AssignmentStatement, Statement, Expression, Identifier, ExpressionStatement, BinaryExpression, Literal } from './syntax-node'
+import { SyntaxKind, SyntaxNode, Block, UnaryOperator, UnaryExpression, NewExpression, VariableDefinition, ReturnStatement, BinaryOperator, If, Null, AssignmentStatement, Statement, Expression, Identifier, ExpressionStatement, BinaryExpression, Literal } from './syntax-node'
 
 export function createHTMLLiteralAppend (html: string) {
     return STATMENT(BINARY(I('html'), '+=', L(html)))
@@ -6,10 +6,6 @@ export function createHTMLLiteralAppend (html: string) {
 
 export function createHTMLExpressionAppend (expr: Expression) {
     return STATMENT(BINARY(I('html'), '+=', expr))
-}
-
-export function createUtilCall (method: string, args: Expression[]) {
-    return new FunctionCall(BINARY(I('_'), '.', I(method)), args)
 }
 
 export function createDefaultValue (expr: Expression, value: Expression): Statement {

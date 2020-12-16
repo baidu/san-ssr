@@ -49,12 +49,12 @@ function output (value: any, needEscape: boolean) {
     return needEscape ? escapeHTML(value) : value
 }
 
-function _classFilter (source: string | string[]) {
+function classFilter (source: string | string[]) {
     if (!isArray(source)) source = [source]
     return source.filter(x => x != null).join(' ')
 }
 
-function _styleFilter (source: object | string) {
+function styleFilter (source: object | string) {
     if (isObject(source)) {
         return Object.keys(source)
             .map(key => key + ':' + source[key] + ';')
@@ -63,7 +63,7 @@ function _styleFilter (source: object | string) {
     return source
 }
 
-function _xclassFilter (inherits: string | string[], own: string) {
+function xclassFilter (inherits: string | string[], own: string) {
     if (!isArray(inherits)) inherits = [inherits]
     const inheritStr = inherits = inherits.filter(x => x != null).join(' ')
     if (inheritStr) {
@@ -73,8 +73,8 @@ function _xclassFilter (inherits: string | string[], own: string) {
     return own
 }
 
-function _xstyleFilter (inherits: object | string, own: string) {
-    inherits = inherits && _styleFilter(inherits)
+function xstyleFilter (inherits: object | string, own: string) {
+    inherits = inherits && styleFilter(inherits)
     if (inherits) {
         if (own) return own + ';' + inherits
         return inherits
@@ -82,7 +82,7 @@ function _xstyleFilter (inherits: object | string, own: string) {
     return own
 }
 
-function _attrFilter (name: string, value: string, needHTMLEscape: boolean) {
+function attrFilter (name: string, value: string, needHTMLEscape: boolean) {
     if (value) {
         return ' ' + name + '="' + (needHTMLEscape ? escapeHTML(value) : value) + '"'
     }
@@ -92,7 +92,7 @@ function _attrFilter (name: string, value: string, needHTMLEscape: boolean) {
     return ''
 }
 
-function _boolAttrFilter (name: string, value: string) {
+function boolAttrFilter (name: string, value: string) {
     return value ? ' ' + name : ''
 }
 
@@ -135,5 +135,5 @@ function getRootCtx<T extends {parentCtx?: T}> (ctx: T) {
 }
 
 export const _ = {
-    output, createInstanceFromClass, escapeHTML, _boolAttrFilter, _attrFilter, _classFilter, _styleFilter, _xstyleFilter, _xclassFilter, createFromPrototype, getRootCtx, iterate, callFilter, callComputed
+    output, createInstanceFromClass, escapeHTML, boolAttrFilter, attrFilter, classFilter, styleFilter, xstyleFilter, xclassFilter, createFromPrototype, getRootCtx, iterate, callFilter, callComputed
 }

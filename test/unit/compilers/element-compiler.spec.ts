@@ -1,70 +1,112 @@
 import { ElementCompiler } from '../../../src/compilers/element-compiler'
 import { parseTemplate } from 'san'
+import { SyntaxKind } from '../../../src/ast/syntax-node'
+import { CTX_DATA } from '../../../src/ast/syntax-util'
+import { matchHTMLAddEqual } from '../../stub/util'
 
-describe('target-js/compilers/element-compiler', () => {
+describe('compilers/element-compiler', () => {
     let compiler
     beforeEach(() => {
-        compiler = new ElementCompiler(null as any)
+        compiler = new ElementCompiler(null as any, { next: () => 'foo' } as any)
     })
 
-    it('should compile a simple <div> with customized tagName', () => {
-        const aNode = parseTemplate('<div></div>')
-        compiler.tagStart(aNode, 'tagName')
-        compiler.tagEnd(aNode, 'tagName')
-        expect(compiler.emitter.fullText()).toEqual(`html += "<";
-html += tagName;
-html += "></";
-html += tagName;
-html += ">";
-`)
+    describe('#tagStart()', () => {
+        it('should compile a simple <div> with customized tagName', () => {
+            const aNode = parseTemplate('<div></div>')
+            const nodes = [...compiler.tagStart(aNode)]
+            expect(nodes).toEqual(expect.arrayContaining([
+                matchHTMLAddEqual({ kind: SyntaxKind.Literal, value: '<' }),
+                matchHTMLAddEqual({ kind: SyntaxKind.Identifier, name: 'tagName' }),
+                matchHTMLAddEqual({ kind: SyntaxKind.Literal, value: '>' })
+            ]))
+        })
+        it('should compile empty textarea', () => {
+            const aNode = parseTemplate('<div><textarea></textarea></div>').children[0].children[0]
+            const nodes = [...compiler.tagStart(aNode)]
+            expect(nodes).toEqual(expect.arrayContaining([
+                matchHTMLAddEqual({ kind: SyntaxKind.Literal, value: '<textarea' }),
+                matchHTMLAddEqual({ kind: SyntaxKind.Literal, value: '>' })
+            ]))
+        })
+        it('should compile input with readonly', () => {
+            const aNode = parseTemplate('<div><input readonly></div>').children[0].children[0]
+            const nodes = [...compiler.tagStart(aNode)]
+            expect(nodes).toHaveLength(3)
+            expect(nodes).toEqual(expect.arrayContaining([
+                matchHTMLAddEqual({ kind: SyntaxKind.Literal, value: '<input' }),
+                matchHTMLAddEqual({ kind: SyntaxKind.Literal, value: ' readonly' }),
+                matchHTMLAddEqual({ kind: SyntaxKind.Literal, value: '>' })
+            ]))
+        })
+        it('should compile input with readonly', () => {
+            const aNode = parseTemplate('<div><input readonly="{{foo}}"></div>').children[0].children[0]
+            const nodes = [...compiler.tagStart(aNode)]
+            expect(nodes).toEqual(expect.arrayContaining([matchHTMLAddEqual({
+                kind: SyntaxKind.HelperCall,
+                name: 'boolAttrFilter',
+                args: [
+                    { kind: SyntaxKind.Literal, value: 'readonly' },
+                    { kind: SyntaxKind.BinaryExpression, lhs: CTX_DATA, op: '[]', rhs: { kind: SyntaxKind.Literal, value: 'foo' } }
+                ]
+            })]))
+        })
+        it('should treat checked as a normal property for non-input elements', () => {
+            const aNode = parseTemplate('<div><span checked="{{foo}}"></span></div>').children[0].children[0]
+            const nodes = [...compiler.tagStart(aNode)]
+            expect(nodes).toEqual(expect.arrayContaining([matchHTMLAddEqual({
+                kind: SyntaxKind.HelperCall,
+                name: 'attrFilter',
+                args: expect.arrayContaining([
+                    { kind: SyntaxKind.Literal, value: 'checked' }
+                ])
+            })]))
+        })
+        it('should treat checked as a normal property if input[type] not specified', () => {
+            const aNode = parseTemplate('<div><input checked="{{foo}}" value="1"></div>').children[0].children[0]
+            const nodes = [...compiler.tagStart(aNode)]
+            expect(nodes).toEqual(expect.arrayContaining([matchHTMLAddEqual({
+                kind: SyntaxKind.HelperCall,
+                name: 'attrFilter',
+                args: expect.arrayContaining([
+                    { kind: SyntaxKind.Literal, value: 'checked' }
+                ])
+            })]))
+        })
+        it('should treat checked as a normal property if type not recognized', () => {
+            const aNode = parseTemplate('<div><input checked="{{foo}}" value="1" type="bar"></div>').children[0].children[0]
+            const nodes = [...compiler.tagStart(aNode)]
+            expect(nodes).toEqual(expect.arrayContaining([matchHTMLAddEqual({
+                kind: SyntaxKind.HelperCall,
+                name: 'attrFilter',
+                args: expect.arrayContaining([
+                    { kind: SyntaxKind.Literal, value: 'checked' }
+                ])
+            })]))
+        })
     })
-    it('should compile input with readonly', () => {
-        const aNode = parseTemplate('<div><input readonly></div>').children[0].children[0]
-        compiler.tagStart(aNode)
-        compiler.tagEnd(aNode)
-        expect(compiler.emitter.fullText()).toEqual('html += "<input readonly>";\n')
+    describe('#inner()', () => {
+        it('should compile empty textarea', () => {
+            const aNode = parseTemplate('<div><textarea></textarea></div>').children[0].children[0]
+            const nodes = [...compiler.inner(aNode)]
+            expect(nodes).toHaveLength(0)
+        })
     })
-    it('should compile input with readonly value', () => {
-        const aNode = parseTemplate('<div><input readonly="{{foo}}"></div>').children[0].children[0]
-        compiler.tagStart(aNode)
-        compiler.tagEnd(aNode)
-        expect(compiler.emitter.fullText()).toEqual(`html += "<input";
-html += _.boolAttrFilter("readonly", ctx.data.foo);
-html += ">";
-`)
-    })
-    it('should treat checked as a normal property for non-input elements', () => {
-        const aNode = parseTemplate('<div><span checked="{{foo}}"></span></div>').children[0].children[0]
-        compiler.tagStart(aNode)
-        compiler.tagEnd(aNode)
-        expect(compiler.emitter.fullText()).toEqual(`html += "<span";
-html += _.attrFilter("checked", ctx.data.foo, true);
-html += "></span>";
-`)
-    })
-    it('should treat checked as a normal property if type not specified', () => {
-        const aNode = parseTemplate('<div><input checked="{{foo}}" value="1"></div>').children[0].children[0]
-        compiler.tagStart(aNode)
-        compiler.tagEnd(aNode)
-        expect(compiler.emitter.fullText()).toEqual(`html += "<input";
-html += _.attrFilter("checked", ctx.data.foo, true);
-html += " value=\\"1\\">";
-`)
-    })
-    it('should treat checked as a normal property if type not recognized', () => {
-        const aNode = parseTemplate('<div><input checked="{{foo}}" value="1" type="bar"></div>').children[0].children[0]
-        compiler.tagStart(aNode)
-        compiler.tagEnd(aNode)
-        expect(compiler.emitter.fullText()).toEqual(`html += "<input";
-html += _.attrFilter("checked", ctx.data.foo, true);
-html += " value=\\"1\\" type=\\"bar\\">";
-`)
-    })
-    it('should compile empty textarea', () => {
-        const aNode = parseTemplate('<div><textarea></textarea></div>').children[0].children[0]
-        compiler.tagStart(aNode)
-        compiler.inner(aNode)
-        compiler.tagEnd(aNode)
-        expect(compiler.emitter.fullText()).toEqual('html += "<textarea></textarea>";\n')
+    describe('#tagEnd()', () => {
+        it('should compile a simple </div> with customized tagName', () => {
+            const aNode = parseTemplate('<div></div>')
+            const nodes = [...compiler.tagEnd(aNode)]
+            expect(nodes).toEqual(expect.arrayContaining([
+                matchHTMLAddEqual({ kind: SyntaxKind.Literal, value: '</' }),
+                matchHTMLAddEqual({ kind: SyntaxKind.Identifier, name: 'tagName' }),
+                matchHTMLAddEqual({ kind: SyntaxKind.Literal, value: '>' })
+            ]))
+        })
+        it('should compile empty textarea', () => {
+            const aNode = parseTemplate('<div><textarea></textarea></div>').children[0].children[0]
+            const nodes = [...compiler.tagEnd(aNode)]
+            expect(nodes).toEqual(expect.arrayContaining([
+                matchHTMLAddEqual({ kind: SyntaxKind.Literal, value: '</textarea>' })
+            ]))
+        })
     })
 })

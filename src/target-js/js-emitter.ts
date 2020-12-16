@@ -1,23 +1,29 @@
-import { FilterCall, Foreach, FunctionDefinition, ComputedCall, ArrayLiteral, UnaryExpression, MapLiteral, Statement, SyntaxKind, Expression, VariableDefinition } from '../ast/syntax-node'
+import { Literal, Foreach, FunctionDefinition, ArrayLiteral, UnaryExpression, MapLiteral, Statement, SyntaxKind, Expression, VariableDefinition } from '../ast/syntax-node'
 import { Emitter } from '../utils/emitter'
 import { assertNever } from '../utils/lang'
 
+/**
+ * 用来表示 JSON 里这一部分是一个 Date
+ *
+ * 完全正确的实现是每次使用时生成，可以确保当前字符串不包含 INDICATOR
+ * 但一般来讲 32 位十进制数已经足够抗冲突，n = 2 时冲突概率为 1/10**32
+ */
+const LITERAL_DATE_INDICATOR = Math.random().toString(36) + Math.random().toString(36)
+
+// 此处的性能问题体现在编译时，因此可以 trade off
+const LITERAL_DATE_MATCHER = new RegExp(`"${LITERAL_DATE_INDICATOR}(\\d+)"`, 'g')
+
 export class JSEmitter extends Emitter {
-    public writeExpression (node: Expression) {
+    public writeSyntaxNode (node: Expression | Statement) {
         switch (node.kind) {
         case SyntaxKind.Literal:
-            return this.write(node.value instanceof Date
-                ? `new Date(${node.value.getTime()})`
-                : JSON.stringify(node.value, (k, v) => {
-                    if (v instanceof Date) return `new Date(${v.getTime()})`
-                    return v
-                }))
+            return this.writeLiteral(node)
         case SyntaxKind.Identifier:
             return this.write(node.name)
         case SyntaxKind.ArrayIncludes:
-            this.writeExpression(node.arr)
+            this.writeSyntaxNode(node.arr)
             this.write('.includes(')
-            this.writeExpression(node.item)
+            this.writeSyntaxNode(node.item)
             this.write(')')
             break
         case SyntaxKind.MapAssign:
@@ -26,52 +32,61 @@ export class JSEmitter extends Emitter {
             this.write(')')
             break
         case SyntaxKind.RegexpReplace:
-            this.writeExpression(node.original)
+            this.writeSyntaxNode(node.original)
             this.write(`.replace(/${node.pattern}/g, `)
-            this.writeExpression(node.replacement)
+            this.writeSyntaxNode(node.replacement)
             this.write(')')
             break
         case SyntaxKind.JSONStringify:
             this.write('JSON.stringify(')
-            this.writeExpression(node.value)
+            this.writeSyntaxNode(node.value)
             this.write(')')
             break
         case SyntaxKind.BinaryExpression:
             if (node.op === '.') {
-                this.writeExpression(node.lhs)
+                this.writeSyntaxNode(node.lhs)
                 this.write('.')
-                this.writeExpression(node.rhs)
+                this.writeSyntaxNode(node.rhs)
             } else if (node.op === '[]') {
-                this.writeExpression(node.lhs)
+                this.writeSyntaxNode(node.lhs)
                 this.write('[')
-                this.writeExpression(node.rhs)
+                this.writeSyntaxNode(node.rhs)
                 this.write(']')
             } else {
-                this.writeExpression(node.lhs)
+                this.writeSyntaxNode(node.lhs)
                 this.write(` ${node.op} `)
-                this.writeExpression(node.rhs)
+                this.writeSyntaxNode(node.rhs)
             }
             break
         case SyntaxKind.ConditionalExpression:
-            this.writeExpression(node.cond)
+            this.writeSyntaxNode(node.cond)
             this.write(' ? ')
-            this.writeExpression(node.trueValue)
+            this.writeSyntaxNode(node.trueValue)
             this.write(' : ')
-            this.writeExpression(node.falseValue)
+            this.writeSyntaxNode(node.falseValue)
             break
         case SyntaxKind.EncodeURIComponent:
             this.write('encodeURIComponent(')
-            this.writeExpression(node.str)
+            this.writeSyntaxNode(node.value)
             this.write(')')
             break
         case SyntaxKind.ComputedCall:
-            return this.writeComputedCall(node)
+            this.write(`_.callComputed(ctx, "${node.name}")`)
+            break
         case SyntaxKind.FilterCall:
-            return this.writeFilterCall(node)
+            this.write(`_.callFilter(ctx, "${node.name}", `)
+            this.writeExpressionList(node.args)
+            this.write(')')
+            break
+        case SyntaxKind.HelperCall:
+            this.write(`_.${node.name}(`)
+            this.writeExpressionList(node.args)
+            this.write(')')
+            break
         case SyntaxKind.FunctionDefinition:
             return this.writeFunctionDefinition(node)
         case SyntaxKind.FunctionCall:
-            this.writeExpression(node.fn)
+            this.writeSyntaxNode(node.fn)
             this.write('(')
             this.writeExpressionList(node.args)
             this.write(')')
@@ -84,7 +99,7 @@ export class JSEmitter extends Emitter {
             break
         case SyntaxKind.NewExpression:
             this.write('new ')
-            this.writeExpression(node.name)
+            this.writeSyntaxNode(node.name)
             this.write('(')
             this.writeExpressionList(node.args)
             this.write(')')
@@ -97,23 +112,17 @@ export class JSEmitter extends Emitter {
             return this.writeMapLiteral(node)
         case SyntaxKind.ComponentRendererReference:
             this.write('sanSSRResolver.getRenderer(')
-            this.writeExpression(node.ref)
+            this.writeSyntaxNode(node.value)
             this.write(')')
             break
-        default: assertNever(node)
-        }
-    }
-
-    public writeStatement (node: Statement) {
-        switch (node.kind) {
         case SyntaxKind.ReturnStatement:
             this.nextLine('return ')
-            this.writeExpression(node.expression)
+            this.writeSyntaxNode(node.value)
             this.feedLine(';')
             break
         case SyntaxKind.ExpressionStatement:
             this.nextLine('')
-            this.writeExpression(node.expression)
+            this.writeSyntaxNode(node.value)
             this.feedLine(';')
             break
         case SyntaxKind.ImportHelper:
@@ -121,9 +130,9 @@ export class JSEmitter extends Emitter {
             break
         case SyntaxKind.AssignmentStatement:
             this.nextLine('')
-            this.writeExpression(node.lhs)
+            this.writeSyntaxNode(node.lhs)
             this.write(' = ')
-            this.writeExpression(node.rhs)
+            this.writeSyntaxNode(node.rhs)
             this.feedLine(';')
             break
         case SyntaxKind.VariableDefinition:
@@ -131,13 +140,13 @@ export class JSEmitter extends Emitter {
             break
         case SyntaxKind.If:
             this.nextLine('if (')
-            this.writeExpression(node.cond)
+            this.writeSyntaxNode(node.cond)
             this.write(') ')
             this.writeBlockStatements(node.body)
             break
         case SyntaxKind.ElseIf:
             this.nextLine('else if (')
-            this.writeExpression(node.cond)
+            this.writeSyntaxNode(node.cond)
             this.write(') ')
             this.writeBlockStatements(node.body)
             break
@@ -151,13 +160,31 @@ export class JSEmitter extends Emitter {
         }
     }
 
+    /**
+     * 把一个字面量对象按 JS 语法输出。例如：{ foo: new Date(333) }
+     */
+    public writeLiteral (node: Literal) {
+        // JSON.stringify 时 toJSON 在 replacer 之前调用。
+        // 因此 replacer 无法检测当前是否为 Date，value 总是 string 类型。
+        // 此处替换掉 toJSON 来模拟一个 replacer 的行为。
+        const toJSON = Date.prototype.toJSON;
+        (Date.prototype as any).toJSON = function () {
+            return LITERAL_DATE_INDICATOR + this.getTime()
+        }
+        // 利用 toJSON 不能直接实现，因为 JS Date 无法表达为 JSON 字符串。
+        const str = JSON.stringify(node.value).replace(LITERAL_DATE_MATCHER, 'new Date($1)');
+        (Date.prototype as any).toJSON = toJSON
+
+        return this.write(str)
+    }
+
     private writeForeachStatement (node: Foreach) {
         this.nextLine('for (let [')
-        this.writeExpression(node.key)
+        this.writeSyntaxNode(node.key)
         this.write(', ')
-        this.writeExpression(node.value)
+        this.writeSyntaxNode(node.value)
         this.write('] of _.iterate(')
-        this.writeExpression(node.iterable)
+        this.writeSyntaxNode(node.iterable)
         this.write(')) ')
         this.writeBlockStatements(node.body)
     }
@@ -170,13 +197,13 @@ export class JSEmitter extends Emitter {
             this.write(arg.name)
             if (arg.initial) {
                 this.write(' = ')
-                this.writeExpression(arg.initial)
+                this.writeSyntaxNode(arg.initial)
             }
             first = false
         }
         this.write(') {')
         this.indent()
-        for (const stmt of node.body) this.writeStatement(stmt)
+        for (const stmt of node.body) this.writeSyntaxNode(stmt)
         this.unindent()
         this.write('}')
     }
@@ -184,7 +211,7 @@ export class JSEmitter extends Emitter {
     private writeBlockStatements (body: Iterable<Statement>) {
         this.feedLine('{')
         this.indent()
-        for (const stmt of body) this.writeStatement(stmt)
+        for (const stmt of body) this.writeSyntaxNode(stmt)
         this.unindent()
         this.writeLine('}')
     }
@@ -193,22 +220,8 @@ export class JSEmitter extends Emitter {
         this.nextLine(`let ${node.name}`)
         if (node.initial) {
             this.write(' = ')
-            this.writeExpression(node.initial)
+            this.writeSyntaxNode(node.initial)
         }
-    }
-
-    private writeComputedCall (node: ComputedCall) {
-        this.write(`_.callComputed(ctx, "${node.name}")`)
-    }
-
-    private writeFilterCall (node: FilterCall) {
-        if (['_style', '_class', '_xstyle', '_xclass', '_attr', '_boolAttr'].includes(node.name)) {
-            this.write(`_.${node.name}Filter(`)
-        } else {
-            this.write(`_.callFilter(ctx, "${node.name}", `)
-        }
-        this.writeExpressionList(node.args)
-        this.write(')')
     }
 
     private writeArrayLiteral (node: ArrayLiteral) {
@@ -217,7 +230,7 @@ export class JSEmitter extends Emitter {
         for (const [item, spread] of node.items) {
             if (!first) this.write(', ')
             if (spread) this.write('...')
-            this.writeExpression(item)
+            this.writeSyntaxNode(item)
             first = false
         }
         this.write(']')
@@ -226,11 +239,11 @@ export class JSEmitter extends Emitter {
     private writeUnaryExpression (node: UnaryExpression) {
         if (node.op === '()') {
             this.write('(')
-            this.writeExpression(node.value)
+            this.writeSyntaxNode(node.value)
             this.write(')')
         } else {
             this.write(node.op)
-            this.writeExpression(node.value)
+            this.writeSyntaxNode(node.value)
         }
     }
 
@@ -241,13 +254,13 @@ export class JSEmitter extends Emitter {
             if (!first) this.write(', ')
             if (spread) {
                 this.write('...')
-                this.writeExpression(v)
+                this.writeSyntaxNode(v)
             } else if (k === v) {
-                this.writeExpression(k)
+                this.writeSyntaxNode(k)
             } else {
-                this.writeExpression(k)
+                this.writeSyntaxNode(k)
                 this.write(': ')
-                this.writeExpression(v)
+                this.writeSyntaxNode(v)
             }
             first = false
         }
@@ -256,7 +269,7 @@ export class JSEmitter extends Emitter {
 
     private writeExpressionList (list: Expression[]) {
         for (let i = 0; i < list.length; i++) {
-            this.writeExpression(list[i])
+            this.writeSyntaxNode(list[i])
             if (i !== list.length - 1) this.write(', ')
         }
     }
@@ -273,13 +286,13 @@ export class JSEmitter extends Emitter {
         this.endBlock(nl)
     }
 
-    public beginBlock (expr: string, nl = true) {
+    public beginBlock (expr: string, nl: boolean) {
         const text = `${expr ? expr + ' ' : ''}{`
         nl ? this.writeLine(text) : this.feedLine(text)
         this.indent()
     }
 
-    public endBlock (nl = true) {
+    public endBlock (nl: boolean) {
         this.unindent()
         nl ? this.writeLine('}') : this.nextLine('}')
     }

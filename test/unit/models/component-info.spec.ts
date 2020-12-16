@@ -1,5 +1,5 @@
 import { JSComponentInfo, TypedComponentInfo, DynamicComponentInfo } from '../../../src/models/component-info'
-import { getPropertiesFromObject } from '../../../src/utils/js-ast-util'
+import { getPropertiesFromObject } from '../../../src/ast/js-ast-util'
 import { parse } from 'acorn'
 import { Project } from 'ts-morph'
 import { ANode, defineComponent } from 'san'

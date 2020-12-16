@@ -48,9 +48,10 @@ export enum SyntaxKind {
     ArrayLiteral = 27,
     RegexpReplace = 28,
     JSONStringify = 29,
+    HelperCall = 30,
 }
 
-export type Expression = Identifier | FunctionDefinition | Literal | BinaryExpression | UnaryExpression | CreateComponentInstance | NewExpression | MapLiteral | ComponentRendererReference | FunctionCall | Null | MapAssign | ArrayIncludes | ConditionalExpression | FilterCall | EncodeURIComponent | ArrayLiteral | RegexpReplace | JSONStringify | ComputedCall
+export type Expression = Identifier | FunctionDefinition | Literal | BinaryExpression | UnaryExpression | CreateComponentInstance | NewExpression | MapLiteral | ComponentRendererReference | FunctionCall | Null | MapAssign | ArrayIncludes | ConditionalExpression | FilterCall | HelperCall | EncodeURIComponent | ArrayLiteral | RegexpReplace | JSONStringify | ComputedCall
 
 export type Statement = ReturnStatement | ImportHelper | VariableDefinition | AssignmentStatement | If | ElseIf | Else | Foreach | ExpressionStatement
 
@@ -61,7 +62,7 @@ export type UnaryOperator = '!' | '~' | '+' | '()' | '-'
 export class ArrayLiteral implements SyntaxNode {
     public readonly kind = SyntaxKind.ArrayLiteral
     constructor (
-        public items: [Expression, boolean][] = []
+        public items: [Expression, boolean][]
     ) {}
 }
 
@@ -83,7 +84,7 @@ export class ComponentRendererReference implements SyntaxNode {
     constructor (
         // ref 的值可能是编译时确定的，也可能是运行时确定的（s-is 的情况）
         // 因此它必须是一个表达式，而非 ComponentReference。
-        public ref: Expression
+        public value: Expression
     ) {}
 }
 
@@ -198,7 +199,7 @@ export class Foreach implements SyntaxNode {
 export class EncodeURIComponent implements SyntaxNode {
     public readonly kind = SyntaxKind.EncodeURIComponent
     constructor (
-        public str: Expression
+        public value: Expression
     ) {}
 }
 
@@ -213,6 +214,14 @@ export class FilterCall implements SyntaxNode {
     public readonly kind = SyntaxKind.FilterCall
     constructor (
         public name: string,
+        public args: Expression[]
+    ) {}
+}
+
+export class HelperCall implements SyntaxNode {
+    public readonly kind = SyntaxKind.HelperCall
+    constructor (
+        public name: 'styleFilter' | 'classFilter' | 'xstyleFilter' | 'xclassFilter' | 'attrFilter' | 'boolAttrFilter' | 'output' | 'getRootCtx',
         public args: Expression[]
     ) {}
 }
@@ -235,7 +244,7 @@ export class Identifier implements SyntaxNode {
 export class ExpressionStatement implements SyntaxNode {
     public readonly kind = SyntaxKind.ExpressionStatement
     constructor (
-        public expression: Expression
+        public value: Expression
     ) {}
 }
 
@@ -267,8 +276,8 @@ export class FunctionDefinition implements SyntaxNode {
     public readonly kind = SyntaxKind.FunctionDefinition
     constructor (
         public name: string,
-        public args: VariableDefinition[] = [],
-        public body: Iterable<Statement> = []
+        public args: VariableDefinition[],
+        public body: Iterable<Statement>
     ) {}
 }
 
@@ -282,6 +291,6 @@ export class Literal implements SyntaxNode {
 export class ReturnStatement implements SyntaxNode {
     public readonly kind = SyntaxKind.ReturnStatement
     constructor (
-        public expression: Expression
+        public value: Expression
     ) {}
 }

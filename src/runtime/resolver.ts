@@ -11,7 +11,6 @@
  * - 也不能利用 exports 引用当前文件的其他组件： exports.sanSSRRenders.X()
  */
 import { SanComponent } from 'san'
-import { ComponentReference } from '../models/component-reference'
 
 export interface Resolver {
     getRenderer: (ref: { id: string, specifier?: string }) => Function

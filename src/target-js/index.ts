@@ -9,7 +9,7 @@ import { Compiler } from '../models/compiler'
 import { tsSourceFile2js } from '../compilers/ts2js'
 import { RenderOptions } from '../compilers/renderer-options'
 import { CompileOptions } from './compilers/compile-options'
-import { FunctionDefinition } from '../ast/syntax-node'
+import { FunctionDefinition } from '../ast/renderer-ast-node'
 import { bracketToDot } from '../optimizers/bracket-to-dot'
 
 const debug = debugFactory('target-js')

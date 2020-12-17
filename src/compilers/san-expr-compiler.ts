@@ -4,8 +4,8 @@
 import { ExprStringNode, ExprNode, ExprTertiaryNode, ExprBinaryNode, ExprUnaryNode, ExprInterpNode, ExprAccessorNode, ExprCallNode, ExprTextNode, ExprObjectNode, ExprArrayNode } from 'san'
 import * as TypeGuards from '../ast/san-type-guards'
 import { _ } from '../runtime/underscore'
-import { EncodeURIComponent, MapLiteral, HelperCall, ArrayLiteral, FilterCall, FunctionCall, Literal, Identifier, ConditionalExpression, BinaryExpression, UnaryExpression, Expression } from '../ast/syntax-node'
-import { CTX_DATA, L, NULL } from '../ast/syntax-util'
+import { EncodeURIComponent, MapLiteral, HelperCall, ArrayLiteral, FilterCall, FunctionCall, Identifier, ConditionalExpression, BinaryExpression, UnaryExpression, Expression } from '../ast/renderer-ast-node'
+import { CTX_DATA, L, I, NULL } from '../ast/renderer-ast-factory'
 
 // 输出为 HTML 并转义、输出为 HTML 不转义、非输出表达式
 export type OutputType = 'html' | 'rawhtml' | 'expr'
@@ -55,7 +55,7 @@ export function dataAccess (accessorExpr: ExprAccessorNode, outputType: OutputTy
 // 生成调用表达式代码
 function callExpr (callExpr: ExprCallNode, outputType: OutputType) {
     const paths = callExpr.name.paths
-    let fn = new BinaryExpression(new Identifier('ctx'), '.', new Identifier('instance'))
+    let fn = new BinaryExpression(I('ctx'), '.', I('instance'))
     for (const path of paths) {
         fn = new BinaryExpression(fn, '[]', sanExpr(path))
     }
@@ -64,8 +64,8 @@ function callExpr (callExpr: ExprCallNode, outputType: OutputType) {
 
 function outputCode (data: Expression, outputType: OutputType) {
     if (outputType === 'expr') return data
-    if (outputType === 'html') return new HelperCall('output', [data, new Literal(true)])
-    return new HelperCall('output', [data, new Literal(false)])
+    if (outputType === 'html') return new HelperCall('output', [data, L(true)])
+    return new HelperCall('output', [data, L(false)])
 }
 
 // 生成插值代码
@@ -91,12 +91,12 @@ function interp (interpExpr: ExprInterpNode, outputType: OutputType) {
 }
 
 function str (e: ExprStringNode, output: OutputType) {
-    return new Literal(output === 'html' ? _.escapeHTML(e.value) : e.value)
+    return L(output === 'html' ? _.escapeHTML(e.value) : e.value)
 }
 
 // 生成文本片段代码
 function text (textExpr: ExprTextNode, output: OutputType) {
-    if (!textExpr.segs.length) return new Literal('')
+    if (!textExpr.segs.length) return L('')
     return textExpr.segs.map(seg => sanExpr(seg, output)).reduce((prev, curr) => new BinaryExpression(prev, '+', curr))
 }
 

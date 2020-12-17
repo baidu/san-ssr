@@ -1,4 +1,4 @@
-import { walk } from '../../../src/ast/syntax-tree-walker'
+import { walk } from '../../../src/ast/renderer-ast-walker'
 
 describe('ast/syntax-tree-walker', () => {
     it('should throw if kind not supported', () => {

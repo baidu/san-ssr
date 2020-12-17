@@ -5,8 +5,8 @@ import { autoCloseTags } from '../utils/dom-util'
 import { ANodeCompiler } from './anode-compiler'
 import { ExprNode, ANodeProperty, Directive, ANode } from 'san'
 import { isExprNumberNode, isExprStringNode, isExprBoolNode } from '../ast/san-type-guards'
-import { createIfStrictEqual, createIfNotNull, createDefaultValue, createHTMLLiteralAppend, createHTMLExpressionAppend, NULL, L, I, ASSIGN, DEF } from '../ast/syntax-util'
-import { HelperCall, ArrayIncludes, Else, Foreach, If } from '../ast/syntax-node'
+import { createIfStrictEqual, createIfNotNull, createDefaultValue, createHTMLLiteralAppend, createHTMLExpressionAppend, NULL, L, I, ASSIGN, DEF } from '../ast/renderer-ast-factory'
+import { HelperCall, ArrayIncludes, Else, Foreach, If } from '../ast/renderer-ast-node'
 import { sanExpr } from './san-expr-compiler'
 
 const BOOL_ATTRIBUTES = ['readonly', 'disabled', 'multiple', 'checked']

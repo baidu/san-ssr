@@ -1,8 +1,8 @@
 import { ANodeCompiler } from './anode-compiler'
 import { ComponentInfo } from '../models/component-info'
 import { RenderOptions } from './renderer-options'
-import { FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper } from '../ast/syntax-node'
-import { STATMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I } from '../ast/syntax-util'
+import { FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper } from '../ast/renderer-ast-node'
+import { EMPTY_MAP, STATMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I } from '../ast/renderer-ast-factory'
 import { IDGenerator } from '../utils/id-generator'
 import { mergeLiteralAdd } from '../optimizers/merge-literal-add'
 
@@ -72,7 +72,7 @@ export class RendererCompiler {
     private compileContext (info: ComponentInfo) {
         const refs = info.hasDynamicComponent()
             ? new MapLiteral([...info.childComponents.entries()].map(([key, val]) => [L(key), val.toAST()]))
-            : new MapLiteral()
+            : EMPTY_MAP
         return [
             DEF('instance', new CreateComponentInstance(info)),
             ASSIGN(

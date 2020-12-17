@@ -1,5 +1,5 @@
 import type { SanComponentConfig, ANode } from 'san'
-import { FunctionDefinition } from '../ast/syntax-node'
+import { FunctionDefinition } from '../ast/renderer-ast-node'
 import { parseAndNormalizeTemplate } from '../parsers/parse-template'
 import type { ClassDeclaration } from 'ts-morph'
 import { Node } from 'estree'

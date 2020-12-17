@@ -1,6 +1,7 @@
-import { Expression, Literal, Statement, Identifier, Block, SyntaxNode } from '../ast/syntax-node'
-import { isLiteral, isIdentifier, isBlock, isBinaryExpression, isExpressionStatement } from '../ast/syntax-util'
-import { walk } from '../ast/syntax-tree-walker'
+import { Expression, Literal, Statement, Identifier, Block, SyntaxNode } from '../ast/renderer-ast-node'
+import { L } from '../ast/renderer-ast-factory'
+import { isLiteral, isIdentifier, isBlock, isBinaryExpression, isExpressionStatement } from '../ast/renderer-ast-util'
+import { walk } from '../ast/renderer-ast-walker'
 
 type HTMLAddEqualLiteral = Statement & { value: { lhs: Identifier, op: '+=', rhs: Literal } }
 
@@ -11,17 +12,17 @@ export function mergeLiteralAdd (node: Expression | Statement): void {
 }
 
 function doMergeLiteralAdd (node: Block) {
-    let prevHTMLAddEqualLiteral: HTMLAddEqualLiteral | null = null
+    let prev: HTMLAddEqualLiteral | null = null
     const filteredBody = []
     for (const child of node.body) {
         if (isHTMLAddEqualLiteral(child)) {
-            if (prevHTMLAddEqualLiteral !== null) {
-                prevHTMLAddEqualLiteral.value.rhs.value += child.value.rhs.value
+            if (prev !== null) {
+                prev.value.rhs = L(prev.value.rhs.value + child.value.rhs.value)
                 continue
             }
-            prevHTMLAddEqualLiteral = child
+            prev = child
         } else {
-            prevHTMLAddEqualLiteral = null
+            prev = null
         }
         filteredBody.push(child)
     }

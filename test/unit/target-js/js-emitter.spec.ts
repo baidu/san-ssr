@@ -1,5 +1,5 @@
 import { JSEmitter } from '../../../src/target-js/js-emitter'
-import { SyntaxKind } from '../../../src/ast/syntax-node'
+import { SyntaxKind } from '../../../src/ast/renderer-ast-node'
 
 describe('JSEmitter', function () {
     let emitter: JSEmitter

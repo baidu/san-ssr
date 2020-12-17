@@ -1,5 +1,6 @@
 import { ComponentConstructor } from 'san'
-import { MapLiteral, Literal, Identifier } from '../ast/syntax-node'
+import { L, I } from '../ast/renderer-ast-factory'
+import { MapLiteral } from '../ast/renderer-ast-node'
 
 /**
  * 表示一个组件的引用，被引用组件可能在当前文件，也可能在外部文件。例如：
@@ -29,8 +30,8 @@ export class ComponentReference {
     toAST () {
         const { specifier, id } = this
         return new MapLiteral([
-            [new Identifier('specifier'), new Literal(specifier)],
-            [new Identifier('id'), new Literal(id)]
+            [I('specifier'), L(specifier)],
+            [I('id'), L(id)]
         ])
     }
 }

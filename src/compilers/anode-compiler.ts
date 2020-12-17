@@ -6,8 +6,8 @@ import { ElementCompiler } from './element-compiler'
 import { getANodePropByName } from '../ast/san-ast-util'
 import * as TypeGuards from '../ast/san-type-guards'
 import { IDGenerator } from '../utils/id-generator'
-import { HelperCall, JSONStringify, RegexpReplace, Statement, FunctionDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral, ComponentRendererReference, FunctionCall, Expression } from '../ast/syntax-node'
-import { CTX_DATA, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATMENT, UNARY, DEF, BINARY, RETURN } from '../ast/syntax-util'
+import { HelperCall, JSONStringify, RegexpReplace, Statement, FunctionDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral, ComponentRendererReference, FunctionCall, Expression } from '../ast/renderer-ast-node'
+import { CTX_DATA, EMPTY_MAP, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATMENT, UNARY, DEF, BINARY, RETURN } from '../ast/renderer-ast-factory'
 import { sanExpr } from '../compilers/san-expr-compiler'
 
 /**
@@ -230,7 +230,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
 
             const compData = this.id.next('compData')
             body.push(DEF(compData, CTX_DATA))
-            body.push(ASSIGN(CTX_DATA, new MapAssign(new MapLiteral(), [CTX_DATA, I('data')])))
+            body.push(ASSIGN(CTX_DATA, new MapAssign(EMPTY_MAP, [CTX_DATA, I('data')])))
 
             for (const child of content) body.push(...this.compile(child, false))
 

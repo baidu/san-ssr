@@ -70,7 +70,7 @@ export class MapLiteral implements SyntaxNode {
     public readonly kind = SyntaxKind.MapLiteral
     public items: [Literal | Identifier, Expression, boolean][]
     constructor (
-        items: (Literal | Identifier | [Literal | Identifier, Expression, boolean?])[] = []
+        items: (Literal | Identifier | [Literal | Identifier, Expression, boolean?])[]
     ) {
         this.items = items.map(item => Array.isArray(item)
             ? [item[0], item[1], !!item[2]]
@@ -90,6 +90,13 @@ export class ComponentRendererReference implements SyntaxNode {
 
 export class Null implements SyntaxNode {
     public readonly kind = SyntaxKind.Null
+    private static instance = new Null()
+
+    private constructor () {}
+
+    static create () {
+        return Null.instance
+    }
 }
 export class CreateComponentInstance implements SyntaxNode {
     public readonly kind = SyntaxKind.CreateComponentInstance
@@ -235,10 +242,19 @@ export class FunctionCall implements SyntaxNode {
 }
 
 export class Identifier implements SyntaxNode {
+    private static cache: Map<string, Identifier> = new Map()
     public readonly kind = SyntaxKind.Identifier
-    constructor (
-        public name: string
+
+    private constructor (
+        public readonly name: string
     ) {}
+
+    static create (name: string): Identifier {
+        if (!Identifier.cache.has(name)) {
+            Identifier.cache.set(name, new Identifier(name))
+        }
+        return Identifier.cache.get(name)!
+    }
 }
 
 export class ExpressionStatement implements SyntaxNode {
@@ -283,9 +299,18 @@ export class FunctionDefinition implements SyntaxNode {
 
 export class Literal implements SyntaxNode {
     public readonly kind = SyntaxKind.Literal
-    constructor (
-        public value: any
+    private static cache: Map<string, Literal> = new Map()
+
+    private constructor (
+        public readonly value: any
     ) {}
+
+    static create (name: string): Literal {
+        if (!Literal.cache.has(name)) {
+            Literal.cache.set(name, new Literal(name))
+        }
+        return Literal.cache.get(name)!
+    }
 }
 
 export class ReturnStatement implements SyntaxNode {

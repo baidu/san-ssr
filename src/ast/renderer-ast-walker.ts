@@ -1,4 +1,4 @@
-import { Statement, SyntaxKind, Expression } from '../ast/syntax-node'
+import { Statement, SyntaxKind, Expression } from '../ast/renderer-ast-node'
 import { assertNever } from '../utils/lang'
 
 export function * walk (node: Expression | Statement): Iterable<Expression | Statement> {

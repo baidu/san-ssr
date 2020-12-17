@@ -1,4 +1,4 @@
-import { Expression, SyntaxKind } from '../../src/ast/syntax-node'
+import { Expression, SyntaxKind } from '../../src/ast/renderer-ast-node'
 
 export function matchHTMLAddEqual (expr: Expression) {
     return expect.objectContaining({

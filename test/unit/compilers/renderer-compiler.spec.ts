@@ -1,7 +1,7 @@
 import { RendererCompiler } from '../../../src/compilers/renderer-compiler'
 import { defineComponent } from 'san'
 import { ComponentClassParser } from '../../../src/parsers/component-class-parser'
-import { SyntaxKind } from '../../../src/ast/syntax-node'
+import { SyntaxKind } from '../../../src/ast/renderer-ast-node'
 import { matchHTMLAddEqual } from '../../stub/util'
 
 describe('compilers/renderer-compiler', () => {

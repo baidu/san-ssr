@@ -1,7 +1,7 @@
 import { ElementCompiler } from '../../../src/compilers/element-compiler'
 import { parseTemplate } from 'san'
-import { SyntaxKind } from '../../../src/ast/syntax-node'
-import { CTX_DATA } from '../../../src/ast/syntax-util'
+import { SyntaxKind } from '../../../src/ast/renderer-ast-node'
+import { CTX_DATA } from '../../../src/ast/renderer-ast-factory'
 import { matchHTMLAddEqual } from '../../stub/util'
 
 describe('compilers/element-compiler', () => {

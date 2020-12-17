@@ -1,4 +1,4 @@
-import { Literal, Foreach, FunctionDefinition, ArrayLiteral, UnaryExpression, MapLiteral, Statement, SyntaxKind, Expression, VariableDefinition } from '../ast/syntax-node'
+import { Literal, Foreach, FunctionDefinition, ArrayLiteral, UnaryExpression, MapLiteral, Statement, SyntaxKind, Expression, VariableDefinition } from '../ast/renderer-ast-node'
 import { Emitter } from '../utils/emitter'
 import { assertNever } from '../utils/lang'
 

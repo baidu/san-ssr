@@ -1,6 +1,6 @@
-import { RETURN, BINARY, STATMENT, L, I } from '../../../src/ast/syntax-util'
+import { RETURN, BINARY, STATMENT, L, I } from '../../../src/ast/renderer-ast-factory'
 import { mergeLiteralAdd } from '../../../src/optimizers/merge-literal-add'
-import { FunctionDefinition } from '../../../src/ast/syntax-node'
+import { FunctionDefinition } from '../../../src/ast/renderer-ast-node'
 
 describe('optimizers/merge-literal-add', () => {
     it('should merge to successive html+=', () => {

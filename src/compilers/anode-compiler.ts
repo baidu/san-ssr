@@ -170,7 +170,6 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
 
     private createDataComment () {
         const dataExpr = BINARY(new HelperCall('getRootCtx', [I('ctx')]), '.', I('data'))
-        // TODO add case for san-html-cases
         return [
             createHTMLLiteralAppend('<!--s-data:'),
             createHTMLExpressionAppend(new RegexpReplace(new JSONStringify(dataExpr), '(?<=-)-', L('\\-'))),

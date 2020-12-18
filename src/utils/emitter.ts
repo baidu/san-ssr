@@ -11,6 +11,13 @@ export class Emitter {
         this.code += str
     }
 
+    /**
+     * @deprecated 此前 Emitter 是 abstract class，这是 write 的默认实现
+     */
+    public defaultWrite (str: string) {
+        this.code += str
+    }
+
     public fullText () {
         return this.code
     }

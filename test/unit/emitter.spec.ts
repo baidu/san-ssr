@@ -8,7 +8,7 @@ describe('Emitter', function () {
 
     it('should write chars', function () {
         emitter.write('foo')
-        emitter.write('bar')
+        emitter.defaultWrite('bar')
 
         expect(emitter.fullText()).toEqual('foobar')
     })

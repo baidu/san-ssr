@@ -1,3 +1,12 @@
+## [4.1.1](https://github.com/baidu/san-ssr/compare/v4.1.0...v4.1.1) (2020-12-18)
+
+
+### Performance Improvements
+
+* flyweight syntax nodes ([7ae19b7](https://github.com/baidu/san-ssr/commit/7ae19b7ff1d128f2a58a65ddbe21265be68ea8e9))
+* 系统性地合并 html += <Literal> 语句 ([4f145b3](https://github.com/baidu/san-ssr/commit/4f145b30aff246a6a2da7138e3e943a901e6d0da))
+* 系统性地改 [] notation 为 . notation ([2fed822](https://github.com/baidu/san-ssr/commit/2fed8221ce66e51aff961413f475e04fd83bfc8d))
+
 # [4.1.0](https://github.com/baidu/san-ssr/compare/v4.0.3...v4.1.0) (2020-12-07)
 
 

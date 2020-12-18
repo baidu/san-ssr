@@ -76,7 +76,44 @@
 								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_src_target_js_js_emitter_.jsemitter.html" class="tsd-kind-icon">JSEmitter</a></li>
 							</ul>
 						</section>
+						<section class="tsd-index-section tsd-is-not-exported">
+							<h3>Variables</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported"><a href="_src_target_js_js_emitter_.html#literal_date_indicator" class="tsd-kind-icon">LITERAL_<wbr>DATE_<wbr>INDICATOR</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported"><a href="_src_target_js_js_emitter_.html#literal_date_matcher" class="tsd-kind-icon">LITERAL_<wbr>DATE_<wbr>MATCHER</a></li>
+							</ul>
+						</section>
 					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+				<h2>Variables</h2>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+					<a name="literal_date_indicator" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> LITERAL_<wbr>DATE_<wbr>INDICATOR</h3>
+					<div class="tsd-signature tsd-kind-icon">LITERAL_<wbr>DATE_<wbr>INDICATOR<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = Math.random().toString(36) + Math.random().toString(36)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/59e9a6c/src/target-js/js-emitter.ts#L11">src/target-js/js-emitter.ts:11</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>用来表示 JSON 里这一部分是一个 Date</p>
+						</div>
+						<p>完全正确的实现是每次使用时生成，可以确保当前字符串不包含 INDICATOR
+						但一般来讲 32 位十进制数已经足够抗冲突，n = 2 时冲突概率为 1/10**32</p>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+					<a name="literal_date_matcher" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> LITERAL_<wbr>DATE_<wbr>MATCHER</h3>
+					<div class="tsd-signature tsd-kind-icon">LITERAL_<wbr>DATE_<wbr>MATCHER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol"> = new RegExp(&#x60;&quot;${LITERAL_DATE_INDICATOR}(\\d+)&quot;&#x60;, &#x27;g&#x27;)</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/59e9a6c/src/target-js/js-emitter.ts#L14">src/target-js/js-emitter.ts:14</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -95,6 +132,12 @@
 				<ul class="before-current">
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="../classes/_src_target_js_js_emitter_.jsemitter.html" class="tsd-kind-icon">JSEmitter</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_src_target_js_js_emitter_.html#literal_date_indicator" class="tsd-kind-icon">LITERAL_<wbr>DATE_<wbr>INDICATOR</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_src_target_js_js_emitter_.html#literal_date_matcher" class="tsd-kind-icon">LITERAL_<wbr>DATE_<wbr>MATCHER</a>
 					</li>
 				</ul>
 			</nav>
@@ -116,6 +159,9 @@
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
 				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>

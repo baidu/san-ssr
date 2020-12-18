@@ -72,7 +72,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Each ComponentClass is compiled to a render function</p>
+						<p>每个 ComponentClass 对应一个 Render 函数，由 RendererCompiler 生成。</p>
 					</div>
 				</div>
 			</section>
@@ -94,21 +94,21 @@
 								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_src_compilers_renderer_compiler_.renderercompiler.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section ">
+						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_compilers_renderer_compiler_.renderercompiler.html#emitter" class="tsd-kind-icon">emitter</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_compilers_renderer_compiler_.renderercompiler.html#ssronly" class="tsd-kind-icon">ssr<wbr>Only</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_compilers_renderer_compiler_.renderercompiler.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_src_compilers_renderer_compiler_.renderercompiler.html#options" class="tsd-kind-icon">options</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_compilers_renderer_compiler_.renderercompiler.html#compilecomponentrendererbody" class="tsd-kind-icon">compile<wbr>Component<wbr>Renderer<wbr>Body</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_compilers_renderer_compiler_.renderercompiler.html#compilecomponentrenderersource" class="tsd-kind-icon">compile<wbr>Component<wbr>Renderer<wbr>Source</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_compilers_renderer_compiler_.renderercompiler.html#emitinitdataincompiletime" class="tsd-kind-icon">emit<wbr>Init<wbr>Data<wbr>InCompile<wbr>Time</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_compilers_renderer_compiler_.renderercompiler.html#emitinitdatainruntime" class="tsd-kind-icon">emit<wbr>Init<wbr>Data<wbr>InRuntime</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_compilers_renderer_compiler_.renderercompiler.html#gencomponentcontextcode" class="tsd-kind-icon">gen<wbr>Component<wbr>Context<wbr>Code</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_compilers_renderer_compiler_.renderercompiler.html#compilecomponentrendererbody" class="tsd-kind-icon">compile<wbr>Component<wbr>Renderer<wbr>Body</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_compilers_renderer_compiler_.renderercompiler.html#compilecontext" class="tsd-kind-icon">compile<wbr>Context</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_compilers_renderer_compiler_.renderercompiler.html#compiletorenderer" class="tsd-kind-icon">compile<wbr>ToRenderer</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_compilers_renderer_compiler_.renderercompiler.html#emitinitdataincompiletime" class="tsd-kind-icon">emit<wbr>Init<wbr>Data<wbr>InCompile<wbr>Time</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_compilers_renderer_compiler_.renderercompiler.html#emitinitdatainruntime" class="tsd-kind-icon">emit<wbr>Init<wbr>Data<wbr>InRuntime</a></li>
 							</ul>
 						</section>
 					</div>
@@ -120,22 +120,19 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Renderer<wbr>Compiler<span class="tsd-signature-symbol">(</span>ssrOnly<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span>, emitter<span class="tsd-signature-symbol">?: </span><a href="_src_target_js_js_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_compilers_renderer_compiler_.renderercompiler.html" class="tsd-signature-type">RendererCompiler</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Renderer<wbr>Compiler<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_compilers_renderer_options_.renderoptions.html" class="tsd-signature-type">RenderOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_compilers_renderer_compiler_.renderercompiler.html" class="tsd-signature-type">RendererCompiler</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/c29c22f/src/compilers/renderer-compiler.ts#L11">src/compilers/renderer-compiler.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/59e9a6c/src/compilers/renderer-compiler.ts#L13">src/compilers/renderer-compiler.ts:13</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ssrOnly: <span class="tsd-signature-type">boolean</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> emitter: <a href="_src_target_js_js_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a><span class="tsd-signature-symbol"> = new JSEmitter()</span></h5>
+									<h5>options: <a href="../interfaces/_src_compilers_renderer_options_.renderoptions.html" class="tsd-signature-type">RenderOptions</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_src_compilers_renderer_compiler_.renderercompiler.html" class="tsd-signature-type">RendererCompiler</a></h4>
@@ -143,42 +140,42 @@
 					</ul>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
+			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="emitter" class="tsd-anchor"></a>
-					<h3>emitter</h3>
-					<div class="tsd-signature tsd-kind-icon">emitter<span class="tsd-signature-symbol">:</span> <a href="_src_target_js_js_emitter_.jsemitter.html" class="tsd-signature-type">JSEmitter</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="id" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> id</h3>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <a href="_src_utils_id_generator_.idgenerator.html" class="tsd-signature-type">IDGenerator</a><span class="tsd-signature-symbol"> = new IDGenerator()</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/c29c22f/src/compilers/renderer-compiler.ts#L14">src/compilers/renderer-compiler.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/59e9a6c/src/compilers/renderer-compiler.ts#L13">src/compilers/renderer-compiler.ts:13</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="ssronly" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> ssr<wbr>Only</h3>
-					<div class="tsd-signature tsd-kind-icon">ssr<wbr>Only<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
+					<a name="options" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> options</h3>
+					<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_src_compilers_renderer_options_.renderoptions.html" class="tsd-signature-type">RenderOptions</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/c29c22f/src/compilers/renderer-compiler.ts#L13">src/compilers/renderer-compiler.ts:13</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/59e9a6c/src/compilers/renderer-compiler.ts#L16">src/compilers/renderer-compiler.ts:16</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
 					<a name="compilecomponentrendererbody" class="tsd-anchor"></a>
-					<h3>compile<wbr>Component<wbr>Renderer<wbr>Body</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">compile<wbr>Component<wbr>Renderer<wbr>Body<span class="tsd-signature-symbol">(</span>info<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> compile<wbr>Component<wbr>Renderer<wbr>Body</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">compile<wbr>Component<wbr>Renderer<wbr>Body<span class="tsd-signature-symbol">(</span>info<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><a href="_src_ast_renderer_ast_node_.expressionstatement.html" class="tsd-signature-type">ExpressionStatement</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.if.html" class="tsd-signature-type">If</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.returnstatement.html" class="tsd-signature-type">ReturnStatement</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.importhelper.html" class="tsd-signature-type">ImportHelper</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.variabledefinition.html" class="tsd-signature-type">VariableDefinition</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.assignmentstatement.html" class="tsd-signature-type">AssignmentStatement</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.elseif.html" class="tsd-signature-type">ElseIf</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.else.html" class="tsd-signature-type">Else</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.foreach.html" class="tsd-signature-type">Foreach</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/c29c22f/src/compilers/renderer-compiler.ts#L27">src/compilers/renderer-compiler.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/59e9a6c/src/compilers/renderer-compiler.ts#L31">src/compilers/renderer-compiler.ts:31</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -187,26 +184,49 @@
 									<h5>info: <a href="../interfaces/_src_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">(</span><a href="_src_ast_renderer_ast_node_.expressionstatement.html" class="tsd-signature-type">ExpressionStatement</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.if.html" class="tsd-signature-type">If</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.returnstatement.html" class="tsd-signature-type">ReturnStatement</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.importhelper.html" class="tsd-signature-type">ImportHelper</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.variabledefinition.html" class="tsd-signature-type">VariableDefinition</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.assignmentstatement.html" class="tsd-signature-type">AssignmentStatement</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.elseif.html" class="tsd-signature-type">ElseIf</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.else.html" class="tsd-signature-type">Else</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.foreach.html" class="tsd-signature-type">Foreach</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="compilecomponentrenderersource" class="tsd-anchor"></a>
-					<h3>compile<wbr>Component<wbr>Renderer<wbr>Source</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">compile<wbr>Component<wbr>Renderer<wbr>Source<span class="tsd-signature-symbol">(</span>componentInfo<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="compilecontext" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> compile<wbr>Context</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">compile<wbr>Context<span class="tsd-signature-symbol">(</span>info<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><a href="_src_ast_renderer_ast_node_.if.html" class="tsd-signature-type">If</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.variabledefinition.html" class="tsd-signature-type">VariableDefinition</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.assignmentstatement.html" class="tsd-signature-type">AssignmentStatement</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/c29c22f/src/compilers/renderer-compiler.ts#L20">src/compilers/renderer-compiler.ts:20</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/59e9a6c/src/compilers/renderer-compiler.ts#L72">src/compilers/renderer-compiler.ts:72</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>info: <a href="../interfaces/_src_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">(</span><a href="_src_ast_renderer_ast_node_.if.html" class="tsd-signature-type">If</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.variabledefinition.html" class="tsd-signature-type">VariableDefinition</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.assignmentstatement.html" class="tsd-signature-type">AssignmentStatement</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="compiletorenderer" class="tsd-anchor"></a>
+					<h3>compile<wbr>ToRenderer</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">compile<wbr>ToRenderer<span class="tsd-signature-symbol">(</span>componentInfo<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_ast_renderer_ast_node_.functiondefinition.html" class="tsd-signature-type">FunctionDefinition</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/59e9a6c/src/compilers/renderer-compiler.ts#L22">src/compilers/renderer-compiler.ts:22</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>把 ComponentInfo 编译成 Render JS 匿名函数源码</p>
+									<p>把 ComponentInfo 编译成函数源码，返回 Renderer 函数的 AST</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -215,21 +235,21 @@
 									<h5>componentInfo: <a href="../interfaces/_src_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_src_ast_renderer_ast_node_.functiondefinition.html" class="tsd-signature-type">FunctionDefinition</a></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
 					<a name="emitinitdataincompiletime" class="tsd-anchor"></a>
-					<h3>emit<wbr>Init<wbr>Data<wbr>InCompile<wbr>Time</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">emit<wbr>Init<wbr>Data<wbr>InCompile<wbr>Time<span class="tsd-signature-symbol">(</span>initData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> emit<wbr>Init<wbr>Data<wbr>InCompile<wbr>Time</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">emit<wbr>Init<wbr>Data<wbr>InCompile<wbr>Time<span class="tsd-signature-symbol">(</span>initData<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_ast_renderer_ast_node_.assignmentstatement.html" class="tsd-signature-type">AssignmentStatement</a><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/c29c22f/src/compilers/renderer-compiler.ts#L66">src/compilers/renderer-compiler.ts:66</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/59e9a6c/src/compilers/renderer-compiler.ts#L93">src/compilers/renderer-compiler.ts:93</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -238,52 +258,24 @@
 									<h5>initData: <span class="tsd-signature-type">any</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="emitinitdatainruntime" class="tsd-anchor"></a>
-					<h3>emit<wbr>Init<wbr>Data<wbr>InRuntime</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">emit<wbr>Init<wbr>Data<wbr>InRuntime<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/c29c22f/src/compilers/renderer-compiler.ts#L74">src/compilers/renderer-compiler.ts:74</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_src_ast_renderer_ast_node_.assignmentstatement.html" class="tsd-signature-type">AssignmentStatement</a><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="gencomponentcontextcode" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> gen<wbr>Component<wbr>Context<wbr>Code</h3>
+					<a name="emitinitdatainruntime" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> emit<wbr>Init<wbr>Data<wbr>InRuntime</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">gen<wbr>Component<wbr>Context<wbr>Code<span class="tsd-signature-symbol">(</span>componentInfo<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">emit<wbr>Init<wbr>Data<wbr>InRuntime<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><a href="_src_ast_renderer_ast_node_.expressionstatement.html" class="tsd-signature-type">ExpressionStatement</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.if.html" class="tsd-signature-type">If</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.returnstatement.html" class="tsd-signature-type">ReturnStatement</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.importhelper.html" class="tsd-signature-type">ImportHelper</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.variabledefinition.html" class="tsd-signature-type">VariableDefinition</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.assignmentstatement.html" class="tsd-signature-type">AssignmentStatement</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.elseif.html" class="tsd-signature-type">ElseIf</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.else.html" class="tsd-signature-type">Else</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.foreach.html" class="tsd-signature-type">Foreach</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/c29c22f/src/compilers/renderer-compiler.ts#L84">src/compilers/renderer-compiler.ts:84</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/59e9a6c/src/compilers/renderer-compiler.ts#L102">src/compilers/renderer-compiler.ts:102</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>生成组件 renderer 时 ctx 对象构建的代码</p>
-								</div>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>componentInfo: <a href="../interfaces/_src_models_component_info_.componentinfo.html" class="tsd-signature-type">ComponentInfo</a></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-symbol">(</span><a href="_src_ast_renderer_ast_node_.expressionstatement.html" class="tsd-signature-type">ExpressionStatement</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.if.html" class="tsd-signature-type">If</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.returnstatement.html" class="tsd-signature-type">ReturnStatement</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.importhelper.html" class="tsd-signature-type">ImportHelper</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.variabledefinition.html" class="tsd-signature-type">VariableDefinition</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.assignmentstatement.html" class="tsd-signature-type">AssignmentStatement</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.elseif.html" class="tsd-signature-type">ElseIf</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.else.html" class="tsd-signature-type">Else</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.foreach.html" class="tsd-signature-type">Foreach</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -310,34 +302,31 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="_src_compilers_renderer_compiler_.renderercompiler.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_src_compilers_renderer_compiler_.renderercompiler.html#emitter" class="tsd-kind-icon">emitter</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_src_compilers_renderer_compiler_.renderercompiler.html#id" class="tsd-kind-icon">id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_src_compilers_renderer_compiler_.renderercompiler.html#ssronly" class="tsd-kind-icon">ssr<wbr>Only</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_src_compilers_renderer_compiler_.renderercompiler.html#compilecomponentrendererbody" class="tsd-kind-icon">compile<wbr>Component<wbr>Renderer<wbr>Body</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_src_compilers_renderer_compiler_.renderercompiler.html#compilecomponentrenderersource" class="tsd-kind-icon">compile<wbr>Component<wbr>Renderer<wbr>Source</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_src_compilers_renderer_compiler_.renderercompiler.html#emitinitdataincompiletime" class="tsd-kind-icon">emit<wbr>Init<wbr>Data<wbr>InCompile<wbr>Time</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_src_compilers_renderer_compiler_.renderercompiler.html#emitinitdatainruntime" class="tsd-kind-icon">emit<wbr>Init<wbr>Data<wbr>InRuntime</a>
+								<a href="_src_compilers_renderer_compiler_.renderercompiler.html#options" class="tsd-kind-icon">options</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="_src_compilers_renderer_compiler_.renderercompiler.html#gencomponentcontextcode" class="tsd-kind-icon">gen<wbr>Component<wbr>Context<wbr>Code</a>
+								<a href="_src_compilers_renderer_compiler_.renderercompiler.html#compilecomponentrendererbody" class="tsd-kind-icon">compile<wbr>Component<wbr>Renderer<wbr>Body</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_src_compilers_renderer_compiler_.renderercompiler.html#compilecontext" class="tsd-kind-icon">compile<wbr>Context</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_src_compilers_renderer_compiler_.renderercompiler.html#compiletorenderer" class="tsd-kind-icon">compile<wbr>ToRenderer</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_src_compilers_renderer_compiler_.renderercompiler.html#emitinitdataincompiletime" class="tsd-kind-icon">emit<wbr>Init<wbr>Data<wbr>InCompile<wbr>Time</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_src_compilers_renderer_compiler_.renderercompiler.html#emitinitdatainruntime" class="tsd-kind-icon">emit<wbr>Init<wbr>Data<wbr>InRuntime</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-variable tsd-parent-kind-module">
-						<a href="../modules/_src_compilers_renderer_compiler_.html#renderer_args" class="tsd-kind-icon">RENDERER_<wbr>ARGS</a>
-					</li>
 				</ul>
 			</nav>
 		</div>
@@ -359,12 +348,14 @@
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
 				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>

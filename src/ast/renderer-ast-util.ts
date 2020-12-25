@@ -1,7 +1,7 @@
 import { SyntaxKind, SyntaxNode, Block, Identifier, ExpressionStatement, BinaryExpression, Literal } from './renderer-ast-node'
 
 export function isBlock (node: any): node is Block {
-    const blocks = [SyntaxKind.If, SyntaxKind.ElseIf, SyntaxKind.Else, SyntaxKind.Foreach, SyntaxKind.FunctionDefinition]
+    const blocks = [SyntaxKind.If, SyntaxKind.ElseIf, SyntaxKind.Else, SyntaxKind.Foreach, SyntaxKind.FunctionDefinition, SyntaxKind.SlotRendererDefinition]
     return isSyntaxNode(node) && blocks.includes(node.kind)
 }
 

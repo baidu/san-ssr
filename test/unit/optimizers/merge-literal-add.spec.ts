@@ -1,12 +1,12 @@
-import { RETURN, BINARY, STATMENT, L, I } from '../../../src/ast/renderer-ast-factory'
+import { RETURN, BINARY, STATEMENT, L, I } from '../../../src/ast/renderer-ast-factory'
 import { mergeLiteralAdd } from '../../../src/optimizers/merge-literal-add'
 import { FunctionDefinition } from '../../../src/ast/renderer-ast-node'
 
 describe('optimizers/merge-literal-add', () => {
     it('should merge to successive html+=', () => {
         const fn = new FunctionDefinition('', [], [
-            STATMENT(BINARY(I('html'), '+=', L('foo'))),
-            STATMENT(BINARY(I('html'), '+=', L('bar')))
+            STATEMENT(BINARY(I('html'), '+=', L('foo'))),
+            STATEMENT(BINARY(I('html'), '+=', L('bar')))
         ])
         mergeLiteralAdd(fn)
         expect(fn.body).toHaveLength(1)
@@ -14,9 +14,9 @@ describe('optimizers/merge-literal-add', () => {
     })
     it('should not merge if not successive', () => {
         const fn = new FunctionDefinition('', [], [
-            STATMENT(BINARY(I('html'), '+=', L('foo'))),
+            STATEMENT(BINARY(I('html'), '+=', L('foo'))),
             RETURN(I('html')),
-            STATMENT(BINARY(I('html'), '+=', L('bar')))
+            STATEMENT(BINARY(I('html'), '+=', L('bar')))
         ])
         mergeLiteralAdd(fn)
         expect(fn.body).toHaveLength(3)

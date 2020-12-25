@@ -30,6 +30,15 @@ describe('JSEmitter', function () {
             })
             expect(emitter.fullText()).toEqual('let foo')
         })
+        it('should emit function', () => {
+            emitter.writeSyntaxNode({
+                kind: SyntaxKind.FunctionDefinition,
+                name: 'render',
+                args: [],
+                body: []
+            })
+            expect(emitter.fullText()).toEqual('function render () {}')
+        })
         it('should throw if kind not supported', () => {
             expect(() => emitter.writeSyntaxNode({ kind: 88888 } as any)).toThrow(/not supported/)
         })

@@ -1,4 +1,5 @@
 import { ComponentInfo } from '../models/component-info'
+import type { ComponentReference } from '../models/component-reference'
 
 /**
  * SSR 输出代码的 AST 节点
@@ -49,9 +50,12 @@ export enum SyntaxKind {
     RegexpReplace = 28,
     JSONStringify = 29,
     HelperCall = 30,
+    GetRootCtxCall = 31,
+    ComponentReferenceLiteral = 32,
+    SlotRendererDefinition = 33,
 }
 
-export type Expression = Identifier | FunctionDefinition | Literal | BinaryExpression | UnaryExpression | CreateComponentInstance | NewExpression | MapLiteral | ComponentRendererReference | FunctionCall | Null | MapAssign | ArrayIncludes | ConditionalExpression | FilterCall | HelperCall | EncodeURIComponent | ArrayLiteral | RegexpReplace | JSONStringify | ComputedCall
+export type Expression = Identifier | FunctionDefinition | Literal | BinaryExpression | UnaryExpression | CreateComponentInstance | NewExpression | MapLiteral | ComponentRendererReference | FunctionCall | Null | MapAssign | ArrayIncludes | ConditionalExpression | FilterCall | HelperCall | EncodeURIComponent | ArrayLiteral | RegexpReplace | JSONStringify | ComputedCall | GetRootCtxCall | ComponentReferenceLiteral | SlotRendererDefinition
 
 export type Statement = ReturnStatement | ImportHelper | VariableDefinition | AssignmentStatement | If | ElseIf | Else | Foreach | ExpressionStatement
 
@@ -86,6 +90,21 @@ export class ComponentRendererReference implements SyntaxNode {
         // 因此它必须是一个表达式，而非 ComponentReference。
         public value: Expression
     ) {}
+}
+
+export class ComponentReferenceLiteral implements SyntaxNode {
+    public readonly kind = SyntaxKind.ComponentReferenceLiteral
+    constructor (
+        public value: ComponentReference
+    ) {}
+
+    public toMapLiteral () {
+        const { specifier, id } = this.value
+        return new MapLiteral([
+            [Identifier.create('specifier'), Literal.create(specifier)],
+            [Identifier.create('id'), Literal.create(id)]
+        ])
+    }
 }
 
 export class Null implements SyntaxNode {
@@ -225,10 +244,17 @@ export class FilterCall implements SyntaxNode {
     ) {}
 }
 
+export class GetRootCtxCall implements SyntaxNode {
+    public readonly kind = SyntaxKind.GetRootCtxCall
+    constructor (
+        public args: Expression[]
+    ) {}
+}
+
 export class HelperCall implements SyntaxNode {
     public readonly kind = SyntaxKind.HelperCall
     constructor (
-        public name: 'styleFilter' | 'classFilter' | 'xstyleFilter' | 'xclassFilter' | 'attrFilter' | 'boolAttrFilter' | 'output' | 'getRootCtx',
+        public name: 'styleFilter' | 'classFilter' | 'xstyleFilter' | 'xclassFilter' | 'attrFilter' | 'boolAttrFilter' | 'output',
         public args: Expression[]
     ) {}
 }
@@ -290,6 +316,15 @@ export class AssignmentStatement implements SyntaxNode {
 
 export class FunctionDefinition implements SyntaxNode {
     public readonly kind = SyntaxKind.FunctionDefinition
+    constructor (
+        public name: string,
+        public args: VariableDefinition[],
+        public body: Iterable<Statement>
+    ) {}
+}
+
+export class SlotRendererDefinition implements SyntaxNode {
+    public readonly kind = SyntaxKind.SlotRendererDefinition
     constructor (
         public name: string,
         public args: VariableDefinition[],

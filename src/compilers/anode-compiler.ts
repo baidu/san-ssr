@@ -6,8 +6,8 @@ import { ElementCompiler } from './element-compiler'
 import { getANodePropByName } from '../ast/san-ast-util'
 import * as TypeGuards from '../ast/san-type-guards'
 import { IDGenerator } from '../utils/id-generator'
-import { HelperCall, JSONStringify, RegexpReplace, Statement, FunctionDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral, ComponentRendererReference, FunctionCall, Expression } from '../ast/renderer-ast-node'
-import { CTX_DATA, EMPTY_MAP, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATMENT, UNARY, DEF, BINARY, RETURN } from '../ast/renderer-ast-factory'
+import { JSONStringify, RegexpReplace, Statement, SlotRendererDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral, ComponentRendererReference, FunctionCall, Expression, GetRootCtxCall, ComponentReferenceLiteral } from '../ast/renderer-ast-node'
+import { CTX_DATA, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATEMENT, UNARY, DEF, BINARY, RETURN } from '../ast/renderer-ast-factory'
 import { sanExpr } from '../compilers/san-expr-compiler'
 
 /**
@@ -53,7 +53,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
             return BINARY(refs, '[]', sanExpr(aNode.directives.is.value))
         }
         if (this.componentInfo.childComponents.has(aNode.tagName)) {
-            return this.componentInfo.childComponents.get(aNode.tagName)!.toAST()
+            return new ComponentReferenceLiteral(this.componentInfo.childComponents.get(aNode.tagName)!)
         }
     }
 
@@ -117,7 +117,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         yield DEF(list, sanExpr(value))
         yield new Foreach(key, val, I(list), [
             ...index ? [ASSIGN(BINARY(CTX_DATA, '[]', L(index)), key)] : [],
-            ASSIGN(BINARY(CTX_DATA, '.', I(item!)), val),
+            ASSIGN(BINARY(CTX_DATA, '[]', L(item!)), val),
             ...this.compile(forElementANode, false)
         ])
     }
@@ -132,12 +132,12 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         const slotData = I(id.next('slotData'))
         yield DEF(slotData.name, new MapLiteral([]))
         if (aNode.directives.bind) {
-            yield STATMENT(new MapAssign(slotData, [sanExpr(aNode.directives.bind.value)]))
+            yield STATEMENT(new MapAssign(slotData, [sanExpr(aNode.directives.bind.value)]))
         }
 
         const props = aNode.vars || []
         if (props.length) {
-            yield STATMENT(new MapAssign(
+            yield STATEMENT(new MapAssign(
                 slotData,
                 [new MapLiteral(props.map(prop => [L(prop.name), sanExpr(prop.expr)]))]
             ))
@@ -169,7 +169,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
     }
 
     private createDataComment () {
-        const dataExpr = BINARY(new HelperCall('getRootCtx', [I('ctx')]), '.', I('data'))
+        const dataExpr = BINARY(new GetRootCtxCall([I('ctx')]), '.', I('data'))
         return [
             createHTMLLiteralAppend('<!--s-data:'),
             createHTMLExpressionAppend(new RegexpReplace(new JSONStringify(dataExpr), '(?<=-)-', L('\\-'))),
@@ -229,7 +229,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
 
             const compData = this.id.next('compData')
             body.push(DEF(compData, CTX_DATA))
-            body.push(ASSIGN(CTX_DATA, new MapAssign(EMPTY_MAP, [CTX_DATA, I('data')])))
+            body.push(STATEMENT(new MapAssign(CTX_DATA, [I('data')])))
 
             for (const child of content) body.push(...this.compile(child, false))
 
@@ -238,7 +238,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         } else {
             body.push(RETURN(L('')))
         }
-        return new FunctionDefinition('', args, body)
+        return new SlotRendererDefinition('', args, body)
     }
 
     private childRenderData (aNode: ANode) {

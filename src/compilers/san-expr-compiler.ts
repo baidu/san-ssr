@@ -56,6 +56,7 @@ export function dataAccess (accessorExpr: ExprAccessorNode, outputType: OutputTy
 function callExpr (callExpr: ExprCallNode, outputType: OutputType) {
     const paths = callExpr.name.paths
     let fn = new BinaryExpression(I('ctx'), '.', I('instance'))
+    fn = new BinaryExpression(fn, '.', I(paths.shift()!.value))
     for (const path of paths) {
         fn = new BinaryExpression(fn, '[]', sanExpr(path))
     }

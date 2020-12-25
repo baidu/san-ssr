@@ -18,6 +18,7 @@ export function * walk (node: Expression | Statement): Iterable<Expression | Sta
     case SyntaxKind.Null:
     case SyntaxKind.ImportHelper:
     case SyntaxKind.ComputedCall:
+    case SyntaxKind.ComponentReferenceLiteral:
         break
     case SyntaxKind.ArrayIncludes:
         yield * walk(node.arr)
@@ -37,10 +38,12 @@ export function * walk (node: Expression | Statement): Iterable<Expression | Sta
         yield * walk(node.trueValue)
         break
     case SyntaxKind.FilterCall:
+    case SyntaxKind.GetRootCtxCall:
     case SyntaxKind.HelperCall:
         for (const arg of node.args) yield * walk(arg)
         break
     case SyntaxKind.FunctionDefinition:
+    case SyntaxKind.SlotRendererDefinition:
         for (const arg of node.args) yield * walk(arg)
         for (const stmt of node.body) yield * walk(stmt)
         break

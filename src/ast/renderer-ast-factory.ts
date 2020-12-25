@@ -1,11 +1,11 @@
 import { MapLiteral, UnaryOperator, UnaryExpression, NewExpression, VariableDefinition, ReturnStatement, BinaryOperator, If, Null, AssignmentStatement, Statement, Expression, Identifier, ExpressionStatement, BinaryExpression, Literal } from './renderer-ast-node'
 
 export function createHTMLLiteralAppend (html: string) {
-    return STATMENT(BINARY(I('html'), '+=', L(html)))
+    return STATEMENT(BINARY(I('html'), '+=', L(html)))
 }
 
 export function createHTMLExpressionAppend (expr: Expression) {
-    return STATMENT(BINARY(I('html'), '+=', expr))
+    return STATEMENT(BINARY(I('html'), '+=', expr))
 }
 
 export function createDefaultValue (expr: Expression, value: Expression): Statement {
@@ -52,7 +52,7 @@ export function RETURN (val: Expression) {
     return new ReturnStatement(val)
 }
 
-export function STATMENT (expr: Expression) {
+export function STATEMENT (expr: Expression) {
     return new ExpressionStatement(expr)
 }
 

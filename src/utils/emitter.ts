@@ -89,7 +89,7 @@ export class Emitter {
         return this.code.length
     }
 
-    private lastChar () {
+    protected lastChar () {
         return this.code[this.size() - 1]
     }
 }

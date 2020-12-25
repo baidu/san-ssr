@@ -1,4 +1,4 @@
-import { Literal, Foreach, FunctionDefinition, ArrayLiteral, UnaryExpression, MapLiteral, Statement, SyntaxKind, Expression, VariableDefinition } from '../ast/renderer-ast-node'
+import { Literal, Foreach, FunctionDefinition, ArrayLiteral, UnaryExpression, MapLiteral, Statement, SyntaxKind, Expression, VariableDefinition, SlotRendererDefinition } from '../ast/renderer-ast-node'
 import { Emitter } from '../utils/emitter'
 import { assertNever } from '../utils/lang'
 
@@ -78,12 +78,18 @@ export class JSEmitter extends Emitter {
             this.writeExpressionList(node.args)
             this.write(')')
             break
+        case SyntaxKind.GetRootCtxCall:
+            this.write('_.getRootCtx(')
+            this.writeExpressionList(node.args)
+            this.write(')')
+            break
         case SyntaxKind.HelperCall:
             this.write(`_.${node.name}(`)
             this.writeExpressionList(node.args)
             this.write(')')
             break
         case SyntaxKind.FunctionDefinition:
+        case SyntaxKind.SlotRendererDefinition:
             return this.writeFunctionDefinition(node)
         case SyntaxKind.FunctionCall:
             this.writeSyntaxNode(node.fn)
@@ -114,6 +120,9 @@ export class JSEmitter extends Emitter {
             this.write('sanSSRResolver.getRenderer(')
             this.writeSyntaxNode(node.value)
             this.write(')')
+            break
+        case SyntaxKind.ComponentReferenceLiteral:
+            this.writeSyntaxNode(node.toMapLiteral())
             break
         case SyntaxKind.ReturnStatement:
             this.nextLine('return ')
@@ -189,7 +198,7 @@ export class JSEmitter extends Emitter {
         this.writeBlockStatements(node.body)
     }
 
-    public writeFunctionDefinition (node: FunctionDefinition) {
+    public writeFunctionDefinition (node: FunctionDefinition | SlotRendererDefinition) {
         this.write(`function ${node.name} (`)
         let first = true
         for (const arg of node.args) {

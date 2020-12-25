@@ -12,7 +12,7 @@ import { CompileOptions } from './compilers/compile-options'
 import { FunctionDefinition } from '../ast/renderer-ast-node'
 import { bracketToDot } from '../optimizers/bracket-to-dot'
 
-const debug = debugFactory('target-js')
+const debug = debugFactory('san-ssr:target-js')
 
 export default class ToJSCompiler implements Compiler {
     constructor (private project: SanProject) {}

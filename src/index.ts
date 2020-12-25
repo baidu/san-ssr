@@ -12,6 +12,9 @@ export { getANodePropByName } from './ast/san-ast-util'
 export { Emitter } from './utils/emitter'
 export { TypeGuards }
 export { _ } from './runtime/underscore'
+export { SyntaxKind } from './ast/renderer-ast-node'
+export type { Expression, Statement, FunctionDefinition, VariableDefinition, Literal, MapLiteral, ArrayLiteral, UnaryExpression, Foreach, BinaryExpression, SlotRendererDefinition } from './ast/renderer-ast-node'
+export { assertNever } from './utils/lang'
 
 // class types
 export { SanSourceFile, TypedSanSourceFile, DynamicSanSourceFile, isTypedSanSourceFile } from './models/san-source-file'
@@ -21,6 +24,7 @@ export { ComponentInfo, TypedComponentInfo, DynamicComponentInfo } from './model
 export { ComponentReference } from './models/component-reference'
 export { COMPONENT_RESERVED_MEMBERS } from './models/component'
 export { CompileInput } from './models/options'
+export { RenderOptions } from './compilers/renderer-options'
 
 let defaultProject: SanProject
 

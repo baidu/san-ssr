@@ -1,8 +1,8 @@
 import { ANodeCompiler } from './anode-compiler'
 import { ComponentInfo } from '../models/component-info'
 import { RenderOptions } from './renderer-options'
-import { FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper } from '../ast/renderer-ast-node'
-import { EMPTY_MAP, STATMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I } from '../ast/renderer-ast-factory'
+import { FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper, ComponentReferenceLiteral } from '../ast/renderer-ast-node'
+import { EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL } from '../ast/renderer-ast-factory'
 import { IDGenerator } from '../utils/id-generator'
 import { mergeLiteralAdd } from '../optimizers/merge-literal-add'
 
@@ -20,7 +20,7 @@ export class RendererCompiler {
      * 把 ComponentInfo 编译成函数源码，返回 Renderer 函数的 AST
      */
     public compileToRenderer (componentInfo: ComponentInfo) {
-        const args = [DEF('data'), DEF('noDataOutput'), DEF('parentCtx'), DEF('tagName', L('div')), DEF('slots')]
+        const args = [DEF('data'), DEF('noDataOutput', L(false)), DEF('parentCtx', NULL), DEF('tagName', L('div')), DEF('slots', EMPTY_MAP)]
         const fn = new FunctionDefinition(this.options.functionName || '', args,
             this.compileComponentRendererBody(componentInfo)
         )
@@ -49,8 +49,8 @@ export class RendererCompiler {
 
         // call inited
         if (info.hasMethod('inited')) {
-            body.push(STATMENT(new FunctionCall(
-                BINARY(BINARY(I('ctx'), '.', I('instance')), '.', I('inited')),
+            body.push(STATEMENT(new FunctionCall(
+                BINARY(I('instance'), '.', I('inited')),
                 []
             )))
         }
@@ -71,7 +71,7 @@ export class RendererCompiler {
 
     private compileContext (info: ComponentInfo) {
         const refs = info.hasDynamicComponent()
-            ? new MapLiteral([...info.childComponents.entries()].map(([key, val]) => [L(key), val.toAST()]))
+            ? new MapLiteral([...info.childComponents.entries()].map(([key, val]) => [L(key), new ComponentReferenceLiteral(val)]))
             : EMPTY_MAP
         return [
             DEF('instance', new CreateComponentInstance(info)),
@@ -100,7 +100,7 @@ export class RendererCompiler {
     }
 
     private emitInitDataInRuntime () {
-        const item = BINARY(I('data'), '[]', I('key'))
+        const item = BINARY(BINARY(I('ctx'), '.', I('data')), '[]', I('key'))
 
         return [
             ASSIGN(

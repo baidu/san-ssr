@@ -1,3 +1,10 @@
+# [4.2.0](https://github.com/baidu/san-ssr/compare/v4.1.1...v4.2.0) (2021-01-07)
+
+
+### Features
+
+* GetRootCtxCall, ComponentReferenceLiteral, SlotRendererDefinition ([3a26e0a](https://github.com/baidu/san-ssr/commit/3a26e0a070307d1b378337b1ee1c5519af373267))
+
 ## [4.1.1](https://github.com/baidu/san-ssr/compare/v4.1.0...v4.1.1) (2020-12-18)
 
 

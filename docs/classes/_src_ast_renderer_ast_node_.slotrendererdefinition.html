@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>MapLiteral | san-ssr</title>
+	<title>SlotRendererDefinition | san-ssr</title>
 	<meta name="description" content="Documentation for san-ssr">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -59,10 +59,10 @@
 					<a href="../modules/_src_ast_renderer_ast_node_.html">&quot;src/ast/renderer-ast-node&quot;</a>
 				</li>
 				<li>
-					<a href="_src_ast_renderer_ast_node_.mapliteral.html">MapLiteral</a>
+					<a href="_src_ast_renderer_ast_node_.slotrendererdefinition.html">SlotRendererDefinition</a>
 				</li>
 			</ul>
-			<h1>Class MapLiteral</h1>
+			<h1>Class SlotRendererDefinition</h1>
 		</div>
 	</div>
 </header>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">MapLiteral</span>
+						<span class="target">SlotRendererDefinition</span>
 					</li>
 				</ul>
 			</section>
@@ -90,14 +90,16 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_src_ast_renderer_ast_node_.mapliteral.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_src_ast_renderer_ast_node_.slotrendererdefinition.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_ast_renderer_ast_node_.mapliteral.html#items" class="tsd-kind-icon">items</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_ast_renderer_ast_node_.mapliteral.html#kind" class="tsd-kind-icon">kind</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_ast_renderer_ast_node_.slotrendererdefinition.html#args" class="tsd-kind-icon">args</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_ast_renderer_ast_node_.slotrendererdefinition.html#body" class="tsd-kind-icon">body</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_ast_renderer_ast_node_.slotrendererdefinition.html#kind" class="tsd-kind-icon">kind</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_ast_renderer_ast_node_.slotrendererdefinition.html#name" class="tsd-kind-icon">name</a></li>
 							</ul>
 						</section>
 					</div>
@@ -109,22 +111,28 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Map<wbr>Literal<span class="tsd-signature-symbol">(</span>items<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><a href="_src_ast_renderer_ast_node_.identifier.html" class="tsd-signature-type">Identifier</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.literal.html" class="tsd-signature-type">Literal</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">[</span><a href="_src_ast_renderer_ast_node_.identifier.html" class="tsd-signature-type">Identifier</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.literal.html" class="tsd-signature-type">Literal</a><span class="tsd-signature-symbol">, </span><a href="_src_ast_renderer_ast_node_.unaryexpression.html" class="tsd-signature-type">UnaryExpression</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.identifier.html" class="tsd-signature-type">Identifier</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.functiondefinition.html" class="tsd-signature-type">FunctionDefinition</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.literal.html" class="tsd-signature-type">Literal</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.binaryexpression.html" class="tsd-signature-type">BinaryExpression</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.createcomponentinstance.html" class="tsd-signature-type">CreateComponentInstance</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.newexpression.html" class="tsd-signature-type">NewExpression</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.mapliteral.html" class="tsd-signature-type">MapLiteral</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.componentrendererreference.html" class="tsd-signature-type">ComponentRendererReference</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.functioncall.html" class="tsd-signature-type">FunctionCall</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.null.html" class="tsd-signature-type">Null</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.mapassign.html" class="tsd-signature-type">MapAssign</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.arrayincludes.html" class="tsd-signature-type">ArrayIncludes</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.conditionalexpression.html" class="tsd-signature-type">ConditionalExpression</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.filtercall.html" class="tsd-signature-type">FilterCall</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.helpercall.html" class="tsd-signature-type">HelperCall</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.encodeuricomponent.html" class="tsd-signature-type">EncodeURIComponent</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.arrayliteral.html" class="tsd-signature-type">ArrayLiteral</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.regexpreplace.html" class="tsd-signature-type">RegexpReplace</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.jsonstringify.html" class="tsd-signature-type">JSONStringify</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.computedcall.html" class="tsd-signature-type">ComputedCall</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.getrootctxcall.html" class="tsd-signature-type">GetRootCtxCall</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.componentreferenceliteral.html" class="tsd-signature-type">ComponentReferenceLiteral</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.slotrendererdefinition.html" class="tsd-signature-type">SlotRendererDefinition</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_ast_renderer_ast_node_.mapliteral.html" class="tsd-signature-type">MapLiteral</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Slot<wbr>Renderer<wbr>Definition<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, args<span class="tsd-signature-symbol">: </span><a href="_src_ast_renderer_ast_node_.variabledefinition.html" class="tsd-signature-type">VariableDefinition</a><span class="tsd-signature-symbol">[]</span>, body<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_src_ast_renderer_ast_node_.html#statement" class="tsd-signature-type">Statement</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_ast_renderer_ast_node_.slotrendererdefinition.html" class="tsd-signature-type">SlotRendererDefinition</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/3a26e0a/src/ast/renderer-ast-node.ts#L75">src/ast/renderer-ast-node.ts:75</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/3a26e0a/src/ast/renderer-ast-node.ts#L327">src/ast/renderer-ast-node.ts:327</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>items: <span class="tsd-signature-symbol">(</span><a href="_src_ast_renderer_ast_node_.identifier.html" class="tsd-signature-type">Identifier</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.literal.html" class="tsd-signature-type">Literal</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-symbol">[</span><a href="_src_ast_renderer_ast_node_.identifier.html" class="tsd-signature-type">Identifier</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.literal.html" class="tsd-signature-type">Literal</a><span class="tsd-signature-symbol">, </span><a href="_src_ast_renderer_ast_node_.unaryexpression.html" class="tsd-signature-type">UnaryExpression</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.identifier.html" class="tsd-signature-type">Identifier</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.functiondefinition.html" class="tsd-signature-type">FunctionDefinition</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.literal.html" class="tsd-signature-type">Literal</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.binaryexpression.html" class="tsd-signature-type">BinaryExpression</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.createcomponentinstance.html" class="tsd-signature-type">CreateComponentInstance</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.newexpression.html" class="tsd-signature-type">NewExpression</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.mapliteral.html" class="tsd-signature-type">MapLiteral</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.componentrendererreference.html" class="tsd-signature-type">ComponentRendererReference</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.functioncall.html" class="tsd-signature-type">FunctionCall</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.null.html" class="tsd-signature-type">Null</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.mapassign.html" class="tsd-signature-type">MapAssign</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.arrayincludes.html" class="tsd-signature-type">ArrayIncludes</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.conditionalexpression.html" class="tsd-signature-type">ConditionalExpression</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.filtercall.html" class="tsd-signature-type">FilterCall</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.helpercall.html" class="tsd-signature-type">HelperCall</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.encodeuricomponent.html" class="tsd-signature-type">EncodeURIComponent</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.arrayliteral.html" class="tsd-signature-type">ArrayLiteral</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.regexpreplace.html" class="tsd-signature-type">RegexpReplace</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.jsonstringify.html" class="tsd-signature-type">JSONStringify</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.computedcall.html" class="tsd-signature-type">ComputedCall</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.getrootctxcall.html" class="tsd-signature-type">GetRootCtxCall</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.componentreferenceliteral.html" class="tsd-signature-type">ComponentReferenceLiteral</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.slotrendererdefinition.html" class="tsd-signature-type">SlotRendererDefinition</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></h5>
+									<h5>name: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>args: <a href="_src_ast_renderer_ast_node_.variabledefinition.html" class="tsd-signature-type">VariableDefinition</a><span class="tsd-signature-symbol">[]</span></h5>
+								</li>
+								<li>
+									<h5>body: <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_src_ast_renderer_ast_node_.html#statement" class="tsd-signature-type">Statement</a><span class="tsd-signature-symbol">&gt;</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_src_ast_renderer_ast_node_.mapliteral.html" class="tsd-signature-type">MapLiteral</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_src_ast_renderer_ast_node_.slotrendererdefinition.html" class="tsd-signature-type">SlotRendererDefinition</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -132,23 +140,43 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="items" class="tsd-anchor"></a>
-					<h3>items</h3>
-					<div class="tsd-signature tsd-kind-icon">items<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">[</span><a href="_src_ast_renderer_ast_node_.literal.html" class="tsd-signature-type">Literal</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.identifier.html" class="tsd-signature-type">Identifier</a><span class="tsd-signature-symbol">, </span><a href="../modules/_src_ast_renderer_ast_node_.html#expression" class="tsd-signature-type">Expression</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">]</span><span class="tsd-signature-symbol">[]</span></div>
+					<a name="args" class="tsd-anchor"></a>
+					<h3>args</h3>
+					<div class="tsd-signature tsd-kind-icon">args<span class="tsd-signature-symbol">:</span> <a href="_src_ast_renderer_ast_node_.variabledefinition.html" class="tsd-signature-type">VariableDefinition</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/3a26e0a/src/ast/renderer-ast-node.ts#L75">src/ast/renderer-ast-node.ts:75</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/3a26e0a/src/ast/renderer-ast-node.ts#L330">src/ast/renderer-ast-node.ts:330</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="body" class="tsd-anchor"></a>
+					<h3>body</h3>
+					<div class="tsd-signature tsd-kind-icon">body<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Iterable</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_src_ast_renderer_ast_node_.html#statement" class="tsd-signature-type">Statement</a><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/3a26e0a/src/ast/renderer-ast-node.ts#L331">src/ast/renderer-ast-node.ts:331</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="kind" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> kind</h3>
-					<div class="tsd-signature tsd-kind-icon">kind<span class="tsd-signature-symbol">:</span> <a href="../enums/_src_ast_renderer_ast_node_.syntaxkind.html#mapliteral" class="tsd-signature-type">MapLiteral</a><span class="tsd-signature-symbol"> = SyntaxKind.MapLiteral</span></div>
+					<div class="tsd-signature tsd-kind-icon">kind<span class="tsd-signature-symbol">:</span> <a href="../enums/_src_ast_renderer_ast_node_.syntaxkind.html#slotrendererdefinition" class="tsd-signature-type">SlotRendererDefinition</a><span class="tsd-signature-symbol"> = SyntaxKind.SlotRendererDefinition</span></div>
 					<aside class="tsd-sources">
 						<p>Implementation of <a href="../interfaces/_src_ast_renderer_ast_node_.syntaxnode.html">SyntaxNode</a>.<a href="../interfaces/_src_ast_renderer_ast_node_.syntaxnode.html#kind">kind</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/3a26e0a/src/ast/renderer-ast-node.ts#L74">src/ast/renderer-ast-node.ts:74</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/3a26e0a/src/ast/renderer-ast-node.ts#L327">src/ast/renderer-ast-node.ts:327</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="name" class="tsd-anchor"></a>
+					<h3>name</h3>
+					<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/3a26e0a/src/ast/renderer-ast-node.ts#L329">src/ast/renderer-ast-node.ts:329</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -245,24 +273,9 @@
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="_src_ast_renderer_ast_node_.mapassign.html" class="tsd-kind-icon">Map<wbr>Assign</a>
 					</li>
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-class tsd-parent-kind-module">
+					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="_src_ast_renderer_ast_node_.mapliteral.html" class="tsd-kind-icon">Map<wbr>Literal</a>
-						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_src_ast_renderer_ast_node_.mapliteral.html#constructor" class="tsd-kind-icon">constructor</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_src_ast_renderer_ast_node_.mapliteral.html#items" class="tsd-kind-icon">items</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_src_ast_renderer_ast_node_.mapliteral.html#kind" class="tsd-kind-icon">kind</a>
-							</li>
-						</ul>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="_src_ast_renderer_ast_node_.newexpression.html" class="tsd-kind-icon">New<wbr>Expression</a>
 					</li>
@@ -275,9 +288,30 @@
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="_src_ast_renderer_ast_node_.returnstatement.html" class="tsd-kind-icon">Return<wbr>Statement</a>
 					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-module">
 						<a href="_src_ast_renderer_ast_node_.slotrendererdefinition.html" class="tsd-kind-icon">Slot<wbr>Renderer<wbr>Definition</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="_src_ast_renderer_ast_node_.slotrendererdefinition.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_ast_renderer_ast_node_.slotrendererdefinition.html#args" class="tsd-kind-icon">args</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_ast_renderer_ast_node_.slotrendererdefinition.html#body" class="tsd-kind-icon">body</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_ast_renderer_ast_node_.slotrendererdefinition.html#kind" class="tsd-kind-icon">kind</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_ast_renderer_ast_node_.slotrendererdefinition.html#name" class="tsd-kind-icon">name</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="_src_ast_renderer_ast_node_.unaryexpression.html" class="tsd-kind-icon">Unary<wbr>Expression</a>
 					</li>

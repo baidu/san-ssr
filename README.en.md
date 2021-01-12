@@ -46,5 +46,5 @@ san-ssr provides static analysis for San components and generates abstract compo
 * [san-ssr-target-php](https://github.com/baidu/san-ssr-target-php)
 
 [san]: https://github.com/baidu/san
-[sanproject]: https://baidu.github.io/san-ssr/classes/_models_san_project_.sanproject.html
+[sanproject]: https://baidu.github.io/san-ssr/classes/_src_models_san_project_.sanproject.html
 [target-compile]: https://baidu.github.io/san-ssr/interfaces/_models_compiler_.compiler.html#compile

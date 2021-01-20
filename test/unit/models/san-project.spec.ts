@@ -142,6 +142,15 @@ describe('SanProject', function () {
             expect(render).toBeInstanceOf(Function)
             expect(render({ name: 'Harttle' }, true)).toEqual('<div>name: Harttle</div>')
         })
+
+        it('should remove modules', function () {
+            const proj = new SanProject()
+            const code = proj.compileToSource(resolve(stubRoot, './remove-modules.comp.ts'), 'js', {
+                removeModules: [/^foo/]
+            })
+            expect(code).not.toContain('require("foo")')
+            expect(code).toContain('require("bar")')
+        })
     })
     describe('.loadCompilerClassByTarget()', () => {
         let proj: SanProject

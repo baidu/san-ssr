@@ -5,9 +5,11 @@ import { ComponentClassParser } from '../parsers/component-class-parser'
 import { TypeScriptSanParser } from '../parsers/typescript-san-parser'
 import { JavaScriptSanParser } from '../parsers/javascript-san-parser'
 import { SanFileParser } from '../parsers/san-file-parser'
+import { removeModules } from '../parsers/remove-modules'
 import { TypedSanSourceFile, DynamicSanSourceFile, SanSourceFile } from '../models/san-source-file'
 import ToJSCompiler from '../target-js/index'
 import { CompileOptions } from '../target-js/compilers/compile-options'
+import { RenderOptions } from '../compilers/renderer-options'
 import { Renderer } from './renderer'
 import { getDefaultTSConfigPath } from '../parsers/tsconfig'
 import { Compiler } from '../models/compiler'
@@ -44,9 +46,14 @@ export class SanProject {
     public compileToSource<T extends Compiler> (
         input: CompileInput,
         target: string | CompilerClass<T> = 'js',
-        options = {}
+        options: RenderOptions = {}
     ) {
         const sanSourceFile = this.parseSanSourceFile(input)
+        // 删除配置中指定的在 ssr 下无需引入的模块
+        const { removeModules: modules } = options
+        if (modules && modules.length) {
+            removeModules(sanSourceFile, modules)
+        }
         const compiler = this.getOrCreateCompilerInstance(target)
         return compiler.compileToSource(sanSourceFile, options)
     }

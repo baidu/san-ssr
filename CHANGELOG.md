@@ -1,3 +1,10 @@
+# [4.3.0](https://github.com/baidu/san-ssr/compare/v4.2.0...v4.3.0) (2021-01-21)
+
+
+### Features
+
+* 支持配置正则移除模块引用 ([b443052](https://github.com/baidu/san-ssr/commit/b4430522d1ba211b1f534ab79f79dba680f612c5))
+
 # [4.2.0](https://github.com/baidu/san-ssr/compare/v4.1.1...v4.2.0) (2021-01-07)
 
 

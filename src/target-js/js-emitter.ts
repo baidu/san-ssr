@@ -92,6 +92,7 @@ export class JSEmitter extends Emitter {
         case SyntaxKind.SlotRendererDefinition:
             return this.writeFunctionDefinition(node)
         case SyntaxKind.FunctionCall:
+        case SyntaxKind.SlotRenderCall:
             this.writeSyntaxNode(node.fn)
             this.write('(')
             this.writeExpressionList(node.args)

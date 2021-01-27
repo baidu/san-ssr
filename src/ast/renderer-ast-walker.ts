@@ -48,6 +48,7 @@ export function * walk (node: Expression | Statement): Iterable<Expression | Sta
         for (const stmt of node.body) yield * walk(stmt)
         break
     case SyntaxKind.FunctionCall:
+    case SyntaxKind.SlotRenderCall:
         for (const arg of node.args) yield * walk(arg)
         yield * walk(node.fn)
         break

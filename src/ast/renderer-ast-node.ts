@@ -53,9 +53,10 @@ export enum SyntaxKind {
     GetRootCtxCall = 31,
     ComponentReferenceLiteral = 32,
     SlotRendererDefinition = 33,
+    SlotRenderCall = 34,
 }
 
-export type Expression = Identifier | FunctionDefinition | Literal | BinaryExpression | UnaryExpression | CreateComponentInstance | NewExpression | MapLiteral | ComponentRendererReference | FunctionCall | Null | MapAssign | ArrayIncludes | ConditionalExpression | FilterCall | HelperCall | EncodeURIComponent | ArrayLiteral | RegexpReplace | JSONStringify | ComputedCall | GetRootCtxCall | ComponentReferenceLiteral | SlotRendererDefinition
+export type Expression = Identifier | FunctionDefinition | Literal | BinaryExpression | UnaryExpression | CreateComponentInstance | NewExpression | MapLiteral | ComponentRendererReference | FunctionCall | Null | MapAssign | ArrayIncludes | ConditionalExpression | FilterCall | HelperCall | EncodeURIComponent | ArrayLiteral | RegexpReplace | JSONStringify | ComputedCall | GetRootCtxCall | ComponentReferenceLiteral | SlotRendererDefinition | SlotRenderCall
 
 export type Statement = ReturnStatement | ImportHelper | VariableDefinition | AssignmentStatement | If | ElseIf | Else | Foreach | ExpressionStatement
 
@@ -261,6 +262,14 @@ export class HelperCall implements SyntaxNode {
 
 export class FunctionCall implements SyntaxNode {
     public readonly kind = SyntaxKind.FunctionCall
+    constructor (
+        public fn: Expression,
+        public args: Expression[]
+    ) {}
+}
+
+export class SlotRenderCall implements SyntaxNode {
+    public readonly kind = SyntaxKind.SlotRenderCall
     constructor (
         public fn: Expression,
         public args: Expression[]

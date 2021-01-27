@@ -32,7 +32,7 @@ function escapeHTML (source: any) {
     if (typeof source === 'string') {
         return source.replace(rENTITY, (c: string) => HTML_ENTITY[c])
     }
-    return '' + source
+    return source
 }
 
 function isObject (source: any) {
@@ -82,14 +82,13 @@ function xstyleFilter (inherits: object | string, own: string) {
     return own
 }
 
-function attrFilter (name: string, value: string, needHTMLEscape: boolean) {
-    if (value) {
-        return ' ' + name + '="' + (needHTMLEscape ? escapeHTML(value) : value) + '"'
+function attrFilter (name: string, value: string, needEscape: boolean) {
+    // style/class/id 值为 falsy 时不输出属性
+    if (value == null || (!value && BASE_PROPS[name])) {
+        return ''
     }
-    if (value != null && !BASE_PROPS[name]) {
-        return ' ' + name + '="' + value + '"'
-    }
-    return ''
+    value = String(value)
+    return ` ${name}="${needEscape ? escapeHTML(value) : value}"`
 }
 
 function boolAttrFilter (name: string, value: string) {

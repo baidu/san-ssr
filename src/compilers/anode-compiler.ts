@@ -8,7 +8,7 @@ import * as TypeGuards from '../ast/san-type-guards'
 import { IDGenerator } from '../utils/id-generator'
 import { JSONStringify, RegexpReplace, Statement, SlotRendererDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral, ComponentRendererReference, FunctionCall, SlotRenderCall, Expression, GetRootCtxCall, ComponentReferenceLiteral } from '../ast/renderer-ast-node'
 import { CTX_DATA, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATEMENT, UNARY, DEF, BINARY, RETURN } from '../ast/renderer-ast-factory'
-import { sanExpr } from '../compilers/san-expr-compiler'
+import { sanExpr, OutputType } from '../compilers/san-expr-compiler'
 
 /**
  * ANode 编译
@@ -59,7 +59,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
 
     private * compileText (aNode: ATextNode): Generator<Statement> {
         const shouldEmitComment = TypeGuards.isExprTextNode(aNode.textExpr) && aNode.textExpr.original && !this.ssrOnly && !this.inScript
-        const outputType = this.inScript ? 'rawhtml' : 'html'
+        const outputType = this.inScript ? OutputType.HTML : OutputType.ESCAPE_HTML
         if (shouldEmitComment) yield createHTMLLiteralAppend('<!--s-text-->')
         yield createHTMLExpressionAppend(sanExpr(aNode.textExpr, outputType))
         if (shouldEmitComment) yield createHTMLLiteralAppend('<!--/s-text-->')

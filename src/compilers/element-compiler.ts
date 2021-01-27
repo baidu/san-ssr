@@ -7,7 +7,7 @@ import { ExprNode, ANodeProperty, Directive, ANode } from 'san'
 import { isExprNumberNode, isExprStringNode, isExprBoolNode } from '../ast/san-type-guards'
 import { createIfStrictEqual, createIfNotNull, createDefaultValue, createHTMLLiteralAppend, createHTMLExpressionAppend, NULL, L, I, ASSIGN, DEF } from '../ast/renderer-ast-factory'
 import { HelperCall, ArrayIncludes, Else, Foreach, If } from '../ast/renderer-ast-node'
-import { sanExpr } from './san-expr-compiler'
+import { sanExpr, OutputType } from './san-expr-compiler'
 
 const BOOL_ATTRIBUTES = ['readonly', 'disabled', 'multiple', 'checked']
 
@@ -104,7 +104,7 @@ export class ElementCompiler {
         if (this.isLiteral(prop.expr)) {
             yield createHTMLLiteralAppend(_.attrFilter(prop.name, prop.expr.value, true))
         } else {
-            yield createHTMLExpressionAppend(new HelperCall('attrFilter', [L(prop.name), sanExpr(prop.expr), L(true)]))
+            yield createHTMLExpressionAppend(new HelperCall('attrFilter', [L(prop.name), sanExpr(prop.expr, OutputType.ESCAPE), L(false)]))
         }
     }
 
@@ -159,15 +159,15 @@ export class ElementCompiler {
         // inner content
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodePropByName(aNode, 'value')
-            if (valueProp) yield createHTMLExpressionAppend(sanExpr(valueProp.expr, 'html'))
+            if (valueProp) yield createHTMLExpressionAppend(sanExpr(valueProp.expr, OutputType.ESCAPE_HTML))
             return
         }
 
         const htmlDirective = aNode.directives.html
         if (htmlDirective) {
-            return yield createHTMLExpressionAppend(sanExpr(htmlDirective.value, 'rawhtml'))
+            return yield createHTMLExpressionAppend(sanExpr(htmlDirective.value, OutputType.HTML))
         }
-        // only ATextNode#children is not defined, it has been taken over by ANodeCompiler#compileText()
+        // 只有 ATextNode 没有 children 属性，它的编译走了 ANodeCompiler#compileText()，不会进入这里
         for (const aNodeChild of aNode.children!) yield * this.aNodeCompiler.compile(aNodeChild, false)
     }
 }

@@ -1,3 +1,10 @@
+## [4.4.1](https://github.com/baidu/san-ssr/compare/v4.4.0...v4.4.1) (2021-01-27)
+
+
+### Bug Fixes
+
+* 修复属性值不支持 raw 的问题 ([4874a94](https://github.com/baidu/san-ssr/commit/4874a9490d08cfe0b9e3028296b788bf70ad4a30))
+
 # [4.4.0](https://github.com/baidu/san-ssr/compare/v4.3.0...v4.4.0) (2021-01-27)
 
 

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Context | san-ssr</title>
+	<title>OutputType | san-ssr</title>
 	<meta name="description" content="Documentation for san-ssr">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,60 +56,74 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_src_runtime_underscore_.html">&quot;src/runtime/underscore&quot;</a>
+					<a href="../modules/_src_compilers_san_expr_compiler_.html">&quot;src/compilers/san-expr-compiler&quot;</a>
 				</li>
 				<li>
-					<a href="_src_runtime_underscore_.context.html">Context</a>
+					<a href="_src_compilers_san_expr_compiler_.outputtype.html">OutputType</a>
 				</li>
 			</ul>
-			<h1>Interface Context</h1>
+			<h1>Enumeration OutputType</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-hierarchy">
-				<h3>Hierarchy</h3>
-				<ul class="tsd-hierarchy">
-					<li>
-						<span class="target">Context</span>
-					</li>
-				</ul>
-			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Properties</h3>
+							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_runtime_underscore_.context.html#instance" class="tsd-kind-icon">instance</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_runtime_underscore_.context.html#parentctx" class="tsd-kind-icon">parent<wbr>Ctx</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_src_compilers_san_expr_compiler_.outputtype.html#escape" class="tsd-kind-icon">ESCAPE</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_src_compilers_san_expr_compiler_.outputtype.html#escape_html" class="tsd-kind-icon">ESCAPE_<wbr>HTML</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_src_compilers_san_expr_compiler_.outputtype.html#html" class="tsd-kind-icon">HTML</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_src_compilers_san_expr_compiler_.outputtype.html#none" class="tsd-kind-icon">NONE</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="instance" class="tsd-anchor"></a>
-					<h3>instance</h3>
-					<div class="tsd-signature tsd-kind-icon">instance<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+				<h2>Enumeration members</h2>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="escape" class="tsd-anchor"></a>
+					<h3>ESCAPE</h3>
+					<div class="tsd-signature tsd-kind-icon">ESCAPE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 1</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/88ccca2/src/runtime/underscore.ts#L11">src/runtime/underscore.ts:11</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/88ccca2/src/compilers/san-expr-compiler.ts#L19">src/compilers/san-expr-compiler.ts:19</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="parentctx" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> parent<wbr>Ctx</h3>
-					<div class="tsd-signature tsd-kind-icon">parent<wbr>Ctx<span class="tsd-signature-symbol">:</span> <a href="_src_runtime_underscore_.context.html" class="tsd-signature-type">Context</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="escape_html" class="tsd-anchor"></a>
+					<h3>ESCAPE_<wbr>HTML</h3>
+					<div class="tsd-signature tsd-kind-icon">ESCAPE_<wbr>HTML<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 3</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/88ccca2/src/runtime/underscore.ts#L10">src/runtime/underscore.ts:10</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/88ccca2/src/compilers/san-expr-compiler.ts#L31">src/compilers/san-expr-compiler.ts:31</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="html" class="tsd-anchor"></a>
+					<h3>HTML</h3>
+					<div class="tsd-signature tsd-kind-icon">HTML<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 2</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/88ccca2/src/compilers/san-expr-compiler.ts#L27">src/compilers/san-expr-compiler.ts:27</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="none" class="tsd-anchor"></a>
+					<h3>NONE</h3>
+					<div class="tsd-signature tsd-kind-icon">NONE<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 0</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/88ccca2/src/compilers/san-expr-compiler.ts#L15">src/compilers/san-expr-compiler.ts:15</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -122,7 +136,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="../modules/_src_runtime_underscore_.html">&quot;src/runtime/underscore&quot;</a>
+						<a href="../modules/_src_compilers_san_expr_compiler_.html">&quot;src/compilers/san-<wbr>expr-<wbr>compiler&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -130,78 +144,63 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-module">
-						<a href="_src_runtime_underscore_.context.html" class="tsd-kind-icon">Context</a>
+					<li class="current tsd-kind-enum tsd-parent-kind-module">
+						<a href="_src_compilers_san_expr_compiler_.outputtype.html" class="tsd-kind-icon">Output<wbr>Type</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_src_runtime_underscore_.context.html#instance" class="tsd-kind-icon">instance</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_src_compilers_san_expr_compiler_.outputtype.html#escape" class="tsd-kind-icon">ESCAPE</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_src_runtime_underscore_.context.html#parentctx" class="tsd-kind-icon">parent<wbr>Ctx</a>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_src_compilers_san_expr_compiler_.outputtype.html#escape_html" class="tsd-kind-icon">ESCAPE_<wbr>HTML</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_src_compilers_san_expr_compiler_.outputtype.html#html" class="tsd-kind-icon">HTML</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_src_compilers_san_expr_compiler_.outputtype.html#none" class="tsd-kind-icon">NONE</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#rentity" class="tsd-kind-icon">rENTITY</a>
+					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_src_compilers_san_expr_compiler_.html#array" class="tsd-kind-icon">array</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#attrfilter" class="tsd-kind-icon">attr<wbr>Filter</a>
+						<a href="../modules/_src_compilers_san_expr_compiler_.html#binary" class="tsd-kind-icon">binary</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#boolattrfilter" class="tsd-kind-icon">bool<wbr>Attr<wbr>Filter</a>
+						<a href="../modules/_src_compilers_san_expr_compiler_.html#callexpr" class="tsd-kind-icon">call<wbr>Expr</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_src_compilers_san_expr_compiler_.html#dataaccess" class="tsd-kind-icon">data<wbr>Access</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#callcomputed" class="tsd-kind-icon">call<wbr>Computed</a>
+						<a href="../modules/_src_compilers_san_expr_compiler_.html#interp" class="tsd-kind-icon">interp</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#callfilter" class="tsd-kind-icon">call<wbr>Filter</a>
+						<a href="../modules/_src_compilers_san_expr_compiler_.html#object" class="tsd-kind-icon">object</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#classfilter" class="tsd-kind-icon">class<wbr>Filter</a>
+						<a href="../modules/_src_compilers_san_expr_compiler_.html#outputcode" class="tsd-kind-icon">output<wbr>Code</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_src_compilers_san_expr_compiler_.html#sanexpr" class="tsd-kind-icon">san<wbr>Expr</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#createfromprototype" class="tsd-kind-icon">create<wbr>From<wbr>Prototype</a>
+						<a href="../modules/_src_compilers_san_expr_compiler_.html#str" class="tsd-kind-icon">str</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#createinstancefromclass" class="tsd-kind-icon">create<wbr>Instance<wbr>From<wbr>Class</a>
+						<a href="../modules/_src_compilers_san_expr_compiler_.html#tertiary" class="tsd-kind-icon">tertiary</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#escapehtml" class="tsd-kind-icon">escapeHTML</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module tsd-has-type-parameter tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#getrootctx" class="tsd-kind-icon">get<wbr>Root<wbr>Ctx</a>
+						<a href="../modules/_src_compilers_san_expr_compiler_.html#text" class="tsd-kind-icon">text</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#isarray" class="tsd-kind-icon">is<wbr>Array</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#isobject" class="tsd-kind-icon">is<wbr>Object</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#iterate" class="tsd-kind-icon">iterate</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#output" class="tsd-kind-icon">output</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#stylefilter" class="tsd-kind-icon">style<wbr>Filter</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#xclassfilter" class="tsd-kind-icon">xclass<wbr>Filter</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#xstylefilter" class="tsd-kind-icon">xstyle<wbr>Filter</a>
+						<a href="../modules/_src_compilers_san_expr_compiler_.html#unary" class="tsd-kind-icon">unary</a>
 					</li>
 					<li class=" tsd-kind-object-literal tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#base_props" class="tsd-kind-icon">BASE_<wbr>PROPS</a>
-					</li>
-					<li class=" tsd-kind-object-literal tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_src_runtime_underscore_.html#html_entity" class="tsd-kind-icon">HTML_<wbr>ENTITY</a>
-					</li>
-					<li class=" tsd-kind-object-literal tsd-parent-kind-module">
-						<a href="../modules/_src_runtime_underscore_.html#_-13" class="tsd-kind-icon">_</a>
+						<a href="../modules/_src_compilers_san_expr_compiler_.html#binaryop" class="tsd-kind-icon">binary<wbr>Op</a>
 					</li>
 				</ul>
 			</nav>
@@ -221,15 +220,14 @@
 				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-			</ul>
-			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
 				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 			</ul>
 		</div>
 	</div>

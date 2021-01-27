@@ -7,8 +7,29 @@ import { _ } from '../runtime/underscore'
 import { EncodeURIComponent, MapLiteral, HelperCall, ArrayLiteral, FilterCall, FunctionCall, Identifier, ConditionalExpression, BinaryExpression, UnaryExpression, Expression } from '../ast/renderer-ast-node'
 import { CTX_DATA, L, I, NULL } from '../ast/renderer-ast-factory'
 
-// 输出为 HTML 并转义、输出为 HTML 不转义、非输出表达式
-export type OutputType = 'html' | 'rawhtml' | 'expr'
+// 输出类型
+export enum OutputType {
+    /*
+     * 直出
+     */
+    NONE = 0,
+    /*
+     * 需要对值进行 HTML 转义，可能用于表达式里，比如 `callSlot(expr)`
+     */
+    ESCAPE = 1,
+    /*
+     * 需要拼接到 HTML：undefined/null 转为 ''，比如 `html += "&lt;"`
+     *
+     * 不能封装到 html+= 处，因为可能用于表达式里，比如 `{{ foo }}bar` 编译为：
+     * `output(data('foo'), true) + "bar"`
+     * 注意每个部分都需要转义，但最终结果不一定直接用于 html +=
+     */
+    HTML = 2,
+    /*
+     * 需要转义，也需要拼接到 HTML ，比如 `html += output(expr, true)`
+     */
+    ESCAPE_HTML = 3,
+}
 
 // 二元表达式操作符映射表
 const binaryOp = {
@@ -63,10 +84,12 @@ function callExpr (callExpr: ExprCallNode, outputType: OutputType) {
     return outputCode(new FunctionCall(fn, callExpr.args.map(arg => sanExpr(arg))), outputType)
 }
 
-function outputCode (data: Expression, outputType: OutputType) {
-    if (outputType === 'expr') return data
-    if (outputType === 'html') return new HelperCall('output', [data, L(true)])
-    return new HelperCall('output', [data, L(false)])
+function outputCode (expr: Expression, outputType: OutputType) {
+    const needEscape = Boolean(outputType & OutputType.ESCAPE)
+    if (outputType & OutputType.HTML) {
+        return new HelperCall('output', [expr, L(needEscape)])
+    }
+    return needEscape ? new HelperCall('escapeHTML', [expr]) : expr
 }
 
 // 生成插值代码
@@ -76,23 +99,21 @@ function interp (interpExpr: ExprInterpNode, outputType: OutputType) {
     for (const filter of interpExpr.filters) {
         const filterName = filter.name.paths[0].value
 
-        if (['_style', '_class', '_xstyle', '_xclass', '_attr', '_boolAttr'].includes(filterName)) {
-            code = new HelperCall(filterName.slice(1) + 'Filter' as any, [code, ...filter.args.map(arg => sanExpr(arg, 'expr'))])
+        if (['_style', '_class', '_xstyle', '_xclass'].includes(filterName)) {
+            code = new HelperCall(filterName.slice(1) + 'Filter' as any, [code, ...filter.args.map(arg => sanExpr(arg, OutputType.NONE))])
         } else if (filterName === 'url') {
             code = new EncodeURIComponent(code)
         } else {
-            code = new FilterCall(filterName, [code, ...filter.args.map(arg => sanExpr(arg, 'expr'))])
+            code = new FilterCall(filterName, [code, ...filter.args.map(arg => sanExpr(arg, OutputType.NONE))])
         }
     }
     // {{ | raw }}
-    if (outputType === 'html' && interpExpr.original) {
-        return outputCode(code, 'rawhtml')
-    }
+    if (interpExpr.original) outputType &= ~OutputType.ESCAPE
     return outputCode(code, outputType)
 }
 
 function str (e: ExprStringNode, output: OutputType) {
-    return L(output === 'html' ? _.escapeHTML(e.value) : e.value)
+    return L(output & OutputType.ESCAPE ? _.escapeHTML(e.value) : e.value)
 }
 
 // 生成文本片段代码
@@ -115,8 +136,18 @@ function object (objExpr: ExprObjectNode) {
     ]))
 }
 
-// expr 的 JavaScript 表达式
-export function sanExpr (e: ExprNode, output: OutputType = 'expr'): Expression {
+/**
+ * expr 对应的 AST 表达式
+ *
+ * 注意：我们总是把 output 参数往下传递，而非在最外层把结果去做 escape。
+ * 这是为了让编译后的代码更高效，因为只有叶结点才最清楚这个结点能否在编译期 escape，例如：
+ *
+ * {{ "<" }} // 对应的表达式为 InterpNode{ LiteralNode }
+ *
+ * - 我们让内层的 LiteralNode 来处理自己的转义，直接输出 "&lt;"
+ * - 如果让 InterpNode 来处理，输出则是 "_.output("<", true)"
+ */
+export function sanExpr (e: ExprNode, output: OutputType = OutputType.NONE): Expression {
     let s
 
     if (TypeGuards.isExprUnaryNode(e)) s = unary(e)

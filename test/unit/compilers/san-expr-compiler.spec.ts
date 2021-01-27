@@ -1,4 +1,4 @@
-import { sanExpr as expr } from '../../../src/compilers/san-expr-compiler'
+import { sanExpr as expr, OutputType } from '../../../src/compilers/san-expr-compiler'
 import { SyntaxKind } from '../../../src/ast/renderer-ast-node'
 import { CTX_DATA } from '../../../src/ast/renderer-ast-factory'
 import { parseExpr, parseTemplate } from 'san'
@@ -57,7 +57,7 @@ describe('compilers/san-expr-compiler', () => {
         it('should escape text value by default', () => {
             const e = parseTemplate('{{"<"}}<')
             const exp = e.children[0].textExpr
-            expect(expr(exp, 'html')).toEqual({
+            expect(expr(exp, OutputType.ESCAPE_HTML)).toEqual({
                 kind: SyntaxKind.BinaryExpression,
                 lhs: {
                     kind: SyntaxKind.HelperCall,
@@ -74,7 +74,7 @@ describe('compilers/san-expr-compiler', () => {
         it('should not escape text value if raw specified', () => {
             const e = parseTemplate('{{"\'foo\'" | raw}}')
             const exp = e.children[0].textExpr
-            expect(expr(exp, 'html')).toEqual({
+            expect(expr(exp, OutputType.ESCAPE_HTML)).toEqual({
                 kind: SyntaxKind.HelperCall,
                 name: 'output',
                 args: [

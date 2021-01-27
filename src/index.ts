@@ -13,7 +13,7 @@ export { Emitter } from './utils/emitter'
 export { TypeGuards }
 export { _ } from './runtime/underscore'
 export { SyntaxKind } from './ast/renderer-ast-node'
-export type { Expression, Statement, FunctionDefinition, VariableDefinition, Literal, MapLiteral, ArrayLiteral, UnaryExpression, Foreach, BinaryExpression, SlotRendererDefinition } from './ast/renderer-ast-node'
+export type { Expression, Statement, FunctionDefinition, VariableDefinition, Literal, MapLiteral, ArrayLiteral, UnaryExpression, Foreach, BinaryExpression, SlotRendererDefinition, SlotRenderCall } from './ast/renderer-ast-node'
 export { assertNever } from './utils/lang'
 
 // class types

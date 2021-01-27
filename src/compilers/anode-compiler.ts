@@ -6,7 +6,7 @@ import { ElementCompiler } from './element-compiler'
 import { getANodePropByName } from '../ast/san-ast-util'
 import * as TypeGuards from '../ast/san-type-guards'
 import { IDGenerator } from '../utils/id-generator'
-import { JSONStringify, RegexpReplace, Statement, SlotRendererDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral, ComponentRendererReference, FunctionCall, Expression, GetRootCtxCall, ComponentReferenceLiteral } from '../ast/renderer-ast-node'
+import { JSONStringify, RegexpReplace, Statement, SlotRendererDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral, ComponentRendererReference, FunctionCall, SlotRenderCall, Expression, GetRootCtxCall, ComponentReferenceLiteral } from '../ast/renderer-ast-node'
 import { CTX_DATA, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATEMENT, UNARY, DEF, BINARY, RETURN } from '../ast/renderer-ast-factory'
 import { sanExpr } from '../compilers/san-expr-compiler'
 
@@ -153,7 +153,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
             '||',
             defaultRender
         )))
-        yield createHTMLExpressionAppend(new FunctionCall(render, [I('parentCtx'), slotData]))
+        yield createHTMLExpressionAppend(new SlotRenderCall(render, [I('parentCtx'), slotData]))
     }
 
     private * compileElement (aNode: ANode, isRootElement: boolean): Generator<Statement> {

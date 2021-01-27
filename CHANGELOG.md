@@ -1,3 +1,10 @@
+# [4.4.0](https://github.com/baidu/san-ssr/compare/v4.3.0...v4.4.0) (2021-01-27)
+
+
+### Features
+
+* SlotRenderCall ([8ce69d1](https://github.com/baidu/san-ssr/commit/8ce69d1a568023ea632f2184b41e2671afc275b3))
+
 # [4.3.0](https://github.com/baidu/san-ssr/compare/v4.2.0...v4.3.0) (2021-01-21)
 
 

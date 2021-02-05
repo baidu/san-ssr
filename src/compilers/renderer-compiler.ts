@@ -1,8 +1,8 @@
 import { ANodeCompiler } from './anode-compiler'
 import { ComponentInfo } from '../models/component-info'
 import { RenderOptions } from './renderer-options'
-import { FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper, ComponentReferenceLiteral } from '../ast/renderer-ast-node'
-import { EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL } from '../ast/renderer-ast-factory'
+import { FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper, ComponentReferenceLiteral, ConditionalExpression } from '../ast/renderer-ast-node'
+import { EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL, UNDEFINED } from '../ast/renderer-ast-factory'
 import { IDGenerator } from '../utils/id-generator'
 import { mergeLiteralAdd } from '../optimizers/merge-literal-add'
 
@@ -109,7 +109,7 @@ export class RendererCompiler {
             ),
             createDefaultValue(I('initData'), new MapLiteral([])),
             new Foreach(I('key'), I('value'), I('initData'), [
-                ASSIGN(item, BINARY(item, '||', I('value')))
+                ASSIGN(item, new ConditionalExpression(BINARY(item, '!==', UNDEFINED), item, I('value')))
             ])
         ]
     }

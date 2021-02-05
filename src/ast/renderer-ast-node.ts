@@ -54,9 +54,10 @@ export enum SyntaxKind {
     ComponentReferenceLiteral = 32,
     SlotRendererDefinition = 33,
     SlotRenderCall = 34,
+    Undefined = 35,
 }
 
-export type Expression = Identifier | FunctionDefinition | Literal | BinaryExpression | UnaryExpression | CreateComponentInstance | NewExpression | MapLiteral | ComponentRendererReference | FunctionCall | Null | MapAssign | ArrayIncludes | ConditionalExpression | FilterCall | HelperCall | EncodeURIComponent | ArrayLiteral | RegexpReplace | JSONStringify | ComputedCall | GetRootCtxCall | ComponentReferenceLiteral | SlotRendererDefinition | SlotRenderCall
+export type Expression = Identifier | FunctionDefinition | Literal | BinaryExpression | UnaryExpression | CreateComponentInstance | NewExpression | MapLiteral | ComponentRendererReference | FunctionCall | Null | Undefined | MapAssign | ArrayIncludes | ConditionalExpression | FilterCall | HelperCall | EncodeURIComponent | ArrayLiteral | RegexpReplace | JSONStringify | ComputedCall | GetRootCtxCall | ComponentReferenceLiteral | SlotRendererDefinition | SlotRenderCall
 
 export type Statement = ReturnStatement | ImportHelper | VariableDefinition | AssignmentStatement | If | ElseIf | Else | Foreach | ExpressionStatement
 
@@ -118,6 +119,18 @@ export class Null implements SyntaxNode {
         return Null.instance
     }
 }
+
+export class Undefined implements SyntaxNode {
+    public readonly kind = SyntaxKind.Undefined
+    private static instance = new Undefined()
+
+    private constructor () {}
+
+    static create () {
+        return Undefined.instance
+    }
+}
+
 export class CreateComponentInstance implements SyntaxNode {
     public readonly kind = SyntaxKind.CreateComponentInstance
     constructor (

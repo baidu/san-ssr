@@ -104,6 +104,9 @@ export class JSEmitter extends Emitter {
         case SyntaxKind.Null:
             this.write('null')
             break
+        case SyntaxKind.Undefined:
+            this.write('undefined')
+            break
         case SyntaxKind.NewExpression:
             this.write('new ')
             this.writeSyntaxNode(node.name)

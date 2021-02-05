@@ -1,4 +1,4 @@
-import { MapLiteral, UnaryOperator, UnaryExpression, NewExpression, VariableDefinition, ReturnStatement, BinaryOperator, If, Null, AssignmentStatement, Statement, Expression, Identifier, ExpressionStatement, BinaryExpression, Literal } from './renderer-ast-node'
+import { MapLiteral, UnaryOperator, UnaryExpression, NewExpression, VariableDefinition, ReturnStatement, BinaryOperator, If, Null, Undefined, AssignmentStatement, Statement, Expression, Identifier, ExpressionStatement, BinaryExpression, Literal } from './renderer-ast-node'
 
 export function createHTMLLiteralAppend (html: string) {
     return STATEMENT(BINARY(I('html'), '+=', L(html)))
@@ -33,6 +33,8 @@ export function I (name: string) {
 }
 
 export const NULL = Null.create()
+
+export const UNDEFINED = Undefined.create()
 
 export const CTX_DATA = BINARY(I('ctx'), '.', I('data'))
 

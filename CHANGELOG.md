@@ -1,3 +1,10 @@
+## [4.4.2](https://github.com/baidu/san-ssr/compare/v4.4.1...v4.4.2) (2021-02-05)
+
+
+### Bug Fixes
+
+* initData 初始值为 Falsy 时会赋值成默认值 ([922e718](https://github.com/baidu/san-ssr/commit/922e718dd666b0413d5269cbdec607bc7b31521c))
+
 ## [4.4.1](https://github.com/baidu/san-ssr/compare/v4.4.0...v4.4.1) (2021-01-27)
 
 

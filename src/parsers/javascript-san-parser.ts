@@ -4,7 +4,7 @@ import { Node as AcornNode, parse } from 'acorn'
 import { CallExpression, Program, Node, Class } from 'estree'
 import { generate } from 'astring'
 import { JSComponentInfo } from '../models/component-info'
-import { isVariableDeclarator, isProperty, isAssignmentExpression, isExportDefaultDeclaration, location, isMemberExpression, isObjectExpression, isCallExpression, isIdentifier, getMemberAssignmentsTo, getPropertyFromObject, getPropertiesFromObject, getMembersFromClassDeclaration, isClass, getClassName, getStringValue, isExportsMemberExpression, isRequireSpecifier, findExportNames, isModuleExports, findESMImports, findScriptRequires } from '../ast/js-ast-util'
+import { isVariableDeclarator, isProperty, isAssignmentExpression, isExportDefaultDeclaration, location, isMemberExpression, isObjectExpression, isCallExpression, isIdentifier, isLiteral, getMemberAssignmentsTo, getPropertyFromObject, getPropertiesFromObject, getMembersFromClassDeclaration, isClass, getClassName, getStringValue, isExportsMemberExpression, isRequireSpecifier, findExportNames, isModuleExports, findESMImports, findScriptRequires } from '../ast/js-ast-util'
 import { JSSanSourceFile } from '../models/san-source-file'
 import { componentID, ComponentReference } from '../models/component-reference'
 import { readFileSync } from 'fs'
@@ -72,14 +72,19 @@ export class JavaScriptSanParser {
     wireChildComponents () {
         for (const info of this.componentInfos) {
             for (const [key, value] of info.getComponentsDelcarations()) {
-                info.childComponents.set(key, this.createChildComponentReference(value))
+                info.childComponents.set(key, this.createChildComponentReference(value, info.id))
             }
         }
     }
 
-    private createChildComponentReference (child: Node): ComponentReference {
+    private createChildComponentReference (child: Node, selfId: string): ComponentReference {
         if (this.componentIDs.has(child)) {
             return new ComponentReference('.', this.componentIDs.get(child)!)
+        }
+        // 'self' 指定组件为自身
+        // 用法见 https://baidu.github.io/san/tutorial/component/#components
+        if (isLiteral(child) && child.value === 'self') {
+            return new ComponentReference('.', selfId)
         }
         if (isIdentifier(child)) {
             if (this.imports.has(child.name)) {
@@ -93,7 +98,7 @@ export class JavaScriptSanParser {
             const placeholder = isObjectExpression(options) && getPropertyFromObject(options, 'placeholder')
 
             // placeholder 是一个组件声明或组件的引用
-            if (placeholder) return this.createChildComponentReference(placeholder)
+            if (placeholder) return this.createChildComponentReference(placeholder, selfId)
 
             // placeholder 未定义，生成一个默认的组件
             const cmpt = this.getOrCreateDefaultLoaderComponent()

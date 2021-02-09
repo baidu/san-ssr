@@ -125,6 +125,19 @@ export function getChildComponents (clazz: ClassDeclaration, defaultClassDeclara
     for (const prop of init.getProperties()) {
         if (!TypeGuards.isPropertyAssignment(prop)) throw new Error(`${JSON.stringify(prop.getText())} not supported`)
         const propName = getPropertyAssignmentName(prop)
+        // 判断是否为 'self' 使用自己作为组件
+        // 用法见 https://baidu.github.io/san/tutorial/component/#components
+        const propStringValue = prop.getInitializerIfKind(SyntaxKind.StringLiteral)
+        if (propStringValue) {
+            if (propStringValue.getLiteralValue() !== 'self') {
+                throw new Error(`Invalid component for ${propName}`)
+            }
+            ret.set(propName, new ComponentReference(
+                '.',
+                componentID(clazz.isDefaultExport(), clazz.getName()!)
+            ))
+            continue
+        }
         const childComponentClassName = prop.getInitializerIfKindOrThrow(SyntaxKind.Identifier).getText()
         if (importedNames.has(childComponentClassName)) { // 子组件来自外部源文件
             const { specifier, named } = importedNames.get(childComponentClassName)!

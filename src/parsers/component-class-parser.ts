@@ -53,7 +53,7 @@ export class ComponentClassParser {
         const trimWhitespace = getMember<'none' | 'blank' | 'all'>(componentClass, 'trimWhitespace')
         const delimiters = getMember<[string, string]>(componentClass, 'delimiters')
         const rootANode = parseAndNormalizeTemplate(template, { trimWhitespace, delimiters })
-        const childComponents = this.getChildComponentClasses(componentClass)
+        const childComponents = this.getChildComponentClasses(componentClass, id)
 
         return new DynamicComponentInfo(id, rootANode, childComponents, componentClass)
     }
@@ -61,11 +61,21 @@ export class ComponentClassParser {
     /**
      * 从组件 class 得到子组件 class
      */
-    getChildComponentClasses (parentComponentClass: ComponentClass): Map<string, DynamicComponentReference> {
+    getChildComponentClasses (parentComponentClass: ComponentClass, selfId: string): Map<string, DynamicComponentReference> {
         const children: Map<string, DynamicComponentReference> = new Map()
 
         const components: { [key: string]: ComponentConstructor<{}, {}> } = getMember(parentComponentClass, 'components', {})
         for (const [tagName, componentClass] of Object.entries(components)) {
+            // 'self' 指定组件为自身
+            // 用法见 https://baidu.github.io/san/tutorial/component/#components
+            if (typeof componentClass === 'string' && componentClass === 'self') {
+                children.set(tagName, new DynamicComponentReference(
+                    '.',
+                    selfId,
+                    parentComponentClass
+                ))
+                continue
+            }
             // 可能是空，例如 var Foo = defineComponent({components: {foo: Foo}})
             children.set(tagName, new DynamicComponentReference(
                 '.',

@@ -1,3 +1,10 @@
+# [4.5.0](https://github.com/baidu/san-ssr/compare/v4.4.2...v4.5.0) (2021-02-18)
+
+
+### Features
+
+* 支持 components 属性通过 self 调用自身组件 ([41dda59](https://github.com/baidu/san-ssr/commit/41dda59da083969d05d38bca869db61c306bcd92))
+
 ## [4.4.2](https://github.com/baidu/san-ssr/compare/v4.4.1...v4.4.2) (2021-02-05)
 
 

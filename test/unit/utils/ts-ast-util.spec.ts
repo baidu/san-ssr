@@ -80,6 +80,11 @@ describe('utils/ts-ast-util', function () {
             const file = proj.createSourceFile('foo.ts', 'class B {}; class Foo { components = { B } }')
             expect(() => getChildComponents(file.getClass('Foo'))).toThrow('"B" not supported')
         })
+        it('should throw for invalid string as value', () => {
+            proj.createSourceFile('b.ts', 'export class B {}')
+            const file = proj.createSourceFile('foo.ts', 'import B from \'./b\'; class Foo { components = { b: \'B\' } }')
+            expect(() => getChildComponents(file.getClass('Foo'))).toThrow('Invalid component for b')
+        })
     })
 
     describe('.getPropertyStringValue()', function () {

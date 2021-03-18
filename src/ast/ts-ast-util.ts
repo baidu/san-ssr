@@ -1,4 +1,4 @@
-import type { Node, MethodDeclaration, ShorthandPropertyAssignment, PropertyAssignment, ImportDeclaration, ClassDeclaration, SourceFile } from 'ts-morph'
+import type { Node, MethodDeclaration, ShorthandPropertyAssignment, PropertyAssignment, ImportDeclaration, ClassDeclaration, SourceFile, ObjectLiteralExpression } from 'ts-morph'
 import { TypeGuards, SyntaxKind } from 'ts-morph'
 import debugFactory from 'debug'
 import { TagName } from '../models/component-info'
@@ -35,12 +35,6 @@ export function isChildClassOf (clazz: ClassDeclaration, parentClass: string) {
     if (!typeNode) return false
 
     return true
-}
-
-export function getComponentDeclarations (sourceFile: SourceFile) {
-    const componentClassIdentifier = getComponentClassIdentifier(sourceFile)
-    if (!componentClassIdentifier) return []
-    return sourceFile.getClasses().filter(clazz => isChildClassOf(clazz, componentClassIdentifier))
 }
 
 export function getPropertyStringValue<T extends string> (clazz: ClassDeclaration, memberName: string, defaultValue: T): T;
@@ -91,7 +85,11 @@ function getLiteralText (expr: Node) {
     }
 }
 
-export function getChildComponents (clazz: ClassDeclaration, defaultClassDeclaration?: ClassDeclaration): Map<TagName, ComponentReference> {
+export function getChildComponents (
+    clazz: ClassDeclaration,
+    defaultClassDeclaration: ClassDeclaration | undefined,
+    getComponentClassFromObjectLiteral: (rawObjectExpr: ObjectLiteralExpression) => ClassDeclaration
+): Map<TagName, ComponentReference> {
     const member = clazz.getProperty('components')
     const ret: Map<TagName, ComponentReference> = new Map()
     if (!member) return ret
@@ -135,6 +133,15 @@ export function getChildComponents (clazz: ClassDeclaration, defaultClassDeclara
             ret.set(propName, new ComponentReference(
                 '.',
                 componentID(clazz.isDefaultExport(), clazz.getName()!)
+            ))
+            continue
+        }
+        const propObjectValue = prop.getInitializerIfKind(SyntaxKind.ObjectLiteralExpression)
+        if (propObjectValue) {
+            const clazz = getComponentClassFromObjectLiteral(propObjectValue)
+            ret.set(propName, new ComponentReference(
+                '.',
+                clazz.getName()!
             ))
             continue
         }

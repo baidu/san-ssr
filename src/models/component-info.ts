@@ -97,12 +97,14 @@ export class DynamicComponentInfo extends ComponentInfoImpl<DynamicComponentRefe
 export class JSComponentInfo extends ComponentInfoImpl<ComponentReference> {
     public readonly className: string
     public readonly sourceCode: string
+    public readonly isRawObject: boolean
     private readonly properties: Map<string, Node>
     constructor (
         id: string,
         className: string,
         properties: Map<string, Node>,
-        sourceCode: string
+        sourceCode: string,
+        isRawObject: boolean = false
     ) {
         const template = properties.has('template') ? getLiteralValue(properties.get('template')!) as string : ''
         const trimWhitespace: TrimWhitespace = properties.has('trimWhitespace') ? getLiteralValue(properties.get('trimWhitespace')!) : undefined
@@ -113,6 +115,7 @@ export class JSComponentInfo extends ComponentInfoImpl<ComponentReference> {
         this.className = className
         this.properties = properties
         this.sourceCode = sourceCode
+        this.isRawObject = isRawObject
     }
 
     hasMethod (name: string) {

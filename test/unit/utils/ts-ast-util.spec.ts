@@ -1,4 +1,4 @@
-import { getPropertyStringArrayValue, getComponentDeclarations, getObjectLiteralPropertyKeys, getChildComponents, getPropertyStringValue, getComponentClassIdentifier, isChildClassOf } from '../../../src/ast/ts-ast-util'
+import { getPropertyStringArrayValue, getObjectLiteralPropertyKeys, getChildComponents, getPropertyStringValue, getComponentClassIdentifier, isChildClassOf } from '../../../src/ast/ts-ast-util'
 import { Project } from 'ts-morph'
 
 describe('utils/ts-ast-util', function () {
@@ -143,12 +143,6 @@ describe('utils/ts-ast-util', function () {
         it('should get component class identifier for import as', () => {
             const file = proj.createSourceFile('foo.ts', 'import { Component as SanComponent } from \'san\'')
             expect(getComponentClassIdentifier(file)).toEqual('SanComponent')
-        })
-    })
-    describe('.getComponentDeclarations()', function () {
-        it('should return [] if san.Component not imported', () => {
-            const file = proj.createSourceFile('foo.ts', 'import { resolve } from \'path\'')
-            expect(getComponentDeclarations(file)).toEqual([])
         })
     })
     describe('.isChildClassOf()', function () {

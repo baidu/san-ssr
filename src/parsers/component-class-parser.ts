@@ -47,6 +47,9 @@ export class ComponentClassParser {
         if (isComponentLoader(componentClass)) {
             componentClass = componentClass.placeholder
         }
+        if (typeof componentClass === 'object') {
+            componentClass = defineComponent(componentClass)
+        }
         if (!componentClass) componentClass = defineComponent({ template: '' })
 
         const template = getMember(componentClass, 'template', '')

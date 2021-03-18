@@ -133,8 +133,10 @@ export default class ToJSCompiler implements Compiler {
         emitter.writeLines(sourceFile.getFileContent())
 
         for (const info of sourceFile.componentInfos) {
-            const proto = info.className ? info.className : info.sourceCode
-            emitter.writeLine(`sanSSRResolver.setPrototype("${info.id}", sanSSRHelpers._.createInstanceFromClass(${proto}));`)
+            const proto = info.isRawObject
+                ? info.sourceCode
+                : `sanSSRHelpers._.createInstanceFromClass(${info.className || info.sourceCode})`
+            emitter.writeLine(`sanSSRResolver.setPrototype("${info.id}", ${proto});`)
         }
     }
 

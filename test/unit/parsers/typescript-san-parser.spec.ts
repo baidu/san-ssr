@@ -34,4 +34,35 @@ describe('.parseFromTypeScript()', () => {
         const [info] = sourceFile.componentInfos
         expect(info.classDeclaration.getConstructors()).toHaveLength(0)
     })
+
+    it('should return empty component infos if san.Component not imported', function () {
+        const file = proj.createSourceFile('foo.ts', `
+            import { foo } from 'foo'
+            export class Foo extends Component {
+                foo = 'bar'
+                constructor() {
+                    foo()
+                }
+            }
+        `)
+        const sourceFile = new TypeScriptSanParser().parse(file)
+        expect(sourceFile.componentInfos).toHaveLength(0)
+    })
+
+    it('should throw if prop of literal object is not property assignment', function () {
+        const file = proj.createSourceFile('foo.ts', `
+            import { Component } from 'san'
+            const bar = {
+                template: '<div>bar</div>'
+            }
+            export class MyComponent extends Component {
+                static components = {
+                    'v-bar': { ...bar }
+                }
+            }
+        `)
+        expect(() => {
+            new TypeScriptSanParser().parse(file)
+        }).toThrow()
+    })
 })

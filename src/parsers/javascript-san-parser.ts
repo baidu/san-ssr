@@ -78,6 +78,9 @@ export class JavaScriptSanParser {
     }
 
     private createChildComponentReference (child: Node, selfId: string): ComponentReference {
+        if (isObjectExpression(child)) {
+            this.createComponent(child)
+        }
         if (this.componentIDs.has(child)) {
             return new ComponentReference('.', this.componentIDs.get(child)!)
         }
@@ -166,7 +169,7 @@ export class JavaScriptSanParser {
             : ('SanSSRAnonymousComponent' + this.id++)
         ))
         this.componentIDs.set(node, id)
-        const comp = new JSComponentInfo(id, name, properties, this.stringify(node))
+        const comp = new JSComponentInfo(id, name, properties, this.stringify(node), isObjectExpression(node))
         this.componentInfos.push(comp)
         return comp
     }
@@ -181,6 +184,7 @@ export class JavaScriptSanParser {
 
     private * getPropertiesFromComponentDeclaration (node: Node, name: string) {
         if (this.isComponentClass(node)) yield * getMembersFromClassDeclaration(node as Class)
+        else if (isObjectExpression(node)) yield * getPropertiesFromObject(node)
         else yield * getPropertiesFromObject(node['arguments'][0])
         yield * getMemberAssignmentsTo(this.root, name)
     }

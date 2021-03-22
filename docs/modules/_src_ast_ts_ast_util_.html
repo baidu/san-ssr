@@ -81,7 +81,6 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_src_ast_ts_ast_util_.html#getchildcomponents" class="tsd-kind-icon">get<wbr>Child<wbr>Components</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_src_ast_ts_ast_util_.html#getcomponentclassidentifier" class="tsd-kind-icon">get<wbr>Component<wbr>Class<wbr>Identifier</a></li>
-								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_src_ast_ts_ast_util_.html#getcomponentdeclarations" class="tsd-kind-icon">get<wbr>Component<wbr>Declarations</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-not-exported"><a href="_src_ast_ts_ast_util_.html#getliteraltext" class="tsd-kind-icon">get<wbr>Literal<wbr>Text</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_src_ast_ts_ast_util_.html#getobjectliteralpropertykeys" class="tsd-kind-icon">get<wbr>Object<wbr>Literal<wbr>Property<wbr>Keys</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_src_ast_ts_ast_util_.html#getpropertyassignmentname" class="tsd-kind-icon">get<wbr>Property<wbr>Assignment<wbr>Name</a></li>
@@ -102,7 +101,7 @@
 					<div class="tsd-signature tsd-kind-icon">debug<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Debugger</span><span class="tsd-signature-symbol"> = debugFactory(&#x27;ts-ast-util&#x27;)</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/f15a86a/src/ast/ts-ast-util.ts#L7">src/ast/ts-ast-util.ts:7</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbcce56/src/ast/ts-ast-util.ts#L7">src/ast/ts-ast-util.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -113,13 +112,13 @@
 					<a name="getchildcomponents" class="tsd-anchor"></a>
 					<h3>get<wbr>Child<wbr>Components</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Child<wbr>Components<span class="tsd-signature-symbol">(</span>clazz<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ClassDeclaration</span>, defaultClassDeclaration<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ClassDeclaration</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="_src_models_component_info_.html#tagname" class="tsd-signature-type">TagName</a><span class="tsd-signature-symbol">, </span><a href="../classes/_src_models_component_reference_.componentreference.html" class="tsd-signature-type">ComponentReference</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Child<wbr>Components<span class="tsd-signature-symbol">(</span>clazz<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ClassDeclaration</span>, defaultClassDeclaration<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ClassDeclaration</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span>, getComponentClassFromObjectLiteral<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>rawObjectExpr<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ObjectLiteralExpression</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">ClassDeclaration</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="_src_models_component_info_.html#tagname" class="tsd-signature-type">TagName</a><span class="tsd-signature-symbol">, </span><a href="../classes/_src_models_component_reference_.componentreference.html" class="tsd-signature-type">ComponentReference</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/f15a86a/src/ast/ts-ast-util.ts#L94">src/ast/ts-ast-util.ts:94</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbcce56/src/ast/ts-ast-util.ts#L88">src/ast/ts-ast-util.ts:88</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -128,7 +127,28 @@
 									<h5>clazz: <span class="tsd-signature-type">ClassDeclaration</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> defaultClassDeclaration: <span class="tsd-signature-type">ClassDeclaration</span></h5>
+									<h5>defaultClassDeclaration: <span class="tsd-signature-type">ClassDeclaration</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h5>
+								</li>
+								<li>
+									<h5>getComponentClassFromObjectLiteral: <span class="tsd-signature-symbol">(</span>rawObjectExpr<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ObjectLiteralExpression</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">ClassDeclaration</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-signature">
+											<ul class="tsd-signatures tsd-kind-type-literal">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>rawObjectExpr<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ObjectLiteralExpression</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ClassDeclaration</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>rawObjectExpr: <span class="tsd-signature-type">ObjectLiteralExpression</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ClassDeclaration</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="_src_models_component_info_.html#tagname" class="tsd-signature-type">TagName</a><span class="tsd-signature-symbol">, </span><a href="../classes/_src_models_component_reference_.componentreference.html" class="tsd-signature-type">ComponentReference</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -145,7 +165,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/f15a86a/src/ast/ts-ast-util.ts#L15">src/ast/ts-ast-util.ts:15</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbcce56/src/ast/ts-ast-util.ts#L15">src/ast/ts-ast-util.ts:15</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -155,29 +175,6 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
-					<a name="getcomponentdeclarations" class="tsd-anchor"></a>
-					<h3>get<wbr>Component<wbr>Declarations</h3>
-					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Component<wbr>Declarations<span class="tsd-signature-symbol">(</span>sourceFile<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">SourceFile</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ClassDeclaration</span><span class="tsd-signature-symbol">[]</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/f15a86a/src/ast/ts-ast-util.ts#L40">src/ast/ts-ast-util.ts:40</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>sourceFile: <span class="tsd-signature-type">SourceFile</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ClassDeclaration</span><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -191,7 +188,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/f15a86a/src/ast/ts-ast-util.ts#L88">src/ast/ts-ast-util.ts:88</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbcce56/src/ast/ts-ast-util.ts#L82">src/ast/ts-ast-util.ts:82</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -214,7 +211,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/f15a86a/src/ast/ts-ast-util.ts#L159">src/ast/ts-ast-util.ts:159</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbcce56/src/ast/ts-ast-util.ts#L166">src/ast/ts-ast-util.ts:166</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -240,7 +237,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/f15a86a/src/ast/ts-ast-util.ts#L172">src/ast/ts-ast-util.ts:172</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbcce56/src/ast/ts-ast-util.ts#L179">src/ast/ts-ast-util.ts:179</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -263,7 +260,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/f15a86a/src/ast/ts-ast-util.ts#L75">src/ast/ts-ast-util.ts:75</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbcce56/src/ast/ts-ast-util.ts#L69">src/ast/ts-ast-util.ts:69</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -296,7 +293,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/f15a86a/src/ast/ts-ast-util.ts#L46">src/ast/ts-ast-util.ts:46</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbcce56/src/ast/ts-ast-util.ts#L40">src/ast/ts-ast-util.ts:40</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -322,7 +319,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/f15a86a/src/ast/ts-ast-util.ts#L47">src/ast/ts-ast-util.ts:47</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbcce56/src/ast/ts-ast-util.ts#L41">src/ast/ts-ast-util.ts:41</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -354,7 +351,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/f15a86a/src/ast/ts-ast-util.ts#L9">src/ast/ts-ast-util.ts:9</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbcce56/src/ast/ts-ast-util.ts#L9">src/ast/ts-ast-util.ts:9</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -377,7 +374,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/f15a86a/src/ast/ts-ast-util.ts#L30">src/ast/ts-ast-util.ts:30</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbcce56/src/ast/ts-ast-util.ts#L30">src/ast/ts-ast-util.ts:30</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -416,9 +413,6 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="_src_ast_ts_ast_util_.html#getcomponentclassidentifier" class="tsd-kind-icon">get<wbr>Component<wbr>Class<wbr>Identifier</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="_src_ast_ts_ast_util_.html#getcomponentdeclarations" class="tsd-kind-icon">get<wbr>Component<wbr>Declarations</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
 						<a href="_src_ast_ts_ast_util_.html#getliteraltext" class="tsd-kind-icon">get<wbr>Literal<wbr>Text</a>

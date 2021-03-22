@@ -1,3 +1,10 @@
+# [4.6.0](https://github.com/baidu/san-ssr/compare/v4.5.0...v4.6.0) (2021-03-22)
+
+
+### Features
+
+* support object literal as component ([dbcce56](https://github.com/baidu/san-ssr/commit/dbcce56592ec34e2e147d5c8a8d253792b14cd36))
+
 # [4.5.0](https://github.com/baidu/san-ssr/compare/v4.4.2...v4.5.0) (2021-02-18)
 
 

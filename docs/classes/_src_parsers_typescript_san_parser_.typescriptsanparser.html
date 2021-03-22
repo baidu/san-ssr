@@ -91,6 +91,7 @@
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_typescript_san_parser_.typescriptsanparser.html#convertobjectliteraltoclassdeclaration" class="tsd-kind-icon">convert<wbr>Object<wbr>Literal<wbr>ToClass<wbr>Declaration</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_src_parsers_typescript_san_parser_.typescriptsanparser.html#parse" class="tsd-kind-icon">parse</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_src_parsers_typescript_san_parser_.typescriptsanparser.html#parsecomponentclassdeclaration" class="tsd-kind-icon">parse<wbr>Component<wbr>Class<wbr>Declaration</a></li>
 							</ul>
@@ -100,6 +101,32 @@
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="convertobjectliteraltoclassdeclaration" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> convert<wbr>Object<wbr>Literal<wbr>ToClass<wbr>Declaration</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">convert<wbr>Object<wbr>Literal<wbr>ToClass<wbr>Declaration<span class="tsd-signature-symbol">(</span>rawObjectExpr<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ObjectLiteralExpression</span>, className<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ClassDeclaration</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbcce56/src/parsers/typescript-san-parser.ts#L73">src/parsers/typescript-san-parser.ts:73</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>rawObjectExpr: <span class="tsd-signature-type">ObjectLiteralExpression</span></h5>
+								</li>
+								<li>
+									<h5>className: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ClassDeclaration</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="parse" class="tsd-anchor"></a>
 					<h3>parse</h3>
@@ -110,7 +137,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/f15a86a/src/parsers/typescript-san-parser.ts#L16">src/parsers/typescript-san-parser.ts:16</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbcce56/src/parsers/typescript-san-parser.ts#L17">src/parsers/typescript-san-parser.ts:17</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -127,13 +154,13 @@
 					<a name="parsecomponentclassdeclaration" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> parse<wbr>Component<wbr>Class<wbr>Declaration</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">parse<wbr>Component<wbr>Class<wbr>Declaration<span class="tsd-signature-symbol">(</span>classDeclaration<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ClassDeclaration</span>, defaultClassDeclaration<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">ClassDeclaration</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_models_component_info_.typedcomponentinfo.html" class="tsd-signature-type">TypedComponentInfo</a></li>
+						<li class="tsd-signature tsd-kind-icon">parse<wbr>Component<wbr>Class<wbr>Declaration<span class="tsd-signature-symbol">(</span>classDeclaration<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ClassDeclaration</span>, defaultClassDeclaration<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ClassDeclaration</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span>, createClassFromObjectLiteral<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ObjectLiteralExpression</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">ClassDeclaration</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_models_component_info_.typedcomponentinfo.html" class="tsd-signature-type">TypedComponentInfo</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/f15a86a/src/parsers/typescript-san-parser.ts#L23">src/parsers/typescript-san-parser.ts:23</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/dbcce56/src/parsers/typescript-san-parser.ts#L49">src/parsers/typescript-san-parser.ts:49</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -142,7 +169,28 @@
 									<h5>classDeclaration: <span class="tsd-signature-type">ClassDeclaration</span></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> defaultClassDeclaration: <span class="tsd-signature-type">ClassDeclaration</span></h5>
+									<h5>defaultClassDeclaration: <span class="tsd-signature-type">ClassDeclaration</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h5>
+								</li>
+								<li>
+									<h5>createClassFromObjectLiteral: <span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ObjectLiteralExpression</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">ClassDeclaration</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-signature">
+											<ul class="tsd-signatures tsd-kind-type-literal">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ObjectLiteralExpression</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ClassDeclaration</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-parameters-title">Parameters</h4>
+													<ul class="tsd-parameters">
+														<li>
+															<h5>obj: <span class="tsd-signature-type">ObjectLiteralExpression</span></h5>
+														</li>
+													</ul>
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">ClassDeclaration</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_src_models_component_info_.typedcomponentinfo.html" class="tsd-signature-type">TypedComponentInfo</a></h4>
@@ -169,6 +217,9 @@
 					<li class="current tsd-kind-class tsd-parent-kind-module">
 						<a href="_src_parsers_typescript_san_parser_.typescriptsanparser.html" class="tsd-kind-icon">Type<wbr>Script<wbr>San<wbr>Parser</a>
 						<ul>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_src_parsers_typescript_san_parser_.typescriptsanparser.html#convertobjectliteraltoclassdeclaration" class="tsd-kind-icon">convert<wbr>Object<wbr>Literal<wbr>ToClass<wbr>Declaration</a>
+							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_src_parsers_typescript_san_parser_.typescriptsanparser.html#parse" class="tsd-kind-icon">parse</a>
 							</li>

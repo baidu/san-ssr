@@ -21,9 +21,38 @@ function normalizeRootANode (rootANode: ANode) {
         normalizeRootATemplateNode(rootANode)
     }
 
+    let hasClassProp = false
+    let hasStyleProp = false
+    let hasIdProp = false
     for (const prop of rootANode.props || []) {
-        if (prop.name === 'class') normalizeRootClassProp(prop)
-        else if (prop.name === 'style') normalizeRootStyleProp(prop)
+        if (prop.name === 'class') {
+            hasClassProp = true
+            normalizeRootClassProp(prop)
+        } else if (prop.name === 'style') {
+            hasStyleProp = true
+            normalizeRootStyleProp(prop)
+        } else if (prop.name === 'id') {
+            hasIdProp = true
+        }
+    }
+
+    let appendPropsTemplate = '<div'
+    let shouldAppendProps = false
+    if (!hasClassProp) {
+        shouldAppendProps = true
+        appendPropsTemplate += ' class="{{class | _xclass}}"'
+    }
+    if (!hasStyleProp) {
+        shouldAppendProps = true
+        appendPropsTemplate += ' style="{{style | _xstyle}}"'
+    }
+    if (!hasIdProp) {
+        shouldAppendProps = true
+        appendPropsTemplate += ' id="{{id}}"'
+    }
+    if (shouldAppendProps && rootANode.props) {
+        appendPropsTemplate += '></div>'
+        rootANode.props.push(...parseTemplate(appendPropsTemplate).children![0].props)
     }
 
     visitANodeRecursively(rootANode, (aNode: ANode) => {

@@ -1,3 +1,10 @@
+## [4.6.1](https://github.com/baidu/san-ssr/compare/v4.6.0...v4.6.1) (2021-03-30)
+
+
+### Bug Fixes
+
+* 子组件未定义的 props 没有继承自父组件 close [#94](https://github.com/baidu/san-ssr/issues/94) ([e6ece33](https://github.com/baidu/san-ssr/commit/e6ece33fbee6480ce3716f7064e2b0d94539a9d3))
+
 # [4.6.0](https://github.com/baidu/san-ssr/compare/v4.5.0...v4.6.0) (2021-03-22)
 
 

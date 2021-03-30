@@ -89,7 +89,7 @@ describe('SanProject', function () {
                 `
             })
 
-            expect(code).toContain('html += "<div>"')
+            expect(code).toContain('html += "<div"')
             expect(code).toContain('html += _.output(ctx.data.name, true)')
             expect(code).toContain('html += "</div>"')
         })

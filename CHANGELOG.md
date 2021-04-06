@@ -1,3 +1,10 @@
+## [4.6.2](https://github.com/baidu/san-ssr/compare/v4.6.1...v4.6.2) (2021-04-06)
+
+
+### Bug Fixes
+
+* getMember 属性值为 Falsy 时返回 defaultValue ([609401f](https://github.com/baidu/san-ssr/commit/609401fe84e84a519789c7e5d0d2bcb2b28b39da))
+
 ## [4.6.1](https://github.com/baidu/san-ssr/compare/v4.6.0...v4.6.1) (2021-03-30)
 
 

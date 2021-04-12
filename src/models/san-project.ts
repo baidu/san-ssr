@@ -94,7 +94,7 @@ export class SanProject {
     ): Renderer {
         const sanSourceFile = new ComponentClassParser(componentClass, '').parse()
         const compiler = this.getOrCreateCompilerInstance(ToJSCompiler)
-        return compiler.compileToRenderer(sanSourceFile, options)
+        return compiler.compileToRenderer(sanSourceFile, { ...options, initDataInRuntime: true })
     }
 
     /**

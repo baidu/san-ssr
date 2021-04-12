@@ -49,7 +49,7 @@ export default class ToJSCompiler implements Compiler {
      * @param sourceFile 解析过的 San 源文件
      * @param ssrOnly 只在服务端渲染，客户端无法反解，可用来减少渲染标记
      */
-    public compileToRenderer (sourceFile: DynamicSanSourceFile, options: RenderOptions = {}): Renderer {
+    public compileToRenderer (sourceFile: DynamicSanSourceFile, options: RenderOptions): Renderer {
         const { componentInfos, entryComponentInfo } = sourceFile
         const sanSSRHelpers = createHelpers()
         const sanSSRResolver = sanSSRHelpers.createResolver({}, require)

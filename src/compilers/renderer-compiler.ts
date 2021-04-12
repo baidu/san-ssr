@@ -41,10 +41,14 @@ export class RendererCompiler {
 
         // instance preraration
         if (info.hasMethod('initData')) {
-            body.push(...(info.initData
-                ? this.emitInitDataInCompileTime(info.initData())
-                : this.emitInitDataInRuntime())
-            )
+            if (this.options.initDataInRuntime) {
+                body.push(...this.emitInitDataInRuntime())
+            } else {
+                body.push(...(info.initData
+                    ? this.emitInitDataInCompileTime(info.initData())
+                    : this.emitInitDataInRuntime())
+                )
+            }
         }
 
         // call inited

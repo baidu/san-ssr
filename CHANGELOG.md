@@ -3,28 +3,28 @@
 
 ### Bug Fixes
 
-* initData() 返回值不是字面量时序列化结果不正确的问题, close [#99](https://github.com/baidu/san-ssr/issues/99) ([17c2256](https://github.com/baidu/san-ssr/commit/17c2256ef5c25cded21d4bb4bdf029cb4640aa3f))
+* 修复 initData() 返回值不是字面量时序列化结果不正确的问题, close [#99](https://github.com/baidu/san-ssr/issues/99) ([17c2256](https://github.com/baidu/san-ssr/commit/17c2256ef5c25cded21d4bb4bdf029cb4640aa3f))
 
 ## [4.6.2](https://github.com/baidu/san-ssr/compare/v4.6.1...v4.6.2) (2021-04-06)
 
 
 ### Bug Fixes
 
-* getMember 属性值为 Falsy 时返回 defaultValue ([609401f](https://github.com/baidu/san-ssr/commit/609401fe84e84a519789c7e5d0d2bcb2b28b39da))
+* 修复 class 属性为 falsy 时直接取了默认值的问题 ([609401f](https://github.com/baidu/san-ssr/commit/609401fe84e84a519789c7e5d0d2bcb2b28b39da))
 
 ## [4.6.1](https://github.com/baidu/san-ssr/compare/v4.6.0...v4.6.1) (2021-03-30)
 
 
 ### Bug Fixes
 
-* 子组件未定义的 props 没有继承自父组件 close [#94](https://github.com/baidu/san-ssr/issues/94) ([e6ece33](https://github.com/baidu/san-ssr/commit/e6ece33fbee6480ce3716f7064e2b0d94539a9d3))
+* 修复子组件未定义 attribute 时父组件无法指定的问题, close [#94](https://github.com/baidu/san-ssr/issues/94) ([e6ece33](https://github.com/baidu/san-ssr/commit/e6ece33fbee6480ce3716f7064e2b0d94539a9d3))
 
 # [4.6.0](https://github.com/baidu/san-ssr/compare/v4.5.0...v4.6.0) (2021-03-22)
 
 
 ### Features
 
-* support object literal as component ([dbcce56](https://github.com/baidu/san-ssr/commit/dbcce56592ec34e2e147d5c8a8d253792b14cd36))
+* 支持对象字面量形式的子组件 ([dbcce56](https://github.com/baidu/san-ssr/commit/dbcce56592ec34e2e147d5c8a8d253792b14cd36))
 
 # [4.5.0](https://github.com/baidu/san-ssr/compare/v4.4.2...v4.5.0) (2021-02-18)
 
@@ -38,7 +38,7 @@
 
 ### Bug Fixes
 
-* initData 初始值为 Falsy 时会赋值成默认值 ([922e718](https://github.com/baidu/san-ssr/commit/922e718dd666b0413d5269cbdec607bc7b31521c))
+* 修复 initData 初始值为 falsy 时会赋值成默认值的问题 ([922e718](https://github.com/baidu/san-ssr/commit/922e718dd666b0413d5269cbdec607bc7b31521c))
 
 ## [4.4.1](https://github.com/baidu/san-ssr/compare/v4.4.0...v4.4.1) (2021-01-27)
 
@@ -52,7 +52,7 @@
 
 ### Features
 
-* SlotRenderCall ([8ce69d1](https://github.com/baidu/san-ssr/commit/8ce69d1a568023ea632f2184b41e2671afc275b3))
+* renderer AST 提供 SlotRenderCall 结构 ([8ce69d1](https://github.com/baidu/san-ssr/commit/8ce69d1a568023ea632f2184b41e2671afc275b3))
 
 # [4.3.0](https://github.com/baidu/san-ssr/compare/v4.2.0...v4.3.0) (2021-01-21)
 
@@ -66,107 +66,100 @@
 
 ### Features
 
-* GetRootCtxCall, ComponentReferenceLiteral, SlotRendererDefinition ([3a26e0a](https://github.com/baidu/san-ssr/commit/3a26e0a070307d1b378337b1ee1c5519af373267))
+* renderer AST 提供 GetRootCtxCall, ComponentReferenceLiteral, SlotRendererDefinition 结构 ([3a26e0a](https://github.com/baidu/san-ssr/commit/3a26e0a070307d1b378337b1ee1c5519af373267))
 
 ## [4.1.1](https://github.com/baidu/san-ssr/compare/v4.1.0...v4.1.1) (2020-12-18)
 
 
 ### Performance Improvements
 
-* flyweight syntax nodes ([7ae19b7](https://github.com/baidu/san-ssr/commit/7ae19b7ff1d128f2a58a65ddbe21265be68ea8e9))
+* 语法结点采用 flyweight 设计 ([7ae19b7](https://github.com/baidu/san-ssr/commit/7ae19b7ff1d128f2a58a65ddbe21265be68ea8e9))
 * 系统性地合并 html += <Literal> 语句 ([4f145b3](https://github.com/baidu/san-ssr/commit/4f145b30aff246a6a2da7138e3e943a901e6d0da))
-* 系统性地改 [] notation 为 . notation ([2fed822](https://github.com/baidu/san-ssr/commit/2fed8221ce66e51aff961413f475e04fd83bfc8d))
+* 系统性地改 \[\] notation 为 . notation ([2fed822](https://github.com/baidu/san-ssr/commit/2fed8221ce66e51aff961413f475e04fd83bfc8d))
 
 # [4.1.0](https://github.com/baidu/san-ssr/compare/v4.0.3...v4.1.0) (2020-12-07)
 
 
 ### Features
 
-* emitHelpers ([0cd221f](https://github.com/baidu/san-ssr/commit/0cd221f01a504344c849f9fd188ac8b94a387d93))
-* s-data 注释转义特殊字符消除 XSS 隐患 ([c29c22f](https://github.com/baidu/san-ssr/commit/c29c22fe91232abb3a9badb73b4f752d28e57569))
+* 提供 emitHelpers 来单独产出运行时工具库 ([0cd221f](https://github.com/baidu/san-ssr/commit/0cd221f01a504344c849f9fd188ac8b94a387d93))
+* 转义 s-data 注释中的特殊字符，消除 XSS 隐患 ([c29c22f](https://github.com/baidu/san-ssr/commit/c29c22fe91232abb3a9badb73b4f752d28e57569))
 
 ## [4.0.3](https://github.com/baidu/san-ssr/compare/v4.0.2...v4.0.3) (2020-11-20)
 
 
 ### Bug Fixes
 
-* script 内容跳过转义，见 [#73](https://github.com/baidu/san-ssr/issues/73) ([3ea06a4](https://github.com/baidu/san-ssr/commit/3ea06a4b0b66b367513541b9903e8d422e8d87ce))
+* 修复 script 内容也错误地过了 HTML 转义的问题，见 [#73](https://github.com/baidu/san-ssr/issues/73) ([3ea06a4](https://github.com/baidu/san-ssr/commit/3ea06a4b0b66b367513541b9903e8d422e8d87ce))
 
 ## [4.0.2](https://github.com/baidu/san-ssr/compare/v4.0.1...v4.0.2) (2020-11-11)
 
 
 ### Bug Fixes
 
-* add estree type (which is exported) as a dependency ([e8d0f90](https://github.com/baidu/san-ssr/commit/e8d0f9037ca2998b7c8b74b00c6362b4e11eef4c))
+* 添加 estree type (被 san-ssr export 了) 作为依赖 ([e8d0f90](https://github.com/baidu/san-ssr/commit/e8d0f9037ca2998b7c8b74b00c6362b4e11eef4c))
 
 ## [4.0.1](https://github.com/baidu/san-ssr/compare/v4.0.0...v4.0.1) (2020-11-09)
 
 
 ### Bug Fixes
 
-* move all render functions to exports.sanSSRRenders ([74536c9](https://github.com/baidu/san-ssr/commit/74536c901656ce64e2275ebdbc94cef415b8ee03))
+* 所有 render 函数都统一通过 exports.sanSSRRenders 暴露出来 ([74536c9](https://github.com/baidu/san-ssr/commit/74536c901656ce64e2275ebdbc94cef415b8ee03))
 
 # [4.0.0](https://github.com/baidu/san-ssr/compare/v3.0.1...v4.0.0) (2020-11-05)
 
 
 ### Documentation
 
-* more use cases in demo/ ([17e19d2](https://github.com/baidu/san-ssr/commit/17e19d25ef1ea5b03657e704db77d117afc12186))
+* demo/ 下添加更多用例 ([17e19d2](https://github.com/baidu/san-ssr/commit/17e19d25ef1ea5b03657e704db77d117afc12186))
 
 
 ### Features
 
-* is directive ([f8c2b81](https://github.com/baidu/san-ssr/commit/f8c2b81fe175b44a147a1ab24da0419316a9ccbe))
-* JSSanSourceFile ([549531e](https://github.com/baidu/san-ssr/commit/549531ed4c491b6a64e1196f1b37f06eace462bf))
-* SanFileParser ([50c7387](https://github.com/baidu/san-ssr/commit/50c7387a6ca99855ed32e15d47a888a5001e1733))
-* support s-is, see https://github.com/baidu/san/issues/533 ([df78670](https://github.com/baidu/san-ssr/commit/df786702ea1654a6b6c537790ec148b1cdd1423b))
+* 支持 s-is 指令，见 https://github.com/baidu/san/issues/533 ([f8c2b81](https://github.com/baidu/san-ssr/commit/f8c2b81fe175b44a147a1ab24da0419316a9ccbe))
+* 提供 JSSanSourceFile 抽象 ([549531e](https://github.com/baidu/san-ssr/commit/549531ed4c491b6a64e1196f1b37f06eace462bf))
+* 提供 SanFileParser 工具 ([50c7387](https://github.com/baidu/san-ssr/commit/50c7387a6ca99855ed32e15d47a888a5001e1733))
 
 
 ### BREAKING CHANGES
 
-* 不再支持 getComponentType
-* SanSourceFile ComponentInfo 类型有变
+* San 组件中，不再支持定义 getComponentType 方法
+* SanSourceFile ComponentInfo 类型有变化
 
 ## [3.0.1](https://github.com/baidu/san-ssr/compare/v3.0.0...v3.0.1) (2020-08-27)
 
 
 ### Bug Fixes
 
-* undefined/null should be output as "" ([37e91b2](https://github.com/baidu/san-ssr/commit/37e91b2e47250030642bd1d900267bde419196c1))
+* undefined/null 值应该输出为 "" ([37e91b2](https://github.com/baidu/san-ssr/commit/37e91b2e47250030642bd1d900267bde419196c1))
 
 # [3.0.0](https://github.com/baidu/san-ssr/compare/v2.2.4...v3.0.0) (2020-08-04)
 
-
-### Bug Fixes
-
-* trigger release ([815ae66](https://github.com/baidu/san-ssr/commit/815ae66c1d51fa6478491f2339359c8dad04a551))
-
-
 ### BREAKING CHANGES
 
-* dependencies including ts-morph are all upgraded
+* 升级所有依赖，包括 ts-morph 版本（它也用于 ts2php）
 
 ## [2.2.4](https://github.com/baidu/san-ssr/compare/v2.2.3...v2.2.4) (2020-07-31)
 
 
 ### Bug Fixes
 
-* 输入为 TypeScript 时不调用构造函数 ([40bf654](https://github.com/baidu/san-ssr/commit/40bf654054f75b25e6a9782dea55f23644602662))
+* 修复输入为 TypeScript 时不调用构造函数的问题 ([40bf654](https://github.com/baidu/san-ssr/commit/40bf654054f75b25e6a9782dea55f23644602662))
 
 ## [2.2.3](https://github.com/baidu/san-ssr/compare/v2.2.2...v2.2.3) (2020-07-27)
 
 
 ### Bug Fixes
 
-* rename ComponentReference#relativeFilePath->specifier ([adda06b](https://github.com/baidu/san-ssr/commit/adda06bab887a499d90b3e5b1a381df49bc1597f))
-* 根元素为组件时，s-data 不正确的问题 ([fd87852](https://github.com/baidu/san-ssr/commit/fd878523181170d035b700edf7137ecc1f7421ff))
+* 重命名 ComponentReference#relativeFilePath 为 specifier ([adda06b](https://github.com/baidu/san-ssr/commit/adda06bab887a499d90b3e5b1a381df49bc1597f))
+* 修复根元素为组件时，s-data 不正确的问题 ([fd87852](https://github.com/baidu/san-ssr/commit/fd878523181170d035b700edf7137ecc1f7421ff))
 
 ## [2.2.2](https://github.com/baidu/san-ssr/compare/v2.2.1...v2.2.2) (2020-07-16)
 
 
 ### Bug Fixes
 
-* trimWhitespace and delimiters, see https://baidu.github.io/san/doc/api/#trimWhitespace ([ca9be69](https://github.com/baidu/san-ssr/commit/ca9be698fa4f7b17071e6fb4e5fbf5c435b38a78))
+* 支持了 trimWhitespace 和 delimiters，见 https://baidu.github.io/san/doc/api/#trimWhitespace ([ca9be69](https://github.com/baidu/san-ssr/commit/ca9be698fa4f7b17071e6fb4e5fbf5c435b38a78))
 
 ## [2.2.1](https://github.com/baidu/san-ssr/compare/v2.2.0...v2.2.1) (2020-07-10)
 
@@ -180,7 +173,7 @@
 
 ### Features
 
-* support san@3.9.0 ([5de18cc](https://github.com/baidu/san-ssr/commit/5de18ccbcda62f695ea078ba68c066453aaa77cb))
+* 支持 san@3.9.0 ([5de18cc](https://github.com/baidu/san-ssr/commit/5de18ccbcda62f695ea078ba68c066453aaa77cb))
 
 # [2.1.0](https://github.com/baidu/san-ssr/compare/v2.0.1...v2.1.0) (2020-07-03)
 

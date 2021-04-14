@@ -1,3 +1,10 @@
+## [4.6.3](https://github.com/baidu/san-ssr/compare/v4.6.2...v4.6.3) (2021-04-14)
+
+
+### Bug Fixes
+
+* initData() 返回值不是字面量时序列化结果不正确的问题, close [#99](https://github.com/baidu/san-ssr/issues/99) ([17c2256](https://github.com/baidu/san-ssr/commit/17c2256ef5c25cded21d4bb4bdf029cb4640aa3f))
+
 ## [4.6.2](https://github.com/baidu/san-ssr/compare/v4.6.1...v4.6.2) (2021-04-06)
 
 

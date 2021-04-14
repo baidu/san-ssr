@@ -41,10 +41,7 @@ export class RendererCompiler {
 
         // instance preraration
         if (info.hasMethod('initData')) {
-            body.push(...(info.initData
-                ? this.emitInitDataInCompileTime(info.initData())
-                : this.emitInitDataInRuntime())
-            )
+            body.push(...this.emitInitData())
         }
 
         // call inited
@@ -90,16 +87,7 @@ export class RendererCompiler {
         ]
     }
 
-    private emitInitDataInCompileTime (initData: any) {
-        const defaultData = initData || {}
-        return Object.entries(defaultData).map(([key, value]) => {
-            const item = BINARY(I('data'), '[]', L(key))
-            const rhs = BINARY(item, '||', L(value))
-            return ASSIGN(item, rhs)
-        })
-    }
-
-    private emitInitDataInRuntime () {
+    private emitInitData () {
         const item = BINARY(BINARY(I('ctx'), '.', I('data')), '[]', I('key'))
 
         return [

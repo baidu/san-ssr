@@ -19,7 +19,6 @@ export interface ComponentInfo {
     root: ANode,
     childComponents: Map<TagName, ComponentReference>
     hasMethod (name: string): boolean
-    initData?(): any,
     getComputedNames (): string[]
     getFilterNames (): string[]
     hasDynamicComponent (): boolean
@@ -75,10 +74,6 @@ export class DynamicComponentInfo extends ComponentInfoImpl<DynamicComponentRefe
     ) {
         super(id, root, childComponents)
         this.proto = Object.assign(componentClass.prototype, componentClass)
-    }
-
-    initData () {
-        return this.proto.initData ? this.proto.initData.call({}) : {}
     }
 
     hasMethod (name: string) {

@@ -44,13 +44,6 @@ describe('DynamicComponentInfo', function () {
         const info = new DynamicComponentInfo('id', null as ANode, new Map(), component)
         expect(info.getFilterNames()).toEqual([])
     })
-    describe('#initData()', () => {
-        it('should return {} when proto.initData() not defined', () => {
-            const component = defineComponent({})
-            const info = new DynamicComponentInfo('id', null as ANode, new Map(), component)
-            expect(info.initData()).toEqual({})
-        })
-    })
 })
 
 describe('JSComponentInfo', function () {

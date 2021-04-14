@@ -46,8 +46,11 @@ export default class ToJSCompiler implements Compiler {
     /**
      * 编译到 JS Render 函数
      *
+     * 注意：只支持 DynamicSanSourceFile，san-ssr 只对组件代码进行静态的编译，
+     * 不会托管并执行组件代码，因此你需要把执行得到的入口组件传给 san-ssr。
+     *
      * @param sourceFile 解析过的 San 源文件
-     * @param ssrOnly 只在服务端渲染，客户端无法反解，可用来减少渲染标记
+     * @param options 渲染参数
      */
     public compileToRenderer (sourceFile: DynamicSanSourceFile, options: RenderOptions = {}): Renderer {
         const { componentInfos, entryComponentInfo } = sourceFile

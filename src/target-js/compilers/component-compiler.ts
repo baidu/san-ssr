@@ -1,3 +1,6 @@
+/**
+ * 把 DynamicComponentInfo（从 Component Class 来）输出为 JavaScript 源代码
+ */
 import { isFunction } from 'lodash'
 import { COMPONENT_RESERVED_MEMBERS } from '../../models/component'
 import { functionString } from '../../utils/lang'

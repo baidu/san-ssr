@@ -1,4 +1,4 @@
-import { Literal, Foreach, FunctionDefinition, ArrayLiteral, UnaryExpression, MapLiteral, Statement, SyntaxKind, Expression, VariableDefinition, SlotRendererDefinition } from '../ast/renderer-ast-node'
+import { Literal, Foreach, FunctionDefinition, ArrayLiteral, UnaryExpression, MapLiteral, Statement, SyntaxKind, Expression, VariableDefinition, SlotRendererDefinition } from '../ast/renderer-ast-dfn'
 import { Emitter } from '../utils/emitter'
 import { assertNever } from '../utils/lang'
 

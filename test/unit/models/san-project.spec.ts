@@ -152,23 +152,23 @@ describe('SanProject', function () {
             expect(code).toContain('require("bar")')
         })
     })
-    describe('.loadCompilerClassByTarget()', () => {
+    describe('.getOrCreateTargetCodeGenerator()', () => {
         let proj: SanProject
         beforeEach(() => { proj = new SanProject() })
         it('should return compiler for target-js', () => {
-            const compiler = proj.loadCompilerClass('js')
-            expect(compiler.name).toEqual('ToJSCompiler')
+            const compiler = proj.getOrCreateTargetCodeGenerator('js')
+            expect(compiler.constructor.name).toEqual('ToJSCompiler')
         })
         it('should find compiler if installed (ESM)', () => {
-            const compiler = proj.loadCompilerClass('fake-esm')
-            expect(compiler.name).toEqual('FakeESM')
+            const compiler = proj.getOrCreateTargetCodeGenerator('fake-esm')
+            expect(compiler.constructor.name).toEqual('FakeESM')
         })
         it('should find compiler if installed (CMD)', () => {
-            const compiler = proj.loadCompilerClass('fake-cmd')
-            expect(compiler.name).toEqual('FakeCMD')
+            const compiler = proj.getOrCreateTargetCodeGenerator('fake-cmd')
+            expect(compiler.constructor.name).toEqual('FakeCMD')
         })
         it('should throw if compiler not found', () => {
-            expect(() => proj.loadCompilerClass('rust'))
+            expect(() => proj.getOrCreateTargetCodeGenerator('rust'))
                 .toThrow('failed to load "san-ssr-target-rust"')
         })
     })

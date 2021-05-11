@@ -1,3 +1,11 @@
+/**
+ * Renderer AST 的节点定义
+ *
+ * compileToRenderer 不是直接输出具体的代码，而是先输出表示代码的 AST，再用 AST 生成代码。这么做有两个好处：
+ * 1. 在代码生成之前，方便做统一的优化（比如移除一些没用的语句、合并 += 表达式等）
+ * 2. 支持对接不同的代码生成。比如 Renderer AST -> PHP 代码的生成器：https://github.com/searchfe/san-ssr-target-php
+ */
+
 import { ComponentInfo } from '../models/component-info'
 import type { ComponentReference } from '../models/component-reference'
 

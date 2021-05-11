@@ -1,3 +1,15 @@
+/**
+ * San 项目
+ *
+ * 一个 SanProject 实例表示一个 San 项目，同一个项目中多次编译可以复用一些已经建立好的对象。
+ * 尤其对于从 TypeScript 源码开始 SSR 的情况，多次编译之间，整个 TypeScript 项目里的所有（包括类型）文件是可以缓存的。
+ *
+ * 对使用者建议如下：
+ *
+ * 1. 简单的 SSR 可以直接用 src/index.ts 里的 compileToRenderer 和 compileToSource。
+ * 2. 复杂的编译过程建议使用 SanProject，它提供了更精细的 API。上述两个 API 其实是 SanProject 一个包装。
+ */
+
 import type { ComponentConstructor } from 'san'
 import assert from 'assert'
 import { Project } from 'ts-morph'
@@ -12,19 +24,18 @@ import { CompileOptions } from '../target-js/compilers/compile-options'
 import { RenderOptions } from '../compilers/renderer-options'
 import { Renderer } from './renderer'
 import { getDefaultTSConfigPath } from '../parsers/tsconfig'
-import { Compiler } from '../models/compiler'
+import { TargetCodeGenerator } from '../models/target-code-generator'
 import { isFileDescriptor, isSanFileDescriptor, isComponentClass, ComponentClass, FileDescriptor, CompileInput } from './options'
 
-type CompilerClass<T extends Compiler = Compiler> = { new(project: SanProject): T }
+type TargetCodeGeneratorClass<T extends TargetCodeGenerator = TargetCodeGenerator> = { new(project: SanProject): T }
 
 /**
- * A SanProject corresponds to a TypeScript project,
- * which is is a set of source files in a directory using one tsconfig.json.
+ * SanProject 对应于 TypeScript 项目，即 tsconfig.json 及其引用的所有文件构成的集合。
  */
 export class SanProject {
     public tsProject?: Project
 
-    private compilers: Map<CompilerClass, Compiler> = new Map()
+    private compilers: Map<TargetCodeGeneratorClass, TargetCodeGenerator> = new Map()
 
     constructor (public tsConfigFilePath: null | string | undefined = getDefaultTSConfigPath()) {
         if (tsConfigFilePath !== null) {
@@ -36,16 +47,16 @@ export class SanProject {
      * 兼容旧版用法
      * @alias SanProject.compileToSource
      */
-    public compile (input: CompileInput, target: string | CompilerClass = 'js', options = {}) {
+    public compile (input: CompileInput, target: string | TargetCodeGeneratorClass = 'js', options = {}) {
         return this.compileToSource(input, target, options)
     }
 
     /**
      * 源文件/组件类编译到源代码
      */
-    public compileToSource<T extends Compiler> (
+    public compileToSource<T extends TargetCodeGenerator> (
         input: CompileInput,
-        target: string | CompilerClass<T> = 'js',
+        target: string | TargetCodeGeneratorClass<T> = 'js',
         options: RenderOptions = {}
     ) {
         const sanSourceFile = this.parseSanSourceFile(input)
@@ -54,12 +65,15 @@ export class SanProject {
         if (modules && modules.length) {
             removeModules(sanSourceFile, modules)
         }
-        const compiler = this.getOrCreateCompilerInstance(target)
+        const compiler = this.getOrCreateTargetCodeGenerator(target)
         return compiler.compileToSource(sanSourceFile, options)
     }
 
     /**
-     * 源文件/组件类解析为 SanSourceFile
+     * 解析 CompileInput 实例中的 San 相关信息
+     *
+     * CompileInput 可以是 JS、TS 源文件，也可以是组件类，得到的 SanSourceFile 里包含这个文件里
+     * San 相关的信息，比如有多少个组件？每个组件有哪些方法？以及得到 template 对应的 ANode 树。
      */
     public parseSanSourceFile (componentClass: ComponentClass): DynamicSanSourceFile;
     public parseSanSourceFile (fileDescriptor: FileDescriptor): TypedSanSourceFile
@@ -93,7 +107,7 @@ export class SanProject {
         options?: CompileOptions
     ): Renderer {
         const sanSourceFile = new ComponentClassParser(componentClass, '').parse()
-        const compiler = this.getOrCreateCompilerInstance(ToJSCompiler)
+        const compiler = this.getOrCreateTargetCodeGenerator(ToJSCompiler)
         return compiler.compileToRenderer(sanSourceFile, options)
     }
 
@@ -101,7 +115,7 @@ export class SanProject {
      * 输出工具库：组件渲染时需要使用的公共工具。
      */
     public emitHelpers (target: string, options: any = {}) {
-        const compiler = this.getOrCreateCompilerInstance(target)
+        const compiler = this.getOrCreateTargetCodeGenerator(target)
         assert(compiler.emitHelpers, `emit helpers not supported by "${target}"`)
         return compiler.emitHelpers(options)
     }
@@ -110,8 +124,13 @@ export class SanProject {
         return this.tsProject!.getCompilerOptions()
     }
 
-    public getOrCreateCompilerInstance<T extends Compiler = Compiler> (target: string | CompilerClass<T>): T {
-        const CC: CompilerClass<T> = this.loadCompilerClass(target)
+    /**
+     * 得到目标代码生成器的实例
+     *
+     * 如果不存在就去加载一个，如果已经加载过就把它存起来。
+     */
+    public getOrCreateTargetCodeGenerator<T extends TargetCodeGenerator = TargetCodeGenerator> (target: string | TargetCodeGeneratorClass<T>): T {
+        const CC: TargetCodeGeneratorClass<T> = this.loadTargetCodeGenerator(target)
 
         if (!this.compilers.has(CC)) {
             this.compilers.set(CC, new CC(this))
@@ -119,7 +138,13 @@ export class SanProject {
         return this.compilers.get(CC) as T
     }
 
-    public loadCompilerClass (target: string | CompilerClass) {
+    /**
+     * 加载目标代码生成器
+     *
+     * 如果是 san-ssr-target-js，直接从当前仓库的子目录下加载。
+     * 如果是其他的 target，用 require.resolve 来找。
+     */
+    private loadTargetCodeGenerator (target: string | TargetCodeGeneratorClass) {
         if (typeof target !== 'string') return target
 
         const name = `san-ssr-target-${target}`

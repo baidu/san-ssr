@@ -1,3 +1,8 @@
+/**
+ * TypeScript 语法树的操作工具
+ *
+ * 语法树 Spec: https://ts-morph.com/
+ */
 import type { Node, MethodDeclaration, ShorthandPropertyAssignment, PropertyAssignment, ImportDeclaration, ClassDeclaration, SourceFile, ObjectLiteralExpression } from 'ts-morph'
 import { TypeGuards, SyntaxKind } from 'ts-morph'
 import debugFactory from 'debug'

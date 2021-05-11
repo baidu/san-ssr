@@ -1,3 +1,9 @@
+/**
+ * SSR 的输入参数
+ *
+ * SanProject#compileToSource() 和 compileToRenderer() 的输入参数为 CompileInput
+ * 这里定义了 CompileInput 相关的类型，以及对应的 Type Guards。
+ */
 import { ComponentConstructor } from 'san'
 
 /**

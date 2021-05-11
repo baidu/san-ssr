@@ -1,5 +1,16 @@
+/**
+ * 组件信息
+ *
+ * 概念：每个 San 组件都对应一个 ComponentInfo。
+ *
+ * 关系：通常通过 src/parsers 下的解析器从 SSR 的输入得到 SanSourceFile。
+ * 一个 SanSourceFile 中可能包含若干个 ComponentInfo。
+ *
+ * 类型：对于 TS 源码输入，解析得到的是 TypedComponentInfo，
+ * 对于其他输入，解析得到的是 JSComponentInfo。
+ */
 import type { SanComponentConfig, ANode } from 'san'
-import { FunctionDefinition } from '../ast/renderer-ast-node'
+import { FunctionDefinition } from '../ast/renderer-ast-dfn'
 import { parseAndNormalizeTemplate } from '../parsers/parse-template'
 import type { ClassDeclaration } from 'ts-morph'
 import { Node } from 'estree'
@@ -14,6 +25,9 @@ import { ComponentClass } from './component'
 export type TagName = string
 type TrimWhitespace = 'none' | 'blank' | 'all' | undefined
 
+/**
+ * 所有类型的 ComponentInfo，都需要实现如下接口
+ */
 export interface ComponentInfo {
     id: string,
     root: ANode,
@@ -30,7 +44,9 @@ export interface ComponentInfo {
  * - computed name 列表、filters name 列表、root ANode
  * - 从 TypeScript 来的还有 sourceFile、classDeclaration 等
  *
- * Note：这里只是存数据，它的创建由具体 parser 负责
+ * 注意：
+ * - 这里只是存数据，它的创建由具体 parser 负责
+ * - 这个工具类只为了方便实现具体的 ComponentInfo，不暴露作为接口
  */
 abstract class ComponentInfoImpl<R extends ComponentReference = ComponentReference> {
     constructor (

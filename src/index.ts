@@ -1,8 +1,14 @@
+/**
+ * 项目入口文件
+ *
+ * 负责 import/export 其他文件，以及简单的包装
+ */
+
 import { SanProject } from './models/san-project'
 import { Renderer } from './models/renderer'
 import { ComponentConstructor } from 'san'
 import { CompileOptions } from './target-js/compilers/compile-options'
-import * as TypeGuards from './ast/san-type-guards'
+import * as TypeGuards from './ast/san-ast-type-guards'
 
 // util functions
 export { IDGenerator } from './utils/id-generator'
@@ -12,14 +18,14 @@ export { getANodePropByName } from './ast/san-ast-util'
 export { Emitter } from './utils/emitter'
 export { TypeGuards }
 export { _ } from './runtime/underscore'
-export { SyntaxKind } from './ast/renderer-ast-node'
-export type { Expression, Statement, FunctionDefinition, VariableDefinition, Literal, MapLiteral, ArrayLiteral, UnaryExpression, Foreach, BinaryExpression, SlotRendererDefinition, SlotRenderCall } from './ast/renderer-ast-node'
+export { SyntaxKind } from './ast/renderer-ast-dfn'
+export type { Expression, Statement, FunctionDefinition, VariableDefinition, Literal, MapLiteral, ArrayLiteral, UnaryExpression, Foreach, BinaryExpression, SlotRendererDefinition, SlotRenderCall } from './ast/renderer-ast-dfn'
 export { assertNever } from './utils/lang'
 
 // class types
 export { SanSourceFile, TypedSanSourceFile, DynamicSanSourceFile, isTypedSanSourceFile } from './models/san-source-file'
 export { SanProject } from './models/san-project'
-export { Compiler } from './models/compiler'
+export { TargetCodeGenerator, TargetCodeGenerator as Compiler } from './models/target-code-generator'
 export { ComponentInfo, TypedComponentInfo, DynamicComponentInfo } from './models/component-info'
 export { ComponentReference } from './models/component-reference'
 export { COMPONENT_RESERVED_MEMBERS } from './models/component'

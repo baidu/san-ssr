@@ -1,3 +1,6 @@
+/**
+ * 创建 SSR 的 helpers
+ */
 import { resolve } from 'path'
 import { _ } from './underscore'
 import { createResolver } from './resolver'
@@ -30,7 +33,7 @@ export interface SanSSRHelpers {
 }
 
 /**
- * 产出运行时代码
+ * 产出运行时代码并封装为 IIFE 的返回值
  */
 export function emitHelpersAsIIFE (emitter: JSEmitter) {
     emitter.feedLine('(function (exports) {')

@@ -1,7 +1,14 @@
+/**
+ * San 文件解析器
+ *
+ * 从 .san 文件源码，得到它里面的 San 信息，产出 JSSanSourceFile。
+ * JSSanSourceFile 包含了若干个 JSComponentInfo 和一个 entryComponentInfo。
+ */
 import { ExpressionStatement, MethodDefinition, ObjectExpression, CallExpression, Node } from 'estree'
 import { JavaScriptSanParser } from './javascript-san-parser'
 import assert from 'assert'
 import { isClass, getConstructor, addStringPropertyForObject, assertObjectExpression, isCallExpression, isObjectExpression, findDefaultExport } from '../ast/js-ast-util'
+import { JSSanSourceFile } from '../models/san-source-file'
 
 export class SanFileParser {
     private readonly parser: JavaScriptSanParser
@@ -14,7 +21,7 @@ export class SanFileParser {
         this.parser = new JavaScriptSanParser(filePath, scriptContent, 'module')
     }
 
-    parse () {
+    parse (): JSSanSourceFile {
         const expr = findDefaultExport(this.parser.root)
         assert(expr, 'default export not found')
 

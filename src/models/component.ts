@@ -1,3 +1,6 @@
+/**
+ * 在 San 核心之外，提供额外的 San 组件的类型信息和工具
+ */
 import { SanData, ComponentConstructor, SanComponent } from 'san'
 
 export interface Computed {

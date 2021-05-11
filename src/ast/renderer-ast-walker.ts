@@ -1,4 +1,10 @@
-import { Statement, SyntaxKind, Expression } from '../ast/renderer-ast-node'
+/**
+ * Renderer AST 遍历器
+ *
+ * 用来遍历 Renderer 里的每一个节点，方便做查找、移除等逻辑
+ */
+
+import { Statement, SyntaxKind, Expression } from './renderer-ast-dfn'
 import { assertNever } from '../utils/lang'
 
 export function * walk (node: Expression | Statement): Iterable<Expression | Statement> {

@@ -1,3 +1,9 @@
+/**
+ * ComponentClass 解析器
+ *
+ * 从根 ComponentClass 递归搜索和解析所有 ComponentClass，
+ * 形成**单个** SanSourceFile 实例，包含所有的 ComponentInfo 列表。
+ */
 import debugFactory from 'debug'
 import { ComponentConstructor, defineComponent } from 'san'
 import { DynamicSanSourceFile } from '../models/san-source-file'
@@ -8,9 +14,9 @@ import { parseAndNormalizeTemplate } from './parse-template'
 import { componentID, DynamicComponentReference } from '../models/component-reference'
 
 /*
- * 从根 ComponentClass 递归搜索和解析所有 ComponentClass，形成 ComponentInfo 列表，并放到单个 SanSourceFile 中。
+ * ComponentClass 解析器
  *
- * Note: 每个组件树对应一个 parser 实例，如果要解析新的组件树，请创建新的 parser 实例
+ * 每个组件树对应一个 parser 实例，如果要解析新的组件树，请创建新的 parser 实例。
  */
 export class ComponentClassParser {
     private id = 0
@@ -89,6 +95,10 @@ export class ComponentClassParser {
         return children
     }
 
+    /**
+     * 由于拿到的是类，并不知道每个递归到的 Class 是从哪个文件来的，
+     * 因此生成一个递增的 id 来标识它。
+     */
     private getOrSetID (componentClass: ComponentConstructor<{}, {}>): string {
         if (!this.cids.has(componentClass)) this.cids.set(componentClass, String(this.id++))
         return this.cids.get(componentClass)!

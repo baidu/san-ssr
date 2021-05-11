@@ -1,3 +1,12 @@
+/**
+ * JavaScript 语法树的工具
+ *
+ * AST Spec: ESTree Spec: https://github.com/estree/estree
+ * Implementation: acorn
+ *
+ * 方便读取和操作 ESTree 结构，本文件里提供的功能和实现逻辑是和具体 SSR 逻辑无关的，只和 ESTree 有关。
+ */
+
 import { simple } from 'acorn-walk'
 import assert, { equal } from 'assert'
 import { Node as AcornNode } from 'acorn'
@@ -7,6 +16,7 @@ const OPERATORS = {
     '+': (l: any, r: any) => l + r
 }
 
+// 按照 node 的 type 来过滤数组
 export function filterByType (node: Node, type: 'VariableDeclaration'): VariableDeclaration[]
 export function filterByType (node: Node, type: 'ImportDeclaration'): ImportDeclaration[]
 export function filterByType (node: Node, type: string) {
@@ -17,12 +27,16 @@ export function filterByType (node: Node, type: string) {
     return results
 }
 
+// 获取 require 的模块名。
+// 例如：对于 node = <require('san')>，getRequireSpecifier(node) === 'san'
 export function getRequireSpecifier (node: Node): string {
     const arg = node['arguments'][0]
     assertLiteral(arg)
     return arg.value as string
 }
 
+// 是否是 require 了 spec 的语句。
+// 例如：对于 node = <require('san')>，isRequireSpecifier(node, 'san') === true
 export function isRequireSpecifier (node: Expression, spec: string) {
     return isRequire(node) && getRequireSpecifier(node) === spec
 }
@@ -35,11 +49,18 @@ export function isModuleExports (node: Node) {
     return false
 }
 
+// expr 是否形如：exports.xxx
 export function isExportsMemberExpression (expr: Pattern) {
     return isMemberExpression(expr) &&
         getStringValue(expr['object'] as Expression) === 'exports'
 }
 
+/**
+ * 找到 node 下面所有的 require 语句
+ *
+ * 通过迭代器返回每一个 require 的 localName、moduleName、exportName。
+ * 例如：let { foo } = require('bar').coo，会 yield ["foo", "bar", "coo"]
+ */
 export function * findScriptRequires (node: Node): Generator<[string, string, string]> {
     for (const decl of filterByType(node, 'VariableDeclaration')) {
         const { id, init } = decl.declarations[0]
@@ -63,6 +84,11 @@ export function * findScriptRequires (node: Node): Generator<[string, string, st
     }
 }
 
+/**
+ * 找到 root 下所有的 import 语句
+ *
+ * 例如：import { coo as foo } from 'bar'，会 yield ["foo", "bar", "coo"]
+ */
 export function * findESMImports (root: Node): Generator<[string, string, string]> {
     for (const node of filterByType(root, 'ImportDeclaration')) {
         const relativeFile = node.source.value as string
@@ -123,11 +149,17 @@ export function findExportNames (root: Program) {
     return names
 }
 
+/**
+ * 获得字符串数组节点的值
+ */
 export function getStringArrayValue (expr: Node) {
     assertArrayExpression(expr)
     return expr.elements.map(getLiteralValue)
 }
 
+/**
+ * 从 Class 节点，获得它的所有属性的 key（字符串）和 value（AST 节点）
+ */
 export function * getMembersFromClassDeclaration (expr: Class): Generator<[string, Node]> {
     for (const decl of expr.body.body) {
         if (decl['kind'] === 'constructor') {
@@ -149,6 +181,9 @@ export function getConstructor (expr: Class): undefined | MethodDefinition {
     }
 }
 
+/**
+ * 给字面量的对象，添加一个字符串类型的属性
+ */
 export function addStringPropertyForObject (expr: ObjectExpression, key: string, value: string) {
     expr.properties.push({
         type: 'Property',
@@ -193,6 +228,9 @@ export function getStringValue (node: Expression): any {
     throw new Error(`${location(node)} cannot evaluate string value`)
 }
 
+/**
+ * 获取一个字面量表达式节点的值
+ */
 export function getLiteralValue (node: Node): any {
     if (isBinaryExpression(node)) {
         const left = getLiteralValue(node.left)
@@ -209,6 +247,9 @@ export function getLiteralValue (node: Node): any {
     throw new Error(`${location(node)} expected literal`)
 }
 
+/**
+ * 获取整个程序里，对 objName 的属性的所有赋值
+ */
 export function getMemberAssignmentsTo (program: Program, objName: string) {
     const results: [string, Node][] = []
     simple(program as any as AcornNode, {
@@ -226,6 +267,11 @@ export function location (node: Node) {
     return `[${node['start']},${node['end']})`
 }
 
+/**
+ * 获取一个源码文件的默认导出，有两种形式：
+ * 1. module.exports = foo
+ * 2. export foo
+ */
 export function findDefaultExport (node: Program): undefined | Node {
     let result
     simple(node as any as AcornNode, {

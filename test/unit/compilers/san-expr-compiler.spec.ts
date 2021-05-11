@@ -1,6 +1,6 @@
 import { sanExpr as expr, OutputType } from '../../../src/compilers/san-expr-compiler'
-import { SyntaxKind } from '../../../src/ast/renderer-ast-node'
-import { CTX_DATA } from '../../../src/ast/renderer-ast-factory'
+import { SyntaxKind } from '../../../src/ast/renderer-ast-dfn'
+import { CTX_DATA } from '../../../src/ast/renderer-ast-util'
 import { parseExpr, parseTemplate } from 'san'
 
 describe('compilers/san-expr-compiler', () => {

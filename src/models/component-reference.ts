@@ -1,3 +1,12 @@
+/**
+ * 组件之间的引用
+ *
+ * 组件之间的引用通过 San 组件的 components 字段来定义。
+ * SSR 时需要维护这一引用关系，在运行时找到并调用子组件。
+ *
+ * ComponentClass 作为输入时，没有文件信息，引用关系用递增 ID 来表达；
+ * TS/JS/San 源码作为输入时，有源码文件目录结构信息，用文件+导出类名表达。
+ */
 import { ComponentConstructor } from 'san'
 
 /**

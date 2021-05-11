@@ -1,18 +1,24 @@
+/**
+ * 编译一个 HTML 标签
+ *
+ * 对于 Element 类型的 ANode，采用这个编译器。
+ * 大概就是先产出一个开始标签，再递归编译其内容，再产出一个结束标签。
+ */
 import { getANodePropByName } from '../ast/san-ast-util'
 import { _ } from '../runtime/underscore'
 import { IDGenerator } from '../utils/id-generator'
 import { autoCloseTags } from '../utils/dom-util'
 import { ANodeCompiler } from './anode-compiler'
 import { ExprNode, ANodeProperty, Directive, ANode } from 'san'
-import { isExprNumberNode, isExprStringNode, isExprBoolNode } from '../ast/san-type-guards'
-import { createIfStrictEqual, createIfNotNull, createDefaultValue, createHTMLLiteralAppend, createHTMLExpressionAppend, NULL, L, I, ASSIGN, DEF } from '../ast/renderer-ast-factory'
-import { HelperCall, ArrayIncludes, Else, Foreach, If } from '../ast/renderer-ast-node'
+import { isExprNumberNode, isExprStringNode, isExprBoolNode } from '../ast/san-ast-type-guards'
+import { createIfStrictEqual, createIfNotNull, createDefaultValue, createHTMLLiteralAppend, createHTMLExpressionAppend, NULL, L, I, ASSIGN, DEF } from '../ast/renderer-ast-util'
+import { HelperCall, ArrayIncludes, Else, Foreach, If } from '../ast/renderer-ast-dfn'
 import { sanExpr, OutputType } from './san-expr-compiler'
 
 const BOOL_ATTRIBUTES = ['readonly', 'disabled', 'multiple', 'checked']
 
 /**
- * 编译一个 HTML 标签
+ * Element 的编译器
  *
  * 每个 ElementCompiler 对象对应于一个 ComponentClass，可以用来编译该组件中的所有 HTML 标签，并递归地调用 ANodeCompiler 来编译标签内容。
  */

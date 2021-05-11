@@ -1,3 +1,12 @@
+/**
+ * 一个 SanSourceFile 表示一个 San 源文件
+ *
+ * San 源文件可以是一个 .san 文件，.js 文件，.ts 文件，也可以是一个 ComponentClass，具体来说：
+ * - .ts 文件对应的类型是 TypedSanSourceFile
+ * - .js 文件对应的类型是 JSSanSourceFile
+ * - .san 文件会通过 WebPack 转换为 .js 文件再进入 SSR，所以也对应 JSSanSourceFile
+ * - ComponentClass 对应的类型是 DynamicSanSourceFile
+ */
 import type { SourceFile } from 'ts-morph'
 import debugFactory from 'debug'
 import { DynamicComponentInfo, ComponentInfo, JSComponentInfo, TypedComponentInfo } from '../models/component-info'

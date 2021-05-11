@@ -1,3 +1,8 @@
+/**
+ * target-js 的代码生成器
+ *
+ * 从 renderer AST 生成 JavaScript 源代码。
+ */
 import { SanProject } from '../models/san-project'
 import debugFactory from 'debug'
 import { JSEmitter } from './js-emitter'
@@ -5,16 +10,16 @@ import { createHelpers, emitHelpers, emitHelpersAsIIFE } from '../runtime/create
 import { ComponentClassCompiler } from './compilers/component-compiler'
 import { SanSourceFile, JSSanSourceFile, TypedSanSourceFile, DynamicSanSourceFile, isTypedSanSourceFile, isJSSanSourceFile } from '../models/san-source-file'
 import { Renderer } from '../models/renderer'
-import { Compiler } from '../models/compiler'
+import { TargetCodeGenerator } from '../models/target-code-generator'
 import { tsSourceFile2js } from '../compilers/ts2js'
 import { RenderOptions } from '../compilers/renderer-options'
 import { CompileOptions } from './compilers/compile-options'
-import { FunctionDefinition } from '../ast/renderer-ast-node'
+import { FunctionDefinition } from '../ast/renderer-ast-dfn'
 import { bracketToDot } from '../optimizers/bracket-to-dot'
 
 const debug = debugFactory('san-ssr:target-js')
 
-export default class ToJSCompiler implements Compiler {
+export default class ToJSCompiler implements TargetCodeGenerator {
     constructor (private project: SanProject) {}
 
     /**

@@ -1,5 +1,5 @@
 import { ParseTemplateOption, ANodeProperty, ExprInterpNode, parseTemplate, ANode } from 'san'
-import * as TypeGuards from '../ast/san-type-guards'
+import * as TypeGuards from '../ast/san-ast-type-guards'
 import { parseANodeProps, visitANodeRecursively } from '../ast/san-ast-util'
 
 export function parseAndNormalizeTemplate (template: string, options: ParseTemplateOption) {

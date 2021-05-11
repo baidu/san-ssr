@@ -1,8 +1,14 @@
+/**
+ * 把组件（ComponentInfo）编译成 renderer 函数（render AST 形式）
+ *
+ * 每个 ComponentInfo 对应于一个 San 组件定义，对应一个 SSR 的 renderer 函数。
+ * 这个函数接受数据，返回 HTML。
+ */
 import { ANodeCompiler } from './anode-compiler'
 import { ComponentInfo } from '../models/component-info'
 import { RenderOptions } from './renderer-options'
-import { FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper, ComponentReferenceLiteral, ConditionalExpression } from '../ast/renderer-ast-node'
-import { EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL, UNDEFINED } from '../ast/renderer-ast-factory'
+import { FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper, ComponentReferenceLiteral, ConditionalExpression } from '../ast/renderer-ast-dfn'
+import { EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL, UNDEFINED } from '../ast/renderer-ast-util'
 import { IDGenerator } from '../utils/id-generator'
 import { mergeLiteralAdd } from '../optimizers/merge-literal-add'
 
@@ -87,6 +93,13 @@ export class RendererCompiler {
         ]
     }
 
+    /**
+     * 产出 initData() 的函数调用
+     *
+     * 注意即使对于 JSComponentInfo，也不能在编译期调用 initData。
+     * 因为字面量是无法表示嵌套关系的，详细讨论见：
+     * https://github.com/baidu/san-ssr/issues/99
+     */
     private emitInitData () {
         const item = BINARY(BINARY(I('ctx'), '.', I('data')), '[]', I('key'))
 

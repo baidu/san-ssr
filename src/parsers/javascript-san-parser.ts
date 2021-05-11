@@ -1,3 +1,9 @@
+/**
+ * JavaScript 文件解析器
+ *
+ * 从 JavaScript 文件源码，得到它里面的 San 信息，产出 JSSanSourceFile。
+ * JSSanSourceFile 包含了若干个 JSComponentInfo 和一个 entryComponentInfo。
+ */
 import debugFactory from 'debug'
 import { ancestor } from 'acorn-walk'
 import { Node as AcornNode, parse } from 'acorn'
@@ -45,7 +51,7 @@ export class JavaScriptSanParser {
         ) as any as Program
     }
 
-    parse () {
+    parse (): JSSanSourceFile {
         this.parseNames()
         this.parseComponents()
         this.wireChildComponents()

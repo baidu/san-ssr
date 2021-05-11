@@ -1,3 +1,9 @@
+/**
+ * ANode 的 Type Guard
+ *
+ * ANode Spec: https://github.com/baidu/san/blob/master/doc/anode.md
+ */
+
 import {
     // Expression Nodes
     ExprNode, ExprType,

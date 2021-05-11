@@ -1,11 +1,15 @@
 /**
- * 编译源码的 helper 方法集合
+ * 从 San Expr 生成 renderer AST
+ *
+ * template 的 ANode 树中，包含很多表达式（San Expr），
+ * 它们控制了 Element 类型的 ANode 如何渲染。
+ * 现在需要把这些表达式转换为 renderer 函数里的表达式（renderer AST 形式）。
  */
 import { ExprStringNode, ExprNode, ExprTertiaryNode, ExprBinaryNode, ExprUnaryNode, ExprInterpNode, ExprAccessorNode, ExprCallNode, ExprTextNode, ExprObjectNode, ExprArrayNode } from 'san'
-import * as TypeGuards from '../ast/san-type-guards'
+import * as TypeGuards from '../ast/san-ast-type-guards'
 import { _ } from '../runtime/underscore'
-import { EncodeURIComponent, MapLiteral, HelperCall, ArrayLiteral, FilterCall, FunctionCall, Identifier, ConditionalExpression, BinaryExpression, UnaryExpression, Expression } from '../ast/renderer-ast-node'
-import { CTX_DATA, L, I, NULL } from '../ast/renderer-ast-factory'
+import { EncodeURIComponent, MapLiteral, HelperCall, ArrayLiteral, FilterCall, FunctionCall, Identifier, ConditionalExpression, BinaryExpression, UnaryExpression, Expression } from '../ast/renderer-ast-dfn'
+import { CTX_DATA, L, I, NULL } from '../ast/renderer-ast-util'
 
 // 输出类型
 export enum OutputType {

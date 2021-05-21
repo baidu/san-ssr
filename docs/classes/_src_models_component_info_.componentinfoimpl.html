@@ -78,7 +78,11 @@
 							<li>从 TypeScript 来的还有 sourceFile、classDeclaration 等</li>
 						</ul>
 					</div>
-					<p>Note：这里只是存数据，它的创建由具体 parser 负责</p>
+					<p>注意：</p>
+					<ul>
+						<li>这里只是存数据，它的创建由具体 parser 负责</li>
+						<li>这个工具类只为了方便实现具体的 ComponentInfo，不暴露作为接口</li>
+					</ul>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-type-parameters">
@@ -151,7 +155,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17c2256/src/models/component-info.ts#L35">src/models/component-info.ts:35</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/21d414f/src/models/component-info.ts#L51">src/models/component-info.ts:51</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -179,7 +183,7 @@
 					<div class="tsd-signature tsd-kind-icon">child<wbr>Components<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Map</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_src_models_component_info_.html#tagname" class="tsd-signature-type">TagName</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">R</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17c2256/src/models/component-info.ts#L42">src/models/component-info.ts:42</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/21d414f/src/models/component-info.ts#L58">src/models/component-info.ts:58</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -189,7 +193,7 @@
 					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17c2256/src/models/component-info.ts#L40">src/models/component-info.ts:40</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/21d414f/src/models/component-info.ts#L56">src/models/component-info.ts:56</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -204,7 +208,7 @@
 					<div class="tsd-signature tsd-kind-icon">root<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ANode</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17c2256/src/models/component-info.ts#L41">src/models/component-info.ts:41</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/21d414f/src/models/component-info.ts#L57">src/models/component-info.ts:57</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -215,13 +219,13 @@
 					<a name="compiletorenderer" class="tsd-anchor"></a>
 					<h3>compile<wbr>ToRenderer</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">compile<wbr>ToRenderer<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_compilers_renderer_options_.renderoptions.html" class="tsd-signature-type">RenderOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_ast_renderer_ast_node_.functiondefinition.html" class="tsd-signature-type">FunctionDefinition</a></li>
+						<li class="tsd-signature tsd-kind-icon">compile<wbr>ToRenderer<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_compilers_renderer_options_.renderoptions.html" class="tsd-signature-type">RenderOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_ast_renderer_ast_dfn_.functiondefinition.html" class="tsd-signature-type">FunctionDefinition</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17c2256/src/models/component-info.ts#L56">src/models/component-info.ts:56</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/21d414f/src/models/component-info.ts#L72">src/models/component-info.ts:72</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -230,7 +234,7 @@
 									<h5>options: <a href="../interfaces/_src_compilers_renderer_options_.renderoptions.html" class="tsd-signature-type">RenderOptions</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_src_ast_renderer_ast_node_.functiondefinition.html" class="tsd-signature-type">FunctionDefinition</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_src_ast_renderer_ast_dfn_.functiondefinition.html" class="tsd-signature-type">FunctionDefinition</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -244,7 +248,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17c2256/src/models/component-info.ts#L46">src/models/component-info.ts:46</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/21d414f/src/models/component-info.ts#L62">src/models/component-info.ts:62</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
@@ -261,7 +265,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17c2256/src/models/component-info.ts#L47">src/models/component-info.ts:47</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/21d414f/src/models/component-info.ts#L63">src/models/component-info.ts:63</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span></h4>
@@ -278,7 +282,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17c2256/src/models/component-info.ts#L48">src/models/component-info.ts:48</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/21d414f/src/models/component-info.ts#L64">src/models/component-info.ts:64</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -295,7 +299,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17c2256/src/models/component-info.ts#L45">src/models/component-info.ts:45</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/21d414f/src/models/component-info.ts#L61">src/models/component-info.ts:61</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>

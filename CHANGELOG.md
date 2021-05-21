@@ -1,3 +1,10 @@
+## [4.6.4](https://github.com/baidu/san-ssr/compare/v4.6.3...v4.6.4) (2021-05-21)
+
+
+### Bug Fixes
+
+* template 表达式中不支持 % 运算符 ([21d414f](https://github.com/baidu/san-ssr/commit/21d414fe07853ddf6c98ff06d9391318b62251cd))
+
 ## [4.6.3](https://github.com/baidu/san-ssr/compare/v4.6.2...v4.6.3) (2021-04-14)
 
 

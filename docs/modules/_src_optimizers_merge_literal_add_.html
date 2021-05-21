@@ -92,10 +92,10 @@
 				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module tsd-is-not-exported">
 					<a name="htmladdequalliteral" class="tsd-anchor"></a>
 					<h3>HTMLAdd<wbr>Equal<wbr>Literal</h3>
-					<div class="tsd-signature tsd-kind-icon">HTMLAdd<wbr>Equal<wbr>Literal<span class="tsd-signature-symbol">:</span> <a href="_src_ast_renderer_ast_node_.html#statement" class="tsd-signature-type">Statement</a><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>lhs<span class="tsd-signature-symbol">: </span><a href="../classes/_src_ast_renderer_ast_node_.identifier.html" class="tsd-signature-type">Identifier</a><span class="tsd-signature-symbol">; </span>op<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"+&#x3D;"</span><span class="tsd-signature-symbol">; </span>rhs<span class="tsd-signature-symbol">: </span><a href="../classes/_src_ast_renderer_ast_node_.literal.html" class="tsd-signature-type">Literal</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></div>
+					<div class="tsd-signature tsd-kind-icon">HTMLAdd<wbr>Equal<wbr>Literal<span class="tsd-signature-symbol">:</span> <a href="_src_ast_renderer_ast_dfn_.html#statement" class="tsd-signature-type">Statement</a><span class="tsd-signature-symbol"> &amp; </span><span class="tsd-signature-symbol">{ </span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>lhs<span class="tsd-signature-symbol">: </span><a href="../classes/_src_ast_renderer_ast_dfn_.identifier.html" class="tsd-signature-type">Identifier</a><span class="tsd-signature-symbol">; </span>op<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">"+&#x3D;"</span><span class="tsd-signature-symbol">; </span>rhs<span class="tsd-signature-symbol">: </span><a href="../classes/_src_ast_renderer_ast_dfn_.literal.html" class="tsd-signature-type">Literal</a><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol"> }</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17c2256/src/optimizers/merge-literal-add.ts#L6">src/optimizers/merge-literal-add.ts:6</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/21d414f/src/optimizers/merge-literal-add.ts#L5">src/optimizers/merge-literal-add.ts:5</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -106,19 +106,24 @@
 					<a name="domergeliteraladd" class="tsd-anchor"></a>
 					<h3>do<wbr>Merge<wbr>Literal<wbr>Add</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">do<wbr>Merge<wbr>Literal<wbr>Add<span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_ast_renderer_ast_node_.block.html" class="tsd-signature-type">Block</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">do<wbr>Merge<wbr>Literal<wbr>Add<span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_ast_renderer_ast_dfn_.block.html" class="tsd-signature-type">Block</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17c2256/src/optimizers/merge-literal-add.ts#L14">src/optimizers/merge-literal-add.ts:14</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/21d414f/src/optimizers/merge-literal-add.ts#L16">src/optimizers/merge-literal-add.ts:16</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>合并连续的 html += 字面量字符串</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>node: <a href="../interfaces/_src_ast_renderer_ast_node_.block.html" class="tsd-signature-type">Block</a></h5>
+									<h5>node: <a href="../interfaces/_src_ast_renderer_ast_dfn_.block.html" class="tsd-signature-type">Block</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -129,19 +134,19 @@
 					<a name="ishtmladdequalliteral" class="tsd-anchor"></a>
 					<h3>isHTMLAdd<wbr>Equal<wbr>Literal</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
-						<li class="tsd-signature tsd-kind-icon">isHTMLAdd<wbr>Equal<wbr>Literal<span class="tsd-signature-symbol">(</span>statement<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_ast_renderer_ast_node_.syntaxnode.html" class="tsd-signature-type">SyntaxNode</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">statement</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">HTMLAddEqualLiteral</span></li>
+						<li class="tsd-signature tsd-kind-icon">isHTMLAdd<wbr>Equal<wbr>Literal<span class="tsd-signature-symbol">(</span>statement<span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_ast_renderer_ast_dfn_.syntaxnode.html" class="tsd-signature-type">SyntaxNode</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">statement</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">HTMLAddEqualLiteral</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17c2256/src/optimizers/merge-literal-add.ts#L32">src/optimizers/merge-literal-add.ts:32</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/21d414f/src/optimizers/merge-literal-add.ts#L34">src/optimizers/merge-literal-add.ts:34</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>statement: <a href="../interfaces/_src_ast_renderer_ast_node_.syntaxnode.html" class="tsd-signature-type">SyntaxNode</a></h5>
+									<h5>statement: <a href="../interfaces/_src_ast_renderer_ast_dfn_.syntaxnode.html" class="tsd-signature-type">SyntaxNode</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">statement</span><span class="tsd-signature-symbol"> is </span><span class="tsd-signature-type">HTMLAddEqualLiteral</span></h4>
@@ -152,19 +157,19 @@
 					<a name="mergeliteraladd" class="tsd-anchor"></a>
 					<h3>merge<wbr>Literal<wbr>Add</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">merge<wbr>Literal<wbr>Add<span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><a href="_src_ast_renderer_ast_node_.html#expression" class="tsd-signature-type">Expression</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.html#statement" class="tsd-signature-type">Statement</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">merge<wbr>Literal<wbr>Add<span class="tsd-signature-symbol">(</span>node<span class="tsd-signature-symbol">: </span><a href="_src_ast_renderer_ast_dfn_.html#expression" class="tsd-signature-type">Expression</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_dfn_.html#statement" class="tsd-signature-type">Statement</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/17c2256/src/optimizers/merge-literal-add.ts#L8">src/optimizers/merge-literal-add.ts:8</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/21d414f/src/optimizers/merge-literal-add.ts#L7">src/optimizers/merge-literal-add.ts:7</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>node: <a href="_src_ast_renderer_ast_node_.html#expression" class="tsd-signature-type">Expression</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_node_.html#statement" class="tsd-signature-type">Statement</a></h5>
+									<h5>node: <a href="_src_ast_renderer_ast_dfn_.html#expression" class="tsd-signature-type">Expression</a><span class="tsd-signature-symbol"> | </span><a href="_src_ast_renderer_ast_dfn_.html#statement" class="tsd-signature-type">Statement</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>

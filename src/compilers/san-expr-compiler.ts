@@ -37,6 +37,7 @@ export enum OutputType {
 
 // 二元表达式操作符映射表
 const binaryOp = {
+    37: '%',
     43: '+',
     45: '-',
     42: '*',

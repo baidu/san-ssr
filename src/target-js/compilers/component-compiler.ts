@@ -9,7 +9,7 @@ import { DynamicComponentInfo } from '../../models/component-info'
 import { Component } from 'san'
 
 export class ComponentClassCompiler {
-    private emitedMemberKeys = new Set();
+    private emittedMemberKeys = new Set();
     constructor (public emitter = new JSEmitter()) {}
 
     /**
@@ -53,10 +53,10 @@ export class ComponentClassCompiler {
             if (
                 COMPONENT_RESERVED_MEMBERS.has(key) ||
                 !member ||
-                this.emitedMemberKeys.has(key)
+                this.emittedMemberKeys.has(key)
             ) continue
 
-            this.emitedMemberKeys.add(key)
+            this.emittedMemberKeys.add(key)
             emitter.nextLine(key + ': ')
             if (typeof member === 'function') this.emitMethod(member, emitter)
             else if (member instanceof Array) this.emitArray(member, emitter)

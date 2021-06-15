@@ -6,8 +6,10 @@ import { COMPONENT_RESERVED_MEMBERS } from '../../models/component'
 import { functionString } from '../../utils/lang'
 import { JSEmitter } from '../js-emitter'
 import { DynamicComponentInfo } from '../../models/component-info'
+import { Component } from 'san';
 
 export class ComponentClassCompiler {
+    private emitedMemberKeys = new Set();
     constructor (public emitter = new JSEmitter()) {}
 
     /**
@@ -22,11 +24,39 @@ export class ComponentClassCompiler {
      * },
      */
     public compile (componentInfo: DynamicComponentInfo) {
-        const { emitter } = this
-        for (const key of Object.getOwnPropertyNames(componentInfo.proto)) {
-            const member = componentInfo.proto[key]
-            if (COMPONENT_RESERVED_MEMBERS.has(key) || !member) continue
+        this.emitMembers(componentInfo.proto);
 
+        // 组件继承的可能不直接是 san 的 Component
+        // 这里将父类上的属性直接输出
+        this.emitPrototypes(componentInfo.componentClass);
+    }
+
+    private emitPrototypes(clas: {new(): any}) {
+        const proto = Object.getPrototypeOf(clas);
+
+        // 这里 proto !== Component 可能拦截不到
+        // 所以在 COMPONENT_RESERVED_MEMBERS 中加了对 Component 上属性的过滤
+        if (
+            proto.name !== 'Component'
+            && proto !== Component
+            && proto.prototype !== Function.prototype
+        ) {
+            this.emitMembers(proto.prototype);
+            this.emitPrototypes(proto);
+        }
+    }
+
+    private emitMembers (componentProto: Object) {
+        const { emitter } = this
+        for (const key of Object.getOwnPropertyNames(componentProto)) {
+            const member = componentProto[key]
+            if (
+                COMPONENT_RESERVED_MEMBERS.has(key)
+                || !member
+                || this.emitedMemberKeys.has(key)
+            ) continue
+
+            this.emitedMemberKeys.add(key);
             emitter.nextLine(key + ': ')
             if (typeof member === 'function') this.emitMethod(member, emitter)
             else if (member instanceof Array) this.emitArray(member, emitter)

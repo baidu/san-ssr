@@ -39,7 +39,7 @@ export class ComponentClassCompiler {
         if (
             proto.name !== 'Component' &&
             proto !== Component &&
-            proto.prototype !== Function.prototype
+            proto !== Function.prototype
         ) {
             this.emitMembers(proto.prototype)
             this.emitPrototypes(proto)

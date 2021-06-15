@@ -149,8 +149,8 @@ export default class ToJSCompiler implements TargetCodeGenerator {
     }
 
     private compileComponentClassToSource (sourceFile: DynamicSanSourceFile, emitter: JSEmitter) {
-        const cc = new ComponentClassCompiler(emitter)
         for (const info of sourceFile.componentInfos) {
+            const cc = new ComponentClassCompiler(emitter)
             emitter.nextLine(`sanSSRResolver.setPrototype("${info.id}", `)
             emitter.writeBlock('', () => cc.compile(info), false)
             emitter.feedLine(');')

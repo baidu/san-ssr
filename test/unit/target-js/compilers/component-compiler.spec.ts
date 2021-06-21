@@ -19,14 +19,14 @@ describe('target-js/compilers/renderer-compiler', () => {
 `)
         })
 
-        it ('should emit class extends properties', () => {
+        it('should emit class extends properties', () => {
             class Middle extends Component {
-                a() {
-                    return 123;
+                a () {
+                    return 123
                 }
             }
             class MyComponent extends Middle {
-                template = `<div>{{ b }}</div>`
+                template = '<div>{{ b }}</div>'
             }
             const sourceFile = new ComponentClassParser(MyComponent, '').parse()
             const compiler = new ComponentClassCompiler()

@@ -1,3 +1,17 @@
+# [4.7.0](https://github.com/baidu/san-ssr/compare/v4.6.4...v4.7.0) (2021-06-21)
+
+
+### Bug Fixes
+
+* code style ([7e54619](https://github.com/baidu/san-ssr/commit/7e54619ef0eed99f9a8da70f429027e22d41af09))
+* proto !== Function.prototype ([dcf79a1](https://github.com/baidu/san-ssr/commit/dcf79a156736a3fa5c9857d4e1063c79cc66ed2b))
+
+
+### Features
+
+* class-extend unit test ([a4db92a](https://github.com/baidu/san-ssr/commit/a4db92a6b5d2df1376446075c80efd40e885778e))
+* comsrc 时，支持类的继承 ([074c85e](https://github.com/baidu/san-ssr/commit/074c85ea4895da8b4cd5cde0977c51c655ab88f9))
+
 ## [4.6.4](https://github.com/baidu/san-ssr/compare/v4.6.3...v4.6.4) (2021-05-21)
 
 

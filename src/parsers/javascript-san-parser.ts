@@ -10,7 +10,34 @@ import { Node as AcornNode, parse } from 'acorn'
 import { CallExpression, Program, Node, Class } from 'estree'
 import { generate } from 'astring'
 import { JSComponentInfo } from '../models/component-info'
-import { isVariableDeclarator, isProperty, isAssignmentExpression, isExportDefaultDeclaration, location, isMemberExpression, isObjectExpression, isCallExpression, isIdentifier, isLiteral, getMemberAssignmentsTo, getPropertyFromObject, getPropertiesFromObject, getMembersFromClassDeclaration, isClass, getClassName, getStringValue, isExportsMemberExpression, isRequireSpecifier, findExportNames, isModuleExports, findESMImports, findScriptRequires } from '../ast/js-ast-util'
+import {
+    isVariableDeclarator,
+    isProperty,
+    isAssignmentExpression,
+    isExportDefaultDeclaration,
+    location,
+    isMemberExpression,
+    isObjectExpression,
+    isCallExpression,
+    isIdentifier,
+    isLiteral,
+    getMemberAssignmentsTo,
+    getPropertyFromObject,
+    getPropertiesFromObject,
+    getMembersFromClassDeclaration,
+    isClass,
+    getClassName,
+    getStringValue,
+    isExportsMemberExpression,
+    isRequireSpecifier,
+    findExportNames,
+    isModuleExports,
+    findESMImports,
+    findScriptRequires,
+    deleteMembersFromClassDeclaration,
+    deletePropertiesFromObject,
+    deleteMemberAssignmentsTo
+} from '../ast/js-ast-util'
 import { JSSanSourceFile } from '../models/san-source-file'
 import { componentID, ComponentReference } from '../models/component-reference'
 import { readFileSync } from 'fs'
@@ -59,6 +86,7 @@ export class JavaScriptSanParser {
         this.parseNames()
         this.parseComponents()
         this.wireChildComponents()
+        this.deleteChildComponentRequires()
         return new JSSanSourceFile(this.filePath, this.stringify(this.root), this.componentInfos, this.entryComponentInfo)
     }
 
@@ -83,6 +111,27 @@ export class JavaScriptSanParser {
         for (const info of this.componentInfos) {
             for (const [key, value] of info.getComponentsDelcarations()) {
                 info.childComponents.set(key, this.createChildComponentReference(value, info.id))
+            }
+        }
+    }
+
+    private deleteChildComponentRequires () {
+        const childComponentsSpecifier = new Set()
+        for (const component of this.componentInfos) {
+            for (const [, childComponent] of component.childComponents) {
+                childComponentsSpecifier.add(childComponent.specifier)
+            }
+        }
+
+        const a = [...findESMImports(this.root), ...findScriptRequires(this.root)]
+        for (const [, moduleName, , node] of a) {
+            if (!childComponentsSpecifier.has(moduleName)) {
+                continue
+            }
+
+            const index = this.root.body.indexOf(node)
+            if (index !== -1) {
+                this.root.body.splice(index, 1)
             }
         }
     }
@@ -168,8 +217,8 @@ export class JavaScriptSanParser {
     }
 
     * parseImportedNames (): Generator<[string, string, string]> {
-        for (const entry of findESMImports(this.root)) yield entry
-        for (const entry of findScriptRequires(this.root)) yield entry
+        for (const [localName, moduleName, exportName] of findESMImports(this.root)) yield [localName, moduleName, exportName]
+        for (const [localName, moduleName, exportName] of findScriptRequires(this.root)) yield [localName, moduleName, exportName]
     }
 
     createComponent (node: Node, name: string = getClassName(node), isDefault = false) {
@@ -181,6 +230,9 @@ export class JavaScriptSanParser {
         this.componentIDs.set(node, id)
         const comp = new JSComponentInfo(id, name, properties, this.stringify(node), isObjectExpression(node))
         this.componentInfos.push(comp)
+
+        // 删除掉子组件
+        this.deletePropertiesFromComponentDecalration(node, name, 'components')
         return comp
     }
 
@@ -190,6 +242,18 @@ export class JavaScriptSanParser {
             this.componentInfos.push(this.defaultPlaceholderComponent)
         }
         return this.defaultPlaceholderComponent
+    }
+
+    private deletePropertiesFromComponentDecalration (node: Node, targetName: string, name: string) {
+        if (this.isComponentClass(node)) {
+            deleteMembersFromClassDeclaration(node, name)
+        } else if (isObjectExpression(node)) {
+            deletePropertiesFromObject(node, name)
+        } else {
+            deletePropertiesFromObject(node['arguments'][0], name)
+        }
+
+        deleteMemberAssignmentsTo(this.root, targetName, name)
     }
 
     private * getPropertiesFromComponentDeclaration (node: Node, name: string) {

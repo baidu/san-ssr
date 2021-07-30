@@ -7,7 +7,7 @@
  * 方便读取和操作 ESTree 结构，本文件里提供的功能和实现逻辑是和具体 SSR 逻辑无关的，只和 ESTree 有关。
  */
 
-import { simple } from 'acorn-walk'
+import { ancestor, simple } from 'acorn-walk'
 import assert, { equal } from 'assert'
 import { Node as AcornNode } from 'acorn'
 import { MethodDefinition, ExportDefaultDeclaration, ImportDeclaration, Property, BinaryExpression, ClassExpression, ClassDeclaration, ThisExpression, ExpressionStatement, TemplateLiteral, Literal, Identifier, MemberExpression, ArrayExpression, CallExpression, ObjectExpression, Node, Program, Pattern, VariableDeclaration, ObjectPattern, Class, AssignmentExpression, Expression, ImportSpecifier, ImportDefaultSpecifier, VariableDeclarator } from 'estree'
@@ -61,17 +61,17 @@ export function isExportsMemberExpression (expr: Pattern) {
  * 通过迭代器返回每一个 require 的 localName、moduleName、exportName。
  * 例如：let foo = require('bar').coo，会 yield ["foo", "bar", "coo"]
  */
-export function * findScriptRequires (node: Node): Generator<[string, string, string]> {
+export function * findScriptRequires (node: Node): Generator<[string, string, string, VariableDeclaration]> {
     for (const decl of filterByType(node, 'VariableDeclaration')) {
         const { id, init } = decl.declarations[0]
         if (!init) continue
         if (isRequire(init)) {
             const specifier = getRequireSpecifier(init)
-            if (isIdentifier(id)) yield [id.name, specifier, 'default']
+            if (isIdentifier(id)) yield [id.name, specifier, 'default', decl]
             if (isObjectPattern(id)) {
                 for (const [key, value] of getPropertiesFromObject(id)) {
                     assertIdentifier(value)
-                    yield [value.name, specifier, key]
+                    yield [value.name, specifier, key, decl]
                 }
             }
         }
@@ -79,7 +79,7 @@ export function * findScriptRequires (node: Node): Generator<[string, string, st
         if (isMemberExpression(init) && isRequire(init.object)) {
             const specifier = getRequireSpecifier(init.object)
             assertIdentifier(id)
-            yield [id.name, specifier, getStringValue(init.property)]
+            yield [id.name, specifier, getStringValue(init.property), decl]
         }
     }
 }
@@ -87,17 +87,18 @@ export function * findScriptRequires (node: Node): Generator<[string, string, st
 /**
  * 找到 root 下所有的 import 语句
  *
+ * 通过迭代器返回每一个 require 的 localName、moduleName、exportName。
  * 例如：import { coo as foo } from 'bar'，会 yield ["foo", "bar", "coo"]
  */
-export function * findESMImports (root: Node): Generator<[string, string, string]> {
+export function * findESMImports (root: Node): Generator<[string, string, string, ImportDeclaration]> {
     for (const node of filterByType(root, 'ImportDeclaration')) {
         const relativeFile = node.source.value as string
         for (const spec of node['specifiers']) {
             if (isImportDefaultSpecifier(spec)) {
-                yield [spec.local.name, relativeFile, 'default']
+                yield [spec.local.name, relativeFile, 'default', node]
             }
             if (isImportSpecifier(spec)) {
-                yield [spec.local.name, relativeFile, spec.imported.name]
+                yield [spec.local.name, relativeFile, spec.imported.name, node]
             }
         }
     }
@@ -286,6 +287,10 @@ export function findDefaultExport (node: Program): undefined | Node {
     return result
 }
 
+export function isProgram (node: Node): node is Program {
+    return node.type === 'Program'
+}
+
 export function isRequire (node: Node): node is CallExpression {
     return isCallExpression(node) && node.callee['name'] === 'require'
 }
@@ -392,4 +397,61 @@ export function assertObjectExpression (expr: Node): asserts expr is ObjectExpre
 
 export function assertVariableDeclarator (expr: Node): asserts expr is VariableDeclarator {
     assert(isVariableDeclarator(expr))
+}
+
+export function deleteMembersFromClassDeclaration (expr: Class, name: string) {
+    for (const [, decl] of expr.body.body.entries()) {
+        if (decl['kind'] === 'constructor') {
+            const constructorDecl = decl
+            for (const [index, expr] of constructorDecl.value.body.body.entries()) {
+                if (isExpressionStatement(expr) &&
+                    isAssignmentExpression(expr.expression) &&
+                    isMemberAssignment(expr.expression.left) &&
+                    getStringValue(expr.expression.left['property']) === name
+                ) {
+                    constructorDecl.value.body.body.splice(index, 1)
+                }
+            }
+            continue
+        }
+    }
+}
+export function deletePropertiesFromObject (obj: ObjectExpression | ObjectPattern, name: string) {
+    for (const [index, prop] of obj.properties.entries()) {
+        assertProperty(prop)
+        if (getStringValue(prop.key) === name) {
+            obj.properties.splice(index, 1)
+        }
+    }
+}
+export function deleteMemberAssignmentsTo (program: Program, objName: string, name: string) {
+    ancestor(program as any as AcornNode, {
+        AssignmentExpression (node: AcornNode, ancestors: AcornNode[]) {
+            const expr = node as any as AssignmentExpression
+            if (
+                isMemberExpression(expr.left) &&
+                isIdentifier(expr.left.object) &&
+                expr.left.object.name === objName &&
+                isIdentifier(expr.left.property) &&
+                expr.left.property.name === name
+            ) {
+                const res = findValidParent(ancestors as Node[])
+                if (res && res.parent) {
+                    res.parent.body.splice(res.index, 1)
+                }
+            }
+        }
+    })
+
+    function findValidParent (ancestors: Node[]) {
+        for (let i = ancestors.length - 1; i > -1; i--) {
+            const node = ancestors[i]
+            if (isProgram(node)) {
+                return {
+                    parent: node,
+                    index: node.body.indexOf(ancestors[i + 1] as ExpressionStatement)
+                }
+            }
+        }
+    }
 }

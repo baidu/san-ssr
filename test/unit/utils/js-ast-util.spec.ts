@@ -17,43 +17,49 @@ describe('js-ast-util', () => {
             import { Component } from 'san'
             import { Component as c } from 'san'
             `
-            const imports = [...findESMImports(pm(script))]
+            const tree = pm(script)
+            const imports = [...findESMImports(tree)]
             expect(imports).toHaveLength(2)
-            expect(imports[0]).toEqual(['Component', 'san', 'Component'])
-            expect(imports[1]).toEqual(['c', 'san', 'Component'])
+            expect(imports[0]).toEqual(['Component', 'san', 'Component', tree.body[0]])
+            expect(imports[1]).toEqual(['c', 'san', 'Component', tree.body[1]])
         })
         it('should parse default import in ES module', () => {
             const script = 'import XComponent from "./x-component"'
-            const imports = [...findESMImports(pm(script))]
+            const tree = pm(script)
+            const imports = [...findESMImports(tree)]
             expect(imports).toHaveLength(1)
-            expect(imports[0]).toEqual(['XComponent', './x-component', 'default'])
+            expect(imports[0]).toEqual(['XComponent', './x-component', 'default', tree.body[0]])
         })
     })
     describe('.findScriptRequires()', () => {
         it('should parse const {Component, defineComponent} = require', () => {
             const script = 'const {Component, defineComponent} = require("san")'
-            const imports = [...findScriptRequires(p(script))]
+            const tree = p(script)
+            const imports = [...findScriptRequires(tree)]
             expect(imports).toHaveLength(2)
-            expect(imports[0]).toEqual(['Component', 'san', 'Component'])
-            expect(imports[1]).toEqual(['defineComponent', 'san', 'defineComponent'])
+            expect(imports[0]).toEqual(['Component', 'san', 'Component', tree.body[0]])
+            expect(imports[1]).toEqual(['defineComponent', 'san', 'defineComponent', tree.body[0]])
         })
         it('should parse const san = require("san")', () => {
             const script = 'const san = require("san")'
-            const imports = [...findScriptRequires(p(script))]
+            const tree = p(script)
+            const imports = [...findScriptRequires(tree)]
             expect(imports).toHaveLength(1)
-            expect(imports[0]).toEqual(['san', 'san', 'default'])
+            expect(imports[0]).toEqual(['san', 'san', 'default', tree.body[0]])
         })
         it('should parse const {defineComponent: def} = require("san")', () => {
             const script = 'const {defineComponent: def} = require("san")'
-            const imports = [...findScriptRequires(p(script))]
+            const tree = p(script)
+            const imports = [...findScriptRequires(tree)]
             expect(imports).toHaveLength(1)
-            expect(imports[0]).toEqual(['def', 'san', 'defineComponent'])
+            expect(imports[0]).toEqual(['def', 'san', 'defineComponent', tree.body[0]])
         })
         it('should parse const define = require("san").defineComponent', () => {
             const script = 'const define = require("san").defineComponent'
-            const imports = [...findScriptRequires(p(script))]
+            const tree = p(script)
+            const imports = [...findScriptRequires(tree)]
             expect(imports).toHaveLength(1)
-            expect(imports[0]).toEqual(['define', 'san', 'defineComponent'])
+            expect(imports[0]).toEqual(['define', 'san', 'defineComponent', tree.body[0]])
         })
     })
     describe('.findExportNames()', () => {

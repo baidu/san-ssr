@@ -2,7 +2,7 @@
  * TypeScript 文件解析器
  *
  * 从 TypeScript 文件源码，得到它里面的 San 信息，产出 TypedSanSourceFile。
- * JSSanSourceFile 包含了若干个 TypedComponentInfo 和一个 entryComponentInfo。
+ * TypedSanSourceFile 包含了若干个 TypedComponentInfo 和一个 entryComponentInfo。
  *
  * 使用 TypeScript 作为 SSR 的输入，通常用来 target 到其他语言，比如 PHP。
  * 因为 target 到其他语言时，需要类型信息才能更准确地把组件转换为代码。

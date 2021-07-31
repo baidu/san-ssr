@@ -17,6 +17,10 @@ export function getSanImportDeclaration (sourceFile: SourceFile): ImportDeclarat
     )
 }
 
+/**
+ * import {Component as OtherName} from 'san';
+ * 获取到 “OtherName”
+ */
 export function getComponentClassIdentifier (sourceFile: SourceFile): string | undefined {
     const declaration = getSanImportDeclaration(sourceFile)
     if (!declaration) return

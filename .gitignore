@@ -8,5 +8,6 @@ vendor/
 /dist/
 test/cases/*/ssr.js
 test/cases/*/ssr.php
+test/cases/*/output/*
 .vscode
 /example

@@ -41,7 +41,7 @@ export function readExpected (caseName: string, caseRoot: string) {
     return readFileSync(htmlPath, 'utf8')
 }
 
-export function compileJS (caseName: string, caseRoot: string, compileToFunctionBodyCode: boolean = false) {
+export function compileJS (caseName: string, caseRoot: string, compileToFunctionBodyCode: boolean = false, folderName = '') {
     debug('compile js', caseName)
     const caseDir = join(caseRoot, caseName)
     const ssrOnly = /-so/.test(caseName)
@@ -63,15 +63,15 @@ export function compileJS (caseName: string, caseRoot: string, compileToFunction
             ToJSCompiler,
             { ssrOnly, bareFunctionBody: compileToFunctionBodyCode, importHelpers }
         )
-        mkdirp.sync(join(caseRoot, caseName, 'output'))
+        mkdirp.sync(join(caseRoot, caseName, 'output', folderName))
         const targetFile = file === 'component.js'
-            ? join(caseRoot, caseName, 'output/ssr.js')
-            : join(caseRoot, caseName, 'output', file)
+            ? join(caseRoot, caseName, 'output', folderName, 'ssr.js')
+            : join(caseRoot, caseName, 'output', folderName, file)
         writeFileSync(targetFile, targetCode)
     }
 }
 
-export function compileComponent (caseName: string, caseRoot: string, compileToFunctionBodyCode: boolean = false) {
+export function compileComponent (caseName: string, caseRoot: string, compileToFunctionBodyCode: boolean = false, folderName = '') {
     debug('compile js', caseName)
     const caseDir = join(caseRoot, caseName)
     const jsFile = join(caseDir, 'component.js')
@@ -82,12 +82,12 @@ export function compileComponent (caseName: string, caseRoot: string, compileToF
         ToJSCompiler,
         { ssrOnly, bareFunctionBody: compileToFunctionBodyCode, importHelpers }
     )
-    mkdirp.sync(join(caseRoot, caseName, 'output'))
-    const targetFile = join(caseRoot, caseName, 'output/ssr.js')
+    mkdirp.sync(join(caseRoot, caseName, 'output', folderName))
+    const targetFile = join(caseRoot, caseName, 'output', folderName, 'ssr.js')
     return compileToFunctionBodyCode ? targetCode : writeFileSync(targetFile, targetCode)
 }
 
-export function compileTS (caseName: string, caseRoot: string) {
+export function compileTS (caseName: string, caseRoot: string, folderName = '') {
     debug('compile ts', caseName)
     const caseDir = join(caseRoot, caseName)
     const ssrOnly = /-so/.test(caseName)
@@ -97,10 +97,10 @@ export function compileTS (caseName: string, caseRoot: string) {
             ToJSCompiler,
             { ssrOnly, importHelpers }
         )
-        mkdirp.sync(join(caseRoot, caseName, 'output'))
+        mkdirp.sync(join(caseRoot, caseName, 'output', folderName))
         const targetFile = file === 'component.ts'
-            ? join(caseDir, 'output', 'ssr.js')
-            : join(caseDir, 'output', file.replace(/\.ts$/, '.js'))
+            ? join(caseDir, 'output', folderName, 'ssr.js')
+            : join(caseDir, 'output', folderName, file.replace(/\.ts$/, '.js'))
         writeFileSync(targetFile, targetCode)
     }
 }

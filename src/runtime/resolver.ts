@@ -15,9 +15,10 @@
  * - 也不能利用 exports 引用当前文件的其他组件： exports.sanSSRRenders.X()
  */
 import { SanComponent } from 'san'
+import type { GlobalContext } from '../models/global-context'
 
 export interface Resolver {
-    getRenderer: (ref: { id: string, specifier?: string }) => Function
+    getRenderer: (ref: { id: string, specifier?: string }, context?: GlobalContext) => Function
     setRenderer: (id: string, fn: Function) => void
     /**
      * 每个组件的每次 render 执行，共用同一个 prototype
@@ -27,10 +28,22 @@ export interface Resolver {
     setPrototype: (id: string, proto: SanComponent<{}>) => void
 }
 
-export function createResolver (exports: {[key: string]: any}, require: (spec: string) => any): Resolver {
+type nodeRequire = typeof require;
+
+export function createResolver (exports: {[key: string]: any}, require: nodeRequire): Resolver {
     return {
-        getRenderer: function ({ id, specifier = '.' }) {
-            const mod = specifier === '.' ? exports : require(specifier)
+        getRenderer: function ({ id, specifier = '.' }, context) {
+            const customRequirePath = context && context.customRequirePath
+            let mod: {[key: string]: any}
+            if (specifier === '.') {
+                mod = exports
+            } else {
+                let path: string | undefined
+                if (customRequirePath) {
+                    path = customRequirePath(require.resolve(specifier))
+                }
+                mod = require(path || specifier)
+            }
             return mod.sanSSRRenders[id]
         },
         setRenderer: function (id: string, fn: Function) {

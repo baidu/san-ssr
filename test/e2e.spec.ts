@@ -50,11 +50,12 @@ for (const { caseName, caseRoot } of cases) {
             compileJS(caseName, caseRoot, false, folderName)
             const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js'))
             const ssrSpecPath = join(caseRoot, `${caseName}/ssr-spec.js`)
+            let ssrSpec
             if (existsSync(ssrSpecPath)) {
-                require(ssrSpecPath)
+                ssrSpec = require(ssrSpecPath)
             }
             // 测试在 strict mode，因此需要手动传入 require
-            const got = render(...getRenderArguments(caseName, caseRoot))
+            const got = render(...getRenderArguments(caseName, caseRoot), { context: ssrSpec && ssrSpec.context })
             const [data, html] = parseSanHTML(got)
 
             expect(data).toEqual(expectedData)

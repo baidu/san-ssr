@@ -18,5 +18,6 @@
     "entityStr": true,
     "Label": true,
     "triggerEvent": true
-  }
+  },
+  "ignorePatterns": "output/"
 }

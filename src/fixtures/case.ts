@@ -4,6 +4,7 @@ import { SanProject } from '../models/san-project'
 import ToJSCompiler from '../target-js'
 import debugFactory from 'debug'
 import { compileToRenderer } from '../index'
+import mkdirp from 'mkdirp'
 
 const debug = debugFactory('case')
 export const caseRoots = [
@@ -40,33 +41,49 @@ export function readExpected (caseName: string, caseRoot: string) {
     return readFileSync(htmlPath, 'utf8')
 }
 
-export function compileJS (caseName: string, caseRoot: string, compileToFunctionBodyCode: true): string
-export function compileJS (caseName: string, caseRoot: string, compileToFunctionBodyCode: boolean) {
+export function compileJS (caseName: string, caseRoot: string, compileToFunctionBodyCode: boolean = false) {
     debug('compile js', caseName)
     const caseDir = join(caseRoot, caseName)
-    const jsFile = join(caseDir, 'component.js')
     const ssrOnly = /-so/.test(caseName)
-    const targetCode = sanProject.compile(
-        jsFile,
-        ToJSCompiler,
-        { ssrOnly, bareFunctionBody: compileToFunctionBodyCode, importHelpers }
-    )
-    const targetFile = join(caseRoot, caseName, 'ssr.js')
-    return compileToFunctionBodyCode ? targetCode : writeFileSync(targetFile, targetCode)
+
+    if (compileToFunctionBodyCode) {
+        const jsFile = join(caseDir, 'component.js')
+        const targetCode = sanProject.compile(
+            jsFile,
+            ToJSCompiler,
+            { ssrOnly, bareFunctionBody: compileToFunctionBodyCode, importHelpers }
+        )
+        return targetCode
+    }
+
+    for (const file of readdirSync(caseDir).filter(file => file === 'component.js' || file.endsWith('.san.js'))) {
+        const jsFile = join(caseDir, file)
+        const targetCode = sanProject.compile(
+            jsFile,
+            ToJSCompiler,
+            { ssrOnly, bareFunctionBody: compileToFunctionBodyCode, importHelpers }
+        )
+        mkdirp.sync(join(caseRoot, caseName, 'output'))
+        const targetFile = file === 'component.js'
+            ? join(caseRoot, caseName, 'output/ssr.js')
+            : join(caseRoot, caseName, 'output', file)
+        writeFileSync(targetFile, targetCode)
+    }
 }
 
-export function compileComponent (caseName: string, caseRoot: string, compileToFunctionBodyCode: true): string
-export function compileComponent (caseName: string, caseRoot: string, compileToFunctionBodyCode: boolean) {
+export function compileComponent (caseName: string, caseRoot: string, compileToFunctionBodyCode: boolean = false) {
     debug('compile js', caseName)
     const caseDir = join(caseRoot, caseName)
     const jsFile = join(caseDir, 'component.js')
     const ssrOnly = /-so/.test(caseName)
+    const component = require(jsFile)
     const targetCode = sanProject.compile(
-        require(jsFile),
+        component,
         ToJSCompiler,
         { ssrOnly, bareFunctionBody: compileToFunctionBodyCode, importHelpers }
     )
-    const targetFile = join(caseRoot, caseName, 'ssr.js')
+    mkdirp.sync(join(caseRoot, caseName, 'output'))
+    const targetFile = join(caseRoot, caseName, 'output/ssr.js')
     return compileToFunctionBodyCode ? targetCode : writeFileSync(targetFile, targetCode)
 }
 
@@ -80,9 +97,10 @@ export function compileTS (caseName: string, caseRoot: string) {
             ToJSCompiler,
             { ssrOnly, importHelpers }
         )
+        mkdirp.sync(join(caseRoot, caseName, 'output'))
         const targetFile = file === 'component.ts'
-            ? join(caseDir, 'ssr.js')
-            : join(caseDir, file.replace(/\.ts$/, '.js'))
+            ? join(caseDir, 'output', 'ssr.js')
+            : join(caseDir, 'output', file.replace(/\.ts$/, '.js'))
         writeFileSync(targetFile, targetCode)
     }
 }

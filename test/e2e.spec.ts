@@ -9,7 +9,14 @@ caseRoots.forEach(caseRoot => {
     execSync(`rm -rf ${caseRoot}/**/output`)
 })
 
-for (const { caseName, caseRoot } of ls()) {
+// npm run e2e xxx
+const caseName = process.argv[3]
+const cases = caseName ? ls().filter(item => item.caseName === caseName) : ls()
+if (cases.length === 0) {
+    console.warn(`no case found for ${caseName}`)
+}
+
+for (const { caseName, caseRoot } of cases) {
     const [expectedData, expectedHtml] = parseSanHTML(readExpected(caseName, caseRoot))
 
     if (tsExists(caseName, caseRoot)) {

@@ -3,7 +3,14 @@ import { join } from 'path'
 import { parseSanHTML } from '../src/index'
 import { existsSync } from 'fs'
 
-for (const { caseName, caseRoot } of ls()) {
+const caseName = process.argv[3]
+
+let cases = ls().filter(item => caseName ? item.caseName === caseName : true)
+if (cases.length === 0) {
+    cases = ls()
+}
+
+for (const { caseName, caseRoot } of cases) {
     const [expectedData, expectedHtml] = parseSanHTML(readExpected(caseName, caseRoot))
 
     if (tsExists(caseName, caseRoot)) {

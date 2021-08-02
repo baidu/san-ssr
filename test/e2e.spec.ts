@@ -15,8 +15,9 @@ for (const { caseName, caseRoot } of cases) {
 
     if (tsExists(caseName, caseRoot)) {
         it('render to source (TypeScript): ' + caseName, async function () {
-            compileTS(caseName, caseRoot)
-            const render = require(join(caseRoot, caseName, 'output', 'ssr.js'))
+            const folderName = getRandomStr()
+            compileTS(caseName, caseRoot, folderName)
+            const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js'))
             const got = render(...getRenderArguments(caseName, caseRoot))
             const [data, html] = parseSanHTML(got)
 
@@ -27,8 +28,9 @@ for (const { caseName, caseRoot } of cases) {
 
     if (jsExists(caseName, caseRoot)) {
         it('js to source: ' + caseName, async function () {
-            compileJS(caseName, caseRoot)
-            const render = require(join(caseRoot, caseName, 'output/ssr.js'))
+            const folderName = getRandomStr()
+            compileJS(caseName, caseRoot, false, folderName)
+            const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js'))
             const ssrSpecPath = join(caseRoot, `${caseName}/ssr-spec.js`)
             if (existsSync(ssrSpecPath)) {
                 require(ssrSpecPath)
@@ -42,9 +44,10 @@ for (const { caseName, caseRoot } of cases) {
         })
 
         it('component to source: ' + caseName, async function () {
-            compileComponent(caseName, caseRoot)
+            const folderName = getRandomStr()
+            compileComponent(caseName, caseRoot, false, folderName)
             // eslint-disable-next-line
-            const render = require(join(caseRoot, caseName, 'output/ssr.js'))
+            const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js'))
             // 测试在 strict mode，因此需要手动传入 require
             const got = render(...getRenderArguments(caseName, caseRoot))
             const [data, html] = parseSanHTML(got)
@@ -61,4 +64,8 @@ for (const { caseName, caseRoot } of cases) {
             expect(html).toEqual(expectedHtml)
         })
     }
+}
+
+function getRandomStr () {
+    return Math.random().toString(36).slice(2)
 }

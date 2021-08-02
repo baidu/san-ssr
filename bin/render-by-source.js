@@ -10,11 +10,12 @@ const caseItem = ls().find(item => item.caseName === caseName)
 const caseRoot = caseItem.caseRoot
 
 const ssrSpecPath = join(caseRoot, `${caseName}/ssr-spec.js`)
+let ssrSpec
 if (fs.existsSync(ssrSpecPath)) {
-    require(ssrSpecPath)
+    ssrSpec = require(ssrSpecPath)
 }
 
 const render = require(join(caseRoot, `${caseName}/output/ssr.js`))
-const html = render(...getRenderArguments(caseName, caseRoot))
+const html = render(...getRenderArguments(caseName, caseRoot), { context: ssrSpec && ssrSpec.context })
 
 process.stdout.write(html)

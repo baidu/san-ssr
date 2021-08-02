@@ -26,7 +26,13 @@ export class RendererCompiler {
      * 把 ComponentInfo 编译成函数源码，返回 Renderer 函数的 AST
      */
     public compileToRenderer (componentInfo: ComponentInfo) {
-        const args = [DEF('data'), DEF('noDataOutput', L(false)), DEF('parentCtx', NULL), DEF('tagName', L('div')), DEF('slots', EMPTY_MAP)]
+        const args = [
+            DEF('data'),
+            DEF('noDataOutput', L(false)),
+            DEF('parentCtx', NULL),
+            DEF('tagName', L('div')),
+            DEF('slots', EMPTY_MAP)
+        ]
         const fn = new FunctionDefinition(this.options.functionName || '', args,
             this.compileComponentRendererBody(componentInfo)
         )
@@ -94,7 +100,19 @@ export class RendererCompiler {
                 )]
             ),
             DEF('refs', refs),
-            DEF('ctx', new MapLiteral([I('instance'), I('slots'), I('data'), I('parentCtx'), I('refs')]))
+
+            // 组件级别的 context
+            DEF('ctx', new MapLiteral([
+                I('instance'),
+                I('slots'),
+                I('data'),
+                I('parentCtx'),
+                I('refs'),
+
+                // 单次渲染级别的 context
+                // 从最外层一直传下来的，上面可以绑 customRequirePath 等方法
+                [I('context'), BINARY(I('parentCtx'), '&&', BINARY(I('parentCtx'), '.', I('context')))]
+            ]))
         ]
     }
 

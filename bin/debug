@@ -4,21 +4,24 @@ require('source-map-support/register')
 const { assertSanHTMLEqual } = require('../dist/index')
 const { execFileSync } = require('child_process')
 const chalk = require('chalk')
-const { readFileSync, readdirSync } = require('fs')
+const { readFileSync } = require('fs')
 const assert = require('assert')
 const { join } = require('path')
-const { caseRoot, jsExists, tsExists, compileComponent, compileJS, compileTS } = require('../dist/fixtures/case')
+const { jsExists, tsExists, compileComponent, compileJS, compileTS, ls } = require('../dist/fixtures/case')
 
 const caseName = process.argv[2]
-if (!caseName) {
+const caseItem = ls().find(item => item.caseName === caseName)
+
+if (!caseName || !caseItem) {
     console.error('Usage: debug <CASE_NAME>')
     console.error('Example: debug array-literal')
     console.error()
     console.error('Available case names:')
-    console.error(readdirSync(caseRoot).map(x => `  - ${x}`).join('\n'))
+    console.error(ls().map(x => `  - ${x.caseName}`).join('\n'))
     process.exit(1)
 }
 
+const caseRoot = caseItem.caseRoot
 const htmlPath = join(caseRoot, caseName, 'expected.html')
 const expected = readFileSync(htmlPath, 'utf8')
 
@@ -27,7 +30,7 @@ const cases = {
         need: 'js',
         desc: 'JS->源码->渲染',
         fn: () => {
-            compileJS(caseName)
+            compileJS(caseName, caseRoot)
             return exec('./render-by-source.js')
         }
     },
@@ -35,7 +38,7 @@ const cases = {
         need: 'ts',
         desc: 'TS->源码->渲染',
         fn: () => {
-            compileTS(caseName)
+            compileTS(caseName, caseRoot)
             return exec('./render-by-source.js')
         }
     },
@@ -43,7 +46,7 @@ const cases = {
         need: 'js',
         desc: '组件->源码->渲染',
         fn: () => {
-            compileComponent(caseName)
+            compileComponent(caseName, caseRoot)
             return exec('./render-by-source.js')
         }
     },
@@ -90,7 +93,7 @@ for (const key of enabled) {
 process.exit(exitCode)
 
 function depsReady (key) {
-    return cases[key].need === 'js' ? jsExists(caseName) : tsExists(caseName)
+    return cases[key].need === 'js' ? jsExists(caseName, caseRoot) : tsExists(caseName, caseRoot)
 }
 
 function exec (bin) {

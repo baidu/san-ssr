@@ -149,8 +149,16 @@ function createInstanceFromClass (Clazz: ComponentClass) {
 }
 
 function getRootCtx<T extends {parentCtx?: T}> (ctx: T) {
-    while (ctx.parentCtx) ctx = ctx.parentCtx
-    return ctx
+    let last = ctx
+    while (ctx.parentCtx) {
+        last = ctx
+        ctx = ctx.parentCtx
+    }
+
+    // 如果跟组件 render 调用的时候传递了 parentCtx，会找到这个对象
+    // 通过 ctx 是否有 data 来判断是不是真正的 rootCtx
+    // @ts-ignore
+    return ctx.data ? ctx : last
 }
 
 function handleError (e: Error, instance: SanComponent<{}>, info: string) {

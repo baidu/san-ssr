@@ -18,9 +18,21 @@ if (cases.length === 0) {
 
 for (const { caseName, caseRoot } of cases) {
     const [expectedData, expectedHtml] = parseSanHTML(readExpected(caseName, caseRoot))
+    let ssrSpec = {
+        enabled: {
+            jssrc: true,
+            comsrc: true,
+            comrdr: true,
+            tssrc: true
+        }
+    }
+    const ssrSpecPath = join(caseRoot, caseName, 'ssr-spec.js')
+    if (existsSync(ssrSpecPath)) {
+        ssrSpec = require(ssrSpecPath)
+    }
 
     if (tsExists(caseName, caseRoot)) {
-        it('render to source (TypeScript): ' + caseName, async function () {
+        ssrSpec.enabled.tssrc && it('render to source (TypeScript): ' + caseName, async function () {
             const folderName = getRandomStr() + '_tssrc'
             compileTS(caseName, caseRoot, folderName)
             const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js'))
@@ -33,7 +45,7 @@ for (const { caseName, caseRoot } of cases) {
     }
 
     if (jsExists(caseName, caseRoot)) {
-        it('js to source: ' + caseName, async function () {
+        ssrSpec.enabled.jssrc && it('js to source: ' + caseName, async function () {
             const folderName = getRandomStr() + '_jssrc'
             compileJS(caseName, caseRoot, false, folderName)
             const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js'))
@@ -49,7 +61,7 @@ for (const { caseName, caseRoot } of cases) {
             expect(html).toEqual(expectedHtml)
         })
 
-        it('component to source: ' + caseName, async function () {
+        ssrSpec.enabled.comsrc && it('component to source: ' + caseName, async function () {
             const folderName = getRandomStr() + '_comsrc'
             compileComponent(caseName, caseRoot, false, folderName)
             // eslint-disable-next-line
@@ -62,7 +74,7 @@ for (const { caseName, caseRoot } of cases) {
             expect(html).toEqual(expectedHtml)
         })
 
-        it('component to renderer: ' + caseName, async function () {
+        ssrSpec.enabled.comrdr && it('component to renderer: ' + caseName, async function () {
             const got = renderOnthefly(caseName, caseRoot)
             const [data, html] = parseSanHTML(got)
 

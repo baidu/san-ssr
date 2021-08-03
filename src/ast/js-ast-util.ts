@@ -59,7 +59,7 @@ export function isExportsMemberExpression (expr: Pattern) {
  * 找到 node 下面所有的 require 语句
  *
  * 通过迭代器返回每一个 require 的 localName、moduleName、exportName。
- * 例如：let { foo } = require('bar').coo，会 yield ["foo", "bar", "coo"]
+ * 例如：let foo = require('bar').coo，会 yield ["foo", "bar", "coo"]
  */
 export function * findScriptRequires (node: Node): Generator<[string, string, string]> {
     for (const decl of filterByType(node, 'VariableDeclaration')) {

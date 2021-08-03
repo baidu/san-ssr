@@ -14,6 +14,7 @@ import { isVariableDeclarator, isProperty, isAssignmentExpression, isExportDefau
 import { JSSanSourceFile } from '../models/san-source-file'
 import { componentID, ComponentReference } from '../models/component-reference'
 import { readFileSync } from 'fs'
+import { parseSanSourceFileOptions } from '../compilers/renderer-options'
 
 const debug = debugFactory('ts-component-parser')
 const DEFAULT_LOADER_CMP = 'SanSSRDefaultLoaderComponent'
@@ -39,16 +40,19 @@ export class JavaScriptSanParser {
     private componentIDs: Map<Node | undefined, string> = new Map()
     private defaultPlaceholderComponent?: JSComponentInfo
     private id = 0
+    private sanReferenceInfo?: parseSanSourceFileOptions['sanReferenceInfo']
 
     constructor (
         private readonly filePath: string,
         fileContent?: string,
-        sourceType: 'module' | 'script' = 'script'
+        sourceType: 'module' | 'script' = 'script',
+        options?: parseSanSourceFileOptions
     ) {
         this.root = parse(
             fileContent === undefined ? readFileSync(filePath, 'utf8') : fileContent,
             { ecmaVersion: 2020, sourceType }
         ) as any as Program
+        this.sanReferenceInfo = options?.sanReferenceInfo
     }
 
     parse (): JSSanSourceFile {
@@ -200,7 +204,7 @@ export class JavaScriptSanParser {
     }
 
     private isDefineComponentCall (node: Node): node is CallExpression {
-        return isCallExpression(node) && this.isImportedFromSan(node.callee, 'defineComponent')
+        return isCallExpression(node) && this.isImportedFromSan(node.callee, this.sanReferenceInfo?.methodName || 'defineComponent')
     }
 
     private isCreateComponentLoaderCall (node: Node): node is CallExpression {
@@ -212,9 +216,9 @@ export class JavaScriptSanParser {
     }
 
     private isImportedFromSan (expr: Node, sanExport: string): boolean {
-        if (isIdentifier(expr)) return this.isImportedFrom(expr.name, 'san', sanExport)
+        if (isIdentifier(expr)) return this.isImportedFrom(expr.name, this.sanReferenceInfo?.moduleName || 'san', sanExport)
         if (isMemberExpression(expr)) return this.isImportedFromSan(expr.object, 'default') && getStringValue(expr.property) === sanExport
-        if (isCallExpression(expr)) return isRequireSpecifier(expr, 'san') && sanExport === 'default'
+        if (isCallExpression(expr)) return isRequireSpecifier(expr, this.sanReferenceInfo?.moduleName || 'san') && sanExport === 'default'
         return false
     }
 

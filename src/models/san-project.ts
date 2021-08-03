@@ -11,6 +11,11 @@
  */
 
 import type { ComponentConstructor } from 'san'
+import type { TypedSanSourceFile, DynamicSanSourceFile, SanSourceFile, JSSanSourceFile } from '../models/san-source-file'
+import type { parseSanSourceFileOptions, RenderOptions } from '../compilers/renderer-options'
+import type { Renderer } from './renderer'
+import type { CompileOptions } from '../target-js/compilers/compile-options'
+import type { TargetCodeGenerator } from '../models/target-code-generator'
 import assert from 'assert'
 import { Project } from 'ts-morph'
 import { ComponentClassParser } from '../parsers/component-class-parser'
@@ -18,13 +23,8 @@ import { TypeScriptSanParser } from '../parsers/typescript-san-parser'
 import { JavaScriptSanParser } from '../parsers/javascript-san-parser'
 import { SanFileParser } from '../parsers/san-file-parser'
 import { removeModules } from '../parsers/remove-modules'
-import { TypedSanSourceFile, DynamicSanSourceFile, SanSourceFile } from '../models/san-source-file'
 import ToJSCompiler from '../target-js/index'
-import { CompileOptions } from '../target-js/compilers/compile-options'
-import { RenderOptions } from '../compilers/renderer-options'
-import { Renderer } from './renderer'
 import { getDefaultTSConfigPath } from '../parsers/tsconfig'
-import { TargetCodeGenerator } from '../models/target-code-generator'
 import { isFileDescriptor, isSanFileDescriptor, isComponentClass, ComponentClass, FileDescriptor, CompileInput } from './options'
 
 type TargetCodeGeneratorClass<T extends TargetCodeGenerator = TargetCodeGenerator> = { new(project: SanProject): T }
@@ -59,7 +59,7 @@ export class SanProject {
         target: string | TargetCodeGeneratorClass<T> = 'js',
         options: RenderOptions = {}
     ) {
-        const sanSourceFile = this.parseSanSourceFile(input)
+        const sanSourceFile = this.parseSanSourceFile(input, { sanReferenceInfo: options.sanReferenceInfo })
         // 删除配置中指定的在 ssr 下无需引入的模块
         const { removeModules: modules } = options
         if (modules && modules.length) {
@@ -75,10 +75,11 @@ export class SanProject {
      * CompileInput 可以是 JS、TS 源文件，也可以是组件类，得到的 SanSourceFile 里包含这个文件里
      * San 相关的信息，比如有多少个组件？每个组件有哪些方法？以及得到 template 对应的 ANode 树。
      */
-    public parseSanSourceFile (componentClass: ComponentClass): DynamicSanSourceFile;
-    public parseSanSourceFile (fileDescriptor: FileDescriptor): TypedSanSourceFile
-    public parseSanSourceFile (input: CompileInput): SanSourceFile
-    public parseSanSourceFile (input: CompileInput): SanSourceFile {
+    public parseSanSourceFile (componentClass: ComponentClass, options?: parseSanSourceFileOptions): DynamicSanSourceFile
+    public parseSanSourceFile (fileDescriptor: FileDescriptor, options?: parseSanSourceFileOptions): TypedSanSourceFile
+    public parseSanSourceFile (filecontent: string, options?: parseSanSourceFileOptions): JSSanSourceFile
+    public parseSanSourceFile (input: CompileInput, options?: parseSanSourceFileOptions): SanSourceFile
+    public parseSanSourceFile (input: CompileInput, options?: parseSanSourceFileOptions): SanSourceFile {
         if (isComponentClass(input)) return new ComponentClassParser(input, '').parse()
         if (isSanFileDescriptor(input)) {
             return new SanFileParser(input.scriptContent, input.templateContent, input.filePath).parse()
@@ -93,7 +94,7 @@ export class SanProject {
             !fileContent && sourceFile.refreshFromFileSystemSync()
             return new TypeScriptSanParser().parse(sourceFile)
         }
-        return new JavaScriptSanParser(filePath).parse()
+        return new JavaScriptSanParser(filePath, undefined, 'script', options).parse()
     }
 
     /**

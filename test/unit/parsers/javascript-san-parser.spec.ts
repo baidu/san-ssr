@@ -76,6 +76,23 @@ describe('JavaScriptSanParser', () => {
                 const [components] = parser.parseComponents()
                 expect(components[0]).toHaveProperty('id', 'Bar')
             })
+            it('should parse with custom san module', () => {
+                const script = `
+                import { define } from 'other-san'
+                let Foo
+                Foo = define({})
+                export const Bar = Foo
+                `
+                const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module', {
+                    sanReferenceInfo: {
+                        methodName: 'define',
+                        moduleName: 'other-san'
+                    }
+                })
+                parser.parseNames()
+                const [components] = parser.parseComponents()
+                expect(components[0]).toHaveProperty('id', 'Bar')
+            })
         })
         describe('script', () => {
             it('should parse a single component from script', () => {
@@ -111,7 +128,7 @@ describe('JavaScriptSanParser', () => {
                 module.exports = san.defineComponent({ template: '<button>' })
                 exports.ZComponent = require('san').defineComponent({ template: '<meta>' })
                 `
-                const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module')
+                const parser = new JavaScriptSanParser('/tmp/foo.san', script)
                 parser.parseNames()
                 const [components, entry] = parser.parseComponents()
                 expect(components).toHaveLength(3)
@@ -133,6 +150,23 @@ describe('JavaScriptSanParser', () => {
                 expect(entry).toBeUndefined()
                 expect(components).toHaveLength(1)
                 expect(components[0]).toHaveProperty('id', 'ZComponent')
+            })
+            it('should parse with custom san module', () => {
+                const script = `
+                const { define } = require('other-san')
+                let Foo
+                Foo = define({})
+                exports.Bar = Foo
+                `
+                const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'script', {
+                    sanReferenceInfo: {
+                        methodName: 'define',
+                        moduleName: 'other-san'
+                    }
+                })
+                parser.parseNames()
+                const [components] = parser.parseComponents()
+                expect(components[0]).toHaveProperty('id', 'Bar')
             })
         })
     })

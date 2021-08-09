@@ -94,6 +94,11 @@ export function * walk (node: Expression | Statement): Iterable<Expression | Sta
         yield * walk(node.iterable)
         for (const stmt of node.body) yield * walk(stmt)
         break
+    case SyntaxKind.TryStatement:
+        for (const stmt of node.block) yield * walk(stmt)
+        yield * walk(node.handler.param)
+        for (const stmt of node.handler.body) yield * walk(stmt)
+        break
     default: assertNever(node)
     }
 }

@@ -8,7 +8,7 @@ import { ANodeCompiler } from './anode-compiler'
 import { ComponentInfo } from '../models/component-info'
 import { RenderOptions } from './renderer-options'
 import { FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper, ComponentReferenceLiteral, ConditionalExpression } from '../ast/renderer-ast-dfn'
-import { EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL, UNDEFINED } from '../ast/renderer-ast-util'
+import { EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL, UNDEFINED, createTryStatement } from '../ast/renderer-ast-util'
 import { IDGenerator } from '../utils/id-generator'
 import { mergeLiteralAdd } from '../optimizers/merge-literal-add'
 
@@ -52,10 +52,15 @@ export class RendererCompiler {
 
         // call inited
         if (info.hasMethod('inited')) {
-            body.push(STATEMENT(new FunctionCall(
-                BINARY(I('instance'), '.', I('inited')),
-                []
-            )))
+            body.push(createTryStatement(
+                [STATEMENT(new FunctionCall(BINARY(I('instance'), '.', I('inited')), []))],
+                I('e'),
+                [STATEMENT(new FunctionCall(BINARY(I('sanSSRHelpers'), '.', I('handleError')), [
+                    I('e'),
+                    I('instance'),
+                    L('hook:inited')
+                ]))]
+            ))
         }
 
         // calc computed
@@ -104,9 +109,15 @@ export class RendererCompiler {
         const item = BINARY(BINARY(I('ctx'), '.', I('data')), '[]', I('key'))
 
         return [
-            DEF(
-                'initData',
-                new FunctionCall(BINARY(I('instance'), '.', I('initData')), [])
+            DEF('initData', undefined),
+            createTryStatement(
+                [ASSIGN(I('initData'), new FunctionCall(BINARY(I('instance'), '.', I('initData')), []))],
+                I('e'),
+                [STATEMENT(new FunctionCall(BINARY(I('sanSSRHelpers'), '.', I('handleError')), [
+                    I('e'),
+                    I('instance'),
+                    L('initData')
+                ]))]
             ),
             createDefaultValue(I('initData'), new MapLiteral([])),
             new Foreach(I('key'), I('value'), I('initData'), [

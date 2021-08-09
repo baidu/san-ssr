@@ -63,11 +63,13 @@ export enum SyntaxKind {
     SlotRendererDefinition = 33,
     SlotRenderCall = 34,
     Undefined = 35,
+    TryStatement = 36,
+    CatchClause = 37
 }
 
 export type Expression = Identifier | FunctionDefinition | Literal | BinaryExpression | UnaryExpression | CreateComponentInstance | NewExpression | MapLiteral | ComponentRendererReference | FunctionCall | Null | Undefined | MapAssign | ArrayIncludes | ConditionalExpression | FilterCall | HelperCall | EncodeURIComponent | ArrayLiteral | RegexpReplace | JSONStringify | ComputedCall | GetRootCtxCall | ComponentReferenceLiteral | SlotRendererDefinition | SlotRenderCall
 
-export type Statement = ReturnStatement | ImportHelper | VariableDefinition | AssignmentStatement | If | ElseIf | Else | Foreach | ExpressionStatement
+export type Statement = ReturnStatement | ImportHelper | VariableDefinition | AssignmentStatement | If | ElseIf | Else | Foreach | ExpressionStatement | TryStatement
 
 export type BinaryOperator = '+' | '-' | '*' | '/' | '.' | '===' | '!==' | '||' | '&&' | '[]' | '+=' | '!=' | '=='
 
@@ -137,6 +139,21 @@ export class Undefined implements SyntaxNode {
     static create () {
         return Undefined.instance
     }
+}
+
+export class TryStatement implements SyntaxNode {
+    public readonly kind = SyntaxKind.TryStatement
+    constructor (
+        public block: Statement[],
+        public handler: CatchClause
+    ) {}
+}
+export class CatchClause implements SyntaxNode {
+    public readonly kind = SyntaxKind.CatchClause
+    constructor (
+        public param: Identifier,
+        public body: Statement[]
+    ) {}
 }
 
 export class CreateComponentInstance implements SyntaxNode {

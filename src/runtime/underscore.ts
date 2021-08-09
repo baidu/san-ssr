@@ -1,4 +1,5 @@
 import { ComponentClass } from '../models/component'
+import { handleError } from './handle-error'
 
 const BASE_PROPS = {
     class: 1,
@@ -96,11 +97,23 @@ function boolAttrFilter (name: string, value: string) {
 }
 
 function callFilter (ctx: Context, name: string, ...args: any[]) {
-    return ctx.instance.filters[name].call(ctx.instance, ...args)
+    let value
+    try {
+        value = ctx.instance.filters[name].call(ctx.instance, ...args)
+    } catch (e) {
+        handleError(e, ctx.instance, 'filter:' + name)
+    }
+    return value
 }
 
 function callComputed (ctx: Context, name: string) {
-    return ctx.instance.computed[name].apply(ctx.instance)
+    let value
+    try {
+        value = ctx.instance.computed[name].apply(ctx.instance)
+    } catch (e) {
+        handleError(e, ctx.instance, 'computed:' + name)
+    }
+    return value
 }
 
 function iterate (val: any[] | object) {

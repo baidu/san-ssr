@@ -169,6 +169,14 @@ export class JSEmitter extends Emitter {
             break
         case SyntaxKind.Foreach:
             return this.writeForeachStatement(node)
+        case SyntaxKind.TryStatement:
+            this.nextLine('try ')
+            this.writeBlockStatements(node.block)
+            this.nextLine('catch (')
+            this.writeSyntaxNode(node.handler.param)
+            this.write(') ')
+            this.writeBlockStatements(node.handler.body)
+            break
         default: assertNever(node)
         }
     }

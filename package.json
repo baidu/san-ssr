@@ -78,7 +78,7 @@
     "san-html-cases": "^3.10.16",
     "san-ssr-target-fake-cmd": "^1.0.0",
     "san-ssr-target-fake-esm": "^1.0.0",
-    "semantic-release": "^17.1.1",
+    "semantic-release": "^17.4.4",
     "source-map-support": "^0.5.19",
     "swig-templates": "^2.0.3",
     "typedoc": "^0.17.8"

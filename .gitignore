@@ -9,3 +9,4 @@ vendor/
 test/cases/*/ssr.js
 test/cases/*/ssr.php
 .vscode
+/example

@@ -64,7 +64,8 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
     }
 
     private * compileText (aNode: ATextNode): Generator<Statement> {
-        const shouldEmitComment = TypeGuards.isExprTextNode(aNode.textExpr) && aNode.textExpr.original && !this.ssrOnly && !this.inScript
+        const shouldEmitComment = (TypeGuards.isExprTextNode(aNode.textExpr) || TypeGuards.isExprInterpNode(aNode.textExpr)) &&
+            aNode.textExpr.original && !this.ssrOnly && !this.inScript
         const outputType = this.inScript ? OutputType.HTML : OutputType.ESCAPE_HTML
         if (shouldEmitComment) yield createHTMLLiteralAppend('<!--s-text-->')
         yield createHTMLExpressionAppend(sanExpr(aNode.textExpr, outputType))

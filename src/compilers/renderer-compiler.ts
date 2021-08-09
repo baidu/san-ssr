@@ -104,8 +104,8 @@ export class RendererCompiler {
         const item = BINARY(BINARY(I('ctx'), '.', I('data')), '[]', I('key'))
 
         return [
-            ASSIGN(
-                I('initData'),
+            DEF(
+                'initData',
                 new FunctionCall(BINARY(I('instance'), '.', I('initData')), [])
             ),
             createDefaultValue(I('initData'), new MapLiteral([])),

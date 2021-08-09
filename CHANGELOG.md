@@ -1,3 +1,10 @@
+## [4.7.1](https://github.com/baidu/san-ssr/compare/v4.7.0...v4.7.1) (2021-08-09)
+
+
+### Bug Fixes
+
+* [#117](https://github.com/baidu/san-ssr/issues/117) 兼容 ATextNode 直接为 interpolation 的情况 ([7a2dd9a](https://github.com/baidu/san-ssr/commit/7a2dd9ac8bd856bdf92745ed6366751694a1048f))
+
 # [4.7.0](https://github.com/baidu/san-ssr/compare/v4.6.4...v4.7.0) (2021-06-21)
 
 

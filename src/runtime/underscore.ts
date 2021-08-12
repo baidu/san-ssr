@@ -101,6 +101,7 @@ function callFilter (ctx: Context, name: string, ...args: any[]) {
     try {
         value = ctx.instance.filters[name].call(ctx.instance, ...args)
     } catch (e) {
+        /* istanbul ignore next */
         handleError(e, ctx.instance, 'filter:' + name)
     }
     return value
@@ -111,6 +112,7 @@ function callComputed (ctx: Context, name: string) {
     try {
         value = ctx.instance.computed[name].apply(ctx.instance)
     } catch (e) {
+        /* istanbul ignore next */
         handleError(e, ctx.instance, 'computed:' + name)
     }
     return value

@@ -176,9 +176,14 @@ describe('SanProject', function () {
         it('should emit js helpers by default', function () {
             const proj = new SanProject(null)
             const helpers = proj.emitHelpers('js')
-            expect(helpers).toContain('exports._ = ')
-            expect(helpers).toContain('exports.SanSSRData = ')
-            expect(helpers).toContain('exports.createResolver = ')
+
+            // eslint-disable-next-line
+            const helpersModule = new Function('exports', helpers)
+            const exports = {}
+            helpersModule(exports)
+            expect(exports).toHaveProperty('_')
+            expect(exports).toHaveProperty('SanSSRData')
+            expect(exports).toHaveProperty('createResolver')
         })
     })
 })

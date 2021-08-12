@@ -1,5 +1,10 @@
-import { ComponentClass } from '../models/component'
-import { handleError } from './handle-error'
+/**
+ * 该文件可能会以字符串形式直接输出到产物中
+ * 因此不能引用外部模块，会因找不到外部模块报错
+ */
+
+import type { ComponentClass } from '../models/component'
+import type { SanComponent } from 'san'
 
 const BASE_PROPS = {
     class: 1,
@@ -148,6 +153,19 @@ function getRootCtx<T extends {parentCtx?: T}> (ctx: T) {
     return ctx
 }
 
+function handleError (e: Error, instance: SanComponent<{}>, info: string) {
+    let current: SanComponent<{}> | undefined = instance
+    while (current) {
+        if (typeof current.error === 'function') {
+            current.error(e, instance, info)
+            return
+        }
+        current = current.parentComponent
+    }
+
+    throw e
+}
+
 export const _ = {
-    output, createInstanceFromClass, escapeHTML, boolAttrFilter, attrFilter, classFilter, styleFilter, xstyleFilter, xclassFilter, createFromPrototype, getRootCtx, iterate, callFilter, callComputed
+    output, createInstanceFromClass, escapeHTML, boolAttrFilter, attrFilter, classFilter, styleFilter, xstyleFilter, xclassFilter, createFromPrototype, getRootCtx, iterate, callFilter, callComputed, handleError
 }

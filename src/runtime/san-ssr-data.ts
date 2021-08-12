@@ -1,3 +1,7 @@
+/**
+ * 该文件可能会以字符串形式直接输出到产物中
+ * 因此不能引用外部模块，会因找不到外部模块报错
+ */
 interface DataObject {
     [key: string]: any
 }

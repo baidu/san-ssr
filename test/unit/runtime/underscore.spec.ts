@@ -1,5 +1,6 @@
 import { _ } from '../../../src/runtime/underscore'
 import { Component } from 'san'
+import type { SanComponent } from 'san'
 
 describe('utils/underscore', function () {
     describe('.escapeHTML()', function () {
@@ -69,6 +70,62 @@ describe('utils/underscore', function () {
     describe('.attrFilter', () => {
         it('should not escape if specified', () => {
             expect(_.attrFilter('class', 'dark', false)).toEqual(' class="dark"')
+        })
+    })
+    describe('.handleError()', () => {
+        const handleError = _.handleError
+        it('should call parent error', () => {
+            const spy = jest.fn()
+            const instance = {
+                parentComponent: {
+                    error: spy
+                } as unknown as SanComponent<{}>
+            } as SanComponent<{}>
+
+            handleError(new Error('error'), instance, 'test')
+
+            expect(spy).toHaveBeenCalled()
+            const args = spy.mock.calls[0]
+            expect(args[2]).toBe('test')
+            expect(args[0] instanceof Error).toBe(true)
+            expect(args[0].message).toBe('error')
+        })
+        it('should not call parent error', () => {
+            const spy = jest.fn()
+            const spy2 = jest.fn()
+            const instance = {
+                parentComponent: {
+                    error: spy2
+                } as unknown as SanComponent<{}>,
+                error: spy
+            } as unknown as SanComponent<{}>
+
+            handleError(new Error('error'), instance, 'test')
+
+            expect(spy).toHaveBeenCalled()
+            expect(spy2).toHaveBeenCalledTimes(0)
+            const args = spy.mock.calls[0]
+            expect(args[2]).toBe('test')
+            expect(args[0] instanceof Error).toBe(true)
+            expect(args[0].message).toBe('error')
+        })
+        it('should throw error', () => {
+            const spy = jest.fn()
+            const instance = {
+                parentComponent: {
+                } as SanComponent<{}>
+            } as SanComponent<{}>
+
+            try {
+                handleError(new Error('error'), instance, 'test')
+            } catch (e) {
+                spy(e)
+            }
+
+            expect(spy).toHaveBeenCalled()
+            const args = spy.mock.calls[0]
+            expect(args[0] instanceof Error).toBe(true)
+            expect(args[0].message).toBe('error')
         })
     })
 })

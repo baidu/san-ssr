@@ -7,7 +7,6 @@ import { createResolver } from './resolver'
 import { SanSSRData } from './san-ssr-data'
 import { JSEmitter } from '../target-js/js-emitter'
 import { readStringSync } from '../utils/fs'
-import { handleError } from './handle-error'
 
 /**
  * 编译成源代码时，需要包含的运行时文件
@@ -31,8 +30,6 @@ export interface SanSSRHelpers {
      * 组件 render、Class 解析器
      */
     createResolver: typeof createResolver
-
-    handleError: typeof handleError
 }
 
 /**
@@ -63,5 +60,5 @@ export function emitHelpers (emitter: JSEmitter) {
  * 编译成 render 函数时，使用的 helper
  */
 export function createHelpers (): SanSSRHelpers {
-    return { _, SanSSRData, createResolver, handleError }
+    return { _, SanSSRData, createResolver }
 }

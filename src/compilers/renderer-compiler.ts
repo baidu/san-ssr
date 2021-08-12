@@ -55,7 +55,7 @@ export class RendererCompiler {
             body.push(createTryStatement(
                 [STATEMENT(new FunctionCall(BINARY(I('instance'), '.', I('inited')), []))],
                 I('e'),
-                [STATEMENT(new FunctionCall(BINARY(I('sanSSRHelpers'), '.', I('handleError')), [
+                [STATEMENT(new FunctionCall(BINARY(I('_'), '.', I('handleError')), [
                     I('e'),
                     I('instance'),
                     L('hook:inited')
@@ -113,7 +113,7 @@ export class RendererCompiler {
             createTryStatement(
                 [ASSIGN(I('initData'), new FunctionCall(BINARY(I('instance'), '.', I('initData')), []))],
                 I('e'),
-                [STATEMENT(new FunctionCall(BINARY(I('sanSSRHelpers'), '.', I('handleError')), [
+                [STATEMENT(new FunctionCall(BINARY(I('_'), '.', I('handleError')), [
                     I('e'),
                     I('instance'),
                     L('initData')

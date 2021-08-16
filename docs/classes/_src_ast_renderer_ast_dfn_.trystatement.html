@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ComponentReference | san-ssr</title>
+	<title>TryStatement | san-ssr</title>
 	<meta name="description" content="Documentation for san-ssr">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,41 +56,31 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_src_models_component_reference_.html">&quot;src/models/component-reference&quot;</a>
+					<a href="../modules/_src_ast_renderer_ast_dfn_.html">&quot;src/ast/renderer-ast-dfn&quot;</a>
 				</li>
 				<li>
-					<a href="_src_models_component_reference_.componentreference.html">ComponentReference</a>
+					<a href="_src_ast_renderer_ast_dfn_.trystatement.html">TryStatement</a>
 				</li>
 			</ul>
-			<h1>Class ComponentReference</h1>
+			<h1>Class TryStatement</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<section class="tsd-panel tsd-comment">
-				<div class="tsd-comment tsd-typography">
-					<div class="lead">
-						<p>表示一个组件的引用，被引用组件可能在当前文件，也可能在外部文件。例如：</p>
-					</div>
-					<p>// ComponentReference { specifier: &#39;./b.san&#39;, id: &#39;default&#39; }
-					import AComponent from &#39;./b.san&#39;</p>
-					<p>// ComponentReference { specifier: &#39;./b.san&#39;, id: &#39;AComponent&#39; }
-					import { AComponent } from &#39;./b.san&#39;</p>
-				</div>
-			</section>
 			<section class="tsd-panel tsd-hierarchy">
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ComponentReference</span>
-						<ul class="tsd-hierarchy">
-							<li>
-								<a href="_src_models_component_reference_.dynamiccomponentreference.html" class="tsd-signature-type">DynamicComponentReference</a>
-							</li>
-						</ul>
+						<span class="target">TryStatement</span>
 					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implements</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="../interfaces/_src_ast_renderer_ast_dfn_.syntaxnode.html" class="tsd-signature-type">SyntaxNode</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -100,14 +90,15 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_src_models_component_reference_.componentreference.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_src_ast_renderer_ast_dfn_.trystatement.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_models_component_reference_.componentreference.html#id" class="tsd-kind-icon">id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_models_component_reference_.componentreference.html#specifier" class="tsd-kind-icon">specifier</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_ast_renderer_ast_dfn_.trystatement.html#block" class="tsd-kind-icon">block</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_ast_renderer_ast_dfn_.trystatement.html#handler" class="tsd-kind-icon">handler</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_ast_renderer_ast_dfn_.trystatement.html#kind" class="tsd-kind-icon">kind</a></li>
 							</ul>
 						</section>
 					</div>
@@ -119,25 +110,25 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Component<wbr>Reference<span class="tsd-signature-symbol">(</span>specifier<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_models_component_reference_.componentreference.html" class="tsd-signature-type">ComponentReference</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Try<wbr>Statement<span class="tsd-signature-symbol">(</span>block<span class="tsd-signature-symbol">: </span><a href="../modules/_src_ast_renderer_ast_dfn_.html#statement" class="tsd-signature-type">Statement</a><span class="tsd-signature-symbol">[]</span>, handler<span class="tsd-signature-symbol">: </span><a href="_src_ast_renderer_ast_dfn_.catchclause.html" class="tsd-signature-type">CatchClause</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_ast_renderer_ast_dfn_.trystatement.html" class="tsd-signature-type">TryStatement</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/008b403/src/models/component-reference.ts#L21">src/models/component-reference.ts:21</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/008b403/src/ast/renderer-ast-dfn.ts#L145">src/ast/renderer-ast-dfn.ts:145</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>specifier: <span class="tsd-signature-type">string</span></h5>
+									<h5>block: <a href="../modules/_src_ast_renderer_ast_dfn_.html#statement" class="tsd-signature-type">Statement</a><span class="tsd-signature-symbol">[]</span></h5>
 								</li>
 								<li>
-									<h5>id: <span class="tsd-signature-type">string</span></h5>
+									<h5>handler: <a href="_src_ast_renderer_ast_dfn_.catchclause.html" class="tsd-signature-type">CatchClause</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_src_models_component_reference_.componentreference.html" class="tsd-signature-type">ComponentReference</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_src_ast_renderer_ast_dfn_.trystatement.html" class="tsd-signature-type">TryStatement</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -145,39 +136,35 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="id" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> id</h3>
-					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="block" class="tsd-anchor"></a>
+					<h3>block</h3>
+					<div class="tsd-signature tsd-kind-icon">block<span class="tsd-signature-symbol">:</span> <a href="../modules/_src_ast_renderer_ast_dfn_.html#statement" class="tsd-signature-type">Statement</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/008b403/src/models/component-reference.ts#L34">src/models/component-reference.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/008b403/src/ast/renderer-ast-dfn.ts#L147">src/ast/renderer-ast-dfn.ts:147</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>组件在所属 SanSourceFile 中的唯一标识，用来文件间引用组件。</p>
-						</div>
-						<ul>
-							<li>默认导出为的 ID 为 default，包括 module.exports = Component, export default Component</li>
-							<li>其他导出的 ID 为 class 名，对于 ComponentClass（没有 Class 名）为递增数字</li>
-							<li>ID 是语言无关的。不可直接用于目标语言文件中的标识符，后者需要解决名字冲突和标识符合法性的问题，是语言相关的。</li>
-						</ul>
-					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="specifier" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> specifier</h3>
-					<div class="tsd-signature tsd-kind-icon">specifier<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<a name="handler" class="tsd-anchor"></a>
+					<h3>handler</h3>
+					<div class="tsd-signature tsd-kind-icon">handler<span class="tsd-signature-symbol">:</span> <a href="_src_ast_renderer_ast_dfn_.catchclause.html" class="tsd-signature-type">CatchClause</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/008b403/src/models/component-reference.ts#L26">src/models/component-reference.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/008b403/src/ast/renderer-ast-dfn.ts#L148">src/ast/renderer-ast-dfn.ts:148</a></li>
 						</ul>
 					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>组件所在源文件的相对路径</p>
-						</div>
-					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="kind" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> kind</h3>
+					<div class="tsd-signature tsd-kind-icon">kind<span class="tsd-signature-symbol">:</span> <a href="../enums/_src_ast_renderer_ast_dfn_.syntaxkind.html#trystatement" class="tsd-signature-type">TryStatement</a><span class="tsd-signature-symbol"> = SyntaxKind.TryStatement</span></div>
+					<aside class="tsd-sources">
+						<p>Implementation of <a href="../interfaces/_src_ast_renderer_ast_dfn_.syntaxnode.html">SyntaxNode</a>.<a href="../interfaces/_src_ast_renderer_ast_dfn_.syntaxnode.html#kind">kind</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/008b403/src/ast/renderer-ast-dfn.ts#L145">src/ast/renderer-ast-dfn.ts:145</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -188,7 +175,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="../modules/_src_models_component_reference_.html">&quot;src/models/component-<wbr>reference&quot;</a>
+						<a href="../modules/_src_ast_renderer_ast_dfn_.html">&quot;src/ast/renderer-<wbr>ast-<wbr>dfn&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -197,27 +184,24 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-module">
-						<a href="_src_models_component_reference_.componentreference.html" class="tsd-kind-icon">Component<wbr>Reference</a>
+						<a href="_src_ast_renderer_ast_dfn_.trystatement.html" class="tsd-kind-icon">Try<wbr>Statement</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_src_models_component_reference_.componentreference.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_src_ast_renderer_ast_dfn_.trystatement.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_src_models_component_reference_.componentreference.html#id" class="tsd-kind-icon">id</a>
+								<a href="_src_ast_renderer_ast_dfn_.trystatement.html#block" class="tsd-kind-icon">block</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_src_models_component_reference_.componentreference.html#specifier" class="tsd-kind-icon">specifier</a>
+								<a href="_src_ast_renderer_ast_dfn_.trystatement.html#handler" class="tsd-kind-icon">handler</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_src_ast_renderer_ast_dfn_.trystatement.html#kind" class="tsd-kind-icon">kind</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="_src_models_component_reference_.dynamiccomponentreference.html" class="tsd-kind-icon">Dynamic<wbr>Component<wbr>Reference</a>
-					</li>
-					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="../modules/_src_models_component_reference_.html#componentid" class="tsd-kind-icon">componentID</a>
-					</li>
 				</ul>
 			</nav>
 		</div>

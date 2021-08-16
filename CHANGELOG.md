@@ -1,3 +1,18 @@
+# [4.8.0](https://github.com/baidu/san-ssr/compare/v4.7.1...v4.8.0) (2021-08-16)
+
+
+### Bug Fixes
+
+* render 函数使用未声明的变量 initData ([ef4bb5e](https://github.com/baidu/san-ssr/commit/ef4bb5e359c2504e5c1398630c4efd3050280de8))
+
+
+### Features
+
+* add error hook ([54fb958](https://github.com/baidu/san-ssr/commit/54fb95887a51fe10c4fb009900bc7c9b61ff3b9b))
+* add unit test for error hook ([34cec13](https://github.com/baidu/san-ssr/commit/34cec134458377b2643ead8a84245f49e0ab6c07))
+* move handleError to underscore ([e936157](https://github.com/baidu/san-ssr/commit/e936157ccbb44384f11e2641670c9bee36aec5b9))
+* support esbuild ([008b403](https://github.com/baidu/san-ssr/commit/008b4033e9f5aa6c90081d46c8c14554e539a161))
+
 ## [4.7.1](https://github.com/baidu/san-ssr/compare/v4.7.0...v4.7.1) (2021-08-09)
 
 

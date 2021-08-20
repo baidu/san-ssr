@@ -12,6 +12,7 @@ import { getMember } from '../utils/lang'
 import { isComponentLoader, ComponentClass } from '../models/component'
 import { parseAndNormalizeTemplate } from './parse-template'
 import { componentID, DynamicComponentReference } from '../models/component-reference'
+import { COMPONENT_REFERENCE } from '../helpers/markExternalComponent'
 
 /*
  * ComponentClass 解析器
@@ -29,8 +30,9 @@ export class ComponentClassParser {
 
     parse (): DynamicSanSourceFile {
         const componentInfos = []
+        const rootId = getMember(this.root, 'id')
         const stack: DynamicComponentReference[] = [
-            new DynamicComponentReference('.', '' + this.id++, this.root)
+            new DynamicComponentReference('.', typeof rootId === 'string' ? rootId : '' + this.id++, this.root)
         ]
         const parsed = new Set()
         while (stack.length) {
@@ -41,7 +43,11 @@ export class ComponentClassParser {
             const info = this.createComponentInfoFromComponentClass(componentClass, id)
             // 先序遍历，结果列表中第一个为根
             componentInfos.push(info)
-            for (const child of info.childComponents.values()) stack.push(child)
+            for (const child of info.childComponents.values()) {
+                if (child.specifier === '.') {
+                    stack.push(child)
+                }
+            }
         }
         return new DynamicSanSourceFile(componentInfos, this.filePath, componentInfos[0])
     }
@@ -85,6 +91,13 @@ export class ComponentClassParser {
                 ))
                 continue
             }
+
+            // 外部组件
+            if (componentClass[COMPONENT_REFERENCE]) {
+                children.set(tagName, componentClass[COMPONENT_REFERENCE])
+                continue
+            }
+
             // 可能是空，例如 var Foo = defineComponent({components: {foo: Foo}})
             children.set(tagName, new DynamicComponentReference(
                 '.',
@@ -100,7 +113,10 @@ export class ComponentClassParser {
      * 因此生成一个递增的 id 来标识它。
      */
     private getOrSetID (componentClass: ComponentConstructor<{}, {}>): string {
-        if (!this.cids.has(componentClass)) this.cids.set(componentClass, String(this.id++))
+        if (!this.cids.has(componentClass)) {
+            const id = getMember(componentClass, 'id')
+            this.cids.set(componentClass, typeof id === 'string' ? id : String(this.id++))
+        }
         return this.cids.get(componentClass)!
     }
 }

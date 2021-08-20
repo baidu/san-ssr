@@ -21,6 +21,7 @@ export { _ } from './runtime/underscore'
 export { SyntaxKind } from './ast/renderer-ast-dfn'
 export type { Expression, Statement, FunctionDefinition, VariableDefinition, Literal, MapLiteral, ArrayLiteral, UnaryExpression, Foreach, BinaryExpression, SlotRendererDefinition, SlotRenderCall } from './ast/renderer-ast-dfn'
 export { assertNever } from './utils/lang'
+export { markExternalComponent } from './helpers/markExternalComponent'
 
 // class types
 export { SanSourceFile, TypedSanSourceFile, DynamicSanSourceFile, isTypedSanSourceFile } from './models/san-source-file'

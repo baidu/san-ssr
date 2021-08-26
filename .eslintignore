@@ -3,3 +3,4 @@ dist
 coverage
 docs
 types
+bin/component.js

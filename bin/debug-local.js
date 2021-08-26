@@ -10,7 +10,7 @@ markExternalComponent({
     }
 })
 
-const { MyComponent } = require('./component')
+const MyComponent = require('./component')
 
 const sanProject = new SanProject()
 const res = sanProject.compileToSource(MyComponent)

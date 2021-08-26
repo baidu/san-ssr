@@ -79,8 +79,12 @@ export class ComponentClassParser {
     getChildComponentClasses (parentComponentClass: ComponentClass, selfId: string): Map<string, DynamicComponentReference> {
         const children: Map<string, DynamicComponentReference> = new Map()
 
-        const components: { [key: string]: ComponentConstructor<{}, {}> } = getMember(parentComponentClass, 'components', {})
+        const components: { [key: string]: ComponentConstructor<{}, {}> | undefined } = getMember(parentComponentClass, 'components', {})
         for (const [tagName, componentClass] of Object.entries(components)) {
+            if (!componentClass) {
+                continue
+            }
+
             // 'self' 指定组件为自身
             // 用法见 https://baidu.github.io/san/tutorial/component/#components
             if (typeof componentClass === 'string' && componentClass === 'self') {

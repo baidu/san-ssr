@@ -8,4 +8,12 @@ describe('runtime/resolver', () => {
         const render = resolver.getRenderer({ id: '0', specifier: join(__dirname, '../../stub/ssr.js') })
         expect(render()).toEqual('hello')
     })
+
+    it('should change by custom require path', () => {
+        const render = resolver.getRenderer(
+            { id: '0', specifier: 'aaa' },
+            { customRequirePath: () => join(__dirname, '../../stub/ssr.js') }
+        )
+        expect(render()).toEqual('hello')
+    })
 })

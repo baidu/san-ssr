@@ -40,7 +40,7 @@ export function createResolver (exports: {[key: string]: any}, require: nodeRequ
             } else {
                 let path: string | undefined
                 if (customRequirePath) {
-                    path = customRequirePath(require.resolve(specifier))
+                    path = customRequirePath(specifier)
                 }
                 mod = require(path || specifier)
             }

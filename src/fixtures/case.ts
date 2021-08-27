@@ -46,6 +46,7 @@ export function compileJS (caseName: string, caseRoot: string, compileToFunction
     const caseDir = join(caseRoot, caseName)
     const ssrOnly = /-so/.test(caseName)
 
+    // 只编译 component.js
     if (compileToFunctionBodyCode) {
         const jsFile = join(caseDir, 'component.js')
         const targetCode = sanProject.compile(
@@ -56,6 +57,7 @@ export function compileJS (caseName: string, caseRoot: string, compileToFunction
         return targetCode
     }
 
+    mkdirp.sync(join(caseRoot, caseName, 'output', folderName))
     for (const file of readdirSync(caseDir).filter(file => file === 'component.js' || file.endsWith('.san.js'))) {
         const jsFile = join(caseDir, file)
         const targetCode = sanProject.compile(
@@ -63,10 +65,7 @@ export function compileJS (caseName: string, caseRoot: string, compileToFunction
             ToJSCompiler,
             { ssrOnly, bareFunctionBody: compileToFunctionBodyCode, importHelpers }
         )
-        mkdirp.sync(join(caseRoot, caseName, 'output', folderName))
-        const targetFile = file === 'component.js'
-            ? join(caseRoot, caseName, 'output', folderName, 'ssr.js')
-            : join(caseRoot, caseName, 'output', folderName, file)
+        const targetFile = join(caseRoot, caseName, 'output', folderName, file === 'component.js' ? 'ssr.js' : file)
         writeFileSync(targetFile, targetCode)
     }
 }
@@ -74,30 +73,45 @@ export function compileJS (caseName: string, caseRoot: string, compileToFunction
 export function compileComponent (caseName: string, caseRoot: string, compileToFunctionBodyCode: boolean = false, folderName = '') {
     debug('compile js', caseName)
     const caseDir = join(caseRoot, caseName)
-    const jsFile = join(caseDir, 'component.js')
     const ssrOnly = /-so/.test(caseName)
-    const component = require(jsFile)
-    const targetCode = sanProject.compile(
-        component,
-        ToJSCompiler,
-        { ssrOnly, bareFunctionBody: compileToFunctionBodyCode, importHelpers }
-    )
+
+    // 只编译 component.js
+    if (compileToFunctionBodyCode) {
+        const jsFile = join(caseDir, 'component.js')
+        const component = require(jsFile)
+        const targetCode = sanProject.compile(
+            component,
+            ToJSCompiler,
+            { ssrOnly, bareFunctionBody: compileToFunctionBodyCode, importHelpers }
+        )
+        return targetCode
+    }
+
     mkdirp.sync(join(caseRoot, caseName, 'output', folderName))
-    const targetFile = join(caseRoot, caseName, 'output', folderName, 'ssr.js')
-    return compileToFunctionBodyCode ? targetCode : writeFileSync(targetFile, targetCode)
+    for (const file of readdirSync(caseDir).filter(file => file === 'component.js' || file.endsWith('.san.js'))) {
+        const jsFile = join(caseDir, file)
+        const component = require(jsFile)
+        const targetCode = sanProject.compile(
+            component,
+            ToJSCompiler,
+            { ssrOnly, bareFunctionBody: compileToFunctionBodyCode, importHelpers }
+        )
+        const targetFile = join(caseRoot, caseName, 'output', folderName, file === 'component.js' ? 'ssr.js' : file)
+        writeFileSync(targetFile, targetCode)
+    }
 }
 
 export function compileTS (caseName: string, caseRoot: string, folderName = '') {
     debug('compile ts', caseName)
     const caseDir = join(caseRoot, caseName)
     const ssrOnly = /-so/.test(caseName)
+    mkdirp.sync(join(caseRoot, caseName, 'output', folderName))
     for (const file of readdirSync(caseDir).filter(file => /\.ts$/.test(file))) {
         const targetCode = sanProject.compile(
             join(caseDir, file),
             ToJSCompiler,
             { ssrOnly, importHelpers }
         )
-        mkdirp.sync(join(caseRoot, caseName, 'output', folderName))
         const targetFile = file === 'component.ts'
             ? join(caseDir, 'output', folderName, 'ssr.js')
             : join(caseDir, 'output', folderName, file.replace(/\.ts$/, '.js'))

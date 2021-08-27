@@ -128,4 +128,23 @@ describe('utils/underscore', function () {
             expect(args[0].message).toBe('error')
         })
     })
+    describe('.getRootCtx()', () => {
+        it('should ignore init pased ctx', () => {
+            const rootCtx = makeContext({})
+            let childCtx = rootCtx
+            for (let i = 0; i < 100; i++) {
+                childCtx = makeContext(childCtx)
+            }
+
+            const res = _.getRootCtx(childCtx)
+
+            expect(res === rootCtx).toBeTruthy()
+
+            function makeContext (parent: any): any {
+                return {
+                    parentCtx: parent
+                }
+            }
+        })
+    })
 })

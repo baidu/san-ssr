@@ -1,5 +1,5 @@
 import { parse } from 'acorn'
-import { getLiteralValue, getStringValue, findExportNames, isModuleExports, findESMImports, findScriptRequires } from '../../../src/ast/js-ast-util'
+import { getLiteralValue, getStringValue, findExportNames, isModuleExports, findESMImports, findScriptRequires, deleteMembersFromClassDeclaration, filterByType } from '../../../src/ast/js-ast-util'
 
 const pm = (script: string) => parse(script, { sourceType: 'module', ecmaVersion: 2020 }) as any
 const p = (script: string) => parse(script, { ecmaVersion: 2020 }) as any
@@ -102,6 +102,21 @@ describe('js-ast-util', () => {
             const script = 'function a() {}'
             const fn = p(script).body[0]
             expect(() => getLiteralValue(fn)).toThrow('[0,15) expected literal')
+        })
+    })
+    describe('./deleteMembersFromClassDeclaration()', () => {
+        it('shoud delete components', () => {
+            const script = `
+            class AAA {
+                constructor() {
+                    this.components = {}
+                }
+            }
+            `
+            const node = p(script)
+            expect(filterByType(node, 'MemberExpression').find(item => item.property.type === 'Identifier' && item.property.name === 'components')).toBeTruthy()
+            deleteMembersFromClassDeclaration(node.body[0], 'components')
+            expect(filterByType(node, 'MemberExpression').find(item => item.property.type === 'Identifier' && item.property.name === 'components')).toBeFalsy()
         })
     })
 })

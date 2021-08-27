@@ -19,6 +19,7 @@ const OPERATORS = {
 // 按照 node 的 type 来过滤数组
 export function filterByType (node: Node, type: 'VariableDeclaration'): VariableDeclaration[]
 export function filterByType (node: Node, type: 'ImportDeclaration'): ImportDeclaration[]
+export function filterByType (node: Node, type: 'MemberExpression'): MemberExpression[]
 export function filterByType (node: Node, type: string) {
     const results: any[] = []
     simple(node as AcornNode, {
@@ -403,11 +404,11 @@ export function deleteMembersFromClassDeclaration (expr: Class, name: string) {
     for (const [, decl] of expr.body.body.entries()) {
         if (decl['kind'] === 'constructor') {
             const constructorDecl = decl
-            for (const [index, expr] of constructorDecl.value.body.body.entries()) {
-                if (isExpressionStatement(expr) &&
-                    isAssignmentExpression(expr.expression) &&
-                    isMemberAssignment(expr.expression.left) &&
-                    getStringValue(expr.expression.left['property']) === name
+            for (const [index, node] of constructorDecl.value.body.body.entries()) {
+                if (isExpressionStatement(node) &&
+                    isAssignmentExpression(node.expression) &&
+                    isMemberAssignment(node.expression.left) &&
+                    getStringValue(node.expression.left['property']) === name
                 ) {
                     constructorDecl.value.body.body.splice(index, 1)
                 }

@@ -233,4 +233,26 @@ describe('JavaScriptSanParser', () => {
             expect(components).toHaveLength(2)
         })
     })
+    describe('#deleteChildComponentRequires()', () => {
+        it('should ignore inner require', () => {
+            const script = `
+            const { defineComponent } = require('san')
+            const childA = require('./path/to/a')
+            function aaa() {
+                const childA = require('./path/to/a')
+            }
+            const MyComponnet = defineComponent({
+                components: {
+                    'aaa': childA
+                },
+                template: '<aaa/>'
+            })
+            module.exports = MyComponent
+            `
+
+            const parser = new JavaScriptSanParser('/tmp/my.san', script, 'script')
+            const res = parser.parse()
+            expect(res.getFileContent().split('const childA = require(\'./path/to/a\')').length).toBe(2)
+        })
+    })
 })

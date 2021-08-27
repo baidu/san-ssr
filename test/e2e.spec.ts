@@ -4,6 +4,20 @@ import { parseSanHTML } from '../src/index'
 import { existsSync } from 'fs'
 import { execSync } from 'child_process'
 
+export interface SsrSpecConfig {
+    enabled: {
+        tssrc?: boolean
+        jssrc?: boolean
+        comsrc?: boolean
+        comrdr?: boolean
+    }
+    context?: {
+        customRequirePath?: (path: string) => string | void
+    }
+    beforeHook?: (type: keyof SsrSpecConfig['enabled']) => void
+    afterHook?: (type: keyof SsrSpecConfig['enabled']) => void
+}
+
 // 每次执行前，把之前的产物删掉
 caseRoots.forEach(caseRoot => {
     execSync(`rm -rf ${caseRoot}/**/output`)
@@ -18,70 +32,81 @@ if (cases.length === 0) {
 
 for (const { caseName, caseRoot } of cases) {
     const [expectedData, expectedHtml] = parseSanHTML(readExpected(caseName, caseRoot))
-    let ssrSpec = {
+    const ssrSpec = {
         enabled: {
             jssrc: true,
             comsrc: true,
             comrdr: true,
             tssrc: true
         }
-    }
-    const ssrSpecPath = join(caseRoot, caseName, 'ssr-spec.js')
+    } as SsrSpecConfig
+    const ssrSpecPath = join(caseRoot, caseName, 'ssr-spec.ts')
     if (existsSync(ssrSpecPath)) {
-        ssrSpec = require(ssrSpecPath)
+        Object.assign(ssrSpec, require(ssrSpecPath).default)
     }
 
     if (tsExists(caseName, caseRoot)) {
-        ssrSpec.enabled.tssrc && it('render to source (TypeScript): ' + caseName, async function () {
-            const folderName = getRandomStr() + '_tssrc'
-            compileTS(caseName, caseRoot, folderName)
-            const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js'))
-            const got = render(...getRenderArguments(caseName, caseRoot))
-            const [data, html] = parseSanHTML(got)
+        if (ssrSpec.enabled.tssrc) {
+            ssrSpec.beforeHook && ssrSpec.beforeHook('tssrc')
+            it('render to source (TypeScript): ' + caseName, async function () {
+                const folderName = getRandomStr() + '_tssrc'
+                compileTS(caseName, caseRoot, folderName)
+                const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js'))
+                const got = render(...getRenderArguments(caseName, caseRoot))
+                const [data, html] = parseSanHTML(got)
 
-            expect(data).toEqual(expectedData)
-            expect(html).toEqual(expectedHtml)
-        })
+                expect(data).toEqual(expectedData)
+                expect(html).toEqual(expectedHtml)
+            })
+            ssrSpec.afterHook && ssrSpec.afterHook('tssrc')
+        }
     }
 
     if (jsExists(caseName, caseRoot)) {
-        ssrSpec.enabled.jssrc && it('js to source: ' + caseName, async function () {
-            const folderName = getRandomStr() + '_jssrc'
-            compileJS(caseName, caseRoot, false, folderName)
-            const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js'))
-            const ssrSpecPath = join(caseRoot, `${caseName}/ssr-spec.js`)
-            let ssrSpec
-            if (existsSync(ssrSpecPath)) {
-                ssrSpec = require(ssrSpecPath)
-            }
-            // 测试在 strict mode，因此需要手动传入 require
-            const got = render(...getRenderArguments(caseName, caseRoot), { context: ssrSpec && ssrSpec.context })
-            const [data, html] = parseSanHTML(got)
+        if (ssrSpec.enabled.jssrc) {
+            ssrSpec.beforeHook && ssrSpec.beforeHook('jssrc')
+            it('js to source: ' + caseName, async function () {
+                const folderName = getRandomStr() + '_jssrc'
+                compileJS(caseName, caseRoot, false, folderName)
+                const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js'))
+                // 测试在 strict mode，因此需要手动传入 require
+                const got = render(...getRenderArguments(caseName, caseRoot), { context: ssrSpec && ssrSpec.context })
+                const [data, html] = parseSanHTML(got)
 
-            expect(data).toEqual(expectedData)
-            expect(html).toEqual(expectedHtml)
-        })
+                expect(data).toEqual(expectedData)
+                expect(html).toEqual(expectedHtml)
+            })
+            ssrSpec.afterHook && ssrSpec.afterHook('jssrc')
+        }
 
-        ssrSpec.enabled.comsrc && it('component to source: ' + caseName, async function () {
-            const folderName = getRandomStr() + '_comsrc'
-            compileComponent(caseName, caseRoot, false, folderName)
-            // eslint-disable-next-line
-            const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js'))
-            // 测试在 strict mode，因此需要手动传入 require
-            const got = render(...getRenderArguments(caseName, caseRoot))
-            const [data, html] = parseSanHTML(got)
+        if (ssrSpec.enabled.comsrc) {
+            ssrSpec.beforeHook && ssrSpec.beforeHook('comsrc')
+            it('component to source: ' + caseName, async function () {
+                const folderName = getRandomStr() + '_comsrc'
+                compileComponent(caseName, caseRoot, false, folderName)
+                // eslint-disable-next-line
+                const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js'))
+                // 测试在 strict mode，因此需要手动传入 require
+                const got = render(...getRenderArguments(caseName, caseRoot), { context: ssrSpec && ssrSpec.context })
+                const [data, html] = parseSanHTML(got)
 
-            expect(data).toEqual(expectedData)
-            expect(html).toEqual(expectedHtml)
-        })
+                expect(data).toEqual(expectedData)
+                expect(html).toEqual(expectedHtml)
+            })
+            ssrSpec.afterHook && ssrSpec.afterHook('comsrc')
+        }
 
-        ssrSpec.enabled.comrdr && it('component to renderer: ' + caseName, async function () {
-            const got = renderOnthefly(caseName, caseRoot)
-            const [data, html] = parseSanHTML(got)
+        if (ssrSpec.enabled.comrdr) {
+            ssrSpec.beforeHook && ssrSpec.beforeHook('comrdr')
+            it('component to renderer: ' + caseName, async function () {
+                const got = renderOnthefly(caseName, caseRoot)
+                const [data, html] = parseSanHTML(got)
 
-            expect(data).toEqual(expectedData)
-            expect(html).toEqual(expectedHtml)
-        })
+                expect(data).toEqual(expectedData)
+                expect(html).toEqual(expectedHtml)
+            })
+            ssrSpec.afterHook && ssrSpec.afterHook('comrdr')
+        }
     }
 }
 

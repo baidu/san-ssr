@@ -3,9 +3,10 @@ import { ComponentReference } from '../models/component-reference'
 
 export const COMPONENT_REFERENCE = Symbol('component-reference')
 
+const originRequire = Module.prototype.require
+
 export function markExternalComponent (options: {isExternalComponent: (id: string, currentFilename: string) => boolean}) {
     const { isExternalComponent } = options
-    const originRequire = Module.prototype.require
     Module.prototype.require = Object.assign(function (this: Module, id: string) {
         const currentFilename = this.filename
 
@@ -25,6 +26,9 @@ export function markExternalComponent (options: {isExternalComponent: (id: strin
 
         return originRequire.call(this, id)
     }, originRequire)
+}
+export function cancelMarkExternalComponent () {
+    Module.prototype.require = originRequire
 }
 
 // markExternalComponent({

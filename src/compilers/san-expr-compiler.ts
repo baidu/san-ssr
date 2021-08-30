@@ -57,6 +57,7 @@ const binaryOp = {
 function unary (e: ExprUnaryNode) {
     if (e.operator === 33) return new UnaryExpression('!', sanExpr(e.expr))
     if (e.operator === 45) return new UnaryExpression('-', sanExpr(e.expr))
+    if (e.operator === 43) return new UnaryExpression('+', sanExpr(e.expr))
     throw new Error(`unexpected unary operator "${String.fromCharCode(e.operator)}"`)
 }
 function binary (e: ExprBinaryNode) {

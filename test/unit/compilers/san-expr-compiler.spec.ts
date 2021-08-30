@@ -20,6 +20,28 @@ describe('compilers/san-expr-compiler', () => {
                 rhs: dataItem('b')
             }))
         })
+        it('should compile unary expression', () => {
+            const e = parseExpr('+num === 123')
+            expect(expr(e)).toMatchObject({
+                kind: SyntaxKind.BinaryExpression,
+                lhs: {
+                    kind: SyntaxKind.UnaryExpression,
+                    op: '+',
+                    value: {
+                        kind: SyntaxKind.BinaryExpression,
+                        rhs: {
+                            kind: SyntaxKind.Literal,
+                            value: 'num'
+                        }
+                    }
+                },
+                op: '===',
+                rhs: {
+                    kind: SyntaxKind.Literal,
+                    value: 123
+                }
+            })
+        })
         it('should throw for unexpected expression type', () => {
             const e = parseExpr('!b')
             e.type = 222

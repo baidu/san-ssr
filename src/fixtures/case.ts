@@ -5,6 +5,7 @@ import ToJSCompiler from '../target-js'
 import debugFactory from 'debug'
 import { compileToRenderer } from '../index'
 import mkdirp from 'mkdirp'
+import type { RenderOptions } from '../compilers/renderer-options'
 
 const debug = debugFactory('case')
 export const caseRoots = [
@@ -70,10 +71,12 @@ export function compileJS (caseName: string, caseRoot: string, compileToFunction
     }
 }
 
-export function compileComponent (caseName: string, caseRoot: string, compileToFunctionBodyCode: boolean = false, folderName = '') {
+export function compileComponent (caseName: string, caseRoot: string, compileToFunctionBodyCode: boolean = false, folderName = '', customOptions: Partial<RenderOptions>) {
     debug('compile js', caseName)
     const caseDir = join(caseRoot, caseName)
     const ssrOnly = /-so/.test(caseName)
+
+    const options = Object.assign({ ssrOnly, bareFunctionBody: compileToFunctionBodyCode, importHelpers }, customOptions)
 
     // 只编译 component.js
     if (compileToFunctionBodyCode) {
@@ -82,7 +85,7 @@ export function compileComponent (caseName: string, caseRoot: string, compileToF
         const targetCode = sanProject.compile(
             component,
             ToJSCompiler,
-            { ssrOnly, bareFunctionBody: compileToFunctionBodyCode, importHelpers }
+            options
         )
         return targetCode
     }
@@ -94,7 +97,7 @@ export function compileComponent (caseName: string, caseRoot: string, compileToF
         const targetCode = sanProject.compile(
             component,
             ToJSCompiler,
-            { ssrOnly, bareFunctionBody: compileToFunctionBodyCode, importHelpers }
+            options
         )
         const targetFile = join(caseRoot, caseName, 'output', folderName, file === 'component.js' ? 'ssr.js' : file)
         writeFileSync(targetFile, targetCode)

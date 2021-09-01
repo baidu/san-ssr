@@ -64,10 +64,11 @@ export enum SyntaxKind {
     SlotRenderCall = 34,
     Undefined = 35,
     TryStatement = 36,
-    CatchClause = 37
+    CatchClause = 37,
+    ComponentClassReference = 38
 }
 
-export type Expression = Identifier | FunctionDefinition | Literal | BinaryExpression | UnaryExpression | CreateComponentInstance | NewExpression | MapLiteral | ComponentRendererReference | FunctionCall | Null | Undefined | MapAssign | ArrayIncludes | ConditionalExpression | FilterCall | HelperCall | EncodeURIComponent | ArrayLiteral | RegexpReplace | JSONStringify | ComputedCall | GetRootCtxCall | ComponentReferenceLiteral | SlotRendererDefinition | SlotRenderCall
+export type Expression = Identifier | FunctionDefinition | Literal | BinaryExpression | UnaryExpression | CreateComponentInstance | NewExpression | MapLiteral | ComponentRendererReference | FunctionCall | Null | Undefined | MapAssign | ArrayIncludes | ConditionalExpression | FilterCall | HelperCall | EncodeURIComponent | ArrayLiteral | RegexpReplace | JSONStringify | ComputedCall | GetRootCtxCall | ComponentReferenceLiteral | SlotRendererDefinition | SlotRenderCall | ComponentClassReference
 
 export type Statement = ReturnStatement | ImportHelper | VariableDefinition | AssignmentStatement | If | ElseIf | Else | Foreach | ExpressionStatement | TryStatement
 
@@ -101,6 +102,14 @@ export class ComponentRendererReference implements SyntaxNode {
         // ref 的值可能是编译时确定的，也可能是运行时确定的（s-is 的情况）
         // 因此它必须是一个表达式，而非 ComponentReference。
         public value: Expression
+    ) {}
+}
+
+export class ComponentClassReference implements SyntaxNode {
+    public readonly kind = SyntaxKind.ComponentClassReference
+    constructor (
+        public value: Expression,
+        public tagName: Literal
     ) {}
 }
 

@@ -10,17 +10,19 @@ markExternalComponent({
     }
 })
 
+// offline
 const MyComponent = require('./component')
-
 const sanProject = new SanProject()
-const res = sanProject.compileToSource(MyComponent)
-
-console.log(res)
+const res = sanProject.compileToSource(MyComponent, 'js', {
+    useProvidedComponentClass: true
+})
 
 fs.writeFileSync(path.resolve(__dirname, './output.js'), res)
 
-// const render = require('./output')
+// online
+const Component = require('./component')
+const render = require('./output')
 
-// const res = render({})
+const html = render({}, false, null, 'div', {}, { ComponentClass: Component })
 
-// console.log(res)
+console.log(html)

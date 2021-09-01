@@ -8,6 +8,10 @@ export interface RenderOptions {
     ssrOnly?: boolean
     importHelpers?: string
     /**
+     * 使用调用 render 时提供的组件类，编译产物中不再包含组件类
+     */
+    useProvidedComponentClass?: boolean
+    /**
      * 删除 ssr 不需要引入的模块，仅对 TypedSanSourceFile 有效
      */
     removeModules?: RegExp[]

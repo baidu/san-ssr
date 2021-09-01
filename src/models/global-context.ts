@@ -1,3 +1,4 @@
 export interface GlobalContext {
-    customRequirePath?(path: string): string
+    customSSRFilePath?(path: string): string
+    customComponentFilePath?(info: {specifier: string; id: string;}): string
 }

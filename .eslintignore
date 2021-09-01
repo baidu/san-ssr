@@ -4,3 +4,4 @@ coverage
 docs
 types
 bin/component.js
+bin/output.js

@@ -12,7 +12,7 @@ describe('runtime/resolver', () => {
     it('should change by custom require path', () => {
         const render = resolver.getRenderer(
             { id: '0', specifier: 'aaa' },
-            { customRequirePath: () => join(__dirname, '../../stub/ssr.js') }
+            { customSSRFilePath: () => join(__dirname, '../../stub/ssr.js') }
         )
         expect(render()).toEqual('hello')
     })

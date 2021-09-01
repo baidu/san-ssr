@@ -14,11 +14,13 @@
  * - 不能引用文件系统的其他组件 render：require(ref.specifier)
  * - 也不能利用 exports 引用当前文件的其他组件： exports.sanSSRRenders.X()
  */
-import { SanComponent } from 'san'
+import type { SanComponent } from 'san'
 import type { GlobalContext } from '../models/global-context'
+import type { ComponentClass } from '../models/component'
 
 export interface Resolver {
     getRenderer: (ref: { id: string, specifier?: string }, context?: GlobalContext) => Function
+    getChildComponentClass: (ref: { id: string, specifier?: string }, CurrentComponentClass: ComponentClass, tagName: string, context?: GlobalContext) => ComponentClass
     setRenderer: (id: string, fn: Function) => void
     /**
      * 每个组件的每次 render 执行，共用同一个 prototype
@@ -33,18 +35,36 @@ type nodeRequire = typeof require;
 export function createResolver (exports: {[key: string]: any}, require: nodeRequire): Resolver {
     return {
         getRenderer: function ({ id, specifier = '.' }, context) {
-            const customRequirePath = context && context.customRequirePath
+            const customSSRFilePath = context && context.customSSRFilePath
             let mod: {[key: string]: any}
             if (specifier === '.') {
                 mod = exports
             } else {
                 let path: string | undefined
-                if (customRequirePath) {
-                    path = customRequirePath(specifier)
+                if (customSSRFilePath) {
+                    path = customSSRFilePath(specifier)
                 }
                 mod = require(path || specifier)
             }
             return mod.sanSSRRenders[id]
+        },
+        getChildComponentClass: function ({ id, specifier = '.' }, CurrentComponentClass: ComponentClass, tagName: string, context) {
+            const customComponentFilePath = context && context.customComponentFilePath
+
+            if (customComponentFilePath && specifier !== '.') {
+                const ChildComponentClass = customComponentFilePath({ id, specifier })
+                if (ChildComponentClass) return ChildComponentClass
+            }
+
+            const components = CurrentComponentClass.prototype.components as {[tagName: string]: ComponentClass | undefined}
+            const ChildComponentClass = components[tagName]
+            if (!ChildComponentClass) {
+                throw Error(`child component is not fount: ${tagName}${CurrentComponentClass.prototype?.id || ''}`)
+            }
+            if (typeof ChildComponentClass === 'string' && ChildComponentClass === 'self') {
+                return CurrentComponentClass
+            }
+            return ChildComponentClass
         },
         setRenderer: function (id: string, fn: Function) {
             exports.sanSSRRenders = exports.sanSSRRenders || {}

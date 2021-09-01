@@ -4,12 +4,12 @@
  * 从根 ComponentClass 递归搜索和解析所有 ComponentClass，
  * 形成**单个** SanSourceFile 实例，包含所有的 ComponentInfo 列表。
  */
-import debugFactory from 'debug'
 import { ComponentConstructor, defineComponent } from 'san'
 import { DynamicSanSourceFile } from '../models/san-source-file'
 import { DynamicComponentInfo } from '../models/component-info'
 import { getMember } from '../utils/lang'
-import { isComponentLoader, ComponentClass } from '../models/component'
+import { isComponentLoader } from '../models/component'
+import type { ComponentClass } from '../models/component'
 import { parseAndNormalizeTemplate } from './parse-template'
 import { componentID, DynamicComponentReference } from '../models/component-reference'
 import { COMPONENT_REFERENCE } from '../helpers/markExternalComponent'

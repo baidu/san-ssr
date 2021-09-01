@@ -97,11 +97,13 @@ export default class ToJSCompiler implements TargetCodeGenerator {
         // 如果源文件中有 san 组件，才输出一个运行时
         if (sourceFile.componentInfos.length) this.ensureHelpers(options.importHelpers, emitter)
 
-        // 编译源文件到 JS
-        if (isTypedSanSourceFile(sourceFile)) this.compileTSComponentToSource(sourceFile, emitter)
-        else if (isJSSanSourceFile(sourceFile)) this.compileJSComponentToSource(sourceFile, emitter)
-        // DynamicSanSourceFile
-        else this.compileComponentClassToSource(sourceFile, emitter)
+        if (!options.useProvidedComponentClass) {
+            // 编译源文件到 JS
+            if (isTypedSanSourceFile(sourceFile)) this.compileTSComponentToSource(sourceFile, emitter)
+            else if (isJSSanSourceFile(sourceFile)) this.compileJSComponentToSource(sourceFile, emitter)
+            // DynamicSanSourceFile
+            else this.compileComponentClassToSource(sourceFile, emitter)
+        }
 
         // 编译 render 函数
         for (const info of sourceFile.componentInfos) {

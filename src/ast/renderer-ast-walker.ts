@@ -13,6 +13,7 @@ export function * walk (node: Expression | Statement): Iterable<Expression | Sta
     case SyntaxKind.JSONStringify:
     case SyntaxKind.UnaryExpression:
     case SyntaxKind.ComponentRendererReference:
+    case SyntaxKind.ComponentClassReference:
     case SyntaxKind.EncodeURIComponent:
     case SyntaxKind.ReturnStatement:
     case SyntaxKind.ExpressionStatement:

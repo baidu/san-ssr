@@ -7,7 +7,7 @@
 import { ANodeCompiler } from './anode-compiler'
 import { ComponentInfo } from '../models/component-info'
 import { RenderOptions } from './renderer-options'
-import { FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper, ComponentReferenceLiteral, ConditionalExpression } from '../ast/renderer-ast-dfn'
+import { FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper, ComponentReferenceLiteral, ConditionalExpression, BinaryExpression } from '../ast/renderer-ast-dfn'
 import { EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL, UNDEFINED, createTryStatement } from '../ast/renderer-ast-util'
 import { IDGenerator } from '../utils/id-generator'
 import { mergeLiteralAdd } from '../optimizers/merge-literal-add'
@@ -31,7 +31,10 @@ export class RendererCompiler {
             DEF('noDataOutput', L(false)),
             DEF('parentCtx', NULL),
             DEF('tagName', L('div')),
-            DEF('slots', EMPTY_MAP)
+            DEF('slots', EMPTY_MAP),
+
+            // 参数太多了，后续要增加的参数统一收敛到这里
+            DEF('info', L({}))
         ]
         const fn = new FunctionDefinition(this.options.functionName || '', args,
             this.compileComponentRendererBody(componentInfo)
@@ -47,8 +50,18 @@ export class RendererCompiler {
             body.push(RETURN(L('')))
             return body
         }
+
+        // get params from info
+        if (this.options.useProvidedComponentClass) {
+            body.push(DEF('ComponentClass', new BinaryExpression(I('info'), '.', I('ComponentClass'))))
+        }
+
+        // helper
         body.push(new ImportHelper('_'))
         body.push(new ImportHelper('SanSSRData'))
+
+        // context
+        body.push(this.compileGenInstance(info))
         body.push(...this.compileContext(info))
 
         // instance preraration
@@ -76,11 +89,19 @@ export class RendererCompiler {
 
         body.push(DEF('html', L('')))
         body.push(ASSIGN(I('parentCtx'), I('ctx')))
-        const aNodeCompiler = new ANodeCompiler(info, !!this.options.ssrOnly, this.id)
+        const aNodeCompiler = new ANodeCompiler(info, !!this.options.ssrOnly, this.id, this.options.useProvidedComponentClass)
         body.push(...aNodeCompiler.compile(info.root, true))
 
         body.push(RETURN(I('html')))
         return body
+    }
+
+    private compileGenInstance (info: ComponentInfo) {
+        if (this.options.useProvidedComponentClass) {
+            return DEF('instance', new BinaryExpression(I('ComponentClass'), '.', I('prototype')))
+        }
+
+        return DEF('instance', new CreateComponentInstance(info))
     }
 
     private compileContext (info: ComponentInfo) {
@@ -88,7 +109,6 @@ export class RendererCompiler {
             ? new MapLiteral([...info.childComponents.entries()].map(([key, val]) => [L(key), new ComponentReferenceLiteral(val)]))
             : EMPTY_MAP
         return [
-            DEF('instance', new CreateComponentInstance(info)),
             ASSIGN(
                 BINARY(I('instance'), '.', I('data')),
                 NEW(I('SanSSRData'), [I('data'), I('instance')])

@@ -3,6 +3,7 @@ import { join } from 'path'
 import { parseSanHTML } from '../src/index'
 import { existsSync } from 'fs'
 import { execSync } from 'child_process'
+import type { GlobalContext } from '../src/models/global-context'
 
 export interface SsrSpecConfig {
     enabled: {
@@ -11,9 +12,7 @@ export interface SsrSpecConfig {
         comsrc?: boolean
         comrdr?: boolean
     }
-    context?: {
-        customRequirePath?: (path: string) => string | void
-    }
+    context?: GlobalContext
     beforeHook?: (type: keyof SsrSpecConfig['enabled']) => void
     afterHook?: (type: keyof SsrSpecConfig['enabled']) => void
 }

@@ -1,6 +1,7 @@
 import { ls, compileComponent, compileJS, jsExists, tsExists, compileTS, getRenderArguments, readExpected, renderOnthefly, caseRoots } from '../src/fixtures/case'
 import { join } from 'path'
 import { parseSanHTML } from '../src/index'
+import type { RenderOptions } from '../src/index'
 import { existsSync } from 'fs'
 import { execSync } from 'child_process'
 import type { GlobalContext } from '../src/models/global-context'
@@ -15,6 +16,7 @@ export interface SsrSpecConfig {
     context?: GlobalContext
     beforeHook?: (type: keyof SsrSpecConfig['enabled']) => void
     afterHook?: (type: keyof SsrSpecConfig['enabled']) => void
+    compileOptions?: RenderOptions
 }
 
 // 每次执行前，把之前的产物删掉
@@ -37,7 +39,8 @@ for (const { caseName, caseRoot } of cases) {
             comsrc: true,
             comrdr: true,
             tssrc: true
-        }
+        },
+        compileOptions: {}
     } as SsrSpecConfig
     const ssrSpecPath = join(caseRoot, caseName, 'ssr-spec.ts')
     if (existsSync(ssrSpecPath)) {
@@ -82,11 +85,16 @@ for (const { caseName, caseRoot } of cases) {
             ssrSpec.beforeHook && ssrSpec.beforeHook('comsrc')
             it('component to source: ' + caseName, async function () {
                 const folderName = getRandomStr() + '_comsrc'
-                compileComponent(caseName, caseRoot, false, folderName)
+                compileComponent(caseName, caseRoot, false, folderName, ssrSpec.compileOptions)
                 // eslint-disable-next-line
                 const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js'))
+
                 // 测试在 strict mode，因此需要手动传入 require
-                const got = render(...getRenderArguments(caseName, caseRoot), { context: ssrSpec && ssrSpec.context })
+                const info = {} as any
+                if (ssrSpec.compileOptions.useProvidedComponentClass) {
+                    info.ComponentClass = require(join(caseRoot, caseName, 'component.js'))
+                }
+                const got = render(...getRenderArguments(caseName, caseRoot), { context: ssrSpec && ssrSpec.context }, 'div', {}, info)
                 const [data, html] = parseSanHTML(got)
 
                 expect(data).toEqual(expectedData)

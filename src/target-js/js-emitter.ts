@@ -126,6 +126,14 @@ export class JSEmitter extends Emitter {
             this.write(', ctx.context')
             this.write(')')
             break
+        case SyntaxKind.ComponentClassReference:
+            this.write('sanSSRResolver.getChildComponentClass(')
+            this.writeSyntaxNode(node.value)
+            this.write(', ComponentClass')
+            this.write(', ')
+            this.writeSyntaxNode(node.tagName)
+            this.write(')')
+            break
         case SyntaxKind.ComponentReferenceLiteral:
             this.writeSyntaxNode(node.toMapLiteral())
             break

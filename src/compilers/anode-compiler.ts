@@ -12,9 +12,10 @@ import { ElementCompiler } from './element-compiler'
 import { getANodePropByName } from '../ast/san-ast-util'
 import * as TypeGuards from '../ast/san-ast-type-guards'
 import { IDGenerator } from '../utils/id-generator'
-import { JSONStringify, RegexpReplace, Statement, SlotRendererDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral, ComponentRendererReference, FunctionCall, SlotRenderCall, Expression, GetRootCtxCall, ComponentReferenceLiteral } from '../ast/renderer-ast-dfn'
+import { JSONStringify, RegexpReplace, Statement, SlotRendererDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral, ComponentRendererReference, FunctionCall, SlotRenderCall, Expression, GetRootCtxCall, ComponentReferenceLiteral, ComponentClassReference } from '../ast/renderer-ast-dfn'
 import { CTX_DATA, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATEMENT, UNARY, DEF, BINARY, RETURN } from '../ast/renderer-ast-util'
 import { sanExpr, OutputType } from '../compilers/san-expr-compiler'
+import type { RenderOptions } from './renderer-options'
 
 /**
  * ANode 编译
@@ -33,7 +34,8 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
     constructor (
         private componentInfo: ComponentInfo,
         private ssrOnly: boolean,
-        private id: IDGenerator
+        private id: IDGenerator,
+        private useProvidedComponentClass: RenderOptions['useProvidedComponentClass'] = false
     ) {
         this.elementCompiler = new ElementCompiler(this, this.id)
     }
@@ -185,11 +187,11 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
     }
 
     private * compileComponent (aNode: ANode, ref: Expression, isRootElement: boolean) {
-        const defaultSlotContents: ANode[] = []
-        const namedSlotContents = new Map()
-
         assert(!this.inScript, 'component reference is not allowed inside <script>')
 
+        // slot
+        const defaultSlotContents: ANode[] = []
+        const namedSlotContents = new Map()
         for (const child of aNode.children!) { // nodes without children (like pATextNode) has been taken over by other methods
             const slotBind = !child.textExpr && getANodePropByName(child, 'slot')
             if (slotBind) {
@@ -219,11 +221,24 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
             )
         }
 
+        // data output
         const ndo = isRootElement ? I('noDataOutput') : L(true)
 
+        // child component class
+        if (this.useProvidedComponentClass) {
+            yield DEF('ChildComponentClass', new ComponentClassReference(ref, L(aNode.tagName)))
+        }
+
+        // get and call renderer
+        const args = [this.childRenderData(aNode), ndo, I('parentCtx'), L(aNode.tagName), childSlots]
+        if (this.useProvidedComponentClass) {
+            args.push(new MapLiteral([
+                [I('ComponentClass'), I('ChildComponentClass')]
+            ]))
+        }
         const childRenderCall = new FunctionCall(
             new ComponentRendererReference(ref),
-            [this.childRenderData(aNode), ndo, I('parentCtx'), L(aNode.tagName), childSlots]
+            args
         )
         yield createHTMLExpressionAppend(childRenderCall)
     }

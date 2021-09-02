@@ -19,7 +19,7 @@ import type { GlobalContext } from '../models/global-context'
 import type { ComponentClass } from '../models/component'
 
 export interface Resolver {
-    getRenderer: (ref: { id: string, specifier?: string }, context?: GlobalContext) => Function
+    getRenderer: (ref: { id: string, specifier?: string }, tagName?: string, context?: GlobalContext) => Function
     getChildComponentClass: (ref: { id: string, specifier?: string }, CurrentComponentClass: ComponentClass, tagName: string, context?: GlobalContext) => ComponentClass
     setRenderer: (id: string, fn: Function) => void
     /**
@@ -34,7 +34,7 @@ type nodeRequire = typeof require;
 
 export function createResolver (exports: {[key: string]: any}, require: nodeRequire): Resolver {
     return {
-        getRenderer: function ({ id, specifier = '.' }, context) {
+        getRenderer: function ({ id, specifier = '.' }, tagName, context) {
             const customSSRFilePath = context && context.customSSRFilePath
             let mod: {[key: string]: any}
             if (specifier === '.') {
@@ -42,7 +42,7 @@ export function createResolver (exports: {[key: string]: any}, require: nodeRequ
             } else {
                 let path: string | undefined
                 if (customSSRFilePath) {
-                    path = customSSRFilePath(specifier)
+                    path = customSSRFilePath({ id, specifier, tagName })
                 }
                 mod = require(path || specifier)
             }
@@ -52,8 +52,11 @@ export function createResolver (exports: {[key: string]: any}, require: nodeRequ
             const customComponentFilePath = context && context.customComponentFilePath
 
             if (customComponentFilePath && specifier !== '.') {
-                const ChildComponentClass = customComponentFilePath({ id, specifier })
-                if (ChildComponentClass) return ChildComponentClass
+                const path = customComponentFilePath({ id, specifier, tagName })
+                if (typeof path === 'string') return id === 'default' ? require(path) : require(path)[id]
+
+                // 可以直接返回一个组件类
+                else if (typeof path === 'function') return path
             }
 
             const components = CurrentComponentClass.prototype.components as {[tagName: string]: ComponentClass | undefined}
@@ -63,6 +66,9 @@ export function createResolver (exports: {[key: string]: any}, require: nodeRequ
             }
             if (typeof ChildComponentClass === 'string' && ChildComponentClass === 'self') {
                 return CurrentComponentClass
+            }
+            if (typeof ChildComponentClass !== 'function') {
+                throw Error(`external component is not provided: ${tagName}${CurrentComponentClass.prototype?.id || ''}`)
             }
             return ChildComponentClass
         },

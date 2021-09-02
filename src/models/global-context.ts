@@ -1,6 +1,8 @@
-import type { ComponentClass } from './component'
+import { ComponentClass } from './component'
+
+interface ReferInfo {specifier: string; id: string; tagName?: string}
 
 export interface GlobalContext {
-    customSSRFilePath?(path: string): string
-    customComponentFilePath?(info: {specifier: string; id: string;}): ComponentClass | void
+    customSSRFilePath?(path: ReferInfo): string
+    customComponentFilePath?(info: ReferInfo): string | ComponentClass
 }

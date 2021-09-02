@@ -101,7 +101,8 @@ export class ComponentRendererReference implements SyntaxNode {
     constructor (
         // ref 的值可能是编译时确定的，也可能是运行时确定的（s-is 的情况）
         // 因此它必须是一个表达式，而非 ComponentReference。
-        public value: Expression
+        public value: Expression,
+        public tagName: Literal
     ) {}
 }
 

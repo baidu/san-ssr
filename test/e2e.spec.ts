@@ -49,10 +49,16 @@ for (const { caseName, caseRoot } of cases) {
 
     if (tsExists(caseName, caseRoot)) {
         if (ssrSpec.enabled.tssrc) {
-            ssrSpec.beforeHook && ssrSpec.beforeHook('tssrc')
             it('render to source (TypeScript): ' + caseName, async function () {
+                ssrSpec.beforeHook && ssrSpec.beforeHook('tssrc')
+
+                // compile
                 const folderName = getRandomStr() + '_tssrc'
                 compileTS(caseName, caseRoot, folderName)
+
+                ssrSpec.afterHook && ssrSpec.afterHook('tssrc')
+
+                // render
                 const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js'))
                 const got = render(...getRenderArguments(caseName, caseRoot))
                 const [data, html] = parseSanHTML(got)
@@ -60,16 +66,21 @@ for (const { caseName, caseRoot } of cases) {
                 expect(data).toEqual(expectedData)
                 expect(html).toEqual(expectedHtml)
             })
-            ssrSpec.afterHook && ssrSpec.afterHook('tssrc')
         }
     }
 
     if (jsExists(caseName, caseRoot)) {
         if (ssrSpec.enabled.jssrc) {
-            ssrSpec.beforeHook && ssrSpec.beforeHook('jssrc')
             it('js to source: ' + caseName, async function () {
+                ssrSpec.beforeHook && ssrSpec.beforeHook('jssrc')
+
+                // compile
                 const folderName = getRandomStr() + '_jssrc'
                 compileJS(caseName, caseRoot, false, folderName)
+
+                ssrSpec.afterHook && ssrSpec.afterHook('jssrc')
+
+                // render
                 const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js'))
                 // 测试在 strict mode，因此需要手动传入 require
                 const got = render(...getRenderArguments(caseName, caseRoot), { context: ssrSpec && ssrSpec.context })
@@ -78,15 +89,19 @@ for (const { caseName, caseRoot } of cases) {
                 expect(data).toEqual(expectedData)
                 expect(html).toEqual(expectedHtml)
             })
-            ssrSpec.afterHook && ssrSpec.afterHook('jssrc')
         }
 
         if (ssrSpec.enabled.comsrc) {
-            ssrSpec.beforeHook && ssrSpec.beforeHook('comsrc')
             it('component to source: ' + caseName, async function () {
+                ssrSpec.beforeHook && ssrSpec.beforeHook('comsrc')
+
+                // compile
                 const folderName = getRandomStr() + '_comsrc'
                 compileComponent(caseName, caseRoot, false, folderName, ssrSpec.compileOptions)
-                // eslint-disable-next-line
+
+                ssrSpec.afterHook && ssrSpec.afterHook('comsrc')
+
+                // render
                 const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js'))
 
                 // 测试在 strict mode，因此需要手动传入 require
@@ -100,7 +115,6 @@ for (const { caseName, caseRoot } of cases) {
                 expect(data).toEqual(expectedData)
                 expect(html).toEqual(expectedHtml)
             })
-            ssrSpec.afterHook && ssrSpec.afterHook('comsrc')
         }
 
         if (ssrSpec.enabled.comrdr) {

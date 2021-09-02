@@ -14,7 +14,7 @@ import * as TypeGuards from '../ast/san-ast-type-guards'
 import { IDGenerator } from '../utils/id-generator'
 import { JSONStringify, RegexpReplace, Statement, SlotRendererDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral, ComponentRendererReference, FunctionCall, SlotRenderCall, Expression, GetRootCtxCall, ComponentReferenceLiteral, ComponentClassReference } from '../ast/renderer-ast-dfn'
 import { CTX_DATA, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATEMENT, UNARY, DEF, BINARY, RETURN } from '../ast/renderer-ast-util'
-import { sanExpr, OutputType } from '../compilers/san-expr-compiler'
+import { sanExpr, OutputType } from './san-expr-compiler'
 import type { RenderOptions } from './renderer-options'
 
 /**
@@ -225,15 +225,18 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         const ndo = isRootElement ? I('noDataOutput') : L(true)
 
         // child component class
+        let ChildComponentClassName = ''
         if (this.useProvidedComponentClass) {
-            yield DEF('ChildComponentClass', new ComponentClassReference(ref, L(aNode.tagName)))
+            ChildComponentClassName = this.id.next('ChildComponentClass')
+            yield DEF(ChildComponentClassName, new ComponentClassReference(ref, L(aNode.tagName)))
         }
 
         // get and call renderer
         const args = [this.childRenderData(aNode), ndo, I('parentCtx'), L(aNode.tagName), childSlots]
         if (this.useProvidedComponentClass) {
+            assert(ChildComponentClassName !== '')
             args.push(new MapLiteral([
-                [I('ComponentClass'), I('ChildComponentClass')]
+                [I('ComponentClass'), I(ChildComponentClassName)]
             ]))
         }
         const childRenderCall = new FunctionCall(

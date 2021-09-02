@@ -13,12 +13,13 @@ describe('runtime/resolver', () => {
     it('should change by custom require path', () => {
         const render = resolver.getRenderer(
             { id: '0', specifier: 'aaa' },
+            '',
             { customSSRFilePath: () => join(__dirname, '../../stub/ssr.js') }
         )
         expect(render()).toEqual('hello')
     })
 
-    it('should get child component class', () => {
+    describe('./getChildComponentClass()', () => {
         const ChildA = san.defineComponent({
             template: ''
         })
@@ -30,31 +31,74 @@ describe('runtime/resolver', () => {
             components: {
                 'child-a': ChildA,
                 'child-b': ChildA,
-                'child-c': 'self'
+                'child-c': 'self',
+                'child-d': {}
             }
+        })
+        const ref = { id: 'id', specifier: './som/path' }
+        it('should get child component class', () => {
+            const ResComponent = resolver.getChildComponentClass({ id: 'id' }, MyComponent, 'child-a')
+            expect(ResComponent === ChildA).toBe(true)
         })
 
-        const ref = { id: 'id', specifier: './som/path' }
-        const ResComponent = resolver.getChildComponentClass({ id: 'id' }, MyComponent, 'child-a')
-        expect(ResComponent === ChildA).toBe(true)
-        const ResComponent2 = resolver.getChildComponentClass(ref, MyComponent, 'child-b', {
-            customComponentFilePath () {
-                return ChildB
+        it('should change child component class by class', () => {
+            const ResComponent2 = resolver.getChildComponentClass(ref, MyComponent, 'child-b', {
+                customComponentFilePath () {
+                    return ChildB
+                }
+            })
+            expect(ResComponent2 === ChildB).toBe(true)
+        })
+
+        it('should change child component class by path', () => {
+            const ChildC = require('../../stub/a.comp')
+            const { C: ChildD } = require('../../stub/b.comp')
+            const ResComponent5 = resolver.getChildComponentClass({ id: 'default', specifier: '/' }, MyComponent, 'child-b', {
+                customComponentFilePath () {
+                    return '../../stub/a.comp'
+                }
+            })
+            expect(ChildC === ResComponent5).toBe(true)
+            const ResComponent6 = resolver.getChildComponentClass({ id: 'C', specifier: '/' }, MyComponent, 'child-b', {
+                customComponentFilePath () {
+                    return '../../stub/b.comp'
+                }
+            })
+            expect(ChildD === ResComponent6).toBe(true)
+        })
+
+        it('should not change part of child component class', () => {
+            const ResComponent4 = resolver.getChildComponentClass(ref, MyComponent, 'child-b', {
+                customComponentFilePath ({ id }) {
+                    if (id !== 'id') return ChildB
+                }
+            })
+            expect(ResComponent4 === ChildA).toBe(true)
+        })
+
+        it('should get self', () => {
+            const ResComponent3 = resolver.getChildComponentClass(ref, MyComponent, 'child-c')
+            expect(ResComponent3 === MyComponent).toBe(true)
+        })
+
+        it('should error if child component not found', () => {
+            const fn = jest.fn()
+            try {
+                resolver.getChildComponentClass(ref, MyComponent, 'none-exist')
+            } catch {
+                fn()
             }
+            expect(fn).toHaveBeenCalled()
         })
-        expect(ResComponent2 === ChildB).toBe(true)
-        const ResComponent4 = resolver.getChildComponentClass(ref, MyComponent, 'child-b', {
-            customComponentFilePath () {}
+
+        it('should error if child component is not class', () => {
+            const fn = jest.fn()
+            try {
+                resolver.getChildComponentClass(ref, MyComponent, 'child-d')
+            } catch {
+                fn()
+            }
+            expect(fn).toHaveBeenCalled()
         })
-        expect(ResComponent4 === ChildA).toBe(true)
-        const fn = jest.fn()
-        try {
-            resolver.getChildComponentClass(ref, MyComponent, 'none-exist')
-        } catch {
-            fn()
-        }
-        expect(fn).toHaveBeenCalled()
-        const ResComponent3 = resolver.getChildComponentClass(ref, MyComponent, 'child-c')
-        expect(ResComponent3 === MyComponent).toBe(true)
     })
 })

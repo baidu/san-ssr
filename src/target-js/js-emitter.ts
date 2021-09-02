@@ -123,6 +123,8 @@ export class JSEmitter extends Emitter {
         case SyntaxKind.ComponentRendererReference:
             this.write('sanSSRResolver.getRenderer(')
             this.writeSyntaxNode(node.value)
+            this.write(', ')
+            this.writeSyntaxNode(node.tagName)
             this.write(', ctx.context')
             this.write(')')
             break
@@ -132,6 +134,7 @@ export class JSEmitter extends Emitter {
             this.write(', ComponentClass')
             this.write(', ')
             this.writeSyntaxNode(node.tagName)
+            this.write(', ctx.context')
             this.write(')')
             break
         case SyntaxKind.ComponentReferenceLiteral:

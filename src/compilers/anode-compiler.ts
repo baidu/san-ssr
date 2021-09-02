@@ -237,7 +237,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
             ]))
         }
         const childRenderCall = new FunctionCall(
-            new ComponentRendererReference(ref),
+            new ComponentRendererReference(ref, L(aNode.tagName)),
             args
         )
         yield createHTMLExpressionAppend(childRenderCall)

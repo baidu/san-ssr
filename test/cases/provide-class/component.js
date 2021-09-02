@@ -1,6 +1,11 @@
 const san = require('san')
 const List = san.defineComponent({
-    template: '<div>child</div>'
+    initData () {
+        return {
+            text: 'child'
+        }
+    },
+    template: '<div>{{ text }}</div>'
 })
 
 const MyComponent = san.defineComponent({

@@ -13,7 +13,7 @@ export default {
         comrdr: false
     },
     context: {
-        customSSRFilePath (specifier) {
+        customSSRFilePath ({ specifier }) {
             if (specifier.endsWith('childA.san')) {
                 return specifier.replace('childA', 'childB')
             }

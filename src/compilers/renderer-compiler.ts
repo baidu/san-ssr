@@ -8,7 +8,7 @@ import { ANodeCompiler } from './anode-compiler'
 import { ComponentInfo } from '../models/component-info'
 import { RenderOptions } from './renderer-options'
 import { FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper, ComponentReferenceLiteral, ConditionalExpression, BinaryExpression } from '../ast/renderer-ast-dfn'
-import { EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL, UNDEFINED, createTryStatement } from '../ast/renderer-ast-util'
+import { EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL, UNDEFINED, createTryStatement, createDefineWithDefaultValue } from '../ast/renderer-ast-util'
 import { IDGenerator } from '../utils/id-generator'
 import { mergeLiteralAdd } from '../optimizers/merge-literal-add'
 
@@ -28,10 +28,6 @@ export class RendererCompiler {
     public compileToRenderer (componentInfo: ComponentInfo) {
         const args = [
             DEF('data'),
-            DEF('noDataOutput', L(false)),
-            DEF('parentCtx', NULL),
-            DEF('tagName', L('div')),
-            DEF('slots', EMPTY_MAP),
 
             // 参数太多了，后续要增加的参数统一收敛到这里
             DEF('info', L({}))
@@ -52,6 +48,10 @@ export class RendererCompiler {
         }
 
         // get params from info
+        body.push(createDefineWithDefaultValue('noDataOutput', BINARY(I('info'), '.', I('noDataOutput')), L(false)))
+        body.push(createDefineWithDefaultValue('parentCtx', BINARY(I('info'), '.', I('parentCtx')), NULL))
+        body.push(createDefineWithDefaultValue('tagName', BINARY(I('info'), '.', I('tagName')), L('div')))
+        body.push(createDefineWithDefaultValue('slots', BINARY(I('info'), '.', I('slots')), EMPTY_MAP))
         if (this.options.useProvidedComponentClass) {
             body.push(DEF('ComponentClass', new BinaryExpression(I('info'), '.', I('ComponentClass'))))
         }

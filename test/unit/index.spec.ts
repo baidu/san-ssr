@@ -17,7 +17,9 @@ describe('compileToRenderer', function () {
         const render = compileToRenderer(ComponentClass)
 
         expect(render).toBeInstanceOf(Function)
-        expect(render({}, true)).toEqual('<span>A</span>')
+        expect(render({}, {
+            noDataOutput: true
+        })).toEqual('<span>A</span>')
     })
 
     it('should compile to a renderer function which accepts data', function () {
@@ -25,7 +27,9 @@ describe('compileToRenderer', function () {
         const render = compileToRenderer(ComponentClass)
 
         expect(render).toBeInstanceOf(Function)
-        expect(render({ name: 'Harttle' }, true)).toEqual('<span>name: Harttle</span>')
+        expect(render({ name: 'Harttle' }, {
+            noDataOutput: true
+        })).toEqual('<span>name: Harttle</span>')
     })
 
     it('should run inited only in run time', function () {
@@ -34,7 +38,9 @@ describe('compileToRenderer', function () {
         const render = compileToRenderer(ComponentClass)
 
         expect(inited).not.toBeCalled()
-        expect(render({}, true)).toEqual('<div>a</div>')
+        expect(render({}, {
+            noDataOutput: true
+        })).toEqual('<div>a</div>')
         expect(inited).toBeCalledTimes(1)
     })
 })

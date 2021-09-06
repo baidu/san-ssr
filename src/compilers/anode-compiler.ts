@@ -232,13 +232,18 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         }
 
         // get and call renderer
-        const args = [this.childRenderData(aNode), ndo, I('parentCtx'), L(aNode.tagName), childSlots]
+        const mapItems = [
+            [I('noDataOutput'), ndo],
+            [I('parentCtx'), I('parentCtx')],
+            [I('tagName'), L(aNode.tagName)],
+            [I('slots'), childSlots]
+        ] as ConstructorParameters<typeof MapLiteral>[0]
         if (this.useProvidedComponentClass) {
             assert(ChildComponentClassName !== '')
-            args.push(new MapLiteral([
-                [I('ComponentClass'), I(ChildComponentClassName)]
-            ]))
+            mapItems.push([I('ComponentClass'), I(ChildComponentClassName)])
         }
+
+        const args = [this.childRenderData(aNode), new MapLiteral(mapItems)]
         const childRenderCall = new FunctionCall(
             new ComponentRendererReference(ref, L(aNode.tagName)),
             args

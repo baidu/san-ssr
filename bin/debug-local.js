@@ -23,6 +23,6 @@ fs.writeFileSync(path.resolve(__dirname, './output.js'), res)
 const Component = require('./component')
 const render = require('./output')
 
-const html = render({}, false, null, 'div', {}, { ComponentClass: Component })
+const html = render({}, { ComponentClass: Component })
 
 console.log(html)

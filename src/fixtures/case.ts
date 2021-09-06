@@ -6,6 +6,7 @@ import debugFactory from 'debug'
 import { compileToRenderer } from '../index'
 import mkdirp from 'mkdirp'
 import type { RenderOptions } from '../compilers/renderer-options'
+import type { Renderer } from '../models/renderer'
 
 const debug = debugFactory('case')
 export const caseRoots = [
@@ -140,15 +141,17 @@ export function readCaseData (caseName: string, caseRoot: string) {
     return JSON.parse(readFileSync(dataPath, 'utf8'))
 }
 
-export function getRenderArguments (caseName: string, caseRoot: string) {
+export function getRenderArguments (caseName: string, caseRoot: string, info: Partial<Parameters<Renderer>['1']> = {}): Parameters<Renderer> {
     const data = readCaseData(caseName, caseRoot)
     const noDataOutput = /-ndo$/.test(caseName)
-    return [data, noDataOutput]
+    return [data, Object.assign({
+        noDataOutput
+    }, info)]
 }
 
 export function renderOnthefly (caseName: string, caseRoot: string) {
     const render = compileCaseToRenderer(caseName, caseRoot)
     const data = readCaseData(caseName, caseRoot)
     const noDataOutput = /-ndo$/.test(caseName)
-    return render(data, noDataOutput)
+    return render(data, { noDataOutput })
 }

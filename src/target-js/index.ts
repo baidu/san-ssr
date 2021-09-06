@@ -71,9 +71,9 @@ export default class ToJSCompiler implements TargetCodeGenerator {
             sanSSRResolver.setPrototype(info.id, info.componentClass.prototype)
             sanSSRResolver.setRenderer(info.id, resolvedRenderer)
         }
-        return (data: any, noDataOutput: boolean = false) => {
+        return (data, info) => {
             const render = sanSSRResolver.getRenderer({ id: entryComponentInfo.id })
-            return render(data, noDataOutput)
+            return render(data, info)
         }
     }
 

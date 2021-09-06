@@ -5,6 +5,7 @@ import type { RenderOptions } from '../src/index'
 import { existsSync } from 'fs'
 import { execSync } from 'child_process'
 import type { GlobalContext } from '../src/models/global-context'
+import type { Renderer } from '../src/models/renderer'
 
 export interface SsrSpecConfig {
     enabled: {
@@ -81,9 +82,9 @@ for (const { caseName, caseRoot } of cases) {
                 ssrSpec.afterHook && ssrSpec.afterHook('jssrc')
 
                 // render
-                const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js'))
+                const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js')) as Renderer
                 // 测试在 strict mode，因此需要手动传入 require
-                const got = render(...getRenderArguments(caseName, caseRoot), { context: ssrSpec && ssrSpec.context })
+                const got = render(...getRenderArguments(caseName, caseRoot, { parentCtx: { context: ssrSpec && ssrSpec.context } }))
                 const [data, html] = parseSanHTML(got)
 
                 expect(data).toEqual(expectedData)
@@ -102,14 +103,16 @@ for (const { caseName, caseRoot } of cases) {
                 ssrSpec.afterHook && ssrSpec.afterHook('comsrc')
 
                 // render
-                const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js'))
+                const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js')) as Renderer
 
                 // 测试在 strict mode，因此需要手动传入 require
-                const info = {} as any
+                const info = {
+                    parentCtx: { context: ssrSpec && ssrSpec.context }
+                } as Parameters<Renderer>[1]
                 if (ssrSpec.compileOptions.useProvidedComponentClass) {
                     info.ComponentClass = require(join(caseRoot, caseName, 'component.js'))
                 }
-                const got = render(...getRenderArguments(caseName, caseRoot), { context: ssrSpec && ssrSpec.context }, 'div', {}, info)
+                const got = render(...getRenderArguments(caseName, caseRoot, info))
                 const [data, html] = parseSanHTML(got)
 
                 expect(data).toEqual(expectedData)

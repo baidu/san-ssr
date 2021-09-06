@@ -5,7 +5,7 @@
  * 例如：new AssignmentStatement(new Identifier('html'), new Literal('foo')) 可以简写为 ASSIGN(I('html), L('foo))
  */
 
-import { SyntaxKind, SyntaxNode, Block, MapLiteral, UnaryOperator, UnaryExpression, NewExpression, VariableDefinition, ReturnStatement, BinaryOperator, If, Null, Undefined, AssignmentStatement, Statement, Expression, Identifier, ExpressionStatement, BinaryExpression, Literal, TryStatement, CatchClause } from './renderer-ast-dfn'
+import { SyntaxKind, SyntaxNode, Block, MapLiteral, UnaryOperator, UnaryExpression, NewExpression, VariableDefinition, ReturnStatement, BinaryOperator, If, Null, Undefined, AssignmentStatement, Statement, Expression, Identifier, ExpressionStatement, BinaryExpression, Literal, TryStatement, CatchClause, ConditionalExpression } from './renderer-ast-dfn'
 
 export function createHTMLLiteralAppend (html: string) {
     return STATEMENT(BINARY(I('html'), '+=', L(html)))
@@ -33,6 +33,10 @@ export function createIfStrictEqual (lhs: Expression, rhs: Expression, statement
 
 export function createTryStatement (block: Statement[], param: Identifier, body: Statement[]) {
     return new TryStatement(block, new CatchClause(param, body))
+}
+
+export function createDefineWithDefaultValue (varName: string, value: Expression, defaultValue: Expression) {
+    return DEF(varName, new ConditionalExpression(BINARY(value, '==', NULL), defaultValue, value))
 }
 
 export function L (val: any) {

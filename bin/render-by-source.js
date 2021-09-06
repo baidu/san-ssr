@@ -16,6 +16,8 @@ if (fs.existsSync(ssrSpecPath)) {
 }
 
 const render = require(join(caseRoot, `${caseName}/output/ssr.js`))
-const html = render(...getRenderArguments(caseName, caseRoot), { context: ssrSpec && ssrSpec.context })
+const html = render(...getRenderArguments(caseName, caseRoot, {
+    parentCtx: { context: ssrSpec && ssrSpec.context }
+}))
 
 process.stdout.write(html)

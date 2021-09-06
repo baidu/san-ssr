@@ -101,7 +101,9 @@ describe('SanProject', function () {
             const render = proj.compileToRenderer(require(resolve(stubRoot, './name.comp.js')))
 
             expect(render).toBeInstanceOf(Function)
-            expect(render({ name: 'Harttle' }, true)).toEqual('<div>name: Harttle</div>')
+            expect(render({ name: 'Harttle' }, {
+                noDataOutput: true
+            })).toEqual('<div>name: Harttle</div>')
         })
 
         it('the noDataOutput parameter should be optional and default to false', function () {
@@ -140,7 +142,9 @@ describe('SanProject', function () {
             const render = proj.compileToRenderer(require(resolve(stubRoot, './name.comp.js')))
 
             expect(render).toBeInstanceOf(Function)
-            expect(render({ name: 'Harttle' }, true)).toEqual('<div>name: Harttle</div>')
+            expect(render({ name: 'Harttle' }, {
+                noDataOutput: true
+            })).toEqual('<div>name: Harttle</div>')
         })
 
         it('should remove modules', function () {

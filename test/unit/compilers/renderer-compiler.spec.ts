@@ -1,7 +1,11 @@
 import { RendererCompiler } from '../../../src/compilers/renderer-compiler'
 import { defineComponent } from 'san'
 import { ComponentClassParser } from '../../../src/parsers/component-class-parser'
-import { SyntaxKind } from '../../../src/ast/renderer-ast-dfn'
+import {
+    AssignmentStatement,
+    SlotRendererDefinition,
+    SyntaxKind
+} from '../../../src/ast/renderer-ast-dfn'
 import { matchHTMLAddEqual } from '../../stub/util'
 
 describe('compilers/renderer-compiler', () => {
@@ -25,6 +29,28 @@ describe('compilers/renderer-compiler', () => {
                 value: '</div>',
                 kind: SyntaxKind.Literal
             }))
+        })
+        it('should emit slot comment', () => {
+            const ComponentClass = defineComponent({
+                components: {
+                    ccc: defineComponent({ template: '<div><slot/></div>' })
+                },
+                template: '<ccc><span></span>   \nassa</ccc>'
+            })
+            const sourceFile = new ComponentClassParser(ComponentClass, '/tmp/foo.js').parse()
+            const compiler = new RendererCompiler({})
+            const body = [...compiler.compileToRenderer(sourceFile.componentInfos[0]).body]
+
+            const assignmentNode = body[10] as AssignmentStatement
+            expect(assignmentNode.kind === SyntaxKind.AssignmentStatement).toBe(true)
+            const SlotRendererDefinitionNode = assignmentNode.rhs as SlotRendererDefinition
+            expect(SlotRendererDefinitionNode.kind === SyntaxKind.SlotRendererDefinition).toBe(true)
+            expect([...SlotRendererDefinitionNode.body].find(item => {
+                return item.kind === SyntaxKind.ExpressionStatement &&
+                    item.value.kind === SyntaxKind.BinaryExpression &&
+                    item.value.rhs.kind === SyntaxKind.Literal &&
+                    item.value.rhs.value.indexOf('s-slot') !== -1
+            })).toBeTruthy()
         })
     })
 })

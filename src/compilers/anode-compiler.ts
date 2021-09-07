@@ -232,7 +232,12 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         const args = [DEF('parentCtx'), DEF('data')]
         const body: Statement[] = []
         if (content.length) {
+            const shouldEmitComment = emitComment(content)
             body.push(DEF('html', L('')))
+
+            if (shouldEmitComment) {
+                body.push(createHTMLLiteralAppend('<!--s-slot-->'))
+            }
 
             const compData = this.id.next('compData')
             body.push(DEF(compData, CTX_DATA))
@@ -240,12 +245,43 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
 
             for (const child of content) body.push(...this.compile(child, false))
 
+            if (shouldEmitComment) {
+                body.push(createHTMLLiteralAppend('<!--/s-slot-->'))
+            }
+
             body.push(ASSIGN(CTX_DATA, I(compData)))
             body.push(RETURN(I('html')))
         } else {
             body.push(RETURN(L('')))
         }
         return new SlotRendererDefinition('', args, body)
+
+        // 第一个或最后一个，不为空的节点为 text node
+        function emitComment (content: ANode[]) {
+            let i = 0
+            while (i < content.length) {
+                const c = content[i]
+                if (!TypeGuards.isATextNode(c)) {
+                    break
+                }
+                if (!c.textExpr.value || c.textExpr.value.trim() !== '') {
+                    return true
+                }
+                i++
+            }
+            let j = content.length - 1
+            while (j > i) {
+                const c = content[j]
+                if (!TypeGuards.isATextNode(c)) {
+                    break
+                }
+                if (!c.textExpr.value || c.textExpr.value.trim() !== '') {
+                    return true
+                }
+                j--
+            }
+            return false
+        }
     }
 
     private childRenderData (aNode: ANode) {

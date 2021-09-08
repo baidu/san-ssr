@@ -41,10 +41,12 @@ describe('compilers/renderer-compiler', () => {
             const compiler = new RendererCompiler({})
             const body = [...compiler.compileToRenderer(sourceFile.componentInfos[0]).body]
 
-            const assignmentNode = body[10] as AssignmentStatement
-            expect(assignmentNode.kind === SyntaxKind.AssignmentStatement).toBe(true)
+            const assignmentNode = body.find(item =>
+                item.kind === SyntaxKind.AssignmentStatement &&
+                item.rhs.kind === SyntaxKind.SlotRendererDefinition
+            ) as AssignmentStatement
+            expect(assignmentNode).toBeTruthy()
             const SlotRendererDefinitionNode = assignmentNode.rhs as SlotRendererDefinition
-            expect(SlotRendererDefinitionNode.kind === SyntaxKind.SlotRendererDefinition).toBe(true)
             expect([...SlotRendererDefinitionNode.body].find(item => {
                 return item.kind === SyntaxKind.ExpressionStatement &&
                     item.value.kind === SyntaxKind.BinaryExpression &&

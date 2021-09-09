@@ -7,7 +7,7 @@ describe('compileToSource', function () {
         const code = compileToSource(ComponentClass as any)
 
         expect(code).toContain('html += "A')
-        expect(code).toMatch(/^function render \(data, noDataOutput\) {/)
+        expect(code).toMatch(/^function render \(data, info\) {/)
     })
 })
 

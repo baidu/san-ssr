@@ -60,14 +60,14 @@ function unary (e: ExprUnaryNode) {
     if (e.operator === 43) return new UnaryExpression('+', sanExpr(e.expr))
     throw new Error(`unexpected unary operator "${String.fromCharCode(e.operator)}"`)
 }
-function binary (e: ExprBinaryNode) {
-    const lhs = sanExpr(e.segs[0])
+function binary (e: ExprBinaryNode, output: OutputType) {
+    const lhs = sanExpr(e.segs[0], output)
     const op = binaryOp[e.operator]
-    const rhs = sanExpr(e.segs[1])
+    const rhs = sanExpr(e.segs[1], output)
     return new BinaryExpression(lhs, op, rhs)
 }
-function tertiary (e: ExprTertiaryNode) {
-    return new ConditionalExpression(sanExpr(e.segs[0]), sanExpr(e.segs[1]), sanExpr(e.segs[2]))
+function tertiary (e: ExprTertiaryNode, output: OutputType) {
+    return new ConditionalExpression(sanExpr(e.segs[0]), sanExpr(e.segs[1], output), sanExpr(e.segs[2], output))
 }
 
 // 生成数据访问表达式代码
@@ -157,8 +157,8 @@ export function sanExpr (e: ExprNode, output: OutputType = OutputType.NONE): Exp
     let s
 
     if (TypeGuards.isExprUnaryNode(e)) s = unary(e)
-    else if (TypeGuards.isExprBinaryNode(e)) s = binary(e)
-    else if (TypeGuards.isExprTertiaryNode(e)) s = tertiary(e)
+    else if (TypeGuards.isExprBinaryNode(e)) s = binary(e, output)
+    else if (TypeGuards.isExprTertiaryNode(e)) s = tertiary(e, output)
     else if (TypeGuards.isExprStringNode(e)) s = str(e, output)
     else if (TypeGuards.isExprNumberNode(e)) s = L(e.value)
     else if (TypeGuards.isExprBoolNode(e)) s = L(!!e.value)

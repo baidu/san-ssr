@@ -50,7 +50,7 @@ function isArray (source: any): source is any[] {
 }
 
 function output (value: any, needEscape: boolean) {
-    if (value == null) return ''
+    if (value == null || value === '') return ''
     value = String(value)
     return needEscape ? escapeHTML(value) : value
 }

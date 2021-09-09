@@ -20,6 +20,32 @@ describe('compilers/san-expr-compiler', () => {
                 rhs: dataItem('b')
             }))
         })
+        it('should escape a binary expression', () => {
+            const e = parseExpr('a + b')
+            const dataItem = (value: string) => ({
+                kind: SyntaxKind.HelperCall,
+                name: 'output',
+                args: [
+                    {
+                        kind: SyntaxKind.BinaryExpression,
+                        lhs: CTX_DATA,
+                        op: '[]',
+                        rhs: { kind: SyntaxKind.Literal, value }
+                    },
+                    {
+                        kind: SyntaxKind.Literal,
+                        value: true
+                    }
+                ]
+            })
+            const res = expr(e, OutputType.ESCAPE_HTML)
+            expect(res).toEqual(expect.objectContaining({
+                kind: SyntaxKind.BinaryExpression,
+                lhs: dataItem('a'),
+                op: '+',
+                rhs: dataItem('b')
+            }))
+        })
         it('should compile unary expression', () => {
             const e = parseExpr('+num === 123')
             expect(expr(e)).toMatchObject({

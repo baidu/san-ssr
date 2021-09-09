@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;src/target-js/js-emitter&quot; | san-ssr</title>
+	<title>parseSanSourceFileOptions | san-ssr</title>
 	<meta name="description" content="Documentation for san-ssr">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,62 +56,49 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="_src_target_js_js_emitter_.html">&quot;src/target-js/js-emitter&quot;</a>
+					<a href="../modules/_src_compilers_renderer_options_.html">&quot;src/compilers/renderer-options&quot;</a>
+				</li>
+				<li>
+					<a href="_src_compilers_renderer_options_.parsesansourcefileoptions.html">parseSanSourceFileOptions</a>
 				</li>
 			</ul>
-			<h1>Module &quot;src/target-js/js-emitter&quot;</h1>
+			<h1>Interface parseSanSourceFileOptions</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">parseSanSourceFileOptions</span>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Classes</h3>
+							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_src_target_js_js_emitter_.jsemitter.html" class="tsd-kind-icon">JSEmitter</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section tsd-is-not-exported">
-							<h3>Variables</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported"><a href="_src_target_js_js_emitter_.html#literal_date_indicator" class="tsd-kind-icon">LITERAL_<wbr>DATE_<wbr>INDICATOR</a></li>
-								<li class="tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported"><a href="_src_target_js_js_emitter_.html#literal_date_matcher" class="tsd-kind-icon">LITERAL_<wbr>DATE_<wbr>MATCHER</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_src_compilers_renderer_options_.parsesansourcefileoptions.html#sanreferenceinfo" class="tsd-kind-icon">san<wbr>Reference<wbr>Info</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
-				<h2>Variables</h2>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-					<a name="literal_date_indicator" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> LITERAL_<wbr>DATE_<wbr>INDICATOR</h3>
-					<div class="tsd-signature tsd-kind-icon">LITERAL_<wbr>DATE_<wbr>INDICATOR<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = Math.random().toString(36) + Math.random().toString(36)</span></div>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="sanreferenceinfo" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> san<wbr>Reference<wbr>Info</h3>
+					<div class="tsd-signature tsd-kind-icon">san<wbr>Reference<wbr>Info<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RenderOptions</span><span class="tsd-signature-symbol">[</span><span class="tsd-signature-type">"sanReferenceInfo"</span><span class="tsd-signature-symbol">]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/a3a69a2/src/target-js/js-emitter.ts#L11">src/target-js/js-emitter.ts:11</a></li>
-						</ul>
-					</aside>
-					<div class="tsd-comment tsd-typography">
-						<div class="lead">
-							<p>用来表示 JSON 里这一部分是一个 Date</p>
-						</div>
-						<p>完全正确的实现是每次使用时生成，可以确保当前字符串不包含 INDICATOR
-						但一般来讲 32 位十进制数已经足够抗冲突，n = 2 时冲突概率为 1/10**32</p>
-					</div>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-					<a name="literal_date_matcher" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> LITERAL_<wbr>DATE_<wbr>MATCHER</h3>
-					<div class="tsd-signature tsd-kind-icon">LITERAL_<wbr>DATE_<wbr>MATCHER<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol"> = new RegExp(&#x60;&quot;${LITERAL_DATE_INDICATOR}(\\d+)&quot;&#x60;, &#x27;g&#x27;)</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/a3a69a2/src/target-js/js-emitter.ts#L14">src/target-js/js-emitter.ts:14</a></li>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/a3a69a2/src/compilers/renderer-options.ts#L27">src/compilers/renderer-options.ts:27</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -124,21 +111,27 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="_src_target_js_js_emitter_.html">&quot;src/target-<wbr>js/js-<wbr>emitter&quot;</a>
+						<a href="../modules/_src_compilers_renderer_options_.html">&quot;src/compilers/renderer-<wbr>options&quot;</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_src_target_js_js_emitter_.jsemitter.html" class="tsd-kind-icon">JSEmitter</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
+						<a href="_src_compilers_renderer_options_.renderoptions.html" class="tsd-kind-icon">Render<wbr>Options</a>
 					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="_src_target_js_js_emitter_.html#literal_date_indicator" class="tsd-kind-icon">LITERAL_<wbr>DATE_<wbr>INDICATOR</a>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface tsd-parent-kind-module">
+						<a href="_src_compilers_renderer_options_.parsesansourcefileoptions.html" class="tsd-kind-icon">parse<wbr>San<wbr>Source<wbr>File<wbr>Options</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_src_compilers_renderer_options_.parsesansourcefileoptions.html#sanreferenceinfo" class="tsd-kind-icon">san<wbr>Reference<wbr>Info</a>
+							</li>
+						</ul>
 					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="_src_target_js_js_emitter_.html#literal_date_matcher" class="tsd-kind-icon">LITERAL_<wbr>DATE_<wbr>MATCHER</a>
-					</li>
+				</ul>
+				<ul class="after-current">
 				</ul>
 			</nav>
 		</div>
@@ -157,14 +150,15 @@
 				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
 				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 			</ul>
 		</div>
 	</div>

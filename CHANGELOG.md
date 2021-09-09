@@ -1,3 +1,17 @@
+# [4.9.0](https://github.com/baidu/san-ssr/compare/v4.8.0...v4.9.0) (2021-09-09)
+
+
+### Bug Fixes
+
+* [#119](https://github.com/baidu/san-ssr/issues/119) ([abf73e3](https://github.com/baidu/san-ssr/commit/abf73e3ec5a3f55941eed076cd205aee6bda5fed))
+* binary, tertiary 表达式没有转义 ([a3a69a2](https://github.com/baidu/san-ssr/commit/a3a69a29ceb8137692a6fdd574f05c4a084c50f9))
+* slot 内容为字符串时，可能会反解失败 ([cbbeba5](https://github.com/baidu/san-ssr/commit/cbbeba59fdb3d8464ef90e446d27f0413540597d))
+
+
+### Features
+
+* 支持使用名称不为 san 的包 ([b8ba4c2](https://github.com/baidu/san-ssr/commit/b8ba4c2b8d556bf4c2fb0b978678ed7a72ec17b9))
+
 # [4.8.0](https://github.com/baidu/san-ssr/compare/v4.7.1...v4.8.0) (2021-08-16)
 
 

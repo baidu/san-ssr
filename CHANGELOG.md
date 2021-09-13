@@ -1,3 +1,23 @@
+# [4.10.0-beta.1](https://github.com/baidu/san-ssr/compare/v4.9.1...v4.10.0-beta.1) (2021-09-13)
+
+
+### Bug Fixes
+
+* child components maybe undefined ([9bc2bdc](https://github.com/baidu/san-ssr/commit/9bc2bdcbefbe9b7634a13dcb01714c2d2af9cff1))
+* ChildComponetClass 可能会重复 ([b6a04e5](https://github.com/baidu/san-ssr/commit/b6a04e519189c4da516c9c02d674251ad6eaf933))
+* toSource render params ([bc2a6cd](https://github.com/baidu/san-ssr/commit/bc2a6cd5bb787c9b63ac93f541983e7807b2318c))
+
+
+### Features
+
+* customSSRFilePath 与 customComponentFilePath 参数中增加 tagName ([c04734c](https://github.com/baidu/san-ssr/commit/c04734c6a92a828916a54709bc6bb2a620e3e5f1))
+* e2e 测试时，输出到每个case中output下的随机目录中 ([66e1483](https://github.com/baidu/san-ssr/commit/66e1483aba125631ca19f4e1c7d3ad4286d827d1))
+* 删除原始组件定义代码中无用的子组件定义 ([2bff855](https://github.com/baidu/san-ssr/commit/2bff855e2339d1b9b43a680a971c982e7a282d50))
+* 支持渲染阶段使用手动传入的组件类 ([ac1d97e](https://github.com/baidu/san-ssr/commit/ac1d97ebb8701c536035845b3ae77f8d0873a33f))
+* 支持输入为 class 时，标记外部组件 ([0fe957d](https://github.com/baidu/san-ssr/commit/0fe957dc38c620be300b513889262294f5d1c00b))
+* 支持运行时改变子组件的路径 ([bf00b38](https://github.com/baidu/san-ssr/commit/bf00b3814ab51b7953ba80cdbadcbb240cf2e73f))
+* 收敛 renderer 的参数 ([a6deec8](https://github.com/baidu/san-ssr/commit/a6deec81986575d687daab64e39e937fe69a24ae))
+
 ## [4.9.1](https://github.com/baidu/san-ssr/compare/v4.9.0...v4.9.1) (2021-09-13)
 
 

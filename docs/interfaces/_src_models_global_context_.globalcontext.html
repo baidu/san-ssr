@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>ReturnStatement | san-ssr</title>
+	<title>GlobalContext | san-ssr</title>
 	<meta name="description" content="Documentation for san-ssr">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_src_ast_renderer_ast_dfn_.html">&quot;src/ast/renderer-ast-dfn&quot;</a>
+					<a href="../modules/_src_models_global_context_.html">&quot;src/models/global-context&quot;</a>
 				</li>
 				<li>
-					<a href="_src_ast_renderer_ast_dfn_.returnstatement.html">ReturnStatement</a>
+					<a href="_src_models_global_context_.globalcontext.html">GlobalContext</a>
 				</li>
 			</ul>
-			<h1>Class ReturnStatement</h1>
+			<h1>Interface GlobalContext</h1>
 		</div>
 	</div>
 </header>
@@ -73,14 +73,8 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">ReturnStatement</span>
+						<span class="target">GlobalContext</span>
 					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel">
-				<h3>Implements</h3>
-				<ul class="tsd-hierarchy">
-					<li><a href="../interfaces/_src_ast_renderer_ast_dfn_.syntaxnode.html" class="tsd-signature-type">SyntaxNode</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -88,69 +82,62 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Constructors</h3>
+							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_src_ast_renderer_ast_dfn_.returnstatement.html#constructor" class="tsd-kind-icon">constructor</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section ">
-							<h3>Properties</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_ast_renderer_ast_dfn_.returnstatement.html#kind" class="tsd-kind-icon">kind</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_src_ast_renderer_ast_dfn_.returnstatement.html#value" class="tsd-kind-icon">value</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_src_models_global_context_.globalcontext.html#customcomponentfilepath" class="tsd-kind-icon">custom<wbr>Component<wbr>File<wbr>Path</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-interface"><a href="_src_models_global_context_.globalcontext.html#customssrfilepath" class="tsd-kind-icon">customSSRFile<wbr>Path</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Constructors</h2>
-				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
-					<a name="constructor" class="tsd-anchor"></a>
-					<h3>constructor</h3>
-					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Return<wbr>Statement<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><a href="../modules/_src_ast_renderer_ast_dfn_.html#expression" class="tsd-signature-type">Expression</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_src_ast_renderer_ast_dfn_.returnstatement.html" class="tsd-signature-type">ReturnStatement</a></li>
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="customcomponentfilepath" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> custom<wbr>Component<wbr>File<wbr>Path</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">custom<wbr>Component<wbr>File<wbr>Path<span class="tsd-signature-symbol">(</span>info<span class="tsd-signature-symbol">: </span><a href="_src_models_global_context_.referinfo.html" class="tsd-signature-type">ReferInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../modules/_src_models_component_.html#componentclass" class="tsd-signature-type">ComponentClass</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/bed6afa/src/ast/renderer-ast-dfn.ts#L409">src/ast/renderer-ast-dfn.ts:409</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/bed6afa/src/models/global-context.ts#L7">src/models/global-context.ts:7</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>value: <a href="../modules/_src_ast_renderer_ast_dfn_.html#expression" class="tsd-signature-type">Expression</a></h5>
+									<h5>info: <a href="_src_models_global_context_.referinfo.html" class="tsd-signature-type">ReferInfo</a></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_src_ast_renderer_ast_dfn_.returnstatement.html" class="tsd-signature-type">ReturnStatement</a></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../modules/_src_models_component_.html#componentclass" class="tsd-signature-type">ComponentClass</a></h4>
 						</li>
 					</ul>
 				</section>
-			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="kind" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagReadonly">Readonly</span> kind</h3>
-					<div class="tsd-signature tsd-kind-icon">kind<span class="tsd-signature-symbol">:</span> <a href="../enums/_src_ast_renderer_ast_dfn_.syntaxkind.html#returnstatement" class="tsd-signature-type">ReturnStatement</a><span class="tsd-signature-symbol"> = SyntaxKind.ReturnStatement</span></div>
-					<aside class="tsd-sources">
-						<p>Implementation of <a href="../interfaces/_src_ast_renderer_ast_dfn_.syntaxnode.html">SyntaxNode</a>.<a href="../interfaces/_src_ast_renderer_ast_dfn_.syntaxnode.html#kind">kind</a></p>
-						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/bed6afa/src/ast/renderer-ast-dfn.ts#L409">src/ast/renderer-ast-dfn.ts:409</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-					<a name="value" class="tsd-anchor"></a>
-					<h3>value</h3>
-					<div class="tsd-signature tsd-kind-icon">value<span class="tsd-signature-symbol">:</span> <a href="../modules/_src_ast_renderer_ast_dfn_.html#expression" class="tsd-signature-type">Expression</a></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/bed6afa/src/ast/renderer-ast-dfn.ts#L411">src/ast/renderer-ast-dfn.ts:411</a></li>
-						</ul>
-					</aside>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-interface">
+					<a name="customssrfilepath" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> customSSRFile<wbr>Path</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-interface">
+						<li class="tsd-signature tsd-kind-icon">customSSRFile<wbr>Path<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">: </span><a href="_src_models_global_context_.referinfo.html" class="tsd-signature-type">ReferInfo</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/bed6afa/src/models/global-context.ts#L6">src/models/global-context.ts:6</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>path: <a href="_src_models_global_context_.referinfo.html" class="tsd-signature-type">ReferInfo</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -161,7 +148,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="../modules/_src_ast_renderer_ast_dfn_.html">&quot;src/ast/renderer-<wbr>ast-<wbr>dfn&quot;</a>
+						<a href="../modules/_src_models_global_context_.html">&quot;src/models/global-<wbr>context&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -169,22 +156,22 @@
 				<ul class="before-current">
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-class tsd-parent-kind-module">
-						<a href="_src_ast_renderer_ast_dfn_.returnstatement.html" class="tsd-kind-icon">Return<wbr>Statement</a>
+					<li class="current tsd-kind-interface tsd-parent-kind-module">
+						<a href="_src_models_global_context_.globalcontext.html" class="tsd-kind-icon">Global<wbr>Context</a>
 						<ul>
-							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_src_ast_renderer_ast_dfn_.returnstatement.html#constructor" class="tsd-kind-icon">constructor</a>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="_src_models_global_context_.globalcontext.html#customcomponentfilepath" class="tsd-kind-icon">custom<wbr>Component<wbr>File<wbr>Path</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_src_ast_renderer_ast_dfn_.returnstatement.html#kind" class="tsd-kind-icon">kind</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class">
-								<a href="_src_ast_renderer_ast_dfn_.returnstatement.html#value" class="tsd-kind-icon">value</a>
+							<li class=" tsd-kind-method tsd-parent-kind-interface">
+								<a href="_src_models_global_context_.globalcontext.html#customssrfilepath" class="tsd-kind-icon">customSSRFile<wbr>Path</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_src_models_global_context_.referinfo.html" class="tsd-kind-icon">Refer<wbr>Info</a>
+					</li>
 				</ul>
 			</nav>
 		</div>
@@ -203,16 +190,15 @@
 				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
 			</ul>
 			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
 				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 			</ul>
 		</div>
 	</div>

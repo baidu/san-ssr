@@ -35,13 +35,12 @@ export default class ToJSCompiler implements TargetCodeGenerator {
         if (options.bareFunctionBody) {
             emitter.writeLine('let exports = {}, module = { exports };')
             this.doCompileToSource(sourceFile, options, emitter)
-            emitter.writeLine('return module.exports(data, {noDataOutput});')
+            emitter.writeLine('return module.exports(data, info);')
         } else if (options.bareFunction) {
             emitter.writeFunction('render', ['data', 'info'], () => {
-                emitter.writeLine('let noDataOutput = info && info.noDataOutput;')
                 emitter.writeLine('let exports = {}, module = { exports };')
                 this.doCompileToSource(sourceFile, options, emitter)
-                emitter.writeLine('return module.exports(data, {noDataOutput});')
+                emitter.writeLine('return module.exports(data, info);')
             })
         } else {
             this.doCompileToSource(sourceFile, options, emitter)

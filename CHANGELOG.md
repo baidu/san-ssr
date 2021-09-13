@@ -1,3 +1,15 @@
+# [5.0.0-beta.1](https://github.com/baidu/san-ssr/compare/v4.10.0-beta.1...v5.0.0-beta.1) (2021-09-13)
+
+
+### Features
+
+* 收敛 renderer 的参数 ([21b13a3](https://github.com/baidu/san-ssr/commit/21b13a31c9e1bf84d608e5c8805db2a781172798))
+
+
+### BREAKING CHANGES
+
+* a6deec81986575d687daab64e39e937fe69a24ae
+
 # [4.10.0-beta.1](https://github.com/baidu/san-ssr/compare/v4.9.1...v4.10.0-beta.1) (2021-09-13)
 
 

@@ -1,3 +1,10 @@
+## [4.9.1](https://github.com/baidu/san-ssr/compare/v4.9.0...v4.9.1) (2021-09-13)
+
+
+### Bug Fixes
+
+* [#130](https://github.com/baidu/san-ssr/issues/130) ([462c62b](https://github.com/baidu/san-ssr/commit/462c62b5844dd6285f1fcbdcceb0933d89c24cba))
+
 # [4.9.0](https://github.com/baidu/san-ssr/compare/v4.8.0...v4.9.0) (2021-09-09)
 
 

@@ -84,6 +84,12 @@
 								<li class="tsd-kind-interface tsd-parent-kind-module"><a href="../interfaces/_src_runtime_resolver_.resolver.html" class="tsd-kind-icon">Resolver</a></li>
 							</ul>
 						</section>
+						<section class="tsd-index-section tsd-is-not-exported">
+							<h3>Type aliases</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-type-alias tsd-parent-kind-module tsd-is-not-exported"><a href="_src_runtime_resolver_.html#noderequire" class="tsd-kind-icon">node<wbr>Require</a></li>
+							</ul>
+						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
@@ -93,19 +99,32 @@
 					</div>
 				</section>
 			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+				<h2>Type aliases</h2>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module tsd-is-not-exported">
+					<a name="noderequire" class="tsd-anchor"></a>
+					<h3>node<wbr>Require</h3>
+					<div class="tsd-signature tsd-kind-icon">node<wbr>Require<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">typeof </span><span class="tsd-signature-type">require</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/bed6afa/src/runtime/resolver.ts#L33">src/runtime/resolver.ts:33</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
 					<a name="createresolver" class="tsd-anchor"></a>
 					<h3>create<wbr>Resolver</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">create<wbr>Resolver<span class="tsd-signature-symbol">(</span>exports<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{}</span>, require<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span>spec<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_runtime_resolver_.resolver.html" class="tsd-signature-type">Resolver</a></li>
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Resolver<span class="tsd-signature-symbol">(</span>exports<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{}</span>, require<span class="tsd-signature-symbol">: </span><a href="_src_runtime_resolver_.html#noderequire" class="tsd-signature-type">nodeRequire</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../interfaces/_src_runtime_resolver_.resolver.html" class="tsd-signature-type">Resolver</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/462c62b/src/runtime/resolver.ts#L30">src/runtime/resolver.ts:30</a></li>
+									<li>Defined in <a href="https://github.com/baidu/san-ssr/blob/bed6afa/src/runtime/resolver.ts#L35">src/runtime/resolver.ts:35</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -119,25 +138,7 @@
 									</ul>
 								</li>
 								<li>
-									<h5>require: <span class="tsd-signature-symbol">(</span>spec<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">any</span></h5>
-									<ul class="tsd-parameters">
-										<li class="tsd-parameter-signature">
-											<ul class="tsd-signatures tsd-kind-type-literal">
-												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>spec<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
-											</ul>
-											<ul class="tsd-descriptions">
-												<li class="tsd-description">
-													<h4 class="tsd-parameters-title">Parameters</h4>
-													<ul class="tsd-parameters">
-														<li>
-															<h5>spec: <span class="tsd-signature-type">string</span></h5>
-														</li>
-													</ul>
-													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
-												</li>
-											</ul>
-										</li>
-									</ul>
+									<h5>require: <a href="_src_runtime_resolver_.html#noderequire" class="tsd-signature-type">nodeRequire</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../interfaces/_src_runtime_resolver_.resolver.html" class="tsd-signature-type">Resolver</a></h4>
@@ -161,6 +162,9 @@
 				<ul class="before-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="../interfaces/_src_runtime_resolver_.resolver.html" class="tsd-kind-icon">Resolver</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_src_runtime_resolver_.html#noderequire" class="tsd-kind-icon">node<wbr>Require</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="_src_runtime_resolver_.html#createresolver" class="tsd-kind-icon">create<wbr>Resolver</a>

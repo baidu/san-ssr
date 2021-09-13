@@ -48,4 +48,5 @@ export function parseANodeProps (aNode: ANode) {
 export function visitANodeRecursively (aNode: ANode, visitor: (aNode: ANode) => void) {
     visitor(aNode)
     for (const child of aNode.children || []) visitANodeRecursively(child, visitor)
+    for (const els of aNode.elses || []) visitANodeRecursively(els, visitor)
 }

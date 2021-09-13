@@ -16,6 +16,7 @@ A clear and concise description of what the bug is.
 
 请提供一个可以复现的最小 case，例如：
 
+反解错误时：
 ```html
 <!DOCTYPE html>
 <html>
@@ -39,6 +40,21 @@ A clear and concise description of what the bug is.
     </script>
 </body>
 </html>
+```
+
+编译错误时：
+```javascript
+const san = require('san')
+
+const MyComponent = san.defineComponent({
+    template: '',
+    initData () {
+        return {
+        }
+    }
+})
+
+module.exports = MyComponent
 ```
 
 **Versions (please complete the following information):**

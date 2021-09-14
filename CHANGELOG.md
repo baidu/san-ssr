@@ -1,3 +1,10 @@
+# [5.0.0-beta.2](https://github.com/baidu/san-ssr/compare/v5.0.0-beta.1...v5.0.0-beta.2) (2021-09-14)
+
+
+### Bug Fixes
+
+* 手动传入 class 时，使用 Object.create 创建 instance ([dd37fe6](https://github.com/baidu/san-ssr/commit/dd37fe6891a6876fce4c0b949ee44dea4f424827))
+
 # [5.0.0-beta.1](https://github.com/baidu/san-ssr/compare/v4.10.0-beta.1...v5.0.0-beta.1) (2021-09-13)
 
 

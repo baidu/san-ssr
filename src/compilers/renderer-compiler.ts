@@ -98,7 +98,10 @@ export class RendererCompiler {
 
     private compileGenInstance (info: ComponentInfo) {
         if (this.options.useProvidedComponentClass) {
-            return DEF('instance', new BinaryExpression(I('ComponentClass'), '.', I('prototype')))
+            return DEF('instance', new FunctionCall(
+                BINARY(I('Object'), '.', I('create')),
+                [BINARY(I('ComponentClass'), '.', I('prototype'))]
+            ))
         }
 
         return DEF('instance', new CreateComponentInstance(info))

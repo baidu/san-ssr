@@ -1,3 +1,10 @@
+# [5.0.0-beta.3](https://github.com/baidu/san-ssr/compare/v5.0.0-beta.2...v5.0.0-beta.3) (2021-09-22)
+
+
+### Bug Fixes
+
+* 使用字符串常量作为 COMPONENT_REFERENCE ([7434587](https://github.com/baidu/san-ssr/commit/7434587974d3cd5e392ca37f34602503d911e0bc))
+
 # [5.0.0-beta.2](https://github.com/baidu/san-ssr/compare/v5.0.0-beta.1...v5.0.0-beta.2) (2021-09-14)
 
 

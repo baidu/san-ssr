@@ -1,7 +1,8 @@
 import Module from 'module'
 import { ComponentReference } from '../models/component-reference'
 
-export const COMPONENT_REFERENCE = Symbol('component-reference')
+// export const COMPONENT_REFERENCE = Symbol('component-reference')
+export const COMPONENT_REFERENCE = '__COMPONENT_REFERENCE__'
 
 const originRequire = Module.prototype.require
 

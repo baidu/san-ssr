@@ -95,6 +95,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         const aNodeWithoutIf = Object.assign({}, aNode)
 
         // 防止重新进入 compileIf：删掉 if 指令，再递归进入当前 aNode
+        // @ts-ignore
         delete aNodeWithoutIf.directives.if
 
         yield new If(sanExpr(ifDirective.value), this.compile(aNodeWithoutIf, false))
@@ -116,6 +117,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
             directives: { ...aNode.directives }
         }
         // 防止重新进入 compileFor
+        // @ts-ignore
         delete forElementANode.directives.for
 
         const { item, index, value } = aNode.directives.for

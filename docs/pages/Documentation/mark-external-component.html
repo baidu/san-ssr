@@ -1,0 +1,411 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>使用-markExternalComponent-特性进行编译 | san-ssr</title>
+	<meta name="description" content="Documentation for san-ssr">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../../assets/css/main.css">
+	<link rel="stylesheet" href="../../assets/css/pages.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../../assets/js/search.json" data-base="../..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../../index.html" class="title">san-ssr</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="quick-start.html">Documentation</a>
+				</li>
+				<li>
+					<a href="mark-external-component.html">使用-markExternalComponent-特性进行编译</a>
+				</li>
+			</ul>
+			<h1>使用-markExternalComponent-特性进行编译</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<p><strong>该特性目前为试验功能，未正式发版</strong></p>
+				<hr>
+				<a href="#san-ssr-输入的三种类型" id="san-ssr-输入的三种类型" style="color: inherit; text-decoration: none;">
+					<h1>San-SSR 输入的三种类型</h1>
+				</a>
+				<p>目前 San-SSR 在进行编译时，输入的类型有三种，分别为：</p>
+				<ol>
+					<li>Class</li>
+				</ol>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> {compileToSource} = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-ssr&#x27;</span>)
+<span class="hljs-keyword">const</span> MyComponent = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;path/to/mycomponent&#x27;</span>)
+compileToSource(MyCompoent)</code></pre>
+				<ol start="2">
+					<li>JavaScript string</li>
+				</ol>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> {compileToSource} = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-ssr&#x27;</span>)
+<span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;fs&#x27;</span>)
+<span class="hljs-keyword">const</span> MyComponentStr = fs.readFileSync(<span class="hljs-string">&#x27;path/to/mycomponent.js&#x27;</span>, <span class="hljs-string">&#x27;utf-8&#x27;</span>)
+compileToSource(MyCompoentStr)</code></pre>
+				<ol start="3">
+					<li>TypeScript string</li>
+				</ol>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> {compileToSource} = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-ssr&#x27;</span>)
+<span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;fs&#x27;</span>)
+<span class="hljs-keyword">const</span> MyComponentStr = fs.readFileSync(<span class="hljs-string">&#x27;path/to/mycomponent.ts&#x27;</span>, <span class="hljs-string">&#x27;utf-8&#x27;</span>)
+compileToSource(MyCompoentStr)</code></pre>
+				<p>由于输入 JavaScript 或 TypeScript 源码的形式，需要对输入字符串进行静态分析，因此不适合组件写法过于灵活过的情况。而以 Class 形式作为输入则可以解决上述问题。</p>
+				<a href="#class-作为输入存在的问题" id="class-作为输入存在的问题" style="color: inherit; text-decoration: none;">
+					<h1>Class 作为输入存在的问题</h1>
+				</a>
+				<p>当使用 Class 作为输入时，我们需要在编译阶段直接 require 该组件，因此所有依赖（子组件、工具库等）此时都需要是可被引用到的。</p>
+				<p>由于我们的组件可能分布于多个代码库，因此大多数情况下只能在生产环境中进行组件的编译工作。markExternalComponet 的引入就是为了解决该问题。</p>
+				<p>基于 San-SSR 最新提供的 markExternalComponet 特性，我们可以在本地进行组件的编译工作。</p>
+				<a href="#快速上手" id="快速上手" style="color: inherit; text-decoration: none;">
+					<h1>快速上手</h1>
+				</a>
+				<a href="#markexternalcomponent" id="markexternalcomponent" style="color: inherit; text-decoration: none;">
+					<h2>markExternalComponent</h2>
+				</a>
+				<p>新版本的 San-SSR 中，提供了一个 <code>markExternalComponent</code> 函数，使用该函数，可以提前标记外部组件。</p>
+				<p>假设我们有这样一个组件：</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> san = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san&#x27;</span>)
+<span class="hljs-keyword">const</span> Child = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./childA.san&#x27;</span>)
+
+<span class="hljs-keyword">const</span> MyComponent = san.defineComponent({
+    <span class="hljs-attr">components</span>: {
+        <span class="hljs-string">&#x27;x-l&#x27;</span>: Child
+    },
+    <span class="hljs-attr">template</span>: <span class="hljs-string">&#x27;&lt;div&gt;&lt;x-l/&gt;&lt;/div&gt;&#x27;</span>
+})
+
+<span class="hljs-built_in">module</span>.exports = MyComponent</code></pre>
+				<p>其中 childA 组件不在当前代码库中，它可能是一个单独维护的组件库等。此时我们可以在引用该组件类进行编译之前，对 <code>childA</code> 进行标记：</p>
+				<pre><code class="language-javascript">markExternalComponent({
+    isExternalComponent (specifier) {
+        <span class="hljs-keyword">if</span> (specifier === <span class="hljs-string">&#x27;./childA.san&#x27;</span>) {
+            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
+        }
+        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
+    }
+})
+<span class="hljs-keyword">const</span> {compileToSource} = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-ssr&#x27;</span>)
+<span class="hljs-keyword">const</span> MyComponent = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;path/to/mycomponent&#x27;</span>)
+compileToSource(MyCompoent)</code></pre>
+				<p>进行标记后，当我们 require <code>MyComponent</code> 时，将不会去加载 <code>childA</code>，我们可以在生产环境中单独提供 <code>childA</code>。</p>
+				<a href="#组件-id" id="组件-id" style="color: inherit; text-decoration: none;">
+					<h2>组件 id</h2>
+				</a>
+				<p>当我们从文件中引用一个组件时，需要两个信息来定位一个组件：</p>
+				<ol>
+					<li><code>specifier</code>：表示组件所在文件的路径，运行时会使用 <code>require(specifier)</code> 来加载该文件。因此它可以是一个相对路径、绝对路径或一个包名称。</li>
+					<li><code>id</code>：表示某个文件中的组件 id。</li>
+				</ol>
+				<p>例如：</p>
+				<pre><code class="language-javascript"><span class="hljs-comment">// specifier 为 &#x27;./childA.san&#x27;，id 为 ‘default’</span>
+<span class="hljs-keyword">const</span> Child = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./childA.san&#x27;</span>)</code></pre>
+				<pre><code class="language-javascript"><span class="hljs-comment">// specifier 为 &#x27;some-ui-module&#x27;，id 为 &#x27;compA&#x27; 和 &#x27;compB&#x27;</span>
+<span class="hljs-keyword">const</span> { compA, compB } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;some-ui-module&#x27;</span>)</code></pre>
+				<p>当我们使用 <code>markExternalComponent</code> 时，<strong>需要手动对子组件的 id 进行标记</strong>，否则 san-ssr 会默认以递增数字的形式对 id 进行命名。</p>
+				<p>例如：</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> san = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san&#x27;</span>)
+
+<span class="hljs-keyword">const</span> OtherComponent = san.defineComponent({
+    <span class="hljs-attr">id</span>: <span class="hljs-string">&#x27;default&#x27;</span>, <span class="hljs-comment">// id 标记</span>
+    <span class="hljs-attr">template</span>: <span class="hljs-string">&#x27;&lt;div&gt;&lt;/div&gt;&#x27;</span>
+})
+
+<span class="hljs-built_in">module</span>.exports = OtherComponent</code></pre>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> san = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san&#x27;</span>)
+
+<span class="hljs-keyword">const</span> ComponentA = san.defineComponent({
+    <span class="hljs-attr">id</span>: <span class="hljs-string">&#x27;ComponentA&#x27;</span>, <span class="hljs-comment">// id 标记</span>
+    <span class="hljs-attr">template</span>: <span class="hljs-string">&#x27;&lt;div&gt;&lt;/div&gt;&#x27;</span>
+})
+<span class="hljs-keyword">const</span> ComponentB = san.defineComponent({
+    <span class="hljs-attr">id</span>: <span class="hljs-string">&#x27;ComponentB&#x27;</span>, <span class="hljs-comment">// id 标记</span>
+    <span class="hljs-attr">template</span>: <span class="hljs-string">&#x27;&lt;div&gt;&lt;/div&gt;&#x27;</span>
+})
+
+<span class="hljs-built_in">module</span>.exports = {
+    ComponentA,
+    ComponentB
+}</code></pre>
+				<a href="#实现原理" id="实现原理" style="color: inherit; text-decoration: none;">
+					<h1>实现原理</h1>
+				</a>
+				<p>调用 <code>markExternalComponent</code> 时，San-SSR 会对 Node.js 中的 require 进行 hook，拦截子组件的加载。判断为子组件的 require 调用，San-SSR 会返回一个组件引用信息（specifier 和 id）。编译期间遇到组件引用信息，则会编译为外部组件的调用。</p>
+				<a href="#注意事项" id="注意事项" style="color: inherit; text-decoration: none;">
+					<h1>注意事项</h1>
+				</a>
+				<p>require 的 hook 使用的是类似 <a href="https://www.npmjs.com/package/require-in-the-middle">require-in-the-middle</a> 的方式，与 <a href="https://www.npmjs.com/package/jest">jest</a> 不兼容。</p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="label pp-nav pp-group">
+						<span>Documentation</span>
+					</li>
+					<li class=" pp-nav pp-page">
+						<a href="quick-start.html">快速开始</a>
+					</li>
+					<li class=" pp-nav pp-page">
+						<a href="migrate-from-san.html">从 san 迁移到 san ssr</a>
+					</li>
+					<li class=" pp-nav pp-page">
+						<a href="custom-components-path.html">渲染阶段自定义组件路径</a>
+					</li>
+					<li class=" pp-nav pp-page">
+						<a href="use-outside-component.html">手动传入组件类进行-<wbr>render</a>
+					</li>
+					<li class="current pp-nav pp-page">
+						<a href="mark-external-component.html">使用-<wbr>mark<wbr>External<wbr>Component-<wbr>特性进行编译</a>
+					</li>
+					<li class="label pp-nav pp-group">
+						<span>API</span>
+					</li>
+					<li class="globals  ">
+						<a href="../../globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_ast_js_ast_util_.html">&quot;src/ast/js-<wbr>ast-<wbr>util&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_ast_renderer_ast_dfn_.html">&quot;src/ast/renderer-<wbr>ast-<wbr>dfn&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_ast_renderer_ast_util_.html">&quot;src/ast/renderer-<wbr>ast-<wbr>util&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_ast_renderer_ast_walker_.html">&quot;src/ast/renderer-<wbr>ast-<wbr>walker&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_ast_san_ast_type_guards_.html">&quot;src/ast/san-<wbr>ast-<wbr>type-<wbr>guards&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_ast_san_ast_util_.html">&quot;src/ast/san-<wbr>ast-<wbr>util&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_ast_ts_ast_util_.html">&quot;src/ast/ts-<wbr>ast-<wbr>util&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_bin_ssr_.html">&quot;src/bin/ssr&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_compilers_anode_compiler_.html">&quot;src/compilers/anode-<wbr>compiler&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_compilers_element_compiler_.html">&quot;src/compilers/element-<wbr>compiler&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_compilers_renderer_compiler_.html">&quot;src/compilers/renderer-<wbr>compiler&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_compilers_renderer_options_.html">&quot;src/compilers/renderer-<wbr>options&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_compilers_san_expr_compiler_.html">&quot;src/compilers/san-<wbr>expr-<wbr>compiler&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_compilers_ts2js_.html">&quot;src/compilers/ts2js&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_fixtures_case_.html">&quot;src/fixtures/case&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_helpers_markexternalcomponent_.html">&quot;src/helpers/mark<wbr>External<wbr>Component&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_index_.html">&quot;src/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_models_component_.html">&quot;src/models/component&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_models_component_info_.html">&quot;src/models/component-<wbr>info&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_models_component_reference_.html">&quot;src/models/component-<wbr>reference&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_models_global_context_.html">&quot;src/models/global-<wbr>context&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_models_options_.html">&quot;src/models/options&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_models_renderer_.html">&quot;src/models/renderer&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_models_san_project_.html">&quot;src/models/san-<wbr>project&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_models_san_source_file_.html">&quot;src/models/san-<wbr>source-<wbr>file&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_models_target_code_generator_.html">&quot;src/models/target-<wbr>code-<wbr>generator&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_optimizers_bracket_to_dot_.html">&quot;src/optimizers/bracket-<wbr>to-<wbr>dot&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_optimizers_merge_literal_add_.html">&quot;src/optimizers/merge-<wbr>literal-<wbr>add&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_parsers_component_class_parser_.html">&quot;src/parsers/component-<wbr>class-<wbr>parser&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_parsers_javascript_san_parser_.html">&quot;src/parsers/javascript-<wbr>san-<wbr>parser&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_parsers_normalize_component_.html">&quot;src/parsers/normalize-<wbr>component&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_parsers_parse_template_.html">&quot;src/parsers/parse-<wbr>template&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_parsers_remove_modules_.html">&quot;src/parsers/remove-<wbr>modules&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_parsers_san_file_parser_.html">&quot;src/parsers/san-<wbr>file-<wbr>parser&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_parsers_tsconfig_.html">&quot;src/parsers/tsconfig&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_parsers_typescript_san_parser_.html">&quot;src/parsers/typescript-<wbr>san-<wbr>parser&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_runtime_create_helpers_.html">&quot;src/runtime/create-<wbr>helpers&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_runtime_helpers_.html">&quot;src/runtime/helpers&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_runtime_resolver_.html">&quot;src/runtime/resolver&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_runtime_san_ssr_data_.html">&quot;src/runtime/san-<wbr>ssr-<wbr>data&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_runtime_underscore_.html">&quot;src/runtime/underscore&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_target_js_compilers_compile_options_.html">&quot;src/target-<wbr>js/compilers/compile-<wbr>options&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_target_js_compilers_component_compiler_.html">&quot;src/target-<wbr>js/compilers/component-<wbr>compiler&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_target_js_index_.html">&quot;src/target-<wbr>js/index&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_target_js_js_emitter_.html">&quot;src/target-<wbr>js/js-<wbr>emitter&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_utils_buffer_.html">&quot;src/utils/buffer&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_utils_case_.html">&quot;src/utils/case&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_utils_dom_util_.html">&quot;src/utils/dom-<wbr>util&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_utils_emitter_.html">&quot;src/utils/emitter&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_utils_fs_.html">&quot;src/utils/fs&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_utils_id_generator_.html">&quot;src/utils/id-<wbr>generator&quot;</a>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="../../modules/_src_utils_lang_.html">&quot;src/utils/lang&quot;</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../../assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="../../assets/js/search.json"><' + '/script>');</script>
+</body>
+</html>

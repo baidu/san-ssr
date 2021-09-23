@@ -1,0 +1,30 @@
+{
+    "groups": [
+        {
+            "title": "Documentation",
+            "source": "./manual",
+            "pages": [
+                {
+                    "title": "快速开始",
+                    "source": "quick-start.md"
+                },
+                {
+                    "title": "从 san 迁移到 san ssr",
+                    "source": "migrate-from-san.md"
+                },
+                {
+                    "title": "渲染阶段自定义组件路径",
+                    "source": "custom-components-path.md"
+                },
+                {
+                    "title": "手动传入组件类进行-render",
+                    "source": "use-outside-component.md"
+                },
+                {
+                    "title": "使用-markExternalComponent-特性进行编译",
+                    "source": "mark-external-component.md"
+                }
+            ]
+        }
+    ]
+}

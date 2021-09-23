@@ -21,7 +21,7 @@
   },
   "scripts": {
     "lint": "eslint '**/*.ts' '**/*.js'",
-    "docs": "typedoc --out docs src && touch docs/.nojekyll",
+    "docs": "typedoc --theme pages-plugin --pages ./manual/config.json --out docs src && touch docs/.nojekyll",
     "build": "tsc && chmod a+x dist/bin/*",
     "watch": "tsc --watch",
     "unit": "jest test/unit",
@@ -85,7 +85,8 @@
     "semantic-release": "^17.4.4",
     "source-map-support": "^0.5.19",
     "swig-templates": "^2.0.3",
-    "typedoc": "^0.17.8"
+    "typedoc": "^0.17.8",
+    "typedoc-plugin-pages": "^1.1.0"
   },
   "dependencies": {
     "@types/estree": "0.0.45",

@@ -97,14 +97,16 @@ export class ElementCompiler {
         if (prop.name === 'checked' && tagName === 'input' && valueProp && inputType) {
             switch (inputType.expr.value) {
             case 'checkbox':
-                return yield new If(
+                yield new If(
                     new ArrayIncludes(sanExpr(prop.expr), sanExpr(valueProp.expr)),
                     [createHTMLLiteralAppend(' checked')]
                 )
+                return
             case 'radio':
-                return yield createIfStrictEqual(sanExpr(prop.expr), sanExpr(valueProp.expr), [
+                yield createIfStrictEqual(sanExpr(prop.expr), sanExpr(valueProp.expr), [
                     createHTMLLiteralAppend(' checked')
                 ])
+                return
             }
         }
         if (this.isLiteral(prop.expr)) {
@@ -171,7 +173,8 @@ export class ElementCompiler {
 
         const htmlDirective = aNode.directives.html
         if (htmlDirective) {
-            return yield createHTMLExpressionAppend(sanExpr(htmlDirective.value, OutputType.HTML))
+            yield createHTMLExpressionAppend(sanExpr(htmlDirective.value, OutputType.HTML))
+            return
         }
         // 只有 ATextNode 没有 children 属性，它的编译走了 ANodeCompiler#compileText()，不会进入这里
         for (const aNodeChild of aNode.children!) yield * this.aNodeCompiler.compile(aNodeChild, false)

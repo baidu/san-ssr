@@ -134,17 +134,29 @@ function createFromPrototype (proto: object) {
 }
 
 function createInstanceFromClass (Clazz: ComponentClass) {
+    // method
+    // compiled inited initData
     const inited = Clazz.prototype.inited
-    const computed = Clazz['computed']
-    const template = Clazz.prototype.template
     delete Clazz.prototype.inited
-    delete Clazz['computed']
+    const initData = Clazz.prototype.initData
+    delete Clazz.prototype.initData
+
+    // property
+    // template filters components computed trimWhitespace delimiters
+    const template = Clazz.template || Clazz.prototype.template
+    delete Clazz.components
+    delete Clazz.prototype.components
+    const computed = Clazz.computed || Clazz.prototype.computed
+    delete Clazz.computed
+    delete Clazz.prototype.computed
+
     Clazz.prototype.template = '<div></div>'
 
     const instance = new Clazz()
     if (inited) Clazz.prototype.inited = inited
-    if (computed) instance['computed'] = Clazz.prototype.computed = Clazz['computed'] = computed
+    if (initData) Clazz.prototype.initData = initData
     Clazz.prototype.template = template
+    if (computed) instance['computed'] = Clazz.prototype.computed = Clazz.computed = computed
     return instance
 }
 
@@ -174,6 +186,38 @@ function handleError (e: Error, instance: SanComponent<{}>, info: string) {
     throw e
 }
 
+function mergeChildSlots (childSlots: {[name: string]: Function}) {
+    const sourceSlots = {
+        named: {} as {[name: string]: boolean},
+        noname: false
+    }
+    Object.keys(childSlots).forEach(key => {
+        if (key === '') {
+            sourceSlots.noname = true
+            return
+        }
+
+        sourceSlots.named[key] = true
+    })
+
+    return sourceSlots
+}
+
 export const _ = {
-    output, createInstanceFromClass, escapeHTML, boolAttrFilter, attrFilter, classFilter, styleFilter, xstyleFilter, xclassFilter, createFromPrototype, getRootCtx, iterate, callFilter, callComputed, handleError
+    output,
+    createInstanceFromClass,
+    escapeHTML,
+    boolAttrFilter,
+    attrFilter,
+    classFilter,
+    styleFilter,
+    xstyleFilter,
+    xclassFilter,
+    createFromPrototype,
+    getRootCtx,
+    iterate,
+    callFilter,
+    callComputed,
+    handleError,
+    mergeChildSlots
 }

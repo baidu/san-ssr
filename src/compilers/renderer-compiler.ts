@@ -116,6 +116,13 @@ export class RendererCompiler {
                 BINARY(I('instance'), '.', I('data')),
                 NEW(I('SanSSRData'), [I('data'), I('instance')])
             ),
+            ASSIGN(
+                BINARY(I('instance'), '.', I('sourceSlots')),
+                new FunctionCall(
+                    BINARY(I('_'), '.', I('mergeChildSlots')),
+                    [I('slots')]
+                )
+            ),
             new If(
                 I('parentCtx'), [ASSIGN(
                     BINARY(I('instance'), '.', I('parentComponent')),

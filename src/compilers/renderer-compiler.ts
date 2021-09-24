@@ -87,6 +87,11 @@ export class RendererCompiler {
             ))
         }
 
+        body.push(ASSIGN(
+            BINARY(I('instance'), '.', BINARY(I('lifeCycle'), '.', I('inited'))),
+            I('true')
+        ))
+
         body.push(DEF('html', L('')))
         body.push(ASSIGN(I('parentCtx'), I('ctx')))
         const aNodeCompiler = new ANodeCompiler(info, !!this.options.ssrOnly, this.id, this.options.useProvidedComponentClass)
@@ -122,6 +127,13 @@ export class RendererCompiler {
                     BINARY(I('_'), '.', I('mergeChildSlots')),
                     [I('slots')]
                 )
+            ),
+            ASSIGN(
+                BINARY(I('instance'), '.', I('lifeCycle')),
+                new MapLiteral([
+                    [I('compiled'), I('true')],
+                    [I('inited'), I('false')]
+                ])
             ),
             new If(
                 I('parentCtx'), [ASSIGN(

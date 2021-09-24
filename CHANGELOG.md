@@ -1,3 +1,17 @@
+# [5.0.0-beta.4](https://github.com/baidu/san-ssr/compare/v5.0.0-beta.3...v5.0.0-beta.4) (2021-09-24)
+
+
+### Bug Fixes
+
+* computed 应该在 inited 之前调用 ([1b3ac22](https://github.com/baidu/san-ssr/commit/1b3ac22a237b23b41123eb6a7db29634acb9e528))
+* 修改 createInstanceFromClass，补全所有属性。 ([1388f06](https://github.com/baidu/san-ssr/commit/1388f068b4f7dcdafaacc65824ef3a8e75985005))
+
+
+### Features
+
+* 增加 lifeCycle 属性 ([7d18e6f](https://github.com/baidu/san-ssr/commit/7d18e6f8727c776660e3f86c8de359428fa02d71))
+* 组件实例中增加 sourceSlots 属性。 ([ef57823](https://github.com/baidu/san-ssr/commit/ef578235fe9c2115b74ff6e928bfa2299b5d076d))
+
 # [5.0.0-beta.3](https://github.com/baidu/san-ssr/compare/v5.0.0-beta.2...v5.0.0-beta.3) (2021-09-22)
 
 

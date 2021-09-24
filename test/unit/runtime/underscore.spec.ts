@@ -58,6 +58,16 @@ describe('utils/underscore', function () {
             expect(_.createInstanceFromClass(MyComponent)).toHaveProperty('inited')
             expect(inited).not.toHaveBeenCalled()
         })
+        it('should not call initData', () => {
+            const mockFn = jest.fn()
+            class MyComponent extends Component {
+                initData () {
+                    mockFn()
+                }
+            }
+            expect(_.createInstanceFromClass(MyComponent)).toHaveProperty('initData')
+            expect(mockFn).not.toHaveBeenCalled()
+        })
         it('should not call computed', () => {
             const foo = jest.fn()
             class MyComponent extends Component {

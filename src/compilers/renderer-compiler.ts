@@ -69,6 +69,11 @@ export class RendererCompiler {
             body.push(...this.emitInitData())
         }
 
+        // calc computed
+        for (const name of info.getComputedNames()) {
+            body.push(ASSIGN(BINARY(I('data'), '[]', L(name)), new ComputedCall(name)))
+        }
+
         // call inited
         if (info.hasMethod('inited')) {
             body.push(createTryStatement(
@@ -80,11 +85,6 @@ export class RendererCompiler {
                     L('hook:inited')
                 ]))]
             ))
-        }
-
-        // calc computed
-        for (const name of info.getComputedNames()) {
-            body.push(ASSIGN(BINARY(I('data'), '[]', L(name)), new ComputedCall(name)))
         }
 
         body.push(DEF('html', L('')))

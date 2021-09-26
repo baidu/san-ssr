@@ -322,6 +322,11 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
             aNode.props.map(prop => [L(camelCase(prop.name)), sanExpr(prop.expr)])
         )
         const bindDirective = aNode.directives.bind
-        return bindDirective ? new MapAssign(sanExpr(bindDirective.value), [propData]) : propData
+        return bindDirective
+            ? new MapAssign(
+                BINARY(sanExpr(bindDirective.value), '||', new MapLiteral([])),
+                [propData]
+            )
+            : propData
     }
 }

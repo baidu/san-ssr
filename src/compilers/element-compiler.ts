@@ -35,13 +35,16 @@ export class ElementCompiler {
     /**
      * 编译元素标签头
      */
-    * tagStart (aNode: ANode) {
+    * tagStart (aNode: ANode, dynamicTagName?: string) {
         const props = aNode.props
         const bindDirective = aNode.directives.bind
         const tagName = aNode.tagName
 
         // element start '<'
-        if (tagName) {
+        if (dynamicTagName) {
+            yield createHTMLLiteralAppend('<')
+            yield createHTMLExpressionAppend(I(dynamicTagName))
+        } else if (tagName) {
             yield createHTMLLiteralAppend('<' + tagName)
         } else {
             yield createHTMLLiteralAppend('<')
@@ -140,10 +143,14 @@ export class ElementCompiler {
     /**
      * 编译元素闭合
      */
-    * tagEnd (aNode: ANode) {
+    * tagEnd (aNode: ANode, dynamicTagName?: string) {
         const tagName = aNode.tagName
 
-        if (tagName) {
+        if (dynamicTagName) {
+            yield createHTMLLiteralAppend('</')
+            yield createHTMLExpressionAppend(I(dynamicTagName))
+            yield createHTMLLiteralAppend('>')
+        } else if (tagName) {
             if (!autoCloseTags.has(tagName)) {
                 yield createHTMLLiteralAppend('</' + tagName + '>')
             }

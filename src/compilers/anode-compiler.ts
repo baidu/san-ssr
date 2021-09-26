@@ -47,19 +47,16 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         if (TypeGuards.isASlotNode(aNode)) return this.compileSlot(aNode)
         if (TypeGuards.isATemplateNode(aNode)) return this.compileTemplate(aNode)
         if (TypeGuards.isAFragmentNode(aNode)) return this.compileFragment(aNode)
+        if (TypeGuards.isADynamicNode(aNode)) return this.compileDynamic(aNode, isRootElement)
 
         const childComponentReference = this.generateRef(aNode)
         if (childComponentReference) {
             return this.compileComponent(aNode, childComponentReference, isRootElement)
         }
-        return this.compileElement(aNode, isRootElement)
+        return this.compileElement(aNode, undefined, isRootElement)
     }
 
     private generateRef (aNode: ANode) {
-        if (aNode.directives.is) {
-            const refs = BINARY(I('ctx'), '.', I('refs'))
-            return BINARY(refs, '[]', sanExpr(aNode.directives.is.value))
-        }
         if (this.componentInfo.childComponents.has(aNode.tagName)) {
             return new ComponentReferenceLiteral(this.componentInfo.childComponents.get(aNode.tagName)!)
         }
@@ -88,6 +85,17 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         if (TypeGuards.isATextNode(aNode.children[aNode.children.length - 1]) && !this.ssrOnly && !this.inScript) {
             yield createHTMLLiteralAppend('<!--/s-frag-->')
         }
+    }
+
+    private * compileDynamic (aNode: ANode, isRootElement: boolean) {
+        const dynamicTagName = this.id.next('dynamicTagName')
+        yield DEF(dynamicTagName, sanExpr(aNode.directives.is.value))
+        const refs = BINARY(I('ctx'), '.', I('refs'))
+        yield new If(
+            BINARY(refs, '[]', I(dynamicTagName)),
+            this.compileComponent(aNode, BINARY(refs, '[]', I(dynamicTagName)), isRootElement)
+        )
+        yield new Else(this.compileElement(aNode, dynamicTagName, isRootElement))
     }
 
     private * compileIf (aNode: AIfNode): Generator<Statement> {
@@ -167,8 +175,8 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         yield createHTMLExpressionAppend(new SlotRenderCall(render, [I('parentCtx'), slotData]))
     }
 
-    private * compileElement (aNode: ANode, isRootElement: boolean): Generator<Statement> {
-        yield * this.elementCompiler.tagStart(aNode)
+    private * compileElement (aNode: ANode, dynamicTagName: string | undefined = undefined, isRootElement: boolean): Generator<Statement> {
+        yield * this.elementCompiler.tagStart(aNode, dynamicTagName)
         if (aNode.tagName === 'script') this.inScript = true
         if (isRootElement && !this.ssrOnly && !this.inScript) {
             yield new If(UNARY('!', I('noDataOutput')), this.createDataComment())
@@ -176,7 +184,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
 
         yield * this.elementCompiler.inner(aNode)
         this.inScript = false
-        yield * this.elementCompiler.tagEnd(aNode)
+        yield * this.elementCompiler.tagEnd(aNode, dynamicTagName)
     }
 
     private createDataComment () {

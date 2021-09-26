@@ -11,8 +11,8 @@ import { autoCloseTags } from '../utils/dom-util'
 import { ANodeCompiler } from './anode-compiler'
 import { ExprNode, ANodeProperty, Directive, ANode } from 'san'
 import { isExprNumberNode, isExprStringNode, isExprBoolNode } from '../ast/san-ast-type-guards'
-import { createIfStrictEqual, createIfNotNull, createDefaultValue, createHTMLLiteralAppend, createHTMLExpressionAppend, NULL, L, I, ASSIGN, DEF } from '../ast/renderer-ast-util'
-import { HelperCall, ArrayIncludes, Else, Foreach, If } from '../ast/renderer-ast-dfn'
+import { createIfStrictEqual, createIfNotNull, createDefaultValue, createHTMLLiteralAppend, createHTMLExpressionAppend, NULL, L, I, ASSIGN, DEF, BINARY } from '../ast/renderer-ast-util'
+import { HelperCall, ArrayIncludes, Else, Foreach, If, MapLiteral } from '../ast/renderer-ast-dfn'
 import { sanExpr, OutputType } from './san-expr-compiler'
 
 const BOOL_ATTRIBUTES = ['readonly', 'disabled', 'multiple', 'checked']
@@ -125,7 +125,7 @@ export class ElementCompiler {
 
     private * compileBindProperties (tagName: string, bindDirective: Directive<any>) {
         const bindProps = this.id.next('bindProps')
-        yield DEF(bindProps, sanExpr(bindDirective.value))
+        yield DEF(bindProps, BINARY(sanExpr(bindDirective.value), '||', new MapLiteral([])))
 
         const key = I('key')
         const value = I('value')

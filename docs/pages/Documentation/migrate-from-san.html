@@ -74,7 +74,7 @@
 				<p>本文档介绍对于已经在使用 san 进行 ssr 的代码，如何迁移到 san-ssr。
 				ssr 接口也是兼容 san 的，所以理论上 san 组件代码不需要迁移，编译代码则需要少量工作</p>
 				<ol>
-					<li>最新的 san-ssr 只能在 <a href="mailto:&#115;&#x61;&#110;&#x40;&#x33;&#46;&#56;&#46;&#48;">&#115;&#x61;&#110;&#x40;&#x33;&#46;&#56;&#46;&#48;</a> 及以上进行工作，建议先把 san 升至最新版本。如果要在其他版本上使用，请参考 <a href="https://github.com/searchfe/san-ssr/blob/master/README.md">README</a> 中的“安装”一节。</li>
+					<li>最新的 san-ssr 只能在 <a href="mailto:&#115;&#x61;&#110;&#x40;&#51;&#46;&#56;&#46;&#48;">&#115;&#x61;&#110;&#x40;&#51;&#46;&#56;&#46;&#48;</a> 及以上进行工作，建议先把 san 升至最新版本。如果要在其他版本上使用，请参考 <a href="https://github.com/searchfe/san-ssr/blob/master/README.md">README</a> 中的“安装”一节。</li>
 					<li>编译组件代码到 ssr 代码的地方，把 <code>require(&#39;san&#39;)</code> 改为 <code>require(&#39;san-ssr&#39;)</code>，<code>compileToSource</code> 和 <code>compileToRenderer</code> 是兼容于 san 的。</li>
 				</ol>
 				<p>至此项目应该已经可以跑起来了。要发挥 san-ssr 的最大潜力，后续可以做以下改动：</p>

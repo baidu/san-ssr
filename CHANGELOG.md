@@ -1,3 +1,11 @@
+# [5.0.0-beta.6](https://github.com/baidu/san-ssr/compare/v5.0.0-beta.5...v5.0.0-beta.6) (2021-09-26)
+
+
+### Bug Fixes
+
+* compile call expression twice got error ([15b950f](https://github.com/baidu/san-ssr/commit/15b950f1c97451f55d5471178ec4def860a8c0cc))
+* compile call expression twice got error ([916550e](https://github.com/baidu/san-ssr/commit/916550e7aa197c292c36ce6f9577edf547956ed2))
+
 # [5.0.0-beta.5](https://github.com/baidu/san-ssr/compare/v5.0.0-beta.4...v5.0.0-beta.5) (2021-09-26)
 
 

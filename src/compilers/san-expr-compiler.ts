@@ -81,7 +81,7 @@ export function dataAccess (accessorExpr: ExprAccessorNode, outputType: OutputTy
 
 // 生成调用表达式代码
 function callExpr (callExpr: ExprCallNode, outputType: OutputType) {
-    const paths = callExpr.name.paths
+    const paths = callExpr.name.paths.slice()
     let fn = new BinaryExpression(I('ctx'), '.', I('instance'))
     fn = new BinaryExpression(fn, '.', I(paths.shift()!.value))
     for (const path of paths) {

@@ -82,6 +82,10 @@ export function isAIfNode (aNode: ANode): aNode is AIfNode {
     return !!aNode.directives.if
 }
 
+export function isADynamicNode (aNode: ANode): aNode is ANode {
+    return !!aNode.directives.is
+}
+
 export function isAForNode (aNode: ANode): aNode is AForNode {
     return !!aNode.directives.for
 }

@@ -1,3 +1,15 @@
+# [5.0.0-beta.5](https://github.com/baidu/san-ssr/compare/v5.0.0-beta.4...v5.0.0-beta.5) (2021-09-26)
+
+
+### Bug Fixes
+
+* s-bind error if value is null or undefined [#135](https://github.com/baidu/san-ssr/issues/135) ([a4efe27](https://github.com/baidu/san-ssr/commit/a4efe27023b1848bb59cc6c1460d70fb121881c3))
+
+
+### Features
+
+* support dynamic tagName as normal html tags [#134](https://github.com/baidu/san-ssr/issues/134) ([729fee0](https://github.com/baidu/san-ssr/commit/729fee0e9e35a1025f02cf6179e8cb0fad2b442a))
+
 # [5.0.0-beta.4](https://github.com/baidu/san-ssr/compare/v5.0.0-beta.3...v5.0.0-beta.4) (2021-09-24)
 
 

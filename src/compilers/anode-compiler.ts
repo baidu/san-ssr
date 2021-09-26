@@ -91,6 +91,8 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         const dynamicTagName = this.id.next('dynamicTagName')
         yield DEF(dynamicTagName, sanExpr(aNode.directives.is.value))
         const refs = BINARY(I('ctx'), '.', I('refs'))
+
+        // 这里会对 aNode 编译两次，期间一定不能有对 aNode 的修改，否则第二次会有问题
         yield new If(
             BINARY(refs, '[]', I(dynamicTagName)),
             this.compileComponent(aNode, BINARY(refs, '[]', I(dynamicTagName)), isRootElement)

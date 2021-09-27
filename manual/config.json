@@ -9,9 +9,23 @@
                     "source": "quick-start.md"
                 },
                 {
-                    "title": "从 san 迁移到 san ssr",
-                    "source": "migrate-from-san.md"
+                    "title": "预编译组件代码",
+                    "source": "./precompile.md"
                 },
+                {
+                    "title": "支持的三种输入方式及区别",
+                    "source": "types-of-input.md"
+                },
+                {
+                    "title": "生命周期及实例属性",
+                    "source": "lifecycle.md"
+                }
+            ]
+        },
+        {
+            "title": "Guides",
+            "source": "./manual",
+            "pages": [
                 {
                     "title": "渲染阶段自定义组件路径",
                     "source": "custom-components-path.md"

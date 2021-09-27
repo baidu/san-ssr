@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>快速开始 | san-ssr</title>
+	<title>渲染阶段自定义组件路径 | san-ssr</title>
 	<meta name="description" content="Documentation for san-ssr">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../../assets/css/main.css">
@@ -57,13 +57,13 @@
 					<a href="../../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="quick-start.html">Documentation</a>
+					<a href="custom-components-path.html">Guides</a>
 				</li>
 				<li>
-					<a href="quick-start.html">快速开始</a>
+					<a href="custom-components-path.html">渲染阶段自定义组件路径</a>
 				</li>
 			</ul>
-			<h1>快速开始</h1>
+			<h1>渲染阶段自定义组件路径</h1>
 		</div>
 	</div>
 </header>
@@ -71,43 +71,38 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<a href="#安装" id="安装" style="color: inherit; text-decoration: none;">
-					<h1>安装</h1>
+				<p><strong>该特性目前为试验功能，未正式发版</strong></p>
+				<hr>
+				<p>有时我们希望在线上执行阶段使用不同的组件。例如有两个版本的组件库，希望通过抽样变量决定使用其中的某个版本。</p>
+				<p>San-SSR 提供了 <code>customSSRFilePath</code> API 来支持上述场景。</p>
+				<a href="#编译阶段" id="编译阶段" style="color: inherit; text-decoration: none;">
+					<h1>编译阶段</h1>
 				</a>
-				<pre><code class="language-bash">npm i san@latest san-ssr@latest</code></pre>
-				<p>san-ssr 需要 san 提供的模板字符串解析和 TypeScript 类型，因此对 san 的版本有依赖。你需要安装对应版本的 san 和 san-ssr。</p>
-				<p>san-ssr 支持的 san 版本声明在 <code>peerDependencies</code> 里，因此只要能安装成功就能正确工作。一般的建议如下：</p>
-				<ul>
-					<li><p>如果是新项目，建议使用 <code>npm i san@latest san-ssr@latest</code></p>
+				<ol>
+					<li><p>输入为代码字符串</p>
+						<p> 此时不需要其他额外操作。</p>
 					</li>
-					<li><p>否则从 san-ssr 最新版本开始降主版本号找到能安装成功的版本。</p>
+					<li><p>输入为组件 Class</p>
+						<p> 由于我们需要提前 require 组件代码得到 Class， 之后传入 San-SSR 进行编译，因此需要使用 <a href="./%E4%BD%BF%E7%94%A8-markExternalComponent-%E7%89%B9%E6%80%A7%E8%BF%9B%E8%A1%8C%E7%BC%96%E8%AF%91.md">markExternalComponent</a> 特性提前标记出外部组件。</p>
 					</li>
-				</ul>
-				<blockquote>
-					<p>更多讨论请参考：<a href="https://github.com/baidu/san/issues/441#issuecomment-550260372">baidu/san/issues/441</a></p>
-				</blockquote>
-				<a href="#渲染一个-san-组件" id="渲染一个-san-组件" style="color: inherit; text-decoration: none;">
-					<h1>渲染一个 San 组件</h1>
+				</ol>
+				<a href="#运行阶段" id="运行阶段" style="color: inherit; text-decoration: none;">
+					<h1>运行阶段</h1>
 				</a>
-				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { SanProject } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-ssr&#x27;</span>)
-<span class="hljs-keyword">const</span> san = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san&#x27;</span>)
-<span class="hljs-keyword">const</span> MyComponent = san.defineComponent({
-    <span class="hljs-attr">template</span>: <span class="hljs-string">`&lt;div&gt;Hello {{ name }}&lt;/div&gt;`</span>
-})
+				<p>在调用 render 函数进行渲染时，传入 <code>customSSRFilePath</code>：</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> render = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./output&#x27;</span>)
 
-<span class="hljs-comment">// SanProject 类提供了你会用到的所有接口</span>
-<span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
-
-<span class="hljs-comment">// 输入是组件对象</span>
-<span class="hljs-comment">// 输出是一个 render 函数。该函数接受数据对象作为参数，返回 HTML 字符串。</span>
-<span class="hljs-keyword">const</span> render = project.compileToRenderer(MyComponent)
-
-<span class="hljs-keyword">const</span> html = render({<span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;San&#x27;</span>})</code></pre>
-				<p>参考内容：</p>
-				<ul>
-					<li>API 文档：<a href="https://baidu.github.io/san-ssr/classes/_src_models_san_project_.sanproject.html">SanProject</a></li>
-					<li>/demo 下的示例项目。</li>
-				</ul>
+<span class="hljs-keyword">const</span> html = render({}, {
+    <span class="hljs-attr">parentCtx</span>: {
+        <span class="hljs-attr">context</span>: {
+            customSSRFilePath ({ specifier, id, tagName }) {
+                <span class="hljs-keyword">if</span> (specifier.endsWith(<span class="hljs-string">&#x27;childA.san&#x27;</span>)) {
+                    <span class="hljs-keyword">return</span> specifier.replace(<span class="hljs-string">&#x27;childA&#x27;</span>, <span class="hljs-string">&#x27;childB&#x27;</span>)
+                }
+            }
+        }
+    }
+})</code></pre>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -116,29 +111,29 @@
 					<li class="label pp-nav pp-group">
 						<span>Documentation</span>
 					</li>
-					<li class="current pp-nav pp-page">
-						<a href="quick-start.html">快速开始</a>
+					<li class=" pp-nav pp-page">
+						<a href="../Documentation/quick-start.html">快速开始</a>
 					</li>
 					<li class=" pp-nav pp-page">
-						<a href="precompile.html">预编译组件代码</a>
+						<a href="../Documentation/precompile.html">预编译组件代码</a>
 					</li>
 					<li class=" pp-nav pp-page">
-						<a href="types-of-input.html">支持的三种输入方式及区别</a>
+						<a href="../Documentation/types-of-input.html">支持的三种输入方式及区别</a>
 					</li>
 					<li class=" pp-nav pp-page">
-						<a href="lifecycle.html">生命周期及实例属性</a>
+						<a href="../Documentation/lifecycle.html">生命周期及实例属性</a>
 					</li>
 					<li class="label pp-nav pp-group">
 						<span>Guides</span>
 					</li>
-					<li class=" pp-nav pp-page">
-						<a href="../Guides/custom-components-path.html">渲染阶段自定义组件路径</a>
+					<li class="current pp-nav pp-page">
+						<a href="custom-components-path.html">渲染阶段自定义组件路径</a>
 					</li>
 					<li class=" pp-nav pp-page">
-						<a href="../Guides/use-outside-component.html">手动传入组件类进行-<wbr>render</a>
+						<a href="use-outside-component.html">手动传入组件类进行-<wbr>render</a>
 					</li>
 					<li class=" pp-nav pp-page">
-						<a href="../Guides/mark-external-component.html">使用-<wbr>mark<wbr>External<wbr>Component-<wbr>特性进行编译</a>
+						<a href="mark-external-component.html">使用-<wbr>mark<wbr>External<wbr>Component-<wbr>特性进行编译</a>
 					</li>
 					<li class="label pp-nav pp-group">
 						<span>API</span>

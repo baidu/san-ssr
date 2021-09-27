@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>使用-markExternalComponent-特性进行编译 | san-ssr</title>
+	<title>支持的三种输入方式及区别 | san-ssr</title>
 	<meta name="description" content="Documentation for san-ssr">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../../assets/css/main.css">
@@ -60,10 +60,10 @@
 					<a href="quick-start.html">Documentation</a>
 				</li>
 				<li>
-					<a href="mark-external-component.html">使用-markExternalComponent-特性进行编译</a>
+					<a href="types-of-input.html">支持的三种输入方式及区别</a>
 				</li>
 			</ul>
-			<h1>使用-markExternalComponent-特性进行编译</h1>
+			<h1>支持的三种输入方式及区别</h1>
 		</div>
 	</div>
 </header>
@@ -71,117 +71,36 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<p><strong>该特性目前为试验功能，未正式发版</strong></p>
-				<hr>
-				<a href="#san-ssr-输入的三种类型" id="san-ssr-输入的三种类型" style="color: inherit; text-decoration: none;">
-					<h1>San-SSR 输入的三种类型</h1>
-				</a>
-				<p>目前 San-SSR 在进行编译时，输入的类型有三种，分别为：</p>
-				<ol>
-					<li>Class</li>
-				</ol>
-				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> {compileToSource} = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-ssr&#x27;</span>)
-<span class="hljs-keyword">const</span> MyComponent = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;path/to/mycomponent&#x27;</span>)
-compileToSource(MyCompoent)</code></pre>
-				<ol start="2">
-					<li>JavaScript string</li>
-				</ol>
-				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> {compileToSource} = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-ssr&#x27;</span>)
-<span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;fs&#x27;</span>)
-<span class="hljs-keyword">const</span> MyComponentStr = fs.readFileSync(<span class="hljs-string">&#x27;path/to/mycomponent.js&#x27;</span>, <span class="hljs-string">&#x27;utf-8&#x27;</span>)
-compileToSource(MyCompoentStr)</code></pre>
-				<ol start="3">
-					<li>TypeScript string</li>
-				</ol>
-				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> {compileToSource} = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-ssr&#x27;</span>)
-<span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;fs&#x27;</span>)
-<span class="hljs-keyword">const</span> MyComponentStr = fs.readFileSync(<span class="hljs-string">&#x27;path/to/mycomponent.ts&#x27;</span>, <span class="hljs-string">&#x27;utf-8&#x27;</span>)
-compileToSource(MyCompoentStr)</code></pre>
-				<p>由于输入 JavaScript 或 TypeScript 源码的形式，需要对输入字符串进行静态分析，因此不适合组件写法过于灵活过的情况。而以 Class 形式作为输入则可以解决上述问题。</p>
-				<a href="#class-作为输入存在的问题" id="class-作为输入存在的问题" style="color: inherit; text-decoration: none;">
-					<h1>Class 作为输入存在的问题</h1>
-				</a>
-				<p>当使用 Class 作为输入时，我们需要在编译阶段直接 require 该组件，因此所有依赖（子组件、工具库等）此时都需要是可被引用到的。</p>
-				<p>由于我们的组件可能分布于多个代码库，因此大多数情况下只能在生产环境中进行组件的编译工作。markExternalComponet 的引入就是为了解决该问题。</p>
-				<p>基于 San-SSR 最新提供的 markExternalComponet 特性，我们可以在本地进行组件的编译工作。</p>
-				<a href="#快速上手" id="快速上手" style="color: inherit; text-decoration: none;">
-					<h1>快速上手</h1>
-				</a>
-				<a href="#markexternalcomponent" id="markexternalcomponent" style="color: inherit; text-decoration: none;">
-					<h2>markExternalComponent</h2>
-				</a>
-				<p>新版本的 San-SSR 中，提供了一个 <code>markExternalComponent</code> 函数，使用该函数，可以提前标记外部组件。</p>
-				<p>假设我们有这样一个组件：</p>
-				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> san = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san&#x27;</span>)
-<span class="hljs-keyword">const</span> Child = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./childA.san&#x27;</span>)
-
+				<p>在之前的示例中，传入 <code>SanProject</code> 的内容为组件类：</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { SanProject } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-ssr&#x27;</span>)
+<span class="hljs-keyword">const</span> san = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san&#x27;</span>)
 <span class="hljs-keyword">const</span> MyComponent = san.defineComponent({
-    <span class="hljs-attr">components</span>: {
-        <span class="hljs-string">&#x27;x-l&#x27;</span>: Child
-    },
-    <span class="hljs-attr">template</span>: <span class="hljs-string">&#x27;&lt;div&gt;&lt;x-l/&gt;&lt;/div&gt;&#x27;</span>
+    <span class="hljs-attr">template</span>: <span class="hljs-string">`&lt;div&gt;Hello {{ name }}&lt;/div&gt;`</span>
 })
 
-<span class="hljs-built_in">module</span>.exports = MyComponent</code></pre>
-				<p>其中 childA 组件不在当前代码库中，它可能是一个单独维护的组件库等。此时我们可以在引用该组件类进行编译之前，对 <code>childA</code> 进行标记：</p>
-				<pre><code class="language-javascript">markExternalComponent({
-    isExternalComponent (specifier) {
-        <span class="hljs-keyword">if</span> (specifier === <span class="hljs-string">&#x27;./childA.san&#x27;</span>) {
-            <span class="hljs-keyword">return</span> <span class="hljs-literal">true</span>
-        }
-        <span class="hljs-keyword">return</span> <span class="hljs-literal">false</span>
-    }
-})
-<span class="hljs-keyword">const</span> {compileToSource} = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-ssr&#x27;</span>)
-<span class="hljs-keyword">const</span> MyComponent = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;path/to/mycomponent&#x27;</span>)
-compileToSource(MyCompoent)</code></pre>
-				<p>进行标记后，当我们 require <code>MyComponent</code> 时，将不会去加载 <code>childA</code>，我们可以在生产环境中单独提供 <code>childA</code>。</p>
-				<a href="#组件-id" id="组件-id" style="color: inherit; text-decoration: none;">
-					<h2>组件 id</h2>
-				</a>
-				<p>当我们从文件中引用一个组件时，需要两个信息来定位一个组件：</p>
-				<ol>
-					<li><code>specifier</code>：表示组件所在文件的路径，运行时会使用 <code>require(specifier)</code> 来加载该文件。因此它可以是一个相对路径、绝对路径或一个包名称。</li>
-					<li><code>id</code>：表示某个文件中的组件 id。</li>
-				</ol>
-				<p>例如：</p>
-				<pre><code class="language-javascript"><span class="hljs-comment">// specifier 为 &#x27;./childA.san&#x27;，id 为 ‘default’</span>
-<span class="hljs-keyword">const</span> Child = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./childA.san&#x27;</span>)</code></pre>
-				<pre><code class="language-javascript"><span class="hljs-comment">// specifier 为 &#x27;some-ui-module&#x27;，id 为 &#x27;compA&#x27; 和 &#x27;compB&#x27;</span>
-<span class="hljs-keyword">const</span> { compA, compB } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;some-ui-module&#x27;</span>)</code></pre>
-				<p>当我们使用 <code>markExternalComponent</code> 时，<strong>需要手动对子组件的 id 进行标记</strong>，否则 san-ssr 会默认以递增数字的形式对 id 进行命名。</p>
-				<p>例如：</p>
-				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> san = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san&#x27;</span>)
+<span class="hljs-comment">// SanProject 类提供了你会用到的所有接口</span>
+<span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
 
-<span class="hljs-keyword">const</span> OtherComponent = san.defineComponent({
-    <span class="hljs-attr">id</span>: <span class="hljs-string">&#x27;default&#x27;</span>, <span class="hljs-comment">// id 标记</span>
-    <span class="hljs-attr">template</span>: <span class="hljs-string">&#x27;&lt;div&gt;&lt;/div&gt;&#x27;</span>
-})
+<span class="hljs-comment">// 输入是组件对象</span>
+<span class="hljs-comment">// 输出是一个 render 函数。该函数接受数据对象作为参数，返回 HTML 字符串。</span>
+<span class="hljs-keyword">const</span> render = project.compileToRenderer(MyComponent)
 
-<span class="hljs-built_in">module</span>.exports = OtherComponent</code></pre>
-				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> san = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san&#x27;</span>)
+<span class="hljs-keyword">const</span> html = render({<span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;San&#x27;</span>})</code></pre>
+				<p>事实上，San-SSR 支持三种输入，分别为组件类、JavaScript 字符串代码与 TypeScript 字符串代码。</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { SanProject } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-ssr&#x27;</span>)
+<span class="hljs-keyword">const</span> san = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san&#x27;</span>)
+<span class="hljs-keyword">const</span> componentStr = <span class="hljs-string">`san.defineComponent({
+    template: &quot;&lt;div&gt;Hello {{ name }}&lt;/div&gt;&quot;
+})`</span>
 
-<span class="hljs-keyword">const</span> ComponentA = san.defineComponent({
-    <span class="hljs-attr">id</span>: <span class="hljs-string">&#x27;ComponentA&#x27;</span>, <span class="hljs-comment">// id 标记</span>
-    <span class="hljs-attr">template</span>: <span class="hljs-string">&#x27;&lt;div&gt;&lt;/div&gt;&#x27;</span>
-})
-<span class="hljs-keyword">const</span> ComponentB = san.defineComponent({
-    <span class="hljs-attr">id</span>: <span class="hljs-string">&#x27;ComponentB&#x27;</span>, <span class="hljs-comment">// id 标记</span>
-    <span class="hljs-attr">template</span>: <span class="hljs-string">&#x27;&lt;div&gt;&lt;/div&gt;&#x27;</span>
-})
+<span class="hljs-comment">// SanProject 类提供了你会用到的所有接口</span>
+<span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
 
-<span class="hljs-built_in">module</span>.exports = {
-    ComponentA,
-    ComponentB
-}</code></pre>
-				<a href="#实现原理" id="实现原理" style="color: inherit; text-decoration: none;">
-					<h1>实现原理</h1>
-				</a>
-				<p>调用 <code>markExternalComponent</code> 时，San-SSR 会对 Node.js 中的 require 进行 hook，拦截子组件的加载。判断为子组件的 require 调用，San-SSR 会返回一个组件引用信息（specifier 和 id）。编译期间遇到组件引用信息，则会编译为外部组件的调用。</p>
-				<a href="#注意事项" id="注意事项" style="color: inherit; text-decoration: none;">
-					<h1>注意事项</h1>
-				</a>
-				<p>require 的 hook 使用的是类似 <a href="https://www.npmjs.com/package/require-in-the-middle">require-in-the-middle</a> 的方式，与 <a href="https://www.npmjs.com/package/jest">jest</a> 不兼容。</p>
+<span class="hljs-comment">// 输入是组件对象</span>
+<span class="hljs-comment">// 输出是一个 render 函数。该函数接受数据对象作为参数，返回 HTML 字符串。</span>
+<span class="hljs-keyword">const</span> render = project.compileToRenderer(MyComponent)
+
+<span class="hljs-keyword">const</span> html = render({<span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;San&#x27;</span>})</code></pre>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -194,16 +113,25 @@ compileToSource(MyCompoent)</code></pre>
 						<a href="quick-start.html">快速开始</a>
 					</li>
 					<li class=" pp-nav pp-page">
-						<a href="migrate-from-san.html">从 san 迁移到 san ssr</a>
-					</li>
-					<li class=" pp-nav pp-page">
-						<a href="custom-components-path.html">渲染阶段自定义组件路径</a>
-					</li>
-					<li class=" pp-nav pp-page">
-						<a href="use-outside-component.html">手动传入组件类进行-<wbr>render</a>
+						<a href="precompile.html">预编译组件代码</a>
 					</li>
 					<li class="current pp-nav pp-page">
-						<a href="mark-external-component.html">使用-<wbr>mark<wbr>External<wbr>Component-<wbr>特性进行编译</a>
+						<a href="types-of-input.html">支持的三种输入方式及区别</a>
+					</li>
+					<li class=" pp-nav pp-page">
+						<a href="lifecycle.html">生命周期及实例属性</a>
+					</li>
+					<li class="label pp-nav pp-group">
+						<span>Guides</span>
+					</li>
+					<li class=" pp-nav pp-page">
+						<a href="../Guides/custom-components-path.html">渲染阶段自定义组件路径</a>
+					</li>
+					<li class=" pp-nav pp-page">
+						<a href="../Guides/use-outside-component.html">手动传入组件类进行-<wbr>render</a>
+					</li>
+					<li class=" pp-nav pp-page">
+						<a href="../Guides/mark-external-component.html">使用-<wbr>mark<wbr>External<wbr>Component-<wbr>特性进行编译</a>
 					</li>
 					<li class="label pp-nav pp-group">
 						<span>API</span>

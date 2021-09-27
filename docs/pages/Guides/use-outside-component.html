@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>从 san 迁移到 san ssr | san-ssr</title>
+	<title>手动传入组件类进行-render | san-ssr</title>
 	<meta name="description" content="Documentation for san-ssr">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../../assets/css/main.css">
@@ -57,13 +57,13 @@
 					<a href="../../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="quick-start.html">Documentation</a>
+					<a href="custom-components-path.html">Guides</a>
 				</li>
 				<li>
-					<a href="migrate-from-san.html">从 san 迁移到 san ssr</a>
+					<a href="use-outside-component.html">手动传入组件类进行-render</a>
 				</li>
 			</ul>
-			<h1>从 san 迁移到 san ssr</h1>
+			<h1>手动传入组件类进行-render</h1>
 		</div>
 	</div>
 </header>
@@ -71,17 +71,83 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<p>本文档介绍对于已经在使用 san 进行 ssr 的代码，如何迁移到 san-ssr。
-				ssr 接口也是兼容 san 的，所以理论上 san 组件代码不需要迁移，编译代码则需要少量工作</p>
-				<ol>
-					<li>最新的 san-ssr 只能在 <a href="mailto:&#115;&#x61;&#110;&#x40;&#51;&#46;&#56;&#46;&#48;">&#115;&#x61;&#110;&#x40;&#51;&#46;&#56;&#46;&#48;</a> 及以上进行工作，建议先把 san 升至最新版本。如果要在其他版本上使用，请参考 <a href="https://github.com/searchfe/san-ssr/blob/master/README.md">README</a> 中的“安装”一节。</li>
-					<li>编译组件代码到 ssr 代码的地方，把 <code>require(&#39;san&#39;)</code> 改为 <code>require(&#39;san-ssr&#39;)</code>，<code>compileToSource</code> 和 <code>compileToRenderer</code> 是兼容于 san 的。</li>
-				</ol>
-				<p>至此项目应该已经可以跑起来了。要发挥 san-ssr 的最大潜力，后续可以做以下改动：</p>
-				<ol>
-					<li>迁移 <code>compileToSource</code> 和 <code>compileToRenderer</code> 到 <a href="https://searchfe.github.io/san-ssr/classes/_models_san_project_.sanproject.html">SanProject</a> 对象。它有更丰富的 API，有更多的参数和方法。</li>
-					<li>迁移 San 组件代码到 TypeScript，这样 san-ssr 可以正确地找到依赖并一同打包它们。</li>
-				</ol>
+				<p><strong>该特性目前为试验功能，未正式发版</strong></p>
+				<hr>
+				<a href="#使用编译产出的组件类存在的问题" id="使用编译产出的组件类存在的问题" style="color: inherit; text-decoration: none;">
+					<h1>使用编译产出的组件类存在的问题</h1>
+				</a>
+				<p>在 ssr 过程中，模板可能需要读取组件实例上的属性或方法，因此我们需要在每次渲染时创建组件的一个实例。</p>
+				<p>当编译输出字符串时，会有以下问题：</p>
+				<ul>
+					<li>当输入为 JavaScript 或 TypeScript 时，San-SSR 会将组件类的字符串定义直接输出在产物中，之后在渲染阶段根据这些类创建组件实例。当组件书写方式过于复杂时，解析可能会失败。</li>
+					<li>当输入为 Class 时，San-SSR 会尝试将内存中的类字符串化。该方法只能输出组件自身内容，如果组件类引用了外部变量等，执行阶段会报错。</li>
+				</ul>
+				<p>编译输出为 render 函数时，则可以避免上述问题。</p>
+				<p>基于以上，San-SSR 提供了在执行阶段手动传入组件 Class 进行渲染的能力，此时编译产物中不会含有组件类代码，San-SSR 的产物与组件代码需要一起上到线上执行。</p>
+				<a href="#使用方式" id="使用方式" style="color: inherit; text-decoration: none;">
+					<h1>使用方式</h1>
+				</a>
+				<a href="#编译阶段" id="编译阶段" style="color: inherit; text-decoration: none;">
+					<h2>编译阶段</h2>
+				</a>
+				<pre><code class="language-typescript"><span class="hljs-keyword">const</span> MyComponent = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./component&#x27;</span>)
+<span class="hljs-keyword">const</span> sanProject = <span class="hljs-keyword">new</span> SanProject()
+<span class="hljs-keyword">const</span> res = sanProject.compileToSource(MyComponent, <span class="hljs-string">&#x27;js&#x27;</span>, {
+    <span class="hljs-attr">useProvidedComponentClass</span>: <span class="hljs-literal">true</span>
+})
+
+fs.writeFileSync(path.resolve(__dirname, <span class="hljs-string">&#x27;./output.js&#x27;</span>), res)</code></pre>
+				<a href="#线上执行" id="线上执行" style="color: inherit; text-decoration: none;">
+					<h2>线上执行</h2>
+				</a>
+				<p>只需传入根组件即可</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">const</span> Component = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./component&#x27;</span>)
+<span class="hljs-keyword">const</span> render = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./output&#x27;</span>)
+
+<span class="hljs-keyword">const</span> html = render({}, { <span class="hljs-attr">ComponentClass</span>: Component })</code></pre>
+				<a href="#与-markexternalcomponent-特性配合使用" id="与-markexternalcomponent-特性配合使用" style="color: inherit; text-decoration: none;">
+					<h1>与 markExternalComponent 特性配合使用</h1>
+				</a>
+				<p>当与 <a href="./%E4%BD%BF%E7%94%A8-markExternalComponent-%E7%89%B9%E6%80%A7%E8%BF%9B%E8%A1%8C%E7%BC%96%E8%AF%91.md">markExternalComponent</a> 配合使用时，由于定义外部组件引用的 specifier 为组件类文件，我们需要使用 <a href="./%E6%B8%B2%E6%9F%93%E9%98%B6%E6%AE%B5%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BB%84%E4%BB%B6%E8%B7%AF%E5%BE%84.md">customSSRFilePath</a> 来帮助 San-SSR 找到外部组件所对应的 San-SSR 产物位置：</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> Component = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./component&#x27;</span>)
+<span class="hljs-keyword">const</span> render = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./output&#x27;</span>)
+
+<span class="hljs-keyword">const</span> html = render({}, {
+    <span class="hljs-attr">ComponentClass</span>: Component,
+    <span class="hljs-attr">parentCtx</span>: {
+        <span class="hljs-attr">context</span>: {
+            customSSRFilePath ({ specifier }) {
+                <span class="hljs-keyword">if</span> (specifier.endsWith(<span class="hljs-string">&#x27;childA.san&#x27;</span>)) {
+                    <span class="hljs-keyword">return</span> specifier + <span class="hljs-string">&#x27;.ssr&#x27;</span>
+                }
+            }
+        }
+    }
+})</code></pre>
+				<p>如果我们想要完全改变子组件的路径，则可以再配合 <code>customComponentFilePath</code> 方法，替换所使用的子组件类：</p>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> Component = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./component&#x27;</span>)
+<span class="hljs-keyword">const</span> render = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./output&#x27;</span>)
+
+<span class="hljs-keyword">const</span> html = render({}, {
+    <span class="hljs-attr">ComponentClass</span>: Component,
+    <span class="hljs-attr">parentCtx</span>: {
+        <span class="hljs-attr">context</span>: {
+            customSSRFilePath ({ specifier, id, tagName }) {
+                <span class="hljs-keyword">if</span> (specifier.endsWith(<span class="hljs-string">&#x27;childA.san&#x27;</span>)) {
+                    <span class="hljs-keyword">return</span> specifier + <span class="hljs-string">&#x27;.ssr&#x27;</span>
+                }
+            },
+            customComponentFilePath ({ specifier, id, tagName }) {
+                <span class="hljs-keyword">if</span> (specifier === <span class="hljs-string">&#x27;./childA.san&#x27;</span>) {
+                    <span class="hljs-keyword">if</span> (tagName === <span class="hljs-string">&#x27;x-b&#x27;</span>) {
+                        <span class="hljs-keyword">return</span> path.resolve(__dirname, <span class="hljs-string">&#x27;./childB.san&#x27;</span>)
+                    }
+                    <span class="hljs-keyword">return</span> path.resolve(__dirname, <span class="hljs-string">&#x27;./childA.san&#x27;</span>)
+                }
+            },
+        }
+    }
+})</code></pre>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -91,15 +157,24 @@
 						<span>Documentation</span>
 					</li>
 					<li class=" pp-nav pp-page">
-						<a href="quick-start.html">快速开始</a>
+						<a href="../Documentation/quick-start.html">快速开始</a>
 					</li>
-					<li class="current pp-nav pp-page">
-						<a href="migrate-from-san.html">从 san 迁移到 san ssr</a>
+					<li class=" pp-nav pp-page">
+						<a href="../Documentation/precompile.html">预编译组件代码</a>
+					</li>
+					<li class=" pp-nav pp-page">
+						<a href="../Documentation/types-of-input.html">支持的三种输入方式及区别</a>
+					</li>
+					<li class=" pp-nav pp-page">
+						<a href="../Documentation/lifecycle.html">生命周期及实例属性</a>
+					</li>
+					<li class="label pp-nav pp-group">
+						<span>Guides</span>
 					</li>
 					<li class=" pp-nav pp-page">
 						<a href="custom-components-path.html">渲染阶段自定义组件路径</a>
 					</li>
-					<li class=" pp-nav pp-page">
+					<li class="current pp-nav pp-page">
 						<a href="use-outside-component.html">手动传入组件类进行-<wbr>render</a>
 					</li>
 					<li class=" pp-nav pp-page">

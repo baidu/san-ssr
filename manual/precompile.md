@@ -5,25 +5,19 @@
 使用 San-SSR 提供的 `compileToSource` 方法可以得到 render 函数的字符串版本：
 
 ```javascript
-// app.js
-const san = require('san')
-let MyComponent = san.defineComponent({
-    template: "<div>Hello {{ name }}</div>"
-})
-exports = module.exports = MyComponent
-```
-
-```javascript
-// index.js
 const { SanProject } = require('san-ssr')
 const fs = require('fs')
 const path = require('path')
+const san = require('san')
+
+let MyComponent = san.defineComponent({
+    template: "<div>Hello {{ name }}</div>"
+})
 
 const project = new SanProject()
 
-// 此时传入的是一个文件路径
-// 得到的是文件内容
-const renderStr = project.compileToSource(require.resolve('./app.js'))
+// 得到的是 render 函数文件内容
+const renderStr = project.compileToSource(MyComponent)
 
 fs.writeFileSync(path.resolve(__dirname, 'output.js'), renderStr)
 

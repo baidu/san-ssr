@@ -74,22 +74,19 @@
 				<p>从名字即可看出，将组件传入 <code>compileToRender</code> 得到 render 函数是一个编译过程，需要一定的编译时间。</p>
 				<p>这一编译过程只会进行一次，后续渲染可以直接使用 render 函数。但如果对启动时间比较介意，可以在线下对 San 组件进行预编译。</p>
 				<p>使用 San-SSR 提供的 <code>compileToSource</code> 方法可以得到 render 函数的字符串版本：</p>
-				<pre><code class="language-javascript"><span class="hljs-comment">// app.js</span>
+				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { SanProject } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-ssr&#x27;</span>)
+<span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;fs&#x27;</span>)
+<span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;path&#x27;</span>)
 <span class="hljs-keyword">const</span> san = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san&#x27;</span>)
+
 <span class="hljs-keyword">let</span> MyComponent = san.defineComponent({
     <span class="hljs-attr">template</span>: <span class="hljs-string">&quot;&lt;div&gt;Hello {{ name }}&lt;/div&gt;&quot;</span>
 })
-<span class="hljs-built_in">exports</span> = <span class="hljs-built_in">module</span>.exports = MyComponent</code></pre>
-				<pre><code class="language-javascript"><span class="hljs-comment">// index.js</span>
-<span class="hljs-keyword">const</span> { SanProject } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-ssr&#x27;</span>)
-<span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;fs&#x27;</span>)
-<span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;path&#x27;</span>)
 
 <span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
 
-<span class="hljs-comment">// 此时传入的是一个文件路径</span>
-<span class="hljs-comment">// 得到的是文件内容</span>
-<span class="hljs-keyword">const</span> renderStr = project.compileToSource(<span class="hljs-built_in">require</span>.resolve(<span class="hljs-string">&#x27;./app.js&#x27;</span>))
+<span class="hljs-comment">// 得到的是 render 函数文件内容</span>
+<span class="hljs-keyword">const</span> renderStr = project.compileToSource(MyComponent)
 
 fs.writeFileSync(path.resolve(__dirname, <span class="hljs-string">&#x27;output.js&#x27;</span>), renderStr)
 
@@ -115,7 +112,10 @@ fs.writeFileSync(path.resolve(__dirname, <span class="hljs-string">&#x27;output.
 						<a href="types-of-input.html">支持的三种输入方式及区别</a>
 					</li>
 					<li class=" pp-nav pp-page">
-						<a href="lifecycle.html">生命周期及实例属性</a>
+						<a href="lifecycle.html">生命周期、属性及方法</a>
+					</li>
+					<li class=" pp-nav pp-page">
+						<a href="ways-to-write-components.html">组件的两种写法</a>
 					</li>
 					<li class="label pp-nav pp-group">
 						<span>Guides</span>
@@ -128,6 +128,12 @@ fs.writeFileSync(path.resolve(__dirname, <span class="hljs-string">&#x27;output.
 					</li>
 					<li class=" pp-nav pp-page">
 						<a href="../Guides/mark-external-component.html">使用-<wbr>mark<wbr>External<wbr>Component-<wbr>特性进行编译</a>
+					</li>
+					<li class="label pp-nav pp-group">
+						<span>Under the hood</span>
+					</li>
+					<li class=" pp-nav pp-page">
+						<a href="../Under the hood/how-san-ssr-use-component-class.html">San-<wbr>SSR 是如何使用组件类的</a>
 					</li>
 					<li class="label pp-nav pp-group">
 						<span>API</span>

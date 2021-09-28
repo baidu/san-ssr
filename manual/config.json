@@ -31,6 +31,10 @@
             "source": "./manual",
             "pages": [
                 {
+                    "title": "使用 San-Store",
+                    "source": "use-san-store.md"
+                },
+                {
                     "title": "渲染阶段自定义组件路径",
                     "source": "custom-components-path.md"
                 },

@@ -89,7 +89,7 @@
 				<p>所以组件中的方法有一下注意事项：</p>
 				<ol>
 					<li>可以在 this 上添加属性，不会影响二次渲染。</li>
-					<li>不可以修改 this 上会被 San-SSR 用到的属性，因为该操作会修改唯一的组件实例，该修改会保留，影响后续的渲染过程。</li>
+					<li>不可以修改 this 上<a href="/pages/Documentation/lifecycle.html#%E5%B1%9E%E6%80%A7">会被 San-SSR 用到的属性</a>，因为该操作会修改唯一的组件实例，该修改会保留，影响后续的渲染过程。</li>
 				</ol>
 			</div>
 		</div>
@@ -116,6 +116,9 @@
 					</li>
 					<li class="label pp-nav pp-group">
 						<span>Guides</span>
+					</li>
+					<li class=" pp-nav pp-page">
+						<a href="../Guides/use-san-store.html">使用 <wbr>San-<wbr><wbr>Store</a>
 					</li>
 					<li class=" pp-nav pp-page">
 						<a href="../Guides/custom-components-path.html">渲染阶段自定义组件路径</a>

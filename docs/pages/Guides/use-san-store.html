@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>快速开始 | san-ssr</title>
+	<title>使用 San-Store | san-ssr</title>
 	<meta name="description" content="Documentation for san-ssr">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../../assets/css/main.css">
@@ -57,13 +57,13 @@
 					<a href="../../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="quick-start.html">Documentation</a>
+					<a href="use-san-store.html">Guides</a>
 				</li>
 				<li>
-					<a href="quick-start.html">快速开始</a>
+					<a href="use-san-store.html">使用 San-Store</a>
 				</li>
 			</ul>
-			<h1>快速开始</h1>
+			<h1>使用 San-Store</h1>
 		</div>
 	</div>
 </header>
@@ -71,43 +71,60 @@
 	<div class="row">
 		<div class="col-8 col-content">
 			<div class="tsd-panel tsd-typography">
-				<a href="#安装" id="安装" style="color: inherit; text-decoration: none;">
-					<h1>安装</h1>
-				</a>
-				<pre><code class="language-bash">npm i san@latest san-ssr@latest</code></pre>
-				<p>san-ssr 需要 san 提供的模板字符串解析和 TypeScript 类型，因此对 san 的版本有依赖。你需要安装对应版本的 san 和 san-ssr。</p>
-				<p>san-ssr 支持的 san 版本声明在 <code>peerDependencies</code> 里，因此只要能安装成功就能正确工作。一般的建议如下：</p>
-				<ul>
-					<li><p>如果是新项目，建议使用 <code>npm i san@latest san-ssr@latest</code></p>
-					</li>
-					<li><p>否则从 san-ssr 最新版本开始降主版本号找到能安装成功的版本。</p>
-					</li>
-				</ul>
-				<blockquote>
-					<p>更多讨论请参考：<a href="https://github.com/baidu/san/issues/441#issuecomment-550260372">baidu/san/issues/441</a></p>
-				</blockquote>
-				<a href="#渲染一个-san-组件" id="渲染一个-san-组件" style="color: inherit; text-decoration: none;">
-					<h1>渲染一个 San 组件</h1>
+				<p>目前 San-SSR <strong>只支持以组件类作为输入</strong>进行编译。</p>
+				<p>假设有以下组件：</p>
+				<pre><code class="language-javascript"><span class="hljs-comment">// app.js</span>
+<span class="hljs-keyword">const</span> { connect } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-store&#x27;</span>)
+<span class="hljs-keyword">const</span> san = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san&#x27;</span>)
+
+<span class="hljs-keyword">const</span> MyComponent = connect.san({
+    <span class="hljs-string">&#x27;name&#x27;</span>: <span class="hljs-string">&#x27;text&#x27;</span>
+})(san.defineComponent({
+    <span class="hljs-attr">template</span>: <span class="hljs-string">&quot;&lt;div&gt;{{ name }}&lt;/div&gt;&quot;</span>
+}))
+
+<span class="hljs-built_in">module</span>.exports = MyComponent</code></pre>
+				<a href="#compiletorender" id="compiletorender" style="color: inherit; text-decoration: none;">
+					<h1>compileToRender</h1>
 				</a>
 				<pre><code class="language-javascript"><span class="hljs-keyword">const</span> { SanProject } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-ssr&#x27;</span>)
+<span class="hljs-keyword">const</span> { connect, store } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-store&#x27;</span>)
 <span class="hljs-keyword">const</span> san = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san&#x27;</span>)
-<span class="hljs-keyword">const</span> MyComponent = san.defineComponent({
-    <span class="hljs-attr">template</span>: <span class="hljs-string">`&lt;div&gt;Hello {{ name }}&lt;/div&gt;`</span>
-})
 
-<span class="hljs-comment">// SanProject 类提供了你会用到的所有接口</span>
+<span class="hljs-keyword">const</span> MyComponent = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./app.js&#x27;</span>)
+
+store.raw = {<span class="hljs-attr">text</span>: <span class="hljs-string">&#x27;san&#x27;</span>}
+
 <span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
-
-<span class="hljs-comment">// 输入是组件对象</span>
-<span class="hljs-comment">// 输出是一个 render 函数。该函数接受数据对象作为参数，返回 HTML 字符串。</span>
 <span class="hljs-keyword">const</span> render = project.compileToRenderer(MyComponent)
-
 <span class="hljs-keyword">const</span> html = render({<span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;San&#x27;</span>})</code></pre>
-				<p>参考内容：</p>
-				<ul>
-					<li>API 文档：<a href="https://baidu.github.io/san-ssr/classes/_src_models_san_project_.sanproject.html">SanProject</a></li>
-					<li>/demo 下的示例项目。</li>
-				</ul>
+				<a href="#compiletosource" id="compiletosource" style="color: inherit; text-decoration: none;">
+					<h1>compileToSource</h1>
+				</a>
+				<p>当 <code>compileToSource</code> 时，必须配合<a href="/pages/Guides/use-outside-component.html">手动传入组件类进行-render</a>特性来使用。</p>
+				<p>编译阶段：</p>
+				<pre><code class="language-javascript"><span class="hljs-comment">// compile</span>
+<span class="hljs-keyword">const</span> { SanProject } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-ssr&#x27;</span>)
+<span class="hljs-keyword">const</span> { store } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-store&#x27;</span>)
+<span class="hljs-keyword">const</span> fs = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;fs&#x27;</span>)
+<span class="hljs-keyword">const</span> path = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;path&#x27;</span>)
+
+<span class="hljs-keyword">const</span> MyComponent = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./app&#x27;</span>)
+<span class="hljs-keyword">const</span> project = <span class="hljs-keyword">new</span> SanProject()
+<span class="hljs-keyword">const</span> renderStr = project.compileToSource(MyComponent, <span class="hljs-string">&#x27;js&#x27;</span>, {
+    <span class="hljs-attr">useProvidedComponentClass</span>: <span class="hljs-literal">true</span>
+})
+fs.writeFileSync(path.resolve(__dirname, <span class="hljs-string">&#x27;./output.js&#x27;</span>), renderStr)</code></pre>
+				<p>渲染阶段：</p>
+				<pre><code class="language-javascript"><span class="hljs-comment">// render</span>
+<span class="hljs-keyword">const</span> { store } = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;san-store&#x27;</span>)
+
+<span class="hljs-keyword">const</span> MyComponent = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./app&#x27;</span>)
+<span class="hljs-keyword">const</span> render = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;./output&#x27;</span>)
+store.raw = {<span class="hljs-attr">text</span>: <span class="hljs-string">&#x27;san&#x27;</span>}
+<span class="hljs-keyword">const</span> html = render({<span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;San&#x27;</span>}, {
+    <span class="hljs-attr">ComponentClass</span>: MyComponent
+})</code></pre>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
@@ -116,35 +133,35 @@
 					<li class="label pp-nav pp-group">
 						<span>Documentation</span>
 					</li>
-					<li class="current pp-nav pp-page">
-						<a href="quick-start.html">快速开始</a>
+					<li class=" pp-nav pp-page">
+						<a href="../Documentation/quick-start.html">快速开始</a>
 					</li>
 					<li class=" pp-nav pp-page">
-						<a href="precompile.html">预编译组件代码</a>
+						<a href="../Documentation/precompile.html">预编译组件代码</a>
 					</li>
 					<li class=" pp-nav pp-page">
-						<a href="types-of-input.html">支持的三种输入方式及区别</a>
+						<a href="../Documentation/types-of-input.html">支持的三种输入方式及区别</a>
 					</li>
 					<li class=" pp-nav pp-page">
-						<a href="lifecycle.html">生命周期、属性及方法</a>
+						<a href="../Documentation/lifecycle.html">生命周期、属性及方法</a>
 					</li>
 					<li class=" pp-nav pp-page">
-						<a href="ways-to-write-components.html">组件的两种写法</a>
+						<a href="../Documentation/ways-to-write-components.html">组件的两种写法</a>
 					</li>
 					<li class="label pp-nav pp-group">
 						<span>Guides</span>
 					</li>
-					<li class=" pp-nav pp-page">
-						<a href="../Guides/use-san-store.html">使用 <wbr>San-<wbr><wbr>Store</a>
+					<li class="current pp-nav pp-page">
+						<a href="use-san-store.html">使用 <wbr>San-<wbr><wbr>Store</a>
 					</li>
 					<li class=" pp-nav pp-page">
-						<a href="../Guides/custom-components-path.html">渲染阶段自定义组件路径</a>
+						<a href="custom-components-path.html">渲染阶段自定义组件路径</a>
 					</li>
 					<li class=" pp-nav pp-page">
-						<a href="../Guides/use-outside-component.html">手动传入组件类进行-<wbr>render</a>
+						<a href="use-outside-component.html">手动传入组件类进行-<wbr>render</a>
 					</li>
 					<li class=" pp-nav pp-page">
-						<a href="../Guides/mark-external-component.html">使用-<wbr>mark<wbr>External<wbr>Component-<wbr>特性进行编译</a>
+						<a href="mark-external-component.html">使用-<wbr>mark<wbr>External<wbr>Component-<wbr>特性进行编译</a>
 					</li>
 					<li class="label pp-nav pp-group">
 						<span>Under the hood</span>

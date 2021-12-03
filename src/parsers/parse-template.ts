@@ -30,7 +30,7 @@ function normalizeRootANode (rootANode: AElement) {
     let hasClassProp = false
     let hasStyleProp = false
     let hasIdProp = false
-    for (const prop of rootANode.props || []) {
+    for (const prop of rootANode.props) {
         if (prop.name === 'class') {
             hasClassProp = true
             normalizeRootClassProp(prop)
@@ -56,7 +56,7 @@ function normalizeRootANode (rootANode: AElement) {
         shouldAppendProps = true
         appendPropsTemplate += ' id="{{id}}"'
     }
-    if (shouldAppendProps && rootANode.props) {
+    if (shouldAppendProps) {
         appendPropsTemplate += '></div>'
         const resNode = parseTemplate(appendPropsTemplate)
 
@@ -85,7 +85,7 @@ function normalizeOptionTag (aNode: AElement) {
 }
 
 function normalizeANodeProps (aNode: AElement) {
-    if (aNode.props) aNode.props = parseANodeProps(aNode)
+    aNode.props = parseANodeProps(aNode)
 }
 
 function normalizeRootClassProp (clazz: AProperty) {

@@ -1,4 +1,4 @@
-import { extractInterpNodeFromRootANode } from '../../../src/parsers/parse-template'
+import { extractInterpNodeFromRootANode, parseAndNormalizeTemplate } from '../../../src/parsers/parse-template'
 
 describe('parsers/parse-template', function () {
     describe('.extractInterpNodeFromRootANode()', () => {
@@ -44,6 +44,12 @@ describe('parsers/parse-template', function () {
                 children: [{ textExpr: {} }]
             } as any
             expect(() => extractInterpNodeFromRootANode(root)).toThrow(/not recognized/)
+        })
+    })
+    describe('.parseAndNormalizeTemplate()', () => {
+        it('shoud not append props', () => {
+            const resNode = parseAndNormalizeTemplate('<div class="aaa" style="display: none;" id="bbb"></div>', {})
+            expect(resNode.props.length).toBe(3)
         })
     })
 })

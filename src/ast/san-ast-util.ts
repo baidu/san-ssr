@@ -49,6 +49,6 @@ export function parseANodeProps (aNode: AElement) {
 export function visitANodeRecursively (aNode: ANode, visitor: (aNode: ANode) => void) {
     visitor(aNode)
     if (TypeGuards.isATextNode(aNode)) return
-    for (const child of aNode.children || []) visitANodeRecursively(child, visitor)
+    for (const child of aNode.children) visitANodeRecursively(child, visitor)
     for (const els of (aNode as AIfNode).elses || []) visitANodeRecursively(els, visitor)
 }

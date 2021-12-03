@@ -7,7 +7,7 @@
  * ComponentClass 作为输入时，没有文件信息，引用关系用递增 ID 来表达；
  * TS/JS/San 源码作为输入时，有源码文件目录结构信息，用文件+导出类名表达。
  */
-import { ComponentConstructor } from 'san'
+import { Component } from 'san'
 
 /**
  * 表示一个组件的引用，被引用组件可能在当前文件，也可能在外部文件。例如：
@@ -45,7 +45,7 @@ export class DynamicComponentReference extends ComponentReference {
         /**
          * 从 ComponentClass 解析时，可以引用到子组件的 ComponentClass
          */
-        public readonly componentClass: ComponentConstructor<{}, {}>
+        public readonly componentClass: Component<{}>
     ) {
         super(specifier, id)
     }

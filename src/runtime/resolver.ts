@@ -14,20 +14,19 @@
  * - 不能引用文件系统的其他组件 render：require(ref.specifier)
  * - 也不能利用 exports 引用当前文件的其他组件： exports.sanSSRRenders.X()
  */
-import type { SanComponent } from 'san'
+import type { Component } from 'san'
 import type { GlobalContext } from '../models/global-context'
-import type { ComponentClass } from '../models/component'
 
 export interface Resolver {
     getRenderer: (ref: { id: string, specifier?: string }, tagName?: string, context?: GlobalContext) => Function
-    getChildComponentClass: (ref: { id: string, specifier?: string }, CurrentComponentClass: ComponentClass, tagName: string, context?: GlobalContext) => ComponentClass
+    getChildComponentClass: (ref: { id: string, specifier?: string }, CurrentComponentClass: Component, tagName: string, context?: GlobalContext) => Component
     setRenderer: (id: string, fn: Function) => void
     /**
      * 每个组件的每次 render 执行，共用同一个 prototype
      * 避免每次创建 SanComponent 实例
      */
-    getPrototype: (id: string) => SanComponent<{}>
-    setPrototype: (id: string, proto: SanComponent<{}>) => void
+    getPrototype: (id: string) => Component<{}>
+    setPrototype: (id: string, proto: Component<{}>) => void
 }
 
 type nodeRequire = typeof require;
@@ -48,7 +47,7 @@ export function createResolver (exports: {[key: string]: any}, require: nodeRequ
             }
             return mod.sanSSRRenders[id]
         },
-        getChildComponentClass: function ({ id, specifier = '.' }, CurrentComponentClass: ComponentClass, tagName: string, context) {
+        getChildComponentClass: function ({ id, specifier = '.' }, CurrentComponentClass: Component, tagName: string, context) {
             const customComponentFilePath = context && context.customComponentFilePath
 
             if (customComponentFilePath && specifier !== '.') {
@@ -59,7 +58,7 @@ export function createResolver (exports: {[key: string]: any}, require: nodeRequ
                 else if (typeof path === 'function') return path
             }
 
-            const components = CurrentComponentClass.prototype.components as {[tagName: string]: ComponentClass | undefined}
+            const components = CurrentComponentClass.prototype.components as {[tagName: string]: Component | undefined}
             const ChildComponentClass = components[tagName]
             if (!ChildComponentClass) {
                 throw Error(`child component is not fount: ${tagName}${CurrentComponentClass.prototype?.id || ''}`)

@@ -6,68 +6,75 @@
 
 import {
     // Expression Nodes
-    ExprNode, ExprType,
-    ExprNullNode, ExprObjectNode, ExprArrayNode, ExprStringNode, ExprNumberNode,
-    ExprBoolNode, ExprAccessorNode, ExprInterpNode, ExprCallNode, ExprTextNode,
-    ExprBinaryNode, ExprUnaryNode, ExprTertiaryNode,
+    Expr, ExprType,
+    NullLiteral, StringLiteral, NumberLiteral,
+    BoolLiteral,
 
     // ANodes
-    ANode, AIfNode, AForNode, ASlotNode, ATextNode, ATemplateNode, AFragmentNode
+    ANode, AIfNode, AForNode, ASlotNode, AText, AccessorExpr, InterpExpr, CallExpr, TextExpr, BinaryExpr, UnaryExpr, TertiaryExpr, ArrayLiteral, ObjectLiteral,
+    AFragmentNode,
+    ADynamicNode
 } from 'san'
 
 /*
  * TypeGuards for Expression Node
  */
-export function isExprUnaryNode (node: ExprNode): node is ExprUnaryNode {
-    return node.type === ExprType.UNARY
-}
-
-export function isExprStringNode (node: ExprNode): node is ExprStringNode {
+export function isExprStringNode (node: Expr): node is StringLiteral {
     return node.type === ExprType.STRING
 }
 
-export function isExprNumberNode (node: ExprNode): node is ExprNumberNode {
+export function isExprNumberNode (node: Expr): node is NumberLiteral {
     return node.type === ExprType.NUMBER
 }
 
-export function isExprBoolNode (node: ExprNode): node is ExprBoolNode {
+export function isExprBoolNode (node: Expr): node is BoolLiteral {
     return node.type === ExprType.BOOL
 }
 
-export function isExprAccessorNode (node: ExprNode): node is ExprAccessorNode {
+export function isExprNullNode (node: Expr): node is NullLiteral {
+    return node.type === ExprType.NULL
+}
+
+export function isExprAccessorNode (node: Expr): node is AccessorExpr {
     return node.type === ExprType.ACCESSOR
 }
 
-export function isExprInterpNode (node: ExprNode): node is ExprInterpNode {
+export function isExprInterpNode (node: Expr): node is InterpExpr {
     return node.type === ExprType.INTERP
 }
 
-export function isExprCallNode (node: ExprNode): node is ExprCallNode {
+export function isExprCallNode (node: Expr): node is CallExpr {
     return node.type === ExprType.CALL
 }
 
-export function isExprTextNode (node: ExprNode): node is ExprTextNode {
+export function isExprTextNode (node: Expr): node is TextExpr {
     return node.type === ExprType.TEXT
 }
 
-export function isExprBinaryNode (node: ExprNode): node is ExprBinaryNode {
+export function isExprBinaryNode (node: Expr): node is BinaryExpr {
     return node.type === ExprType.BINARY
 }
 
-export function isExprTertiaryNode (node: ExprNode): node is ExprTertiaryNode {
+export function isExprUnaryNode (node: Expr): node is UnaryExpr {
+    return node.type === ExprType.UNARY
+}
+
+export function isExprTertiaryNode (node: Expr): node is TertiaryExpr {
     return node.type === ExprType.TERTIARY
 }
 
-export function isExprArrayNode (node: ExprNode): node is ExprArrayNode {
-    return node.type === ExprType.ARRAY
-}
-
-export function isExprObjectNode (node: ExprNode): node is ExprObjectNode {
+export function isExprObjectNode (node: Expr): node is ObjectLiteral {
     return node.type === ExprType.OBJECT
 }
 
-export function isExprNullNode (node: ExprNode): node is ExprNullNode {
-    return node.type === ExprType.NULL
+export function isExprArrayNode (node: Expr): node is ArrayLiteral {
+    return node.type === ExprType.ARRAY
+}
+
+type ExprWithValue = StringLiteral | NumberLiteral | BoolLiteral | TextExpr
+
+export function isExprWithValue (node: Expr): node is ExprWithValue {
+    return node && Object.prototype.hasOwnProperty.call(node, 'value')
 }
 
 /*
@@ -75,29 +82,25 @@ export function isExprNullNode (node: ExprNode): node is ExprNullNode {
  */
 
 export function isASlotNode (aNode: ANode): aNode is ASlotNode {
-    return aNode.tagName === 'slot'
+    return !isATextNode(aNode) && aNode.tagName === 'slot'
 }
 
 export function isAIfNode (aNode: ANode): aNode is AIfNode {
-    return !!aNode.directives.if
+    return !isATextNode(aNode) && !!aNode.directives.if
 }
 
-export function isADynamicNode (aNode: ANode): aNode is ANode {
-    return !!aNode.directives.is
+export function isADynamicNode (aNode: ANode): aNode is ADynamicNode {
+    return !isATextNode(aNode) && !!aNode.directives.is
 }
 
 export function isAForNode (aNode: ANode): aNode is AForNode {
-    return !!aNode.directives.for
+    return !isATextNode(aNode) && !!aNode.directives.for
 }
 
-export function isATextNode (aNode: ANode): aNode is ATextNode {
-    return !!aNode.textExpr
-}
-
-export function isATemplateNode (aNode: ANode): aNode is ATemplateNode {
-    return aNode.tagName === 'template'
+export function isATextNode (aNode: ANode): aNode is AText {
+    return aNode && Object.prototype.hasOwnProperty.call(aNode, 'textExpr')
 }
 
 export function isAFragmentNode (aNode: ANode): aNode is AFragmentNode {
-    return aNode.tagName === 'fragment'
+    return !isATextNode(aNode) && (aNode.tagName === 'fragment' || aNode.tagName === 'template')
 }

@@ -4,12 +4,11 @@
  * 从根 ComponentClass 递归搜索和解析所有 ComponentClass，
  * 形成**单个** SanSourceFile 实例，包含所有的 ComponentInfo 列表。
  */
-import { ComponentConstructor, defineComponent } from 'san'
+import { Component, defineComponent, DefinedComponentClass } from 'san'
 import { DynamicSanSourceFile } from '../models/san-source-file'
 import { DynamicComponentInfo } from '../models/component-info'
 import { getMember } from '../utils/lang'
 import { isComponentLoader } from '../models/component'
-import type { ComponentClass } from '../models/component'
 import { parseAndNormalizeTemplate } from './parse-template'
 import { componentID, DynamicComponentReference } from '../models/component-reference'
 import { COMPONENT_REFERENCE } from '../helpers/markExternalComponent'
@@ -21,10 +20,10 @@ import { COMPONENT_REFERENCE } from '../helpers/markExternalComponent'
  */
 export class ComponentClassParser {
     private id = 0
-    private cids: Map<ComponentConstructor<{}, {}>, string> = new Map()
+    private cids: Map<Component<{}>, string> = new Map()
 
     constructor (
-        private readonly root: ComponentConstructor<{}, {}>,
+        private readonly root: Component<{}>,
         private readonly filePath: string
     ) {}
 
@@ -55,7 +54,7 @@ export class ComponentClassParser {
     /**
      * 从组件 class 得到组件 component info
      */
-    createComponentInfoFromComponentClass (componentClass: ComponentConstructor<{}, {}>, id: string): DynamicComponentInfo {
+    createComponentInfoFromComponentClass (componentClass: Component<{}> | DefinedComponentClass<{}, {}>, id: string): DynamicComponentInfo {
         if (isComponentLoader(componentClass)) {
             componentClass = componentClass.placeholder
         }
@@ -70,16 +69,16 @@ export class ComponentClassParser {
         const rootANode = parseAndNormalizeTemplate(template, { trimWhitespace, delimiters })
         const childComponents = this.getChildComponentClasses(componentClass, id)
 
-        return new DynamicComponentInfo(id, rootANode, childComponents, componentClass)
+        return new DynamicComponentInfo(id, rootANode, childComponents, componentClass as Component)
     }
 
     /**
      * 从组件 class 得到子组件 class
      */
-    getChildComponentClasses (parentComponentClass: ComponentClass, selfId: string): Map<string, DynamicComponentReference> {
+    getChildComponentClasses (parentComponentClass: Component<{}> | DefinedComponentClass<{}, {}>, selfId: string): Map<string, DynamicComponentReference> {
         const children: Map<string, DynamicComponentReference> = new Map()
 
-        const components: { [key: string]: ComponentConstructor<{}, {}> | undefined } = getMember(parentComponentClass, 'components', {})
+        const components: { [key: string]: Component<{}> | undefined } = getMember(parentComponentClass, 'components', {})
         for (const [tagName, componentClass] of Object.entries(components)) {
             if (!componentClass) {
                 continue
@@ -91,7 +90,7 @@ export class ComponentClassParser {
                 children.set(tagName, new DynamicComponentReference(
                     '.',
                     selfId,
-                    parentComponentClass
+                    parentComponentClass as Component
                 ))
                 continue
             }
@@ -116,7 +115,7 @@ export class ComponentClassParser {
      * 由于拿到的是类，并不知道每个递归到的 Class 是从哪个文件来的，
      * 因此生成一个递增的 id 来标识它。
      */
-    private getOrSetID (componentClass: ComponentConstructor<{}, {}>): string {
+    private getOrSetID (componentClass: Component<{}>): string {
         if (!this.cids.has(componentClass)) {
             const id = getMember(componentClass, 'id')
             this.cids.set(componentClass, typeof id === 'string' ? id : String(this.id++))

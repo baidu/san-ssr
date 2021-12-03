@@ -9,7 +9,7 @@
  * 类型：对于 TS 源码输入，解析得到的是 TypedComponentInfo，
  * 对于其他输入，解析得到的是 JSComponentInfo。
  */
-import type { SanComponentConfig, ANode } from 'san'
+import type { ANode, Component, ComponentDefineOptions } from 'san'
 import { FunctionDefinition } from '../ast/renderer-ast-dfn'
 import { parseAndNormalizeTemplate } from '../parsers/parse-template'
 import type { ClassDeclaration } from 'ts-morph'
@@ -20,7 +20,7 @@ import { getObjectLiteralPropertyKeys } from '../ast/ts-ast-util'
 import { assertObjectExpression, getLiteralValue, getPropertiesFromObject, getStringArrayValue } from '../ast/js-ast-util'
 import type { RenderOptions } from '../compilers/renderer-options'
 import { RendererCompiler } from '../compilers/renderer-compiler'
-import { ComponentClass } from './component'
+import { isATextNode } from '../ast/san-ast-type-guards'
 
 export type TagName = string
 type TrimWhitespace = 'none' | 'blank' | 'all' | undefined
@@ -64,7 +64,7 @@ abstract class ComponentInfoImpl<R extends ComponentReference = ComponentReferen
     hasDynamicComponent (): boolean {
         let found = false
         visitANodeRecursively(this.root, (node) => {
-            if (node.directives && node.directives.is) found = true
+            if (!isATextNode(node) && node.directives && node.directives.is) found = true
         })
         return found
     }
@@ -81,12 +81,12 @@ export class DynamicComponentInfo extends ComponentInfoImpl<DynamicComponentRefe
      * 确保 computed 等属性都出现在 proto 上，
      * 用于 compileToRenderer() 和 compileToSource()
      */
-    public readonly proto: SanComponentConfig<{}, {}>
+    public readonly proto: Component<{}> & ComponentDefineOptions
     constructor (
         id: string,
         root: ANode,
         childComponents: Map<TagName, DynamicComponentReference>,
-        public readonly componentClass: ComponentClass
+        public readonly componentClass: Component
     ) {
         super(id, root, childComponents)
         this.proto = Object.assign(componentClass.prototype, componentClass)

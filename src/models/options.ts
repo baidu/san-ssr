@@ -4,7 +4,7 @@
  * SanProject#compileToSource() 和 compileToRenderer() 的输入参数为 CompileInput
  * 这里定义了 CompileInput 相关的类型，以及对应的 Type Guards。
  */
-import { ComponentConstructor } from 'san'
+import { Component } from 'san'
 
 /**
  * 文件尚未存在，但其内容已经在内存里的情况。比如 Webpack 编译时。
@@ -40,7 +40,7 @@ export interface SanFileDescriptor {
      */
     templateContent: string
 }
-export type ComponentClass = ComponentConstructor<{}, any>
+export type ComponentClass = Component<any>
 
 export type FilePath = string
 

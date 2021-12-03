@@ -3,8 +3,7 @@
  * 因此不能引用外部模块，会因找不到外部模块报错
  */
 
-import type { ComponentClass } from '../models/component'
-import type { SanComponent } from 'san'
+import type { Component, ComponentDefineOptions } from 'san'
 
 const BASE_PROPS = {
     class: 1,
@@ -88,7 +87,7 @@ function xstyleFilter (inherits: object | string, own: string) {
     return own
 }
 
-function attrFilter (name: string, value: string, needEscape: boolean) {
+function attrFilter (name: string, value: string | number | boolean, needEscape: boolean) {
     // style/class/id 值为 falsy 时不输出属性
     if (value == null || (!value && BASE_PROPS[name])) {
         return ''
@@ -97,7 +96,7 @@ function attrFilter (name: string, value: string, needEscape: boolean) {
     return ` ${name}="${needEscape ? escapeHTML(value) : value}"`
 }
 
-function boolAttrFilter (name: string, value: string) {
+function boolAttrFilter (name: string, value: string | number | boolean) {
     return value ? ' ' + name : ''
 }
 
@@ -105,7 +104,7 @@ function callFilter (ctx: Context, name: string, ...args: any[]) {
     let value
     try {
         value = ctx.instance.filters[name].call(ctx.instance, ...args)
-    } catch (e) {
+    } catch (e: any) {
         /* istanbul ignore next */
         handleError(e, ctx.instance, 'filter:' + name)
     }
@@ -116,7 +115,7 @@ function callComputed (ctx: Context, name: string) {
     let value
     try {
         value = ctx.instance.computed[name].apply(ctx.instance)
-    } catch (e) {
+    } catch (e: any) {
         /* istanbul ignore next */
         handleError(e, ctx.instance, 'computed:' + name)
     }
@@ -133,7 +132,7 @@ function createFromPrototype (proto: object) {
     return new (Creator as any)()
 }
 
-function createInstanceFromClass (Clazz: ComponentClass) {
+function createInstanceFromClass (Clazz: Component<{}> & ComponentDefineOptions) {
     // method
     // compiled inited initData
     const inited = Clazz.prototype.inited
@@ -173,8 +172,8 @@ function getRootCtx<T extends {parentCtx?: T}> (ctx: T) {
     return ctx.data ? ctx : last
 }
 
-function handleError (e: Error, instance: SanComponent<{}>, info: string) {
-    let current: SanComponent<{}> | undefined = instance
+function handleError (e: Error, instance: Component<{}>, info: string) {
+    let current: Component<{}> | undefined = instance
     while (current) {
         if (typeof current.error === 'function') {
             current.error(e, instance, info)

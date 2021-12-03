@@ -1,155 +1,141 @@
-declare namespace San {
-    interface SanEvent<T, N> {
-        target: SanComponent<T>;
-        value: N;
-        name: string;
+export as namespace san
+export = san
+
+type Get<T, K> = K extends `${infer L}.${infer R}`
+    ? L extends keyof T
+        ? Get<T[L], R>
+        : any
+    : K extends `${infer First}[${infer Tail}]`
+        ? First extends keyof T
+            ? T[First] extends Array<infer AT> ? AT : any
+            : any
+        : K extends keyof T
+            ? T[K]
+            : any
+
+type Result<T> = {
+    [P in keyof T]: T[P]
+}
+type RequiredByKeys<T, K = keyof T> = Result<
+    {
+        [P in keyof T as P extends K ? P : never]-?: T[P]
+    } & {
+        [P in Exclude<keyof T, K>]?: T[P]
+    }
+>
+
+declare namespace san {
+    const debug: boolean;
+    const version: string;
+
+    const DataTypes: {
+        any: ChainableDataTypeChecker;
+        array: ChainableDataTypeChecker;
+        object: ChainableDataTypeChecker;
+        func: ChainableDataTypeChecker;
+        string: ChainableDataTypeChecker;
+        number: ChainableDataTypeChecker;
+        bool: ChainableDataTypeChecker;
+        symbol: ChainableDataTypeChecker;
+    
+        arrayOf(arrayItemChecker: DataTypeChecker): ChainableDataTypeChecker;
+        instanceOf<T>(expectedClass: new () => T): ChainableDataTypeChecker;
+        shape(shapeTypes: { [k: string]: DataTypeChecker }): ChainableDataTypeChecker;
+        oneOf(expectedEnumValues: any[]): ChainableDataTypeChecker;
+        oneOfType(expectedEnumOfTypeValues: DataTypeChecker[]): ChainableDataTypeChecker;
+        objectOf(typeChecker: DataTypeChecker): ChainableDataTypeChecker;
+        exact(shapeTypes: { [k: string]: DataTypeChecker }): ChainableDataTypeChecker;
     }
 
-    type SanEventListener<T, N> = (e: SanEvent<T, N>) => any;
-    interface SanData<T> {
-        new(data?: {}, parent?: SanData<{}>): SanData<T>;
-        parent: SanData<{}>;
-        raw: T;
+    class Data<T extends {} = {}> {
+        constructor(init?: Partial<T>, parent?: Data<{}>);
 
-        listeners: SanChangeListener<T>[];
-        listen(listener: SanChangeListener<T>): void;
-        unlisten(listener?: SanChangeListener<T>): void;
-
+        parent: Data<{}>;
+        raw: Partial<T>;
+    
+        listeners: DataChangeListener<T>[];
+        listen(listener: DataChangeListener<T>): void;
+        unlisten(listener?: DataChangeListener<T>): void;
+    
         typeChecker: () => void;
         setTypeChecker(checker: () => void): void;
-
-        fire(change: SanDataChangeInfo): void;
-        get<D = any>(expr?: string | ExprAccessorNode): D;
-        set(expr: string | ExprAccessorNode, value: any, option?: SanDataChangeOption): void;
-        merge(expr: string | ExprAccessorNode, source: {}, option?: SanDataChangeOption): void;
-        apply(expr: string | ExprAccessorNode, changer: (oldval: {}) => {}, option?: SanDataChangeOption): void;
-        splice(expr: string | ExprAccessorNode, spliceArgs: Array<any>, option?: SanDataChangeOption): void;
-        push(expr: string | ExprAccessorNode, item: any, option?: SanDataChangeOption): number;
-        pop(expr: string | ExprAccessorNode, option?: SanDataChangeOption): any;
-        shift(expr: string | ExprAccessorNode, option?: SanDataChangeOption): any;
-        unshift(expr: string | ExprAccessorNode, item: any, option?: SanDataChangeOption): number;
-        removeAt(expr: string | ExprAccessorNode, index: number, option?: SanDataChangeOption): void;
-        remove(expr: string | ExprAccessorNode, value: any, option?: SanDataChangeOption): void;
+    
+        fire(change: DataChangeInfo): void;
+    
+        get(): Partial<T>;
+        get<TPath extends string>(name: TPath): Get<T, TPath>;
+        get(expr: AccessorExpr): any;
+    
+        set<TPath extends string>(expr: TPath, value: Get<T, TPath>, option?: DataChangeOption): void;
+        set(expr: AccessorExpr, value: any, option?: DataChangeOption): void;
+    
+        assign(source: Partial<T>, options?: DataChangeOption): void;
+    
+        merge<TPath extends string>(expr: TPath, source: Partial<Get<T, TPath>>, option?: DataChangeOption): void;
+        merge(expr: AccessorExpr, source: {}, option?: DataChangeOption): void;
+    
+        apply<TPath extends string>(expr: TPath, changer: (oldValue: Get<T, TPath>) => Get<T, TPath>, option?: DataChangeOption): void;
+        apply(expr: AccessorExpr, changer: (oldValue: any) => any, option?: DataChangeOption): void;
+        
+        splice(expr: string | AccessorExpr, spliceArgs: Array<any>, option?: DataChangeOption): void;
+        push(expr: string | AccessorExpr, item: any, option?: DataChangeOption): number;
+        pop(expr: string | AccessorExpr, option?: DataChangeOption): any;
+        shift(expr: string | AccessorExpr, option?: DataChangeOption): any;
+        unshift(expr: string | AccessorExpr, item: any, option?: DataChangeOption): number;
+        removeAt(expr: string | AccessorExpr, index: number, option?: DataChangeOption): void;
+        remove(expr: string | AccessorExpr, value: any, option?: DataChangeOption): void;
     }
 
-    const Data: SanData<{}>;
 
-    interface SanChangeListener<T> {
-        (this: SanData<T>, change: SanDataChangeInfo): void
-    }
-    interface SanDataChangeInfo {
-        option: SanDataChangeOption,
-        type: DataChangeType,
-        expr: ExprAccessorNode,
-        value: any,
-    }
-    interface SanDataChangeOption {
-        silent?: boolean;
-        silence?: boolean;
-        quiet?: boolean;
-    }
-    enum DataChangeType {
-        SET = 1,
-        SPLICE = 2,
-    }
-
-    type DataTypeChecker = (data: any, dataName: string, componentName: string, fullDataName: string, secret?: any) => void;
-    interface ChainableDataTypeChecker extends DataTypeChecker {
-        isRequired: DataTypeChecker;
-    }
-
-    interface SanComponentConfig<T extends {}, D> {
-        el?: Element;
-        trimWhitespace?: 'none' | 'blank' | 'all';
-        data?: Partial<T>;
-        initData?(): Partial<T>;
-        displayName?: string;
-        template?: string;
-        filters?: {
-            [k: string]: (value: any, ...filterOption: any[]) => any,
-        };
-        components?: {
-            [k: string]: ComponentConstructor<{}, {}> | SanComponentConfig<{}, {}> | SanComponentLoader<{}, {}> | 'self',
-        };
-        computed?: {
-            [k: string]: (this: { data: SanData<T> }) => any,
-        };
-
-        messages?: {
-            [k: string]: SanEventListener<{}, {}>,
-        };
-        dataTypes?: {
-            [k in keyof T]: DataTypeChecker;
-        },
-        compiled?(this: SanComponent<T> & D): void;
-        inited?(this: SanComponent<T> & D): void;
-        created?(this: SanComponent<T> & D): void;
-        attached?(this: SanComponent<T> & D): void;
-        detached?(this: SanComponent<T> & D): void;
-        disposed?(this: SanComponent<T> & D): void;
-        updated?(this: SanComponent<T> & D): void;
-    }
-
-    class SanComponent<T> {
-        constructor(option?: { data?: Partial<T> });
+    interface Component<T extends {} = {}> {
 
         el?: Element;
-        nodeType: NodeType;
-        data: SanData<T>;
-        parentComponent?: SanComponent<{}>;
-        fire(eventName: string, eventData: any): void;
-        dispatch(eventName: string, eventData: any): void;
-
-        on(eventName: string, listener: SanEventListener<{}, {}>): void;
-        un(eventName: string, listener?: SanEventListener<{}, {}>): void;
-
-        watch(propName: string, watcher: (newValue: any) => any): void;
-        ref<T extends SanComponent<{}> | Element>(refName: string): T;
-        slot<T extends SanComponent<{}>>(name?: string): Array<T & SanSlot>;
-        nextTick(doNextTick: () => any): void;
-        attach(container: Element): void;
+        data: Data<T>;
+        parentComponent?: Component<{}>;
+    
+        nodeType: NodeType.CMPT;
+        lifeCycle: LifeCycleStage;
+    
+        fire<TEventArg>(eventName: string, eventArg: TEventArg): void;
+        on(eventName: string, listener: () => void): void;
+        on<TEventArg>(eventName: string, listener: (eventArg: TEventArg) => void): void;
+        un(eventName: string, listener?: Function): void;
+    
+        dispatch<TMsg>(messageName: string, message: TMsg): void;
+    
+        watch(
+            propName: string, 
+            watcher: (value: any, arg: {oldValue?: any, newValue?: any}) => void
+        ): void;
+        
+        ref<TCmpt extends Component<{}>>(refName: string): TCmpt;
+        ref(refName: string): Component<{}> | Element;
+    
+        slot(name?: string): SlotNode[];
+    
+        attach(parentEl: Element, beforeEl?: Element): void;
         detach(): void;
         dispose(): void;
-        error(e: Error, instance: SanComponent<{}>, info: string): void;
+    
+        nextTick(handler: () => void): void;
+
+
+        initData?(): Partial<T>;
+        construct?(options?: ComponentNewOptions<T>): void;
+        compiled?(): void;
+        inited?(): void;
+        created?(): void;
+        attached?(): void;
+        detached?(): void;
+        disposed?(): void;
+        updated?(): void;
+        error?(e: Error, instance: Component<{}>, info: string): void;
     }
 
-    interface ComponentConstructor<T, D> {
-        new(option?: { data?: Partial<T>, owner?: any, source?: string | ANode }): SanComponent<T> & D;
-        template?: string;
-        filters?: {
-            [name: string]: Function;
-        };
-        components?: {
-            [name: string]: ComponentConstructor<{}, {}>
-        };
-        computed?: {
-            [name: string]: Function;
-        };
-        trimWhitespace?: string;
-        delimiters?: string;
+    class Component<T extends {} = {}> {
+        constructor(option?: ComponentNewOptions<T>);
     }
 
-    interface SanComponentLoaderOption<T, D> {
-        load(): Promise<ComponentConstructor<T, D>>;
-        placeholder?: ComponentConstructor<T, D>;
-        fallback?: ComponentConstructor<T, D>;
-    }
-
-    class SanComponentLoader<T, D> {
-        constructor(
-            load: ComponentConstructor<T, D>,
-            placeholder: ComponentConstructor<T, D>,
-            fallback: ComponentConstructor<T, D>
-        );
-        start(onload: (Component: ComponentConstructor<T, D>) => void): void;
-        done(Component: ComponentConstructor<T, D>): void;
-    }
-
-    interface SanSlot {
-        isScoped: boolean;
-        isInserted: boolean;
-        children: SanSlot[];
-    }
 
     enum ExprType {
         STRING = 1,
@@ -167,74 +153,16 @@ declare namespace San {
         NULL = 13
     }
 
-    interface ExprNodeTpl<T extends ExprType> {
-        type: T;        // 如果只有这一个属性，去掉泛型更可读
-        value?: any;    // 在 eval 会统一处理，事实上作用于 null, string, number
-        parenthesized?: boolean; // 在 read parenthesized expr 会统一设置
-    }
-    type ExprNode = ExprNodeTpl<any>;
-    interface ExprStringNode extends ExprNodeTpl<ExprType.STRING> {
-        value: string;
-    }
-    interface ExprNumberNode extends ExprNodeTpl<ExprType.NUMBER> {
-        value: number;
-    }
-    interface ExprBoolNode extends ExprNodeTpl<ExprType.BOOL> {
-        value: boolean;
-    }
-    interface ExprAccessorNode extends ExprNodeTpl<ExprType.ACCESSOR> {
-        paths: ExprNode[];
-    }
-    interface ExprInterpNode extends ExprNodeTpl<ExprType.INTERP> {
-        expr: ExprAccessorNode;
-        filters: ExprCallNode[];
-        original: boolean;
-        raw: string;
-    }
-    interface ExprCallNode extends ExprNodeTpl<ExprType.CALL> {
-        name: ExprAccessorNode;
-        args: ExprNode[];
-    }
-    interface ExprTextNode extends ExprNodeTpl<ExprType.TEXT> {
-        segs: ExprNode[];
-        original?: number;
-        value?: string; // segs 由一个 STRING 构成时存在
-    }
-    interface ExprBinaryNode extends ExprNodeTpl<ExprType.BINARY> {
-        segs: [ExprNode, ExprNode];
-        operator: number;
-    }
-    interface ExprUnaryNode extends ExprNodeTpl<ExprType.UNARY> {
-        operator: number;
-        expr: ExprAccessorNode;
-    }
-    interface ExprTertiaryNode extends ExprNodeTpl<ExprType.TERTIARY> {
-        segs: ExprNode[];
-    }
-    interface ExprObjectNode extends ExprNodeTpl<ExprType.OBJECT> {
-        items: [{
-            spread: boolean;
-            expr: ExprNode;
-            name: ExprNode;
-        }];
-    }
-    interface ExprArrayNode extends ExprNodeTpl<ExprType.ARRAY> {
-        items: [{
-            spread: boolean;
-            expr: ExprNode;
-        }];
-    }
-    interface ExprNullNode extends ExprNodeTpl<ExprType.NULL> {}
-
-    interface SanIndexedList<T> {
-        raw: T[];
-        index: { [name: string]: T };
-
-        get(bindName: string): T;
-        each(handler: (bindItem: T) => any, thisArg: any): void;
-        push(item: { name: string } & {}): void;
-        remove(name: string): any;
-        concat(other: SanIndexedList<T>): SanIndexedList<T>;
+    const LifeCycle: {
+        start: LifeCycleStage;
+        compiled: LifeCycleCompiled;
+        inited: LifeCycleInited;
+        painting: LifeCyclePainting;
+        created: LifeCycleCreated;
+        attached: LifeCycleAttached;
+        leaving: LifeCycleLeaving;
+        detached: LifeCycleDetached;
+        disposed: LifeCycleDisposed;
     }
 
     enum NodeType {
@@ -244,111 +172,231 @@ declare namespace San {
         ELEM = 4,
         CMPT = 5,
         SLOT = 6,
-        TPL = 7
+        TPL = 7,
+        LOADER = 8,
+        IS = 9
+    }
+    
+    interface Expr {
+        type: ExprType;
+        parenthesized?: boolean;
+    }
+    
+    interface StringLiteral extends Expr {
+        type: ExprType.STRING;
+        value: string;
+    }
+    interface NumberLiteral extends Expr {
+        type: ExprType.NUMBER;
+        value: number;
+    }
+    
+    interface BoolLiteral extends Expr {
+        type: ExprType.BOOL;
+        value: boolean;
+    }
+    
+    interface NullLiteral extends Expr {
+        type: ExprType.NULL;
+    }
+    
+    interface AccessorExpr extends Expr {
+        type: ExprType.ACCESSOR;
+        paths: Expr[];
+    }
+    interface InterpExpr extends Expr {
+        type: ExprType.INTERP;
+        expr: Expr;
+        filters: CallExpr[];
+        original?: boolean;
+    }
+    
+    interface CallExpr extends Expr {
+        type: ExprType.CALL;
+        name: AccessorExpr;
+        args: Expr[];
+    }
+    
+    interface TextExpr extends Expr {
+        type: ExprType.TEXT;
+        segs: Array<InterpExpr | StringLiteral>;
+        original?: number;
+        value?: string; // segs 由一个 STRING 构成时存在
+    }
+    
+    interface BinaryExpr extends Expr {
+        type: ExprType.BINARY;
+        segs: [Expr, Expr];
+        operator: number;
+    }
+    
+    interface UnaryExpr extends Expr {
+        type: ExprType.UNARY;
+        operator: number;
+        expr: Expr;
+    }
+    interface TertiaryExpr extends Expr {
+        type: ExprType.TERTIARY;
+        segs: [Expr, Expr, Expr];
+    }
+    
+    interface ObjectLiteralItem {
+        expr: Expr;
+        name?: Expr;
+        spread?: boolean;
+    }
+    interface ObjectLiteral extends Expr {
+        type: ExprType.OBJECT;
+        items: ObjectLiteralItem[];
+    }
+    
+    interface ArrayLiteralItem {
+        expr: Expr;
+        spread?: boolean;
+    }
+    
+    interface ArrayLiteral extends Expr {
+        type: ExprType.ARRAY;
+        items: ArrayLiteralItem[];
     }
 
-    interface Directive<T extends ExprNode> {
-        item?: string;
-        index?: number;
-        trackBy?: ExprAccessorNode;
-        value: T;
+    enum DataChangeType {
+        SET = 1,
+        SPLICE = 2
     }
 
-    interface ANodeProperty {
+    interface DataChangeOption {
+        silent?: boolean;
+        force?: boolean;
+    }
+    
+    interface DataChangeListener<T> {
+        (this: Data<T>, change: DataChangeInfo): void
+    }
+    
+    interface DataChangeInfo {
+        option: DataChangeOption,
+        type: DataChangeType,
+        expr: AccessorExpr,
+        value: any,
+    }
+    
+    type DataTypeChecker = (
+        data: any, 
+        dataName: string, 
+        componentName: string, 
+        fullDataName: string, 
+        secret?: any
+    ) => void;
+
+    interface ChainableDataTypeChecker extends DataTypeChecker {
+        isRequired: DataTypeChecker;
+    }
+    
+    
+    interface AText {
+        textExpr: Expr;
+    }
+    
+    interface Directives {
+        if?: ADirectiveIf;
+        is?: ADirectiveIs;
+        show?: ADirectiveShow;
+        html?: ADirectiveHtml;
+        bind?: ADirectiveBind;
+        elif?: ADirectiveElif;
+        else?: ADirectiveElse;
+        transition?: ADirectiveTransition;
+        ref?: ADirectiveRef;
+        for?: ADirectiveFor;
+    }
+    
+    interface AElement {
+        directives: Directives;
+        props: AProperty[];
+        events: AEvent[];
+        children: ANode[];
+        tagName?: string;
+        vars?: AVar[];
+    }
+    
+    // TODO: | or &
+    type ANode = AText | AElement;
+    
+    interface AProperty {
         name: string;
-        expr: ExprNode;
-        noValue?: 1;
-        x?: number;
+        expr: Expr;
+        noValue?: number | boolean;
+        x?: number | boolean;
     }
-
-    interface ANode {
-        isText?: boolean;
-        text?: string;
-        textExpr?: ExprInterpNode | ExprTextNode | ExprStringNode | ExprAccessorNode;
-        children?: ANode[];
-        props: ANodeProperty[];
-        events: SanIndexedList<ExprNode>;
-        directives: { [k: string]: Directive<any> };
-        elses?: ANode[];
-        tagName: string;
-        vars?: [{
-            name: string;
-            expr: ExprNode
-        }];
+    
+    interface AEvent {
+        name: string;
+        expr: CallExpr;
+        modifier: {
+            [K: string]: boolean
+        }
     }
-
-    interface ATextNode extends ANode {
-        textExpr: ExprInterpNode | ExprTextNode | ExprStringNode | ExprAccessorNode;
+    
+    interface AVar {
+        name: string;
+        expr: Expr;
     }
-
-    interface ATemplateNode extends ANode {
-        tagName: 'template';
-        children: ANode[];
+    
+    interface ADirective {
+        value: {}
     }
-
-    interface AFragmentNode extends ANode {
-        tagName: 'fragment';
-        children: ANode[];
+    interface ADirectiveIs extends ADirective {
+        value: Expr;
     }
-
-    interface AForNode extends ANode {
-        directives: {
-            for: Directive<any>;
-        };
+    interface ADirectiveShow extends ADirective {
+        value: Expr;
     }
-
-    interface AIfNode extends ANode {
-        ifRinsed: ANode;
-        elses?: ANode[];
-        directives: {
-            if: Directive<any>;
-        };
+    interface ADirectiveHtml extends ADirective {
+        value: Expr;
     }
-
-    interface ASlotNode extends ANode {
-        children: ANode[];
+    interface ADirectiveBind extends ADirective {
+        value: Expr;
+    }
+    interface ADirectiveIf extends ADirective {
+        value: Expr;
+    }
+    interface ADirectiveElif extends ADirective {
+        value: Expr;
+    }
+    interface ADirectiveElse extends ADirective {}
+    interface ADirectiveTransition extends ADirective {
+        value: CallExpr;
+    }
+    interface ADirectiveRef extends ADirective {
+        value: Expr;
+    }
+    interface ADirectiveFor extends ADirective {
+        value: Expr;
+        item: string;
+        index?: string;
+        trackBy?: AccessorExpr;
+        trackByRaw?: string;
+    }
+    
+    interface AFragmentNode extends AElement {
+        tagName: 'fragment' | 'template';
+    }
+    
+    interface AForNode extends AElement {
+        directives: RequiredByKeys<Directives, 'for'>;
+    }
+    
+    interface AIfNode extends AElement {
+        elses?: AElement[];
+        directives: RequiredByKeys<Directives, 'if'>;
+    }
+    
+    interface ASlotNode extends AElement {
         tagName: 'slot';
     }
 
-    interface ParseTemplateOption {
-        trimWhitespace?: 'none' | 'blank' | 'all';
-        delimiters?: [string, string];
-    }
-
-    type SanRenderer<T> = (data: T) => string;
-
-    const Component: ComponentConstructor<{}, {}>;
-
-    function defineComponent<T, D>(config: SanComponentConfig<T, D> & D): ComponentConstructor<T, D>;
-    function createComponentLoader<T, D>(options: SanComponentLoaderOption<T, D> | SanComponentLoaderOption<T, D>['load']): SanComponentLoader<T, D>;
-    function compileComponent<T extends SanComponent<{}>>(component: T): void;
-
-    function parseExpr(template: string): ExprNode;
-    function evalExpr<T, D extends SanComponent<{}>>(expr: ExprNode, data: SanData<T>, owner?: D): any;
-    function parseTemplate(template: string, options?: ParseTemplateOption): ANode;
-    function parseComponentTemplate(componentClass: ComponentConstructor<{}, {}>): ANode;
-    function inherits(childClazz: (...args: any[]) => void, parentClazz: ComponentConstructor<{}, {}>): void;
-    function nextTick(doNextTick: () => any): void;
-    const DataTypes: {
-        any: ChainableDataTypeChecker;
-        array: ChainableDataTypeChecker;
-        object: ChainableDataTypeChecker;
-        func: ChainableDataTypeChecker;
-        string: ChainableDataTypeChecker;
-        number: ChainableDataTypeChecker;
-        bool: ChainableDataTypeChecker;
-        symbol: ChainableDataTypeChecker;
-
-        arrayOf(arrayItemChecker: DataTypeChecker): ChainableDataTypeChecker;
-        instanceOf<T>(expectedClass: new () => T): ChainableDataTypeChecker;
-        shape(shapeTypes: { [k: string]: DataTypeChecker }): ChainableDataTypeChecker;
-        oneOf(expectedEnumValues: any[]): ChainableDataTypeChecker;
-        oneOfType(expectedEnumOfTypeValues: DataTypeChecker[]): ChainableDataTypeChecker;
-        objectOf(typeChecker: DataTypeChecker): ChainableDataTypeChecker;
-        exact(shapeTypes: { [k: string]: DataTypeChecker }): ChainableDataTypeChecker;
-    };
-
-    interface SanLifeCycleStage {
+    interface LifeCycleStage {
         is(stat: string): boolean;
         attached?: true;
         compiled?: true;
@@ -359,68 +407,165 @@ declare namespace San {
         leaving?: true;
         painting?: true;
     }
-
-    const LifeCycle: {
-        start: {},
-
-        compiled: {
-            is(stat: string): boolean,
-            compiled: true
-        },
-
-        inited: {
-            is(stat: string): boolean,
-            compiled: true,
-            inited: true
-        },
-
-        painting: {
-            is(stat: string): boolean,
-            compiled: true,
-            inited: true,
-            painting: true
-        },
-
-        created: {
-            is(stat: string): boolean,
-            compiled: true,
-            inited: true,
-            created: true
-        },
-
-        attached: {
-            is(stat: string): boolean,
-            compiled: true,
-            inited: true,
-            created: true,
-            attached: true
-        },
-
-        leaving: {
-            is(stat: string): boolean,
-            compiled: true,
-            inited: true,
-            created: true,
-            attached: true,
-            leaving: true
-        },
-
-        detached: {
-            is(stat: string): boolean,
-            compiled: true,
-            inited: true,
-            created: true,
-            detached: true
-        },
-
-        disposed: {
-            is(stat: string): boolean,
-            disposed: true
-        }
+    
+    interface LifeCycleStart extends LifeCycleStage {
+    }
+    
+    interface LifeCycleCompiled extends LifeCycleStage {
+        compiled: true;
+    }
+    
+    interface LifeCycleInited extends LifeCycleStage {
+        compiled: true;
+        inited: true;
+    }
+    
+    interface LifeCyclePainting extends LifeCycleStage {
+        compiled: true;
+        inited: true;
+        painting: true;
+    }
+    
+    interface LifeCycleCreated extends LifeCycleStage {
+        compiled: true;
+        inited: true;
+        created: true;
+    }
+    
+    interface LifeCycleAttached extends LifeCycleStage {
+        compiled: true;
+        inited: true;
+        created: true;
+        attached: true;
+    }
+    
+    interface LifeCycleLeaving extends LifeCycleStage {
+        compiled: true;
+        inited: true;
+        created: true;
+        attached: true;
+        leaving: true;
+    }
+    
+    interface LifeCycleDetached extends LifeCycleStage {
+        compiled: true;
+        inited: true;
+        created: true;
+        detached: true;
+    }
+    
+    interface LifeCycleDisposed extends LifeCycleStage {
+        disposed: true;
+    }
+    
+    interface SlotNode {
+        isScoped: boolean;
+        isInserted: boolean;
+        isNamed?: boolean;
+        name?: string;
+        nodeType: NodeType.SLOT;
+    }
+    
+    interface ComponentNewOptions<T extends {} = {}> {
+        data?: Partial<T>;
+        owner?: Component<{}>;
+        source?: string | ANode;
+        el?: Element;
     }
 
-    const debug: boolean;
-    const version: string;
+    interface ComponentDefineOptionFilters {
+        [k: string]: (value: any, ...filterOption: any[]) => any;
+    }
+
+    interface ComponentDefineOptionComponents {
+        [k: string]: Component<{}> | ComponentDefineOptions<{}> | ComponentLoader | 'self';
+    }
+
+    interface ComponentDefineOptionComputed<T> {
+        [k: string]: (this: { data: Data<T> }) => unknown;
+    }
+
+    interface ComponentDefineOptionMessages {
+        [k: string]: (arg?: {name?: string, target?: Component<{}>, value?: unknown}) => void;
+    }
+
+    type TemplateParseOptionDelimiters = [string, string]
+    type TemplateParseOptionTrimWhitespace = 'none' | 'blank' | 'all'
+
+    interface ComponentDefineOptions<T extends {} = {}> {
+        template?: string;
+        filters?: ComponentDefineOptionFilters;
+        components?: ComponentDefineOptionComponents;
+        computed?: ComponentDefineOptionComputed<T>;
+        messages?: ComponentDefineOptionMessages;
+        trimWhitespace?: TemplateParseOptionTrimWhitespace;
+        delimiters?: TemplateParseOptionDelimiters;
+        autoFillStyleAndId?: boolean;
+        
+        initData?(): Partial<T>;
+        construct?(options?: ComponentNewOptions<T>): void;
+        compiled?(): void;
+        inited?(): void;
+        created?(): void;
+        attached?(): void;
+        detached?(): void;
+        disposed?(): void;
+        updated?(): void;
+        error?(e: Error, instance: Component<{}>, info: string): void;
+
+        dataTypes?: {
+            [k: string]: DataTypeChecker;
+        };
+    
+        // other methods/props on proto
+        [key: string]: any;
+    }
+
+
+    interface ComponentLoaderOptions {
+        load(): Promise<DefinedComponentClass<{}, {}>>;
+        placeholder?: DefinedComponentClass<{}, {}>;
+        fallback?: DefinedComponentClass<{}, {}>;
+    }
+    
+    interface ComponentLoader {
+        new(option?: ComponentLoaderOptions): ComponentLoader;
+    
+        start(onload: (componentClass: DefinedComponentClass<{}, {}>) => void): void;
+        done(componentClass: DefinedComponentClass<{}, {}>): void;
+    }
+
+    interface DefinedComponentClass<T extends {}, M> {
+        new(option?: ComponentNewOptions<T>): Component<T> & M;
+    }
+    
+    type ComponentDefineOptionsWithThis<DataT, OptionsT> = ComponentDefineOptions<DataT> & OptionsT 
+        & ThisType<Component<DataT> & ComponentDefineOptions<DataT> & OptionsT>;
+
+    function defineComponent<DataT extends {} = {}, OptionsT extends {} = {}>(
+        options: ComponentDefineOptionsWithThis<DataT, OptionsT>
+    ): DefinedComponentClass<DataT, OptionsT>;
+
+    function createComponentLoader(
+        options: ComponentLoaderOptions | ComponentLoaderOptions["load"]
+    ): ComponentLoader;
+    
+    function parseTemplate(
+        template: string, 
+        options?: {
+            trimWhitespace?: TemplateParseOptionTrimWhitespace;
+            delimiters?: TemplateParseOptionDelimiters;
+        }
+    ): ANode;
+
+    function parseComponentTemplate(componentClass: Component<{}>): ANode;
+    function unpackANode(source: Array<string|number|null|undefined>): ANode;
+    
+    function parseExpr(template: string): Expr;
+    function evalExpr<T extends {}>(expr: Expr, data: Data<T>, owner?: Component<T>): any;
+    
+    function inherits(subClass: Component<{}>, superClass: Component<{}>): void;
+    function inherits<T>(subClass: (options: ComponentNewOptions<T>) => void, superClass: Component<{}>): void;
+    function nextTick(handler: () => any): void;
 }
 
-export = San;

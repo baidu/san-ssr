@@ -8,12 +8,12 @@
  */
 
 import * as TypeGuards from './san-ast-type-guards'
-import { ANode, ExprType, ANodeProperty } from 'san'
+import { ExprType, AProperty, AElement, AIfNode, ANode } from 'san'
 
 /**
 * 获取 ANode props 数组中相应 name 的项
 */
-export function getANodePropByName (aNode: ANode, name: string): ANodeProperty | undefined {
+export function getANodePropByName (aNode: AElement, name: string): AProperty | undefined {
     for (const prop of aNode.props) {
         if (prop.name === name) return prop
     }
@@ -24,7 +24,7 @@ export function getANodePropByName (aNode: ANode, name: string): ANodeProperty |
  *
  * 做了一点归一化：对于布尔属性，只要 key 存在就把它的值设为 true
  */
-export function parseANodeProps (aNode: ANode) {
+export function parseANodeProps (aNode: AElement) {
     return aNode.props.map(prop => {
         if (
             (
@@ -34,6 +34,7 @@ export function parseANodeProps (aNode: ANode) {
         ) {
             prop.expr = {
                 type: ExprType.BOOL,
+                // @ts-ignore
                 value: true
             }
         }
@@ -47,6 +48,7 @@ export function parseANodeProps (aNode: ANode) {
  */
 export function visitANodeRecursively (aNode: ANode, visitor: (aNode: ANode) => void) {
     visitor(aNode)
+    if (TypeGuards.isATextNode(aNode)) return
     for (const child of aNode.children || []) visitANodeRecursively(child, visitor)
-    for (const els of aNode.elses || []) visitANodeRecursively(els, visitor)
+    for (const els of (aNode as AIfNode).elses || []) visitANodeRecursively(els, visitor)
 }

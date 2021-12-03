@@ -1,17 +1,15 @@
 /**
  * 在 San 核心之外，提供额外的 San 组件的类型信息和工具
  */
-import { SanData, ComponentConstructor, SanComponent } from 'san'
+import { Component, Data } from 'san'
 
 export interface Computed {
-    [k: string]: (this: { data: SanData<{}> }) => any
+    [k: string]: (this: { data: Data<{}> }) => any
 }
 
 export interface Filters {
-    [k: string]: (this: SanComponent<{}>, ...args: any[]) => any
+    [k: string]: (this: Component<{}>, ...args: any[]) => any
 }
-
-export type ComponentClass = ComponentConstructor<{}, {}>
 
 export const COMPONENT_RESERVED_MEMBERS = new Set(
     [
@@ -55,6 +53,6 @@ export const COMPONENT_RESERVED_MEMBERS = new Set(
     ]
 )
 
-export function isComponentLoader (cmpt: any): cmpt is {placeholder: ComponentClass} {
+export function isComponentLoader (cmpt: any): cmpt is {placeholder: Component} {
     return cmpt && Object.prototype.hasOwnProperty.call(cmpt, 'load') && Object.prototype.hasOwnProperty.call(cmpt, 'placeholder')
 }

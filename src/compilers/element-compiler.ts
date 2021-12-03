@@ -9,11 +9,12 @@ import { _ } from '../runtime/underscore'
 import { IDGenerator } from '../utils/id-generator'
 import { autoCloseTags } from '../utils/dom-util'
 import { ANodeCompiler } from './anode-compiler'
-import { ExprNode, ANodeProperty, Directive, ANode } from 'san'
-import { isExprNumberNode, isExprStringNode, isExprBoolNode } from '../ast/san-ast-type-guards'
+import { ADirectiveBind, AElement, AProperty, BoolLiteral, Expr, NumberLiteral, StringLiteral } from 'san'
+import { isExprNumberNode, isExprStringNode, isExprBoolNode, isExprWithValue } from '../ast/san-ast-type-guards'
 import { createIfStrictEqual, createIfNotNull, createDefaultValue, createHTMLLiteralAppend, createHTMLExpressionAppend, NULL, L, I, ASSIGN, DEF, BINARY } from '../ast/renderer-ast-util'
 import { HelperCall, ArrayIncludes, Else, Foreach, If, MapLiteral } from '../ast/renderer-ast-dfn'
 import { sanExpr, OutputType } from './san-expr-compiler'
+import assert from 'assert'
 
 const BOOL_ATTRIBUTES = ['readonly', 'disabled', 'multiple', 'checked']
 
@@ -28,17 +29,17 @@ export class ElementCompiler {
      * @param id 抗冲突变量名产生器
      */
     constructor (
-        private aNodeCompiler: ANodeCompiler<never>,
+        private aNodeCompiler: ANodeCompiler,
         private id: IDGenerator
     ) {}
 
     /**
      * 编译元素标签头
      */
-    * tagStart (aNode: ANode, dynamicTagName?: string) {
+    * tagStart (aNode: AElement, dynamicTagName?: string) {
         const props = aNode.props
         const bindDirective = aNode.directives.bind
-        const tagName = aNode.tagName
+        const tagName = aNode.tagName!
 
         // element start '<'
         if (dynamicTagName) {
@@ -61,7 +62,7 @@ export class ElementCompiler {
         yield createHTMLLiteralAppend('>')
     }
 
-    private * compileProperty (tagName: string, prop: ANodeProperty, propsIndex: { [key: string]: ANodeProperty }) {
+    private * compileProperty (tagName: string, prop: AProperty, propsIndex: { [key: string]: AProperty }) {
         if (prop.name === 'slot') return
         if (prop.name === 'value') {
             if (tagName === 'textarea') return
@@ -98,6 +99,7 @@ export class ElementCompiler {
         const valueProp = propsIndex.value
         const inputType = propsIndex.type
         if (prop.name === 'checked' && tagName === 'input' && valueProp && inputType) {
+            assert(isExprWithValue(inputType.expr))
             switch (inputType.expr.value) {
             case 'checkbox':
                 yield new If(
@@ -119,11 +121,11 @@ export class ElementCompiler {
         }
     }
 
-    private isLiteral (expr: ExprNode) {
+    private isLiteral (expr: Expr): expr is BoolLiteral | StringLiteral | NumberLiteral {
         return isExprBoolNode(expr) || isExprStringNode(expr) || isExprNumberNode(expr)
     }
 
-    private * compileBindProperties (tagName: string, bindDirective: Directive<any>) {
+    private * compileBindProperties (tagName: string, bindDirective: ADirectiveBind) {
         const bindProps = this.id.next('bindProps')
         yield DEF(bindProps, BINARY(sanExpr(bindDirective.value), '||', new MapLiteral([])))
 
@@ -143,7 +145,7 @@ export class ElementCompiler {
     /**
      * 编译元素闭合
      */
-    * tagEnd (aNode: ANode, dynamicTagName?: string) {
+    * tagEnd (aNode: AElement, dynamicTagName?: string) {
         const tagName = aNode.tagName
 
         if (dynamicTagName) {
@@ -170,7 +172,7 @@ export class ElementCompiler {
     /**
      * 编译元素内容
      */
-    * inner (aNode: ANode) {
+    * inner (aNode: AElement) {
         // inner content
         if (aNode.tagName === 'textarea') {
             const valueProp = getANodePropByName(aNode, 'value')

@@ -88,6 +88,7 @@ declare namespace san {
 
 
     interface Component<T extends {} = {}> {
+        new(option?: ComponentNewOptions<T>): Component<T>
 
         el?: Element;
         data: Data<T>;
@@ -295,7 +296,7 @@ declare namespace san {
     
     
     interface AText {
-        textExpr: Expr;
+        textExpr: TextExpr | InterpExpr;
     }
     
     interface Directives {
@@ -390,6 +391,10 @@ declare namespace san {
     interface AIfNode extends AElement {
         elses?: AElement[];
         directives: RequiredByKeys<Directives, 'if'>;
+    }
+
+    interface ADynamicNode extends AElement {
+        directives: RequiredByKeys<Directives, 'is'>;
     }
     
     interface ASlotNode extends AElement {

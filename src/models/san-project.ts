@@ -10,12 +10,13 @@
  * 2. 复杂的编译过程建议使用 SanProject，它提供了更精细的 API。上述两个 API 其实是 SanProject 一个包装。
  */
 
-import type { ComponentConstructor } from 'san'
+import type { Component } from 'san'
 import type { TypedSanSourceFile, DynamicSanSourceFile, SanSourceFile, JSSanSourceFile } from '../models/san-source-file'
 import type { parseSanSourceFileOptions, RenderOptions } from '../compilers/renderer-options'
 import type { Renderer } from './renderer'
 import type { CompileOptions } from '../target-js/compilers/compile-options'
 import type { TargetCodeGenerator } from '../models/target-code-generator'
+import type { CompilerOptions } from 'typescript'
 import assert from 'assert'
 import { Project } from 'ts-morph'
 import { ComponentClassParser } from '../parsers/component-class-parser'
@@ -104,7 +105,7 @@ export class SanProject {
      *  * `options.bareFunction` 固定为 true
      */
     public compileToRenderer (
-        componentClass: ComponentConstructor<{}, any>,
+        componentClass: Component<any>,
         options?: CompileOptions
     ): Renderer {
         const sanSourceFile = new ComponentClassParser(componentClass, '').parse()
@@ -121,8 +122,8 @@ export class SanProject {
         return compiler.emitHelpers(options)
     }
 
-    public getCompilerOptionsOrThrow () {
-        return this.tsProject!.getCompilerOptions()
+    public getCompilerOptionsOrThrow (): CompilerOptions {
+        return this.tsProject!.getCompilerOptions() as CompilerOptions
     }
 
     /**

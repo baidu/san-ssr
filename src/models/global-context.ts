@@ -1,8 +1,8 @@
-import { ComponentClass } from './component'
+import { Component } from 'san'
 
 interface ReferInfo {specifier: string; id: string; tagName?: string}
 
 export interface GlobalContext {
     customSSRFilePath?(path: ReferInfo): string
-    customComponentFilePath?(info: ReferInfo): string | ComponentClass
+    customComponentFilePath?(info: ReferInfo): string | Component
 }

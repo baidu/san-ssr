@@ -6,7 +6,7 @@
  */
 import assert from 'assert'
 import { camelCase } from 'lodash'
-import { ANode, AIfNode, AForNode, ASlotNode, ATemplateNode, AFragmentNode, ATextNode } from 'san'
+import { ANode, AIfNode, AForNode, ASlotNode, AFragmentNode, AText, ADynamicNode, AElement, StringLiteral } from 'san'
 import { ComponentInfo } from '../models/component-info'
 import { ElementCompiler } from './element-compiler'
 import { getANodePropByName } from '../ast/san-ast-util'
@@ -22,7 +22,7 @@ import type { RenderOptions } from './renderer-options'
  *
  * 负责单个 ComponentClass 的编译，每个 ANodeCompiler 对应于一个 ComponentInfo。
  */
-export class ANodeCompiler<T extends 'none' | 'typed'> {
+export class ANodeCompiler {
     private elementCompiler: ElementCompiler
     private inScript = false
 
@@ -45,8 +45,8 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         if (TypeGuards.isAIfNode(aNode)) return this.compileIf(aNode)
         if (TypeGuards.isAForNode(aNode)) return this.compileFor(aNode)
         if (TypeGuards.isASlotNode(aNode)) return this.compileSlot(aNode)
-        if (TypeGuards.isATemplateNode(aNode)) return this.compileTemplate(aNode)
-        if (TypeGuards.isAFragmentNode(aNode)) return this.compileFragment(aNode)
+        if (TypeGuards.isAFragmentNode(aNode) && aNode.tagName === 'template') return this.compileTemplate(aNode)
+        if (TypeGuards.isAFragmentNode(aNode) && aNode.tagName === 'fragment') return this.compileFragment(aNode)
         if (TypeGuards.isADynamicNode(aNode)) return this.compileDynamic(aNode, isRootElement)
 
         const childComponentReference = this.generateRef(aNode)
@@ -57,12 +57,16 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
     }
 
     private generateRef (aNode: ANode) {
-        if (this.componentInfo.childComponents.has(aNode.tagName)) {
+        if (
+            !TypeGuards.isATextNode(aNode) &&
+            aNode.tagName &&
+            this.componentInfo.childComponents.has(aNode.tagName)
+        ) {
             return new ComponentReferenceLiteral(this.componentInfo.childComponents.get(aNode.tagName)!)
         }
     }
 
-    private * compileText (aNode: ATextNode): Generator<Statement> {
+    private * compileText (aNode: AText): Generator<Statement> {
         const shouldEmitComment = (TypeGuards.isExprTextNode(aNode.textExpr) || TypeGuards.isExprInterpNode(aNode.textExpr)) &&
             aNode.textExpr.original && !this.ssrOnly && !this.inScript
         const outputType = this.inScript ? OutputType.HTML : OutputType.ESCAPE_HTML
@@ -71,7 +75,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         if (shouldEmitComment) yield createHTMLLiteralAppend('<!--/s-text-->')
     }
 
-    private * compileTemplate (aNode: ATemplateNode) {
+    private * compileTemplate (aNode: AFragmentNode) {
         // if、for 等区块 wrap，只渲染内容。
         // 注意：<template> 为组件根节点时，tagName=null, isATemplateNode=false
         yield * this.elementCompiler.inner(aNode)
@@ -87,7 +91,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         }
     }
 
-    private * compileDynamic (aNode: ANode, isRootElement: boolean) {
+    private * compileDynamic (aNode: ADynamicNode, isRootElement: boolean) {
         const dynamicTagName = this.id.next('dynamicTagName')
         yield DEF(dynamicTagName, sanExpr(aNode.directives.is.value))
         const refs = BINARY(I('ctx'), '.', I('refs'))
@@ -177,7 +181,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         yield createHTMLExpressionAppend(new SlotRenderCall(render, [I('parentCtx'), slotData]))
     }
 
-    private * compileElement (aNode: ANode, dynamicTagName: string | undefined = undefined, isRootElement: boolean): Generator<Statement> {
+    private * compileElement (aNode: AElement, dynamicTagName: string | undefined = undefined, isRootElement: boolean): Generator<Statement> {
         yield * this.elementCompiler.tagStart(aNode, dynamicTagName)
         if (aNode.tagName === 'script') this.inScript = true
         if (isRootElement && !this.ssrOnly && !this.inScript) {
@@ -198,16 +202,16 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         ]
     }
 
-    private * compileComponent (aNode: ANode, ref: Expression, isRootElement: boolean) {
+    private * compileComponent (aNode: AElement, ref: Expression, isRootElement: boolean) {
         assert(!this.inScript, 'component reference is not allowed inside <script>')
 
         // slot
         const defaultSlotContents: ANode[] = []
         const namedSlotContents = new Map()
         for (const child of aNode.children!) { // nodes without children (like pATextNode) has been taken over by other methods
-            const slotBind = !child.textExpr && getANodePropByName(child, 'slot')
+            const slotBind = !TypeGuards.isATextNode(child) && getANodePropByName(child, 'slot')
             if (slotBind) {
-                const slotName = slotBind.expr.value
+                const slotName = (slotBind.expr as StringLiteral).value
                 if (!namedSlotContents.has(slotName)) {
                     namedSlotContents.set(slotName, { children: [], prop: slotBind })
                 }
@@ -299,6 +303,9 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
                 if (!TypeGuards.isATextNode(c)) {
                     break
                 }
+
+                assert(!TypeGuards.isExprInterpNode(c.textExpr))
+
                 if (!c.textExpr.value || c.textExpr.value.trim() !== '') {
                     return true
                 }
@@ -310,6 +317,9 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
                 if (!TypeGuards.isATextNode(c)) {
                     break
                 }
+
+                assert(!TypeGuards.isExprInterpNode(c.textExpr))
+
                 if (!c.textExpr.value || c.textExpr.value.trim() !== '') {
                     return true
                 }
@@ -319,7 +329,7 @@ export class ANodeCompiler<T extends 'none' | 'typed'> {
         }
     }
 
-    private childRenderData (aNode: ANode) {
+    private childRenderData (aNode: AElement) {
         const propData = new MapLiteral(
             aNode.props.map(prop => [L(camelCase(prop.name)), sanExpr(prop.expr)])
         )

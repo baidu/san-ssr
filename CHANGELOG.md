@@ -1,3 +1,41 @@
+# [5.0.0](https://github.com/baidu/san-ssr/compare/v4.9.1...v5.0.0) (2021-12-06)
+
+
+### Bug Fixes
+
+* child components maybe undefined ([3bdfec0](https://github.com/baidu/san-ssr/commit/3bdfec039c6fa800dab20e6609a3dc4fd252bdd3))
+* ChildComponetClass 可能会重复 ([d8e0fa0](https://github.com/baidu/san-ssr/commit/d8e0fa0ff6c141dba5b2fa6e705fadfd8fabe617))
+* compile call expression twice got error ([3404cd1](https://github.com/baidu/san-ssr/commit/3404cd17d744123f59f4ddd450192a8a73dbbc24))
+* compile call expression twice got error ([0329a1d](https://github.com/baidu/san-ssr/commit/0329a1de32119c1b2b500a7baa8704b6bbb165d1))
+* computed 应该在 inited 之前调用 ([aa21455](https://github.com/baidu/san-ssr/commit/aa21455f8cefdb6d1e74c1f4d58cae36cc7250cd))
+* s-bind error if value is null or undefined [#135](https://github.com/baidu/san-ssr/issues/135) ([e731d02](https://github.com/baidu/san-ssr/commit/e731d02e1bedc939f9da0a84cd6a9161ac557116))
+* toSource render params ([631483e](https://github.com/baidu/san-ssr/commit/631483ebcbf759ae1c05eb75eab590887b128e16))
+* 使用字符串常量作为 COMPONENT_REFERENCE ([3b48b37](https://github.com/baidu/san-ssr/commit/3b48b37cd3dd8b7e79ddd92cef656f089c8b6c80))
+* 修改 createInstanceFromClass，补全所有属性。 ([d43b327](https://github.com/baidu/san-ssr/commit/d43b3275fa7429ddf42298d6850ed39aa31d3b01))
+* 手动传入 class 时，使用 Object.create 创建 instance ([2ad9def](https://github.com/baidu/san-ssr/commit/2ad9def0b20bb971e1e690bb9e337876a294e8ab))
+
+
+### Features
+
+* customSSRFilePath 与 customComponentFilePath 参数中增加 tagName ([158bdd3](https://github.com/baidu/san-ssr/commit/158bdd3f490536ac5d17af06a73b8afc4a9f77d5))
+* e2e 测试时，输出到每个case中output下的随机目录中 ([4b7a5d9](https://github.com/baidu/san-ssr/commit/4b7a5d92374356f919026cdbdc47fa6624e5154a))
+* support dynamic tagName as normal html tags [#134](https://github.com/baidu/san-ssr/issues/134) ([b3ac8a8](https://github.com/baidu/san-ssr/commit/b3ac8a80bb71dcf7d01215273bc1c39aaba2f796))
+* 使用新版本的 san.d.ts ([a9649f2](https://github.com/baidu/san-ssr/commit/a9649f2d409113d949c869ef71dca04fa8b49c56))
+* 删除原始组件定义代码中无用的子组件定义 ([1fc6d47](https://github.com/baidu/san-ssr/commit/1fc6d470748dd8de3ff2d573c24e14e6723b1298))
+* 增加 lifeCycle 属性 ([8d70ed6](https://github.com/baidu/san-ssr/commit/8d70ed6a32699fe268b7faf4de2fe8917f899902))
+* 支持渲染阶段使用手动传入的组件类 ([1b66ed1](https://github.com/baidu/san-ssr/commit/1b66ed1e932277f739b1fda4c873b3bcda3783fc))
+* 支持输入为 class 时，标记外部组件 ([0537911](https://github.com/baidu/san-ssr/commit/0537911db975a804195be12461aa9b73f275a92c))
+* 支持运行时改变子组件的路径 ([aae9378](https://github.com/baidu/san-ssr/commit/aae93782dc1a0b0381159ec09fb4b43f180b8152))
+* 收敛 renderer 的参数 ([c0e63f9](https://github.com/baidu/san-ssr/commit/c0e63f9646b47ce7ef163edaa8dda10e1ffe9bdf))
+* 收敛 renderer 的参数 ([47a0424](https://github.com/baidu/san-ssr/commit/47a0424bc4e26e59acd4270a9b2c6b611c3d6198))
+* 组件实例中增加 sourceSlots 属性。 ([ae6c698](https://github.com/baidu/san-ssr/commit/ae6c698c6b641d341082d753fc9e99f4225fd44d))
+* 适配新版本的 san.d.ts ([dcd29c2](https://github.com/baidu/san-ssr/commit/dcd29c280b142b50c51c51b3cdad0faba34c7379))
+
+
+### BREAKING CHANGES
+
+* a6deec81986575d687daab64e39e937fe69a24ae
+
 # [5.0.0-beta.6](https://github.com/baidu/san-ssr/compare/v5.0.0-beta.5...v5.0.0-beta.6) (2021-09-26)
 
 

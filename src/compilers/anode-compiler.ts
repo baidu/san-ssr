@@ -99,7 +99,7 @@ export class ANodeCompiler {
         // 这里会对 aNode 编译两次，期间一定不能有对 aNode 的修改，否则第二次会有问题
         yield new If(
             BINARY(refs, '[]', I(dynamicTagName)),
-            this.compileComponent(aNode, BINARY(refs, '[]', I(dynamicTagName)), isRootElement)
+            this.compileComponent(aNode, BINARY(refs, '[]', I(dynamicTagName)), isRootElement, dynamicTagName)
         )
         yield new Else(this.compileElement(aNode, dynamicTagName, isRootElement))
     }
@@ -202,7 +202,7 @@ export class ANodeCompiler {
         ]
     }
 
-    private * compileComponent (aNode: AElement, ref: Expression, isRootElement: boolean) {
+    private * compileComponent (aNode: AElement, ref: Expression, isRootElement: boolean, dynamicTagName: string | undefined = undefined) {
         assert(!this.inScript, 'component reference is not allowed inside <script>')
 
         // slot
@@ -244,7 +244,7 @@ export class ANodeCompiler {
         let ChildComponentClassName = ''
         if (this.useProvidedComponentClass) {
             ChildComponentClassName = this.id.next('ChildComponentClass')
-            yield DEF(ChildComponentClassName, new ComponentClassReference(ref, L(aNode.tagName)))
+            yield DEF(ChildComponentClassName, new ComponentClassReference(ref, dynamicTagName ? I(dynamicTagName) : L(aNode.tagName)))
         }
 
         // get and call renderer

@@ -110,7 +110,7 @@ export class ComponentClassReference implements SyntaxNode {
     public readonly kind = SyntaxKind.ComponentClassReference
     constructor (
         public value: Expression,
-        public tagName: Literal
+        public tagName: Literal | Identifier
     ) {}
 }
 

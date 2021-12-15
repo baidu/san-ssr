@@ -12,7 +12,16 @@ const MyComponent = san.defineComponent({
     components: {
         'x-l': List
     },
-    template: '<div><x-l/></div>'
+    initData () {
+        return {
+            c: 'x-l'
+        }
+    },
+    trimWhitespace: 'all',
+    template: `<div>
+        <div s-is="c"></div>
+        <x-l/>
+    </div>`
 })
 
 exports = module.exports = MyComponent

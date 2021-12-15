@@ -66,6 +66,13 @@ export function createResolver (exports: {[key: string]: any}, require: nodeRequ
             if (typeof ChildComponentClassOrInstance === 'string' && ChildComponentClassOrInstance === 'self') {
                 return instance
             }
+            // component loader
+            if (
+                Object.prototype.hasOwnProperty.call(ChildComponentClassOrInstance, 'load') &&
+                Object.prototype.hasOwnProperty.call(ChildComponentClassOrInstance, 'placeholder')
+            ) {
+                return ChildComponentClassOrInstance.placeholder
+            }
             if (typeof ChildComponentClassOrInstance !== 'function' && typeof ChildComponentClassOrInstance !== 'object') {
                 throw Error(`external component is not provided: ${tagName}${instance.prototype?.id || ''}`)
             }

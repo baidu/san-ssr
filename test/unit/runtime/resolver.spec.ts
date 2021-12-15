@@ -33,7 +33,14 @@ describe('runtime/resolver', () => {
                 'child-a': ChildA,
                 'child-b': ChildA,
                 'child-c': 'self',
-                'child-d': 123
+                'child-d': 123,
+                'child-e': san.createComponentLoader(() => Promise.resolve(ChildA)),
+                'child-f': san.createComponentLoader({
+                    load () {
+                        return Promise.resolve(ChildA)
+                    },
+                    placeholder: ChildB
+                })
             }
         })
         const ref = { id: 'id', specifier: './som/path' }
@@ -100,6 +107,14 @@ describe('runtime/resolver', () => {
                 fn()
             }
             expect(fn.mock.calls.length).toBe(1)
+        })
+
+        it('should get placeholder of componentLoader', () => {
+            const ChildE = resolver.getChildComponentClass(ref, MyComponent, 'child-e');
+            const ChildF = resolver.getChildComponentClass(ref, MyComponent, 'child-f');
+
+            expect(ChildE).toBe(undefined)
+            expect(ChildF).toBe(ChildB)
         })
     })
 })

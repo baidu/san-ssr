@@ -110,8 +110,8 @@ describe('runtime/resolver', () => {
         })
 
         it('should get placeholder of componentLoader', () => {
-            const ChildE = resolver.getChildComponentClass(ref, MyComponent, 'child-e');
-            const ChildF = resolver.getChildComponentClass(ref, MyComponent, 'child-f');
+            const ChildE = resolver.getChildComponentClass(ref, MyComponent, 'child-e')
+            const ChildF = resolver.getChildComponentClass(ref, MyComponent, 'child-f')
 
             expect(ChildE).toBe(undefined)
             expect(ChildF).toBe(ChildB)

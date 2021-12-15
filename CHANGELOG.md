@@ -1,3 +1,12 @@
+## [5.0.1](https://github.com/baidu/san-ssr/compare/v5.0.0...v5.0.1) (2021-12-15)
+
+
+### Bug Fixes
+
+* error using useProvidedComponentClass with componentLoader ([7705623](https://github.com/baidu/san-ssr/commit/770562326b7555c2787387f83e0422a2d9041bea))
+* error when using useProvidedComponentClass with s-is ([f08b821](https://github.com/baidu/san-ssr/commit/f08b8211507061dd8a71d4c50f1065b29cab6f43))
+* useProvidedComponentClass 时，传入复杂类，会报错 ([d66d8a9](https://github.com/baidu/san-ssr/commit/d66d8a958b1af681e3f5cf243ab4390334e23c35))
+
 # [5.0.0](https://github.com/baidu/san-ssr/compare/v4.9.1...v5.0.0) (2021-12-06)
 
 

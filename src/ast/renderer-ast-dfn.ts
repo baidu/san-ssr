@@ -65,10 +65,11 @@ export enum SyntaxKind {
     Undefined = 35,
     TryStatement = 36,
     CatchClause = 37,
-    ComponentClassReference = 38
+    ComponentClassReference = 38,
+    CreateComponentPrototype = 39
 }
 
-export type Expression = Identifier | FunctionDefinition | Literal | BinaryExpression | UnaryExpression | CreateComponentInstance | NewExpression | MapLiteral | ComponentRendererReference | FunctionCall | Null | Undefined | MapAssign | ArrayIncludes | ConditionalExpression | FilterCall | HelperCall | EncodeURIComponent | ArrayLiteral | RegexpReplace | JSONStringify | ComputedCall | GetRootCtxCall | ComponentReferenceLiteral | SlotRendererDefinition | SlotRenderCall | ComponentClassReference
+export type Expression = Identifier | FunctionDefinition | Literal | BinaryExpression | UnaryExpression | CreateComponentInstance | NewExpression | MapLiteral | ComponentRendererReference | FunctionCall | Null | Undefined | MapAssign | ArrayIncludes | ConditionalExpression | FilterCall | HelperCall | EncodeURIComponent | ArrayLiteral | RegexpReplace | JSONStringify | ComputedCall | GetRootCtxCall | ComponentReferenceLiteral | SlotRendererDefinition | SlotRenderCall | ComponentClassReference | CreateComponentPrototype
 
 export type Statement = ReturnStatement | ImportHelper | VariableDefinition | AssignmentStatement | If | ElseIf | Else | Foreach | ExpressionStatement | TryStatement
 
@@ -168,6 +169,13 @@ export class CatchClause implements SyntaxNode {
 
 export class CreateComponentInstance implements SyntaxNode {
     public readonly kind = SyntaxKind.CreateComponentInstance
+    constructor (
+        public info: ComponentInfo
+    ) {}
+}
+
+export class CreateComponentPrototype implements SyntaxNode {
+    public readonly kind = SyntaxKind.CreateComponentPrototype
     constructor (
         public info: ComponentInfo
     ) {}

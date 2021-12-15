@@ -47,7 +47,7 @@ export function createResolver (exports: {[key: string]: any}, require: nodeRequ
             }
             return mod.sanSSRRenders[id]
         },
-        getChildComponentClass: function ({ id, specifier = '.' }, CurrentComponentClass: Component, tagName: string, context) {
+        getChildComponentClass: function ({ id, specifier = '.' }, instance: Component, tagName: string, context) {
             const customComponentFilePath = context && context.customComponentFilePath
 
             if (customComponentFilePath && specifier !== '.') {
@@ -58,18 +58,18 @@ export function createResolver (exports: {[key: string]: any}, require: nodeRequ
                 else if (typeof path === 'function') return path
             }
 
-            const components = CurrentComponentClass.prototype.components as {[tagName: string]: Component | undefined}
-            const ChildComponentClass = components[tagName]
-            if (!ChildComponentClass) {
-                throw Error(`child component is not fount: ${tagName}${CurrentComponentClass.prototype?.id || ''}`)
+            const components = instance.components || (instance.prototype && instance.prototype.components)
+            const ChildComponentClassOrInstance = components && components[tagName]
+            if (!ChildComponentClassOrInstance) {
+                throw Error(`child component is not fount: ${tagName}${instance.prototype?.id || ''}`)
             }
-            if (typeof ChildComponentClass === 'string' && ChildComponentClass === 'self') {
-                return CurrentComponentClass
+            if (typeof ChildComponentClassOrInstance === 'string' && ChildComponentClassOrInstance === 'self') {
+                return instance
             }
-            if (typeof ChildComponentClass !== 'function') {
-                throw Error(`external component is not provided: ${tagName}${CurrentComponentClass.prototype?.id || ''}`)
+            if (typeof ChildComponentClassOrInstance !== 'function' && typeof ChildComponentClassOrInstance !== 'object') {
+                throw Error(`external component is not provided: ${tagName}${instance.prototype?.id || ''}`)
             }
-            return ChildComponentClass
+            return ChildComponentClassOrInstance
         },
         setRenderer: function (id: string, fn: Function) {
             exports.sanSSRRenders = exports.sanSSRRenders || {}

@@ -93,6 +93,7 @@ declare namespace san {
         el?: Element;
         data: Data<T>;
         parentComponent?: Component<{}>;
+        components?: ComponentDefineOptionComponents;
     
         nodeType: NodeType.CMPT;
         lifeCycle: LifeCycleStage;

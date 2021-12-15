@@ -76,6 +76,18 @@ describe('utils/underscore', function () {
             expect(_.createInstanceFromClass(MyComponent)).toHaveProperty('computed.foo', foo)
             expect(foo).not.toHaveBeenCalled()
         })
+        it('should keep components', () => {
+            class AAA extends Component {
+                static template = '<div></div>'
+            }
+            class MyComponent extends Component {
+                static template = '<div><aaa/></div>'
+                static components = {
+                    aaa: AAA
+                }
+            }
+            expect(_.createInstanceFromClass(MyComponent)).toHaveProperty('components.aaa', AAA)
+        })
     })
     describe('.attrFilter', () => {
         it('should not escape if specified', () => {

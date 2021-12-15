@@ -28,11 +28,12 @@ describe('runtime/resolver', () => {
         })
         const MyComponent = san.defineComponent({
             template: '',
+            // @ts-ignore
             components: {
                 'child-a': ChildA,
                 'child-b': ChildA,
                 'child-c': 'self',
-                'child-d': {}
+                'child-d': 123
             }
         })
         const ref = { id: 'id', specifier: './som/path' }
@@ -88,17 +89,17 @@ describe('runtime/resolver', () => {
             } catch {
                 fn()
             }
-            expect(fn).toHaveBeenCalled()
+            expect(fn.mock.calls.length).toBe(1)
         })
 
-        it('should error if child component is not class', () => {
+        it('should error if child component is not class or object', () => {
             const fn = jest.fn()
             try {
                 resolver.getChildComponentClass(ref, MyComponent, 'child-d')
             } catch {
                 fn()
             }
-            expect(fn).toHaveBeenCalled()
+            expect(fn.mock.calls.length).toBe(1)
         })
     })
 })

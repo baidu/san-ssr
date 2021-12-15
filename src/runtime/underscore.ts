@@ -143,6 +143,7 @@ function createInstanceFromClass (Clazz: Component<{}> & ComponentDefineOptions)
     // property
     // template filters components computed trimWhitespace delimiters
     const template = Clazz.template || Clazz.prototype.template
+    const components = Clazz.components || Clazz.prototype.components
     delete Clazz.components
     delete Clazz.prototype.components
     const computed = Clazz.computed || Clazz.prototype.computed
@@ -154,6 +155,7 @@ function createInstanceFromClass (Clazz: Component<{}> & ComponentDefineOptions)
     const instance = new Clazz()
     if (inited) Clazz.prototype.inited = inited
     if (initData) Clazz.prototype.initData = initData
+    if (components) Clazz.prototype.components = components
     Clazz.prototype.template = template
     if (computed) instance['computed'] = Clazz.prototype.computed = Clazz.computed = computed
     return instance

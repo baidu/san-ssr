@@ -22,6 +22,7 @@ export function * walk (node: Expression | Statement): Iterable<Expression | Sta
     case SyntaxKind.Literal:
     case SyntaxKind.Identifier:
     case SyntaxKind.CreateComponentInstance:
+    case SyntaxKind.CreateComponentPrototype:
     case SyntaxKind.Null:
     case SyntaxKind.Undefined:
     case SyntaxKind.ImportHelper:

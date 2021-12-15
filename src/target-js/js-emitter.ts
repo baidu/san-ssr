@@ -101,6 +101,22 @@ export class JSEmitter extends Emitter {
         case SyntaxKind.CreateComponentInstance:
             this.write(`_.createFromPrototype(sanSSRResolver.getPrototype("${node.info.id}"));`)
             break
+        case SyntaxKind.CreateComponentPrototype:
+            this.write(`if (!sanSSRResolver.getPrototype("${node.info.id}")) {`)
+            this.indent()
+            this.nextLine('if (typeof ComponentClass === \'function\') {')
+            this.indent()
+            this.nextLine(`sanSSRResolver.setPrototype("${node.info.id}", _.createInstanceFromClass(ComponentClass));`)
+            this.unindent()
+            this.nextLine('}')
+            this.nextLine('else {')
+            this.indent()
+            this.nextLine(`sanSSRResolver.setPrototype("${node.info.id}", ComponentClass);`)
+            this.unindent()
+            this.nextLine('}')
+            this.unindent()
+            this.nextLine('}')
+            break
         case SyntaxKind.Null:
             this.write('null')
             break
@@ -131,7 +147,7 @@ export class JSEmitter extends Emitter {
         case SyntaxKind.ComponentClassReference:
             this.write('sanSSRResolver.getChildComponentClass(')
             this.writeSyntaxNode(node.value)
-            this.write(', ComponentClass')
+            this.write(', instance')
             this.write(', ')
             this.writeSyntaxNode(node.tagName)
             this.write(', ctx.context')

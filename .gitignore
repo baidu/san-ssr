@@ -13,3 +13,4 @@ test/cases/*/output
 /example
 bin/output.js
 bin/component*.js
+bin/dist

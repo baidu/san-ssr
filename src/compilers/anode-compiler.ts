@@ -106,7 +106,11 @@ export class ANodeCompiler {
 
     private * compileIf (aNode: AIfNode): Generator<Statement> {
         const ifDirective = aNode.directives.if
+
+        // 动态节点 s-is 的子节点，会被编译两次。期间不能被修改。
+        // 这里复制一份。
         const aNodeWithoutIf = Object.assign({}, aNode)
+        aNodeWithoutIf.directives = Object.assign({}, aNode.directives)
 
         // 防止重新进入 compileIf：删掉 if 指令，再递归进入当前 aNode
         // @ts-ignore

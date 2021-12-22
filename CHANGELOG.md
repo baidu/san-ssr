@@ -1,3 +1,10 @@
+## [5.0.2](https://github.com/baidu/san-ssr/compare/v5.0.1...v5.0.2) (2021-12-22)
+
+
+### Bug Fixes
+
+* dynamic component child with if ([2dbc051](https://github.com/baidu/san-ssr/commit/2dbc05189ddc660571c2549a8a191726b1acb91c))
+
 ## [5.0.1](https://github.com/baidu/san-ssr/compare/v5.0.0...v5.0.1) (2021-12-15)
 
 

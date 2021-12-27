@@ -59,7 +59,31 @@ describe('compilers/renderer-compiler', () => {
                 components: {
                     ccc: defineComponent({ template: '<div><slot/></div>' })
                 },
-                template: '<ccc>{{   \nassa | aaa | bbb}}</ccc>'
+                template: '<ccc>{{   \nassa | aaa | bbb}}<div></div></ccc>'
+            })
+            const sourceFile = new ComponentClassParser(ComponentClass, '/tmp/foo.js').parse()
+            const compiler = new RendererCompiler({})
+            const body = [...compiler.compileToRenderer(sourceFile.componentInfos[0]).body]
+
+            const assignmentNode = body.find(item =>
+                item.kind === SyntaxKind.AssignmentStatement &&
+                item.rhs.kind === SyntaxKind.SlotRendererDefinition
+            ) as AssignmentStatement
+            expect(assignmentNode).toBeTruthy()
+            const SlotRendererDefinitionNode = assignmentNode.rhs as SlotRendererDefinition
+            expect([...SlotRendererDefinitionNode.body].find(item => {
+                return item.kind === SyntaxKind.ExpressionStatement &&
+                    item.value.kind === SyntaxKind.BinaryExpression &&
+                    item.value.rhs.kind === SyntaxKind.Literal &&
+                    item.value.rhs.value.indexOf('s-slot') !== -1
+            })).toBeTruthy()
+        })
+        it('should emit slot comment(with filter2)', () => {
+            const ComponentClass = defineComponent({
+                components: {
+                    ccc: defineComponent({ template: '<div><slot/></div>' })
+                },
+                template: '<ccc><div></div>{{   \nassa | aaa | bbb}}</ccc>'
             })
             const sourceFile = new ComponentClassParser(ComponentClass, '/tmp/foo.js').parse()
             const compiler = new RendererCompiler({})

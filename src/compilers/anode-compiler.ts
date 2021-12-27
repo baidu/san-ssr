@@ -308,9 +308,8 @@ export class ANodeCompiler {
                     break
                 }
 
-                assert(!TypeGuards.isExprInterpNode(c.textExpr))
-
-                if (!c.textExpr.value || c.textExpr.value.trim() !== '') {
+                const textExprValue = TypeGuards.isExprInterpNode(c.textExpr) ? (c.textExpr.expr as StringLiteral).value : c.textExpr.value
+                if (!textExprValue || textExprValue.trim() !== '') {
                     return true
                 }
                 i++

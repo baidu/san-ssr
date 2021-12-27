@@ -1,3 +1,10 @@
+## [5.0.3](https://github.com/baidu/san-ssr/compare/v5.0.2...v5.0.3) (2021-12-27)
+
+
+### Bug Fixes
+
+* emit comment 处理 interpExpr 的情况 ([2fda583](https://github.com/baidu/san-ssr/commit/2fda583a256a32b8eee7db8d606264bf41e4ddaf))
+
 ## [5.0.2](https://github.com/baidu/san-ssr/compare/v5.0.1...v5.0.2) (2021-12-22)
 
 

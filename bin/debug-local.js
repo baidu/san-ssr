@@ -23,7 +23,7 @@ function compile (componentPath, externalPath, outputPath) {
     fs.writeFileSync(path.resolve(__dirname, outputPath), res)
 }
 
-compile('./component', './component2', './dist/component')
+compile('./sample/component', './component2', './dist/component.js')
 // compile('./component2', './component', './dist/component2')
 
 // // online

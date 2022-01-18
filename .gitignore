@@ -11,6 +11,7 @@ test/cases/*/ssr.php
 test/cases/*/output
 .vscode
 /example
+bin/sample
 bin/output.js
 bin/component*.js
 bin/dist

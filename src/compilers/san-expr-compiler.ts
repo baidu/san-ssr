@@ -9,7 +9,7 @@ import * as TypeGuards from '../ast/san-ast-type-guards'
 import { _ } from '../runtime/underscore'
 import { EncodeURIComponent, MapLiteral, HelperCall, ArrayLiteral, FilterCall, FunctionCall, Identifier, ConditionalExpression, BinaryExpression, UnaryExpression, Expression } from '../ast/renderer-ast-dfn'
 import { CTX_DATA, L, I, NULL } from '../ast/renderer-ast-util'
-import { AccessorExpr, BinaryExpr, CallExpr, InterpExpr, StringLiteral, TertiaryExpr, TextExpr, UnaryExpr, ArrayLiteral as ArrayLiteralType, ObjectLiteral, Expr } from 'san'
+import { AccessorExpr, BinaryExpr, CallExpr, InterpExpr, StringLiteral, TertiaryExpr, TextExpr, UnaryExpr, ArrayLiteral as ArrayLiteralType, ObjectLiteral, Expr, ExprType } from 'san'
 
 // 输出类型
 export enum OutputType {
@@ -61,8 +61,19 @@ function unary (e: UnaryExpr) {
     throw new Error(`unexpected unary operator "${String.fromCharCode(e.operator)}"`)
 }
 function binary (e: BinaryExpr, output: OutputType) {
-    const lhs = sanExpr(e.segs[0], output)
     const op = binaryOp[e.operator]
+
+    // + 的时候，不确定是字符串相加还是数字相加
+    // 因此只能在外层就转义
+    if (op === '+' && output === OutputType.ESCAPE_HTML) {
+        return interp({
+            type: ExprType.INTERP,
+            expr: e,
+            filters: []
+        }, output)
+    }
+
+    const lhs = sanExpr(e.segs[0], output)
     const rhs = sanExpr(e.segs[1], output)
     return new BinaryExpression(lhs, op, rhs)
 }

@@ -174,7 +174,7 @@ declare namespace San {
         paths: ExprNode[];
     }
     interface ExprInterpNode extends ExprNodeTpl<ExprType.INTERP> {
-        expr: ExprAccessorNode;
+        expr: ExprNode;
         filters: ExprCallNode[];
         original: boolean;
         raw: string;

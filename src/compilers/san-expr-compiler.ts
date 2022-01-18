@@ -5,7 +5,7 @@
  * 它们控制了 Element 类型的 ANode 如何渲染。
  * 现在需要把这些表达式转换为 renderer 函数里的表达式（renderer AST 形式）。
  */
-import { ExprStringNode, ExprNode, ExprTertiaryNode, ExprBinaryNode, ExprUnaryNode, ExprInterpNode, ExprAccessorNode, ExprCallNode, ExprTextNode, ExprObjectNode, ExprArrayNode } from 'san'
+import { ExprStringNode, ExprNode, ExprTertiaryNode, ExprBinaryNode, ExprUnaryNode, ExprInterpNode, ExprAccessorNode, ExprCallNode, ExprTextNode, ExprObjectNode, ExprArrayNode, ExprType } from 'san'
 import * as TypeGuards from '../ast/san-ast-type-guards'
 import { _ } from '../runtime/underscore'
 import { EncodeURIComponent, MapLiteral, HelperCall, ArrayLiteral, FilterCall, FunctionCall, Identifier, ConditionalExpression, BinaryExpression, UnaryExpression, Expression } from '../ast/renderer-ast-dfn'
@@ -61,8 +61,21 @@ function unary (e: ExprUnaryNode) {
     throw new Error(`unexpected unary operator "${String.fromCharCode(e.operator)}"`)
 }
 function binary (e: ExprBinaryNode, output: OutputType) {
-    const lhs = sanExpr(e.segs[0], output)
     const op = binaryOp[e.operator]
+
+    // + 的时候，不确定是字符串相加还是数字相加
+    // 因此只能在外层就转义
+    if (op === '+' && output === OutputType.ESCAPE_HTML) {
+        return interp({
+            type: ExprType.INTERP,
+            expr: e,
+            filters: [],
+            original: false,
+            raw: ''
+        }, output)
+    }
+
+    const lhs = sanExpr(e.segs[0], output)
     const rhs = sanExpr(e.segs[1], output)
     return new BinaryExpression(lhs, op, rhs)
 }

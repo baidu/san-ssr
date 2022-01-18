@@ -21,7 +21,7 @@ describe('compilers/san-expr-compiler', () => {
             }))
         })
         it('should escape a binary expression', () => {
-            const e = parseExpr('a + b')
+            const e = parseExpr('a || b')
             const dataItem = (value: string) => ({
                 kind: SyntaxKind.HelperCall,
                 name: 'output',
@@ -42,9 +42,49 @@ describe('compilers/san-expr-compiler', () => {
             expect(res).toEqual(expect.objectContaining({
                 kind: SyntaxKind.BinaryExpression,
                 lhs: dataItem('a'),
-                op: '+',
+                op: '||',
                 rhs: dataItem('b')
             }))
+        })
+        it('should escape a + binary expression outside', () => {
+            const e = parseExpr('a + b')
+            const dataItem = (value: string) => ({
+                kind: SyntaxKind.BinaryExpression,
+                lhs: {
+                    kind: SyntaxKind.BinaryExpression,
+                    lhs: {
+                        kind: SyntaxKind.Identifier,
+                        name: 'ctx'
+                    },
+                    op: '.',
+                    rhs: {
+                        kind: SyntaxKind.Identifier,
+                        name: 'data'
+                    }
+                },
+                op: '[]',
+                rhs: {
+                    kind: SyntaxKind.Literal,
+                    value
+                }
+            })
+            const res = expr(e, OutputType.ESCAPE_HTML)
+            expect(res).toMatchObject({
+                args: [
+                    {
+                        kind: SyntaxKind.BinaryExpression,
+                        lhs: dataItem('a'),
+                        op: '+',
+                        rhs: dataItem('b')
+                    },
+                    {
+                        kind: SyntaxKind.Literal,
+                        value: true
+                    }
+                ],
+                kind: SyntaxKind.HelperCall,
+                name: 'output'
+            })
         })
         it('should compile unary expression', () => {
             const e = parseExpr('+num === 123')

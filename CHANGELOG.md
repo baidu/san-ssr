@@ -1,3 +1,10 @@
+## [4.9.2](https://github.com/baidu/san-ssr/compare/v4.9.1...v4.9.2) (2022-01-18)
+
+
+### Bug Fixes
+
+* 插值运算为 + 时，进行了局部转义，应为整体转义。 ([30bfd19](https://github.com/baidu/san-ssr/commit/30bfd19602bdacb3379c6fb82198e477d7629751))
+
 ## [4.9.1](https://github.com/baidu/san-ssr/compare/v4.9.0...v4.9.1) (2021-09-13)
 
 

@@ -7,7 +7,7 @@
 import { ANodeCompiler } from './anode-compiler'
 import { ComponentInfo } from '../models/component-info'
 import { RenderOptions } from './renderer-options'
-import { FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper, ComponentReferenceLiteral, ConditionalExpression, BinaryExpression, CreateComponentPrototype } from '../ast/renderer-ast-dfn'
+import { FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper, ComponentReferenceLiteral, ConditionalExpression, BinaryExpression, CreateComponentPrototype, Else } from '../ast/renderer-ast-dfn'
 import { EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL, UNDEFINED, createTryStatement, createDefineWithDefaultValue } from '../ast/renderer-ast-util'
 import { IDGenerator } from '../utils/id-generator'
 import { mergeLiteralAdd } from '../optimizers/merge-literal-add'
@@ -30,7 +30,7 @@ export class RendererCompiler {
             DEF('data'),
 
             // 参数太多了，后续要增加的参数统一收敛到这里
-            DEF('info', L({}))
+            DEF('...info')
         ]
         const fn = new FunctionDefinition(this.options.functionName || '', args,
             this.compileComponentRendererBody(componentInfo)
@@ -46,6 +46,28 @@ export class RendererCompiler {
             body.push(RETURN(L('')))
             return body
         }
+
+        // 兼容多参数的情况
+        body.push(new If(
+            new BinaryExpression(
+                BINARY(I('info'), '.', I('length')),
+                '===',
+                L(1)
+            ),
+            [ASSIGN(I('info'), BINARY(
+                BINARY(I('info'), '[]', L(0)),
+                '||',
+                L({})
+            ))]
+        ))
+        body.push(new Else([
+            ASSIGN(I('info'), new MapLiteral([
+                [I('noDataOutput'), BINARY(I('info'), '[]', L(1))],
+                [I('parentCtx'), BINARY(I('info'), '[]', L(2))],
+                [I('tagName'), BINARY(I('info'), '[]', L(3))],
+                [I('slots'), BINARY(I('info'), '[]', L(4))]
+            ]))
+        ]))
 
         // get params from info
         body.push(createDefineWithDefaultValue('noDataOutput', BINARY(I('info'), '.', I('noDataOutput')), L(false)))

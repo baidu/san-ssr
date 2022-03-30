@@ -1,5 +1,6 @@
 import { JSEmitter } from '../../../src/target-js/js-emitter'
-import { SyntaxKind } from '../../../src/ast/renderer-ast-dfn'
+import { SyntaxKind, FunctionDefinition, VariableDefinition } from '../../../src/ast/renderer-ast-dfn'
+import { L } from '../../../src/ast/renderer-ast-util'
 
 describe('JSEmitter', function () {
     let emitter: JSEmitter
@@ -62,6 +63,16 @@ describe('JSEmitter', function () {
             })
 
             expect(emitter.fullText()).toEqual('function bar (a, b) {\n    echo\n}')
+        })
+
+        it('should write function definition with initial', function () {
+            emitter.writeFunctionDefinition(new FunctionDefinition(
+                'bar',
+                [new VariableDefinition('a', L({}))],
+                []
+            ))
+
+            expect(emitter.fullText()).toEqual('function bar (a = {}) {}')
         })
     })
 

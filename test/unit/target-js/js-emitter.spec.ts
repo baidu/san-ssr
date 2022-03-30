@@ -95,4 +95,10 @@ describe('JSEmitter', function () {
             expect(emitter.fullText()).toEqual('{\n}\n')
         })
     })
+    describe('write literal', function () {
+        it('undefine', function () {
+            emitter.writeLiteral(L(undefined))
+            expect(emitter.fullText()).toEqual('undefined')
+        })
+    })
 })

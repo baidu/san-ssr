@@ -7,7 +7,7 @@
 import { Component, defineComponent, DefinedComponentClass } from 'san'
 import { DynamicSanSourceFile } from '../models/san-source-file'
 import { DynamicComponentInfo } from '../models/component-info'
-import { getMember } from '../utils/lang'
+import { getMemberFromClass } from '../utils/lang'
 import { isComponentLoader } from '../models/component'
 import { parseAndNormalizeTemplate } from './parse-template'
 import { componentID, DynamicComponentReference } from '../models/component-reference'
@@ -29,7 +29,7 @@ export class ComponentClassParser {
 
     parse (): DynamicSanSourceFile {
         const componentInfos = []
-        const rootId = getMember(this.root, 'id')
+        const rootId = getMemberFromClass(this.root, 'id')
         const stack: DynamicComponentReference[] = [
             new DynamicComponentReference('.', typeof rootId === 'string' ? rootId : '' + this.id++, this.root)
         ]
@@ -54,7 +54,10 @@ export class ComponentClassParser {
     /**
      * 从组件 class 得到组件 component info
      */
-    createComponentInfoFromComponentClass (componentClass: Component<{}> | DefinedComponentClass<{}, {}>, id: string): DynamicComponentInfo {
+    createComponentInfoFromComponentClass (
+        componentClass: Component<{}> | DefinedComponentClass<{}, {}>,
+        id: string
+    ): DynamicComponentInfo {
         if (isComponentLoader(componentClass)) {
             componentClass = componentClass.placeholder
         }
@@ -63,9 +66,9 @@ export class ComponentClassParser {
         }
         if (!componentClass) componentClass = defineComponent({ template: '' })
 
-        const template = getMember(componentClass, 'template', '')
-        const trimWhitespace = getMember<'none' | 'blank' | 'all'>(componentClass, 'trimWhitespace')
-        const delimiters = getMember<[string, string]>(componentClass, 'delimiters')
+        const template = getMemberFromClass(componentClass, 'template', '')
+        const trimWhitespace = getMemberFromClass<'none' | 'blank' | 'all'>(componentClass, 'trimWhitespace')
+        const delimiters = getMemberFromClass<[string, string]>(componentClass, 'delimiters')
         const rootANode = parseAndNormalizeTemplate(template, { trimWhitespace, delimiters })
         const childComponents = this.getChildComponentClasses(componentClass, id)
 
@@ -78,7 +81,7 @@ export class ComponentClassParser {
     getChildComponentClasses (parentComponentClass: Component<{}> | DefinedComponentClass<{}, {}>, selfId: string): Map<string, DynamicComponentReference> {
         const children: Map<string, DynamicComponentReference> = new Map()
 
-        const components: { [key: string]: Component<{}> | undefined } = getMember(parentComponentClass, 'components', {})
+        const components: { [key: string]: Component<{}> | undefined } = getMemberFromClass(parentComponentClass, 'components', {})
         for (const [tagName, componentClass] of Object.entries(components)) {
             if (!componentClass) {
                 continue
@@ -117,7 +120,7 @@ export class ComponentClassParser {
      */
     private getOrSetID (componentClass: Component<{}>): string {
         if (!this.cids.has(componentClass)) {
-            const id = getMember(componentClass, 'id')
+            const id = getMemberFromClass(componentClass, 'id')
             this.cids.set(componentClass, typeof id === 'string' ? id : String(this.id++))
         }
         return this.cids.get(componentClass)!

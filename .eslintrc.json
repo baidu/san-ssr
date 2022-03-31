@@ -17,9 +17,6 @@
     "prefer-const": 2,
     "no-labels": "off",
     "indent": ["error", 4],
-    "no-var": 2,
-    "prefer-const": 2,
-    "no-labels": "off",
     "no-useless-constructor": "off",
     "@typescript-eslint/indent": "off",
     "@typescript-eslint/explicit-function-return-type": "off",
@@ -29,6 +26,12 @@
     "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
     "@typescript-eslint/no-unused-vars": ["error", { "varsIgnorePattern": "debug" }],
+    "max-len": ["warn", {
+      "code": 120,
+      "ignoreRegExpLiterals": true,
+      "ignoreTemplateLiterals": true,
+      "ignoreUrls": true
+    }],
     "no-unused-vars": "off",
     "no-dupe-class-members": "off",
     "import/export": "off"

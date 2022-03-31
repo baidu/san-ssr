@@ -2,9 +2,9 @@ export function isValidIdentifier (str: string) {
     return !!/^[a-zA-Z_$][\w$]*$/.exec(str)
 }
 
-export function getMember<T> (clazz: Function, property: string, defaultValue: T): T
-export function getMember<T> (clazz: Function, property: string): T | undefined
-export function getMember<T> (clazz: Function, property: string, defaultValue?: T): T | undefined {
+export function getMemberFromClass<T> (clazz: Function, property: string, defaultValue: T): T
+export function getMemberFromClass<T> (clazz: Function, property: string): T | undefined
+export function getMemberFromClass<T> (clazz: Function, property: string, defaultValue?: T): T | undefined {
     if (clazz[property] !== undefined) return clazz[property]
     if (clazz.prototype && clazz.prototype[property] !== undefined) {
         return clazz.prototype[property]

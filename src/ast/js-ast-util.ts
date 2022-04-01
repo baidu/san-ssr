@@ -10,7 +10,35 @@
 import { ancestor, simple } from 'acorn-walk'
 import assert, { equal } from 'assert'
 import { Node as AcornNode } from 'acorn'
-import { MethodDefinition, ExportDefaultDeclaration, ImportDeclaration, Property, BinaryExpression, ClassExpression, ClassDeclaration, ThisExpression, ExpressionStatement, TemplateLiteral, Literal, Identifier, MemberExpression, ArrayExpression, CallExpression, ObjectExpression, Node, Program, Pattern, VariableDeclaration, ObjectPattern, Class, AssignmentExpression, Expression, ImportSpecifier, ImportDefaultSpecifier, VariableDeclarator } from 'estree'
+import {
+    MethodDefinition,
+    ExportDefaultDeclaration,
+    ImportDeclaration,
+    Property,
+    BinaryExpression,
+    ClassExpression,
+    ClassDeclaration,
+    ThisExpression,
+    ExpressionStatement,
+    TemplateLiteral,
+    Literal,
+    Identifier,
+    MemberExpression,
+    ArrayExpression,
+    CallExpression,
+    ObjectExpression,
+    Node,
+    Program,
+    Pattern,
+    VariableDeclaration,
+    ObjectPattern,
+    Class,
+    AssignmentExpression,
+    Expression,
+    ImportSpecifier,
+    ImportDefaultSpecifier,
+    VariableDeclarator
+} from 'estree'
 
 const OPERATORS = {
     '+': (l: any, r: any) => l + r

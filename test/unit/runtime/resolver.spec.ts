@@ -61,11 +61,16 @@ describe('runtime/resolver', () => {
         it('should change child component class by path', () => {
             const ChildC = require('../../stub/a.comp')
             const { C: ChildD } = require('../../stub/b.comp')
-            const ResComponent5 = resolver.getChildComponentClass({ id: 'default', specifier: '/' }, MyComponent, 'child-b', {
-                customComponentFilePath () {
-                    return '../../stub/a.comp'
+            const ResComponent5 = resolver.getChildComponentClass(
+                { id: 'default', specifier: '/' },
+                MyComponent,
+                'child-b',
+                {
+                    customComponentFilePath () {
+                        return '../../stub/a.comp'
+                    }
                 }
-            })
+            )
             expect(ChildC === ResComponent5).toBe(true)
             const ResComponent6 = resolver.getChildComponentClass({ id: 'C', specifier: '/' }, MyComponent, 'child-b', {
                 customComponentFilePath () {

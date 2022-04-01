@@ -7,9 +7,15 @@
  */
 import * as TypeGuards from '../ast/san-ast-type-guards'
 import { _ } from '../runtime/underscore'
-import { EncodeURIComponent, MapLiteral, HelperCall, ArrayLiteral, FilterCall, FunctionCall, Identifier, ConditionalExpression, BinaryExpression, UnaryExpression, Expression } from '../ast/renderer-ast-dfn'
+import {
+    EncodeURIComponent, MapLiteral, HelperCall, ArrayLiteral, FilterCall, FunctionCall, Identifier,
+    ConditionalExpression, BinaryExpression, UnaryExpression, Expression
+} from '../ast/renderer-ast-dfn'
 import { CTX_DATA, L, I, NULL } from '../ast/renderer-ast-util'
-import { AccessorExpr, BinaryExpr, CallExpr, InterpExpr, StringLiteral, TertiaryExpr, TextExpr, UnaryExpr, ArrayLiteral as ArrayLiteralType, ObjectLiteral, Expr, ExprType } from 'san'
+import {
+    AccessorExpr, BinaryExpr, CallExpr, InterpExpr, StringLiteral, TertiaryExpr, TextExpr, UnaryExpr,
+    ArrayLiteral as ArrayLiteralType, ObjectLiteral, Expr, ExprType
+} from 'san'
 
 // 输出类型
 export enum OutputType {
@@ -117,7 +123,9 @@ function interp (interpExpr: InterpExpr, outputType: OutputType) {
         const filterName = (filter.name.paths[0] as StringLiteral).value
 
         if (['_style', '_class', '_xstyle', '_xclass'].includes(filterName)) {
-            code = new HelperCall(filterName.slice(1) + 'Filter' as any, [code, ...filter.args.map(arg => sanExpr(arg, OutputType.NONE))])
+            code = new HelperCall(
+                filterName.slice(1) + 'Filter' as any, [code, ...filter.args.map(arg => sanExpr(arg, OutputType.NONE))]
+            )
         } else if (filterName === 'url') {
             code = new EncodeURIComponent(code)
         } else {

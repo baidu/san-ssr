@@ -8,7 +8,9 @@ import debugFactory from 'debug'
 import { JSEmitter } from './js-emitter'
 import { createHelpers, emitHelpers, emitHelpersAsIIFE } from '../runtime/create-helpers'
 import { ComponentClassCompiler } from './compilers/component-compiler'
-import { SanSourceFile, JSSanSourceFile, TypedSanSourceFile, DynamicSanSourceFile, isTypedSanSourceFile, isJSSanSourceFile } from '../models/san-source-file'
+import {
+    SanSourceFile, JSSanSourceFile, TypedSanSourceFile, DynamicSanSourceFile, isTypedSanSourceFile, isJSSanSourceFile
+} from '../models/san-source-file'
 import { Renderer } from '../models/renderer'
 import { TargetCodeGenerator } from '../models/target-code-generator'
 import { tsSourceFile2js } from '../compilers/ts2js'

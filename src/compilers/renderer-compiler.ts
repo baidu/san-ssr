@@ -7,8 +7,14 @@
 import { ANodeCompiler } from './anode-compiler'
 import { ComponentInfo } from '../models/component-info'
 import { RenderOptions } from './renderer-options'
-import { FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper, ComponentReferenceLiteral, ConditionalExpression, BinaryExpression, CreateComponentPrototype, Else } from '../ast/renderer-ast-dfn'
-import { EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL, UNDEFINED, createTryStatement, createDefineWithDefaultValue } from '../ast/renderer-ast-util'
+import {
+    FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper,
+    ComponentReferenceLiteral, ConditionalExpression, BinaryExpression, CreateComponentPrototype, Else
+} from '../ast/renderer-ast-dfn'
+import {
+    EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL, UNDEFINED,
+    createTryStatement, createDefineWithDefaultValue
+} from '../ast/renderer-ast-util'
 import { IDGenerator } from '../utils/id-generator'
 import { mergeLiteralAdd } from '../optimizers/merge-literal-add'
 
@@ -118,7 +124,9 @@ export class RendererCompiler {
 
         body.push(DEF('html', L('')))
         body.push(ASSIGN(I('parentCtx'), I('ctx')))
-        const aNodeCompiler = new ANodeCompiler(info, !!this.options.ssrOnly, this.id, this.options.useProvidedComponentClass)
+        const aNodeCompiler = new ANodeCompiler(
+            info, !!this.options.ssrOnly, this.id, this.options.useProvidedComponentClass
+        )
         body.push(...aNodeCompiler.compile(info.root, true))
 
         body.push(RETURN(I('html')))
@@ -131,7 +139,10 @@ export class RendererCompiler {
 
     private compileContext (info: ComponentInfo) {
         const refs = info.hasDynamicComponent()
-            ? new MapLiteral([...info.childComponents.entries()].map(([key, val]) => [L(key), new ComponentReferenceLiteral(val)]))
+            ? new MapLiteral(
+                [...info.childComponents.entries()]
+                    .map(([key, val]) => [L(key), new ComponentReferenceLiteral(val)])
+            )
             : EMPTY_MAP
         return [
             ASSIGN(

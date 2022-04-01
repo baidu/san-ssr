@@ -6,7 +6,9 @@ export const COMPONENT_REFERENCE = '__COMPONENT_REFERENCE__'
 
 const originRequire = Module.prototype.require
 
-export function markExternalComponent (options: {isExternalComponent: (id: string, currentFilename: string) => boolean}) {
+export function markExternalComponent (
+    options: {isExternalComponent: (id: string, currentFilename: string) => boolean}
+) {
     const { isExternalComponent } = options
     Module.prototype.require = Object.assign(function (this: Module, id: string) {
         const currentFilename = this.filename

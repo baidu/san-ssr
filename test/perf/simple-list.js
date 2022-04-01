@@ -29,9 +29,15 @@ for (let i = 0; i < 10000; i++) {
 const renderer = compileToRenderer(App)
 const renderer2 = compileToRenderer(App2)
 const swigRenderer = swig.compile('<div id=\'app\'><ul>{% for item in items %}<li>{{item}}</li>{% endfor %}</ul></div>')
-const artRenderer = art.compile('<div id=\'app\'><ul><% for(let i = 0; i < items.length; i++){ %><li><%= items[i] %></li><% } %></ul></div>')
-const etplRenderer = etpl.compile('<div id=\'app\'><ul><!-- for: ${items} as ${item} --><li>${item}</li><!-- /for --></ul></div>')
-const ejsRenderer = ejs.compile('<div id=\'app\'><ul>{<% for(let i = 0; i < items.length; i++){ %><li><%= items[i] %></li><% } %></ul></div>')
+const artRenderer = art.compile(
+    '<div id=\'app\'><ul><% for(let i = 0; i < items.length; i++){ %><li><%= items[i] %></li><% } %></ul></div>'
+)
+const etplRenderer = etpl.compile(
+    '<div id=\'app\'><ul><!-- for: ${items} as ${item} --><li>${item}</li><!-- /for --></ul></div>'
+)
+const ejsRenderer = ejs.compile(
+    '<div id=\'app\'><ul>{<% for(let i = 0; i < items.length; i++){ %><li><%= items[i] %></li><% } %></ul></div>'
+)
 const handlebarsRenderer = handlebars.compile('<div id=\'app\'><ul>{{#items}}<li>{{.}}</li>{{/items}}</ul></div>')
 
 console.log('----- Simple List SSR Perf (10000 items x 100 times) -----')

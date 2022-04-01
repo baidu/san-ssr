@@ -32,7 +32,9 @@ export function ls () {
     }[]
     for (const caseRoot of caseRoots) {
         cases.push(
-            ...readdirSync(caseRoot).filter(caseName => lstatSync(join(caseRoot, caseName)).isDirectory()).map(caseName => ({ caseName, caseRoot }))
+            ...readdirSync(caseRoot)
+                .filter(caseName => lstatSync(join(caseRoot, caseName)).isDirectory())
+                .map(caseName => ({ caseName, caseRoot }))
         )
     }
     return cases
@@ -43,7 +45,12 @@ export function readExpected (caseName: string, caseRoot: string) {
     return readFileSync(htmlPath, 'utf8')
 }
 
-export function compileJS (caseName: string, caseRoot: string, compileToFunctionBodyCode: boolean = false, folderName = '') {
+export function compileJS (
+    caseName: string,
+    caseRoot: string,
+    compileToFunctionBodyCode: boolean = false,
+    folderName = ''
+) {
     debug('compile js', caseName)
     const caseDir = join(caseRoot, caseName)
     const ssrOnly = /-so/.test(caseName)
@@ -72,12 +79,22 @@ export function compileJS (caseName: string, caseRoot: string, compileToFunction
     }
 }
 
-export function compileComponent (caseName: string, caseRoot: string, compileToFunctionBodyCode: boolean = false, folderName = '', customOptions: Partial<RenderOptions>) {
+export function compileComponent (
+    caseName: string,
+    caseRoot: string,
+    compileToFunctionBodyCode: boolean = false,
+    folderName = '',
+    customOptions: Partial<RenderOptions>
+) {
     debug('compile js', caseName)
     const caseDir = join(caseRoot, caseName)
     const ssrOnly = /-so/.test(caseName)
 
-    const options = Object.assign({ ssrOnly, bareFunctionBody: compileToFunctionBodyCode, importHelpers }, customOptions)
+    const options = Object.assign({
+        ssrOnly,
+        bareFunctionBody: compileToFunctionBodyCode,
+        importHelpers
+    }, customOptions)
 
     // 只编译 component.js
     if (compileToFunctionBodyCode) {
@@ -141,7 +158,11 @@ export function readCaseData (caseName: string, caseRoot: string) {
     return JSON.parse(readFileSync(dataPath, 'utf8'))
 }
 
-export function getRenderArguments (caseName: string, caseRoot: string, info: Partial<Parameters<Renderer>['1']> = {}): Parameters<Renderer> {
+export function getRenderArguments (
+    caseName: string,
+    caseRoot: string,
+    info: Partial<Parameters<Renderer>['1']> = {}
+): Parameters<Renderer> {
     const data = readCaseData(caseName, caseRoot)
     const noDataOutput = /-ndo$/.test(caseName)
     return [data, Object.assign({

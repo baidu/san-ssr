@@ -10,7 +10,9 @@
 import type { SourceFile, ClassDeclaration, ObjectLiteralExpression } from 'ts-morph'
 import { TypeGuards } from 'ts-morph'
 import debugFactory from 'debug'
-import { getChildComponents, getPropertyStringArrayValue, getComponentClassIdentifier, isChildClassOf, getPropertyStringValue } from '../ast/ts-ast-util'
+import {
+    getChildComponents, getPropertyStringArrayValue, getComponentClassIdentifier, isChildClassOf, getPropertyStringValue
+} from '../ast/ts-ast-util'
 import { normalizeComponentClass } from './normalize-component'
 import { TypedSanSourceFile } from '../models/san-source-file'
 import { parseAndNormalizeTemplate } from './parse-template'
@@ -31,7 +33,9 @@ export class TypeScriptSanParser {
         const componentInfos: TypedComponentInfo[] = []
 
         // 初始声明的组件
-        const classDeclarations = sourceFile.getClasses().filter(clazz => isChildClassOf(clazz, componentClassIdentifier))
+        const classDeclarations = sourceFile.getClasses().filter(
+            clazz => isChildClassOf(clazz, componentClassIdentifier)
+        )
         const defaultClassDeclaration = classDeclarations.find(clazz => clazz.isDefaultExport())
 
         // ObjectLiteral 作为匿名组件
@@ -39,7 +43,9 @@ export class TypeScriptSanParser {
         // 所以在 parse components 时遇到再换转成 class 然后 push 到 classDeclarations 中参与遍历 parse
         let anonymousComponentId = 0
         const createClassFromObjectLiteral = (obj: ObjectLiteralExpression) => {
-            const clazz = this.convertObjectLiteralToClassDeclaration(obj, 'SanSSRAnonymousComponent' + anonymousComponentId++)
+            const clazz = this.convertObjectLiteralToClassDeclaration(
+                obj, 'SanSSRAnonymousComponent' + anonymousComponentId++
+            )
             clazz.setExtends(componentClassIdentifier)
             classDeclarations.push(clazz)
             return clazz
@@ -48,11 +54,17 @@ export class TypeScriptSanParser {
         // forEach 时再向数组中 push 元素不会被遍历到，所以改成 for of 循环
         for (const decl of classDeclarations) {
             const clazz = normalizeComponentClass(decl)
-            const info = this.parseComponentClassDeclaration(clazz, defaultClassDeclaration, createClassFromObjectLiteral)
+            const info = this.parseComponentClassDeclaration(
+                clazz, defaultClassDeclaration, createClassFromObjectLiteral
+            )
             componentInfos.push(info)
         }
 
-        return new TypedSanSourceFile(componentInfos, sourceFile, componentInfos.find(info => info.classDeclaration.isDefaultExport()))
+        return new TypedSanSourceFile(
+            componentInfos,
+            sourceFile,
+            componentInfos.find(info => info.classDeclaration.isDefaultExport())
+        )
     }
 
     private parseComponentClassDeclaration (
@@ -63,7 +75,11 @@ export class TypeScriptSanParser {
         const template = getPropertyStringValue(classDeclaration, 'template', '')
         const trimWhitespace = getPropertyStringValue<'none' | 'blank' | 'all'>(classDeclaration, 'trimWhitespace')
         const delimiters = getPropertyStringArrayValue<[string, string]>(classDeclaration, 'delimiters')
-        const childComponents = getChildComponents(classDeclaration, defaultClassDeclaration, createClassFromObjectLiteral)
+        const childComponents = getChildComponents(
+            classDeclaration,
+            defaultClassDeclaration,
+            createClassFromObjectLiteral
+        )
 
         for (const constructorDelcaration of classDeclaration.getConstructors()) {
             constructorDelcaration.remove()

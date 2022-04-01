@@ -3,7 +3,10 @@
  *
  * 语法树 Spec: https://ts-morph.com/
  */
-import type { Node, MethodDeclaration, ShorthandPropertyAssignment, PropertyAssignment, ImportDeclaration, ClassDeclaration, SourceFile, ObjectLiteralExpression } from 'ts-morph'
+import type {
+    Node, MethodDeclaration, ShorthandPropertyAssignment, PropertyAssignment, ImportDeclaration, ClassDeclaration,
+    SourceFile, ObjectLiteralExpression
+} from 'ts-morph'
 import { TypeGuards, SyntaxKind } from 'ts-morph'
 import debugFactory from 'debug'
 import { TagName } from '../models/component-info'
@@ -75,7 +78,10 @@ export function getPropertyStringValue<T extends string> (clazz: ClassDeclaratio
     throw new Error(`invalid "${memberName}" property`)
 }
 
-export function getPropertyStringArrayValue<T extends string[]> (clazz: ClassDeclaration, memberName: string): T | undefined {
+export function getPropertyStringArrayValue<T extends string[]> (
+    clazz: ClassDeclaration,
+    memberName: string
+): T | undefined {
     const member = clazz.getProperty(memberName)
     if (!member) return undefined
 

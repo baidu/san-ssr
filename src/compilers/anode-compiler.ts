@@ -12,8 +12,14 @@ import { ElementCompiler } from './element-compiler'
 import { getANodePropByName } from '../ast/san-ast-util'
 import * as TypeGuards from '../ast/san-ast-type-guards'
 import { IDGenerator } from '../utils/id-generator'
-import { JSONStringify, RegexpReplace, Statement, SlotRendererDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral, ComponentRendererReference, FunctionCall, SlotRenderCall, Expression, GetRootCtxCall, ComponentReferenceLiteral, ComponentClassReference } from '../ast/renderer-ast-dfn'
-import { CTX_DATA, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATEMENT, UNARY, DEF, BINARY, RETURN } from '../ast/renderer-ast-util'
+import {
+    JSONStringify, RegexpReplace, Statement, SlotRendererDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral,
+    ComponentRendererReference, FunctionCall, SlotRenderCall, Expression, GetRootCtxCall, ComponentReferenceLiteral,
+    ComponentClassReference
+} from '../ast/renderer-ast-dfn'
+import {
+    CTX_DATA, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATEMENT, UNARY, DEF, BINARY, RETURN
+} from '../ast/renderer-ast-util'
 import { sanExpr, OutputType } from './san-expr-compiler'
 import type { RenderOptions } from './renderer-options'
 
@@ -67,8 +73,10 @@ export class ANodeCompiler {
     }
 
     private * compileText (aNode: AText): Generator<Statement> {
-        const shouldEmitComment = (TypeGuards.isExprTextNode(aNode.textExpr) || TypeGuards.isExprInterpNode(aNode.textExpr)) &&
-            aNode.textExpr.original && !this.ssrOnly && !this.inScript
+        const shouldEmitComment = (
+            TypeGuards.isExprTextNode(aNode.textExpr) ||
+            TypeGuards.isExprInterpNode(aNode.textExpr)
+        ) && aNode.textExpr.original && !this.ssrOnly && !this.inScript
         const outputType = this.inScript ? OutputType.HTML : OutputType.ESCAPE_HTML
         if (shouldEmitComment) yield createHTMLLiteralAppend('<!--s-text-->')
         yield createHTMLExpressionAppend(sanExpr(aNode.textExpr, outputType))
@@ -185,7 +193,11 @@ export class ANodeCompiler {
         yield createHTMLExpressionAppend(new SlotRenderCall(render, [I('parentCtx'), slotData]))
     }
 
-    private * compileElement (aNode: AElement, dynamicTagName: string | undefined = undefined, isRootElement: boolean): Generator<Statement> {
+    private * compileElement (
+        aNode: AElement,
+        dynamicTagName: string | undefined = undefined,
+        isRootElement: boolean
+    ): Generator<Statement> {
         yield * this.elementCompiler.tagStart(aNode, dynamicTagName)
         if (aNode.tagName === 'script') this.inScript = true
         if (isRootElement && !this.ssrOnly && !this.inScript) {
@@ -206,13 +218,20 @@ export class ANodeCompiler {
         ]
     }
 
-    private * compileComponent (aNode: AElement, ref: Expression, isRootElement: boolean, dynamicTagName: string | undefined = undefined) {
+    private * compileComponent (
+        aNode: AElement,
+        ref: Expression,
+        isRootElement: boolean,
+        dynamicTagName: string | undefined = undefined
+    ) {
         assert(!this.inScript, 'component reference is not allowed inside <script>')
 
         // slot
         const defaultSlotContents: ANode[] = []
         const namedSlotContents = new Map()
-        for (const child of aNode.children!) { // nodes without children (like pATextNode) has been taken over by other methods
+
+        // nodes without children (like pATextNode) has been taken over by other methods
+        for (const child of aNode.children!) {
             const slotBind = !TypeGuards.isATextNode(child) && getANodePropByName(child, 'slot')
             if (slotBind) {
                 const slotName = (slotBind.expr as StringLiteral).value
@@ -248,7 +267,10 @@ export class ANodeCompiler {
         let ChildComponentClassName = ''
         if (this.useProvidedComponentClass) {
             ChildComponentClassName = this.id.next('ChildComponentClass')
-            yield DEF(ChildComponentClassName, new ComponentClassReference(ref, dynamicTagName ? I(dynamicTagName) : L(aNode.tagName)))
+            yield DEF(
+                ChildComponentClassName,
+                new ComponentClassReference(ref, dynamicTagName ? I(dynamicTagName) : L(aNode.tagName))
+            )
         }
 
         // get and call renderer
@@ -308,7 +330,8 @@ export class ANodeCompiler {
                     break
                 }
 
-                const textExprValue = TypeGuards.isExprInterpNode(c.textExpr) ? (c.textExpr.expr as StringLiteral).value : c.textExpr.value
+                const textExprValue = TypeGuards.isExprInterpNode(c.textExpr)
+                    ? (c.textExpr.expr as StringLiteral).value : c.textExpr.value
                 if (!textExprValue || textExprValue.trim() !== '') {
                     return true
                 }
@@ -321,7 +344,8 @@ export class ANodeCompiler {
                     break
                 }
 
-                const textExprValue = TypeGuards.isExprInterpNode(c.textExpr) ? (c.textExpr.expr as StringLiteral).value : c.textExpr.value
+                const textExprValue = TypeGuards.isExprInterpNode(c.textExpr)
+                    ? (c.textExpr.expr as StringLiteral).value : c.textExpr.value
                 if (!textExprValue || textExprValue.trim() !== '') {
                     return true
                 }

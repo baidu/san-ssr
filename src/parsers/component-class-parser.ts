@@ -78,10 +78,14 @@ export class ComponentClassParser {
     /**
      * 从组件 class 得到子组件 class
      */
-    getChildComponentClasses (parentComponentClass: Component<{}> | DefinedComponentClass<{}, {}>, selfId: string): Map<string, DynamicComponentReference> {
+    getChildComponentClasses (
+        parentComponentClass: Component<{}> | DefinedComponentClass<{}, {}>,
+        selfId: string
+    ): Map<string, DynamicComponentReference> {
         const children: Map<string, DynamicComponentReference> = new Map()
 
-        const components: { [key: string]: Component<{}> | undefined } = getMemberFromClass(parentComponentClass, 'components', {})
+        const components: { [key: string]: Component<{}> | undefined } =
+            getMemberFromClass(parentComponentClass, 'components', {})
         for (const [tagName, componentClass] of Object.entries(components)) {
             if (!componentClass) {
                 continue

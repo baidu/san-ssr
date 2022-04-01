@@ -19,7 +19,12 @@ import type { GlobalContext } from '../models/global-context'
 
 export interface Resolver {
     getRenderer: (ref: { id: string, specifier?: string }, tagName?: string, context?: GlobalContext) => Function
-    getChildComponentClass: (ref: { id: string, specifier?: string }, CurrentComponentClass: Component, tagName: string, context?: GlobalContext) => Component
+    getChildComponentClass: (
+        ref: { id: string, specifier?: string },
+        CurrentComponentClass: Component,
+        tagName: string,
+        context?: GlobalContext
+    ) => Component
     setRenderer: (id: string, fn: Function) => void
     /**
      * 每个组件的每次 render 执行，共用同一个 prototype
@@ -73,7 +78,10 @@ export function createResolver (exports: {[key: string]: any}, require: nodeRequ
             ) {
                 return ChildComponentClassOrInstance.placeholder
             }
-            if (typeof ChildComponentClassOrInstance !== 'function' && typeof ChildComponentClassOrInstance !== 'object') {
+            if (
+                typeof ChildComponentClassOrInstance !== 'function' &&
+                typeof ChildComponentClassOrInstance !== 'object'
+            ) {
                 throw Error(`external component is not provided: ${tagName}${instance.prototype?.id || ''}`)
             }
             return ChildComponentClassOrInstance

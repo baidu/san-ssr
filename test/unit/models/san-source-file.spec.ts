@@ -1,4 +1,6 @@
-import { isTypedSanSourceFile, JSSanSourceFile, TypedSanSourceFile, DynamicSanSourceFile } from '../../../src/models/san-source-file'
+import {
+    isTypedSanSourceFile, JSSanSourceFile, TypedSanSourceFile, DynamicSanSourceFile
+} from '../../../src/models/san-source-file'
 import { TypedComponentInfo } from '../../../src/models/component-info'
 import { Project } from 'ts-morph'
 import { ANode } from 'san'

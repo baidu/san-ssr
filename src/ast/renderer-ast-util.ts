@@ -5,7 +5,31 @@
  * 例如：new AssignmentStatement(new Identifier('html'), new Literal('foo')) 可以简写为 ASSIGN(I('html), L('foo))
  */
 
-import { SyntaxKind, SyntaxNode, Block, MapLiteral, UnaryOperator, UnaryExpression, NewExpression, VariableDefinition, ReturnStatement, BinaryOperator, If, Null, Undefined, AssignmentStatement, Statement, Expression, Identifier, ExpressionStatement, BinaryExpression, Literal, TryStatement, CatchClause, ConditionalExpression } from './renderer-ast-dfn'
+import {
+    SyntaxKind,
+    SyntaxNode,
+    Block,
+    MapLiteral,
+    UnaryOperator,
+    UnaryExpression,
+    NewExpression,
+    VariableDefinition,
+    ReturnStatement,
+    BinaryOperator,
+    If,
+    Null,
+    Undefined,
+    AssignmentStatement,
+    Statement,
+    Expression,
+    Identifier,
+    ExpressionStatement,
+    BinaryExpression,
+    Literal,
+    TryStatement,
+    CatchClause,
+    ConditionalExpression
+} from './renderer-ast-dfn'
 
 export function createHTMLLiteralAppend (html: string) {
     return STATEMENT(BINARY(I('html'), '+=', L(html)))
@@ -84,7 +108,10 @@ export function NEW (name: Expression, args: Expression[]) {
 export const EMPTY_MAP = new MapLiteral([])
 
 export function isBlock (node: any): node is Block {
-    const blocks = [SyntaxKind.If, SyntaxKind.ElseIf, SyntaxKind.Else, SyntaxKind.Foreach, SyntaxKind.FunctionDefinition, SyntaxKind.SlotRendererDefinition]
+    const blocks = [
+        SyntaxKind.If, SyntaxKind.ElseIf, SyntaxKind.Else, SyntaxKind.Foreach, SyntaxKind.FunctionDefinition,
+        SyntaxKind.SlotRendererDefinition
+    ]
     return isSyntaxNode(node) && blocks.includes(node.kind)
 }
 

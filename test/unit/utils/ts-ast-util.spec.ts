@@ -1,4 +1,7 @@
-import { getPropertyStringArrayValue, getObjectLiteralPropertyKeys, getChildComponents, getPropertyStringValue, getComponentClassIdentifier, isChildClassOf } from '../../../src/ast/ts-ast-util'
+import {
+    getPropertyStringArrayValue, getObjectLiteralPropertyKeys, getChildComponents, getPropertyStringValue,
+    getComponentClassIdentifier, isChildClassOf
+} from '../../../src/ast/ts-ast-util'
 import { Project } from 'ts-morph'
 
 describe('utils/ts-ast-util', function () {
@@ -45,7 +48,8 @@ describe('utils/ts-ast-util', function () {
         })
         it('should throw for spread', () => {
             const file = proj.createSourceFile('foo.ts', 'let a = {}; class Foo { computed = {...a} }')
-            expect(() => getObjectLiteralPropertyKeys(file.getClass('Foo'), 'computed')).toThrow('object property not recognized')
+            expect(() => getObjectLiteralPropertyKeys(file.getClass('Foo'), 'computed'))
+                .toThrow('object property not recognized')
         })
     })
     describe('.getChildComponents()', function () {
@@ -65,7 +69,9 @@ describe('utils/ts-ast-util', function () {
         })
         it('should allow string literal as key', () => {
             proj.createSourceFile('b.ts', 'export class B {}')
-            const file = proj.createSourceFile('foo.ts', 'import B from \'./b\'; class Foo { components = { \'x-b\': B } }')
+            const file = proj.createSourceFile(
+                'foo.ts', 'import B from \'./b\'; class Foo { components = { \'x-b\': B } }'
+            )
             expect([...getChildComponents(file.getClass('Foo')).entries()]).toEqual([
                 ['x-b', { specifier: './b', id: 'default' }]
             ])
@@ -82,7 +88,9 @@ describe('utils/ts-ast-util', function () {
         })
         it('should throw for invalid string as value', () => {
             proj.createSourceFile('b.ts', 'export class B {}')
-            const file = proj.createSourceFile('foo.ts', 'import B from \'./b\'; class Foo { components = { b: \'B\' } }')
+            const file = proj.createSourceFile(
+                'foo.ts', 'import B from \'./b\'; class Foo { components = { b: \'B\' } }'
+            )
             expect(() => getChildComponents(file.getClass('Foo'))).toThrow('Invalid component for b')
         })
     })
@@ -124,7 +132,8 @@ describe('utils/ts-ast-util', function () {
         })
         it('should throw otherwise', () => {
             const file = proj.createSourceFile('foo.ts', 'const t = "foo"; class Foo { static template = 1 * 2 }')
-            expect(() => getPropertyStringValue(file.getClass('Foo'), 'template')).toThrow('invalid "template" property')
+            expect(() => getPropertyStringValue(file.getClass('Foo'), 'template'))
+                .toThrow('invalid "template" property')
         })
     })
     describe('.getComponentClassIdentifier()', function () {

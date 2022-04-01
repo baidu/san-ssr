@@ -11,9 +11,8 @@ import {
     BoolLiteral,
 
     // ANodes
-    ANode, AIfNode, AForNode, ASlotNode, AText, AccessorExpr, InterpExpr, CallExpr, TextExpr, BinaryExpr, UnaryExpr, TertiaryExpr, ArrayLiteral, ObjectLiteral,
-    AFragmentNode,
-    ADynamicNode
+    ANode, AIfNode, AForNode, ASlotNode, AText, AccessorExpr, InterpExpr, CallExpr, TextExpr, BinaryExpr, UnaryExpr,
+    TertiaryExpr, ArrayLiteral, ObjectLiteral, AFragmentNode, ADynamicNode
 } from 'san'
 
 /*

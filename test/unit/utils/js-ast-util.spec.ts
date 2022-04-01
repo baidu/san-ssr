@@ -1,5 +1,8 @@
 import { parse } from 'acorn'
-import { getLiteralValue, getStringValue, findExportNames, isModuleExports, findESMImports, findScriptRequires, deleteMembersFromClassDeclaration, filterByType, deleteMemberAssignmentsTo } from '../../../src/ast/js-ast-util'
+import {
+    getLiteralValue, getStringValue, findExportNames, isModuleExports, findESMImports, findScriptRequires,
+    deleteMembersFromClassDeclaration, filterByType, deleteMemberAssignmentsTo
+} from '../../../src/ast/js-ast-util'
 
 const pm = (script: string) => parse(script, { sourceType: 'module', ecmaVersion: 2020 }) as any
 const p = (script: string) => parse(script, { ecmaVersion: 2020 }) as any
@@ -114,9 +117,15 @@ describe('js-ast-util', () => {
             }
             `
             const node = p(script)
-            expect(filterByType(node, 'MemberExpression').find(item => item.property.type === 'Identifier' && item.property.name === 'components')).toBeTruthy()
+            expect(
+                filterByType(node, 'MemberExpression')
+                    .find(item => item.property.type === 'Identifier' && item.property.name === 'components')
+            ).toBeTruthy()
             deleteMembersFromClassDeclaration(node.body[0], 'components')
-            expect(filterByType(node, 'MemberExpression').find(item => item.property.type === 'Identifier' && item.property.name === 'components')).toBeFalsy()
+            expect(
+                filterByType(node, 'MemberExpression')
+                    .find(item => item.property.type === 'Identifier' && item.property.name === 'components')
+            ).toBeFalsy()
         })
     })
     describe('.deleteMemberAssignmentsTo()', () => {
@@ -126,11 +135,20 @@ describe('js-ast-util', () => {
             AAA.components = {}
             `
             const node = p(script)
-            expect(filterByType(node, 'MemberExpression').find(item => item.property.type === 'Identifier' && item.property.name === 'components')).toBeTruthy()
+            expect(
+                filterByType(node, 'MemberExpression')
+                    .find(item => item.property.type === 'Identifier' && item.property.name === 'components')
+            ).toBeTruthy()
             deleteMemberAssignmentsTo(node.body[1], 'AAA', 'components')
-            expect(filterByType(node, 'MemberExpression').find(item => item.property.type === 'Identifier' && item.property.name === 'components')).toBeTruthy()
+            expect(
+                filterByType(node, 'MemberExpression')
+                    .find(item => item.property.type === 'Identifier' && item.property.name === 'components')
+            ).toBeTruthy()
             deleteMemberAssignmentsTo(node, 'AAA', 'components')
-            expect(filterByType(node, 'MemberExpression').find(item => item.property.type === 'Identifier' && item.property.name === 'components')).toBeFalsy()
+            expect(
+                filterByType(node, 'MemberExpression')
+                    .find(item => item.property.type === 'Identifier' && item.property.name === 'components')
+            ).toBeFalsy()
         })
     })
 })

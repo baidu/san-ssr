@@ -11,7 +11,9 @@
  */
 
 import type { Component } from 'san'
-import type { TypedSanSourceFile, DynamicSanSourceFile, SanSourceFile, JSSanSourceFile } from '../models/san-source-file'
+import type {
+    TypedSanSourceFile, DynamicSanSourceFile, SanSourceFile, JSSanSourceFile
+} from '../models/san-source-file'
 import type { parseSanSourceFileOptions, RenderOptions } from '../compilers/renderer-options'
 import type { Renderer } from './renderer'
 import type { CompileOptions } from '../target-js/compilers/compile-options'
@@ -26,7 +28,9 @@ import { SanFileParser } from '../parsers/san-file-parser'
 import { removeModules } from '../parsers/remove-modules'
 import ToJSCompiler from '../target-js/index'
 import { getDefaultTSConfigPath } from '../parsers/tsconfig'
-import { isFileDescriptor, isSanFileDescriptor, isComponentClass, ComponentClass, FileDescriptor, CompileInput } from './options'
+import {
+    isFileDescriptor, isSanFileDescriptor, isComponentClass, ComponentClass, FileDescriptor, CompileInput
+} from './options'
 
 type TargetCodeGeneratorClass<T extends TargetCodeGenerator = TargetCodeGenerator> = { new(project: SanProject): T }
 
@@ -131,7 +135,9 @@ export class SanProject {
      *
      * 如果不存在就去加载一个，如果已经加载过就把它存起来。
      */
-    public getOrCreateTargetCodeGenerator<T extends TargetCodeGenerator = TargetCodeGenerator> (target: string | TargetCodeGeneratorClass<T>): T {
+    public getOrCreateTargetCodeGenerator<T extends TargetCodeGenerator = TargetCodeGenerator> (
+        target: string | TargetCodeGeneratorClass<T>
+    ): T {
         const CC: TargetCodeGeneratorClass<T> = this.loadTargetCodeGenerator(target)
 
         if (!this.compilers.has(CC)) {

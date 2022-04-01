@@ -107,6 +107,7 @@ export class JSEmitter extends Emitter {
         case SyntaxKind.CreateComponentPrototype:
             this.write(`if (!sanSSRResolver.getPrototype("${node.info.id}")) {`)
             this.indent()
+            this.nextLine('let ComponentClass = info.ComponentClass')
             this.nextLine('if (typeof ComponentClass === \'function\') {')
             this.indent()
             this.nextLine(`sanSSRResolver.setPrototype("${node.info.id}", _.createInstanceFromClass(ComponentClass));`)

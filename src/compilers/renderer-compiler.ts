@@ -86,7 +86,6 @@ export class RendererCompiler {
         body.push(new ImportHelper('SanSSRData'))
 
         if (this.options.useProvidedComponentClass) {
-            body.push(DEF('ComponentClass', BINARY(I('info'), '.', I('ComponentClass'))))
             body.push(STATEMENT(new CreateComponentPrototype(info)))
         }
 

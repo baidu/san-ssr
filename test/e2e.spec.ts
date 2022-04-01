@@ -1,4 +1,7 @@
-import { ls, compileComponent, compileJS, jsExists, tsExists, compileTS, getRenderArguments, readExpected, renderOnthefly, caseRoots } from '../src/fixtures/case'
+import {
+    ls, compileComponent, compileJS, jsExists, tsExists, compileTS, getRenderArguments, readExpected, renderOnthefly,
+    caseRoots
+} from '../src/fixtures/case'
 import { join } from 'path'
 import { parseSanHTML } from '../src/index'
 import type { RenderOptions } from '../src/index'
@@ -84,7 +87,9 @@ for (const { caseName, caseRoot } of cases) {
                 // render
                 const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js')) as Renderer
                 // 测试在 strict mode，因此需要手动传入 require
-                const got = render(...getRenderArguments(caseName, caseRoot, { parentCtx: { context: ssrSpec && ssrSpec.context } }))
+                const got = render(
+                    ...getRenderArguments(caseName, caseRoot, { parentCtx: { context: ssrSpec && ssrSpec.context } })
+                )
                 const [data, html] = parseSanHTML(got)
 
                 expect(data).toEqual(expectedData)

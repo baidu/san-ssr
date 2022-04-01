@@ -69,9 +69,14 @@ export enum SyntaxKind {
     CreateComponentPrototype = 39
 }
 
-export type Expression = Identifier | FunctionDefinition | Literal | BinaryExpression | UnaryExpression | CreateComponentInstance | NewExpression | MapLiteral | ComponentRendererReference | FunctionCall | Null | Undefined | MapAssign | ArrayIncludes | ConditionalExpression | FilterCall | HelperCall | EncodeURIComponent | ArrayLiteral | RegexpReplace | JSONStringify | ComputedCall | GetRootCtxCall | ComponentReferenceLiteral | SlotRendererDefinition | SlotRenderCall | ComponentClassReference | CreateComponentPrototype
+export type Expression = Identifier | FunctionDefinition | Literal | BinaryExpression | UnaryExpression |
+    CreateComponentInstance | NewExpression | MapLiteral | ComponentRendererReference | FunctionCall | Null |
+    Undefined | MapAssign | ArrayIncludes | ConditionalExpression | FilterCall | HelperCall | EncodeURIComponent |
+    ArrayLiteral | RegexpReplace | JSONStringify | ComputedCall | GetRootCtxCall | ComponentReferenceLiteral |
+    SlotRendererDefinition | SlotRenderCall | ComponentClassReference | CreateComponentPrototype
 
-export type Statement = ReturnStatement | ImportHelper | VariableDefinition | AssignmentStatement | If | ElseIf | Else | Foreach | ExpressionStatement | TryStatement
+export type Statement = ReturnStatement | ImportHelper | VariableDefinition | AssignmentStatement | If | ElseIf | Else |
+    Foreach | ExpressionStatement | TryStatement
 
 export type BinaryOperator = '+' | '-' | '*' | '/' | '.' | '===' | '!==' | '||' | '&&' | '[]' | '+=' | '!=' | '=='
 
@@ -311,7 +316,8 @@ export class GetRootCtxCall implements SyntaxNode {
 export class HelperCall implements SyntaxNode {
     public readonly kind = SyntaxKind.HelperCall
     constructor (
-        public name: 'styleFilter' | 'classFilter' | 'xstyleFilter' | 'xclassFilter' | 'attrFilter' | 'boolAttrFilter' | 'output' | 'escapeHTML',
+        public name: 'styleFilter' | 'classFilter' | 'xstyleFilter' | 'xclassFilter' | 'attrFilter' | 'boolAttrFilter' |
+            'output' | 'escapeHTML',
         public args: Expression[]
     ) {}
 }

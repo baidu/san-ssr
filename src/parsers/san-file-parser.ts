@@ -7,7 +7,10 @@
 import { ExpressionStatement, MethodDefinition, ObjectExpression, CallExpression, Node } from 'estree'
 import { JavaScriptSanParser } from './javascript-san-parser'
 import assert from 'assert'
-import { isClass, getConstructor, addStringPropertyForObject, assertObjectExpression, isCallExpression, isObjectExpression, findDefaultExport } from '../ast/js-ast-util'
+import {
+    isClass, getConstructor, addStringPropertyForObject, assertObjectExpression, isCallExpression, isObjectExpression,
+    findDefaultExport
+} from '../ast/js-ast-util'
 import { JSSanSourceFile } from '../models/san-source-file'
 
 export class SanFileParser {
@@ -62,7 +65,8 @@ export class SanFileParser {
     /**
      * 把模板字符串插入到 san 组件定义中
      * - 情况一：defineComponent({ inited(){} }) -> defineComponent({ inited(){}, template: '<div>...</div>' })
-     * - 情况二：class XComponent { constructor() {} } -> class XComponent { constructor() { this.template='<div>...</div>' } }
+     * - 情况二：
+     *     class XComponent { constructor() {} } -> class XComponent { constructor() { this.template='<div>...</div>' }}
      */
     private insertTemplate (expr: Node) {
         if (isCallExpression(expr)) {

@@ -46,7 +46,12 @@ describe('compilers/element-compiler', () => {
                 name: 'boolAttrFilter',
                 args: [
                     { kind: SyntaxKind.Literal, value: 'readonly' },
-                    { kind: SyntaxKind.BinaryExpression, lhs: CTX_DATA, op: '[]', rhs: { kind: SyntaxKind.Literal, value: 'foo' } }
+                    {
+                        kind: SyntaxKind.BinaryExpression,
+                        lhs: CTX_DATA,
+                        op: '[]',
+                        rhs: { kind: SyntaxKind.Literal, value: 'foo' }
+                    }
                 ]
             })]))
         })
@@ -73,7 +78,9 @@ describe('compilers/element-compiler', () => {
             })]))
         })
         it('should treat checked as a normal property if type not recognized', () => {
-            const aNode = parseTemplate('<div><input checked="{{foo}}" value="1" type="bar"></div>').children[0].children[0]
+            const aNode = parseTemplate(
+                '<div><input checked="{{foo}}" value="1" type="bar"></div>'
+            ).children[0].children[0]
             const nodes = [...compiler.tagStart(aNode)]
             expect(nodes).toEqual(expect.arrayContaining([matchHTMLAddEqual({
                 kind: SyntaxKind.HelperCall,

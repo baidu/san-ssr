@@ -11,7 +11,10 @@ import { autoCloseTags } from '../utils/dom-util'
 import { ANodeCompiler } from './anode-compiler'
 import { ADirectiveBind, AElement, AProperty, BoolLiteral, Expr, NumberLiteral, StringLiteral } from 'san'
 import { isExprNumberNode, isExprStringNode, isExprBoolNode, isExprWithValue } from '../ast/san-ast-type-guards'
-import { createIfStrictEqual, createIfNotNull, createDefaultValue, createHTMLLiteralAppend, createHTMLExpressionAppend, NULL, L, I, ASSIGN, DEF, BINARY } from '../ast/renderer-ast-util'
+import {
+    createIfStrictEqual, createIfNotNull, createDefaultValue, createHTMLLiteralAppend, createHTMLExpressionAppend, NULL,
+    L, I, ASSIGN, DEF, BINARY
+} from '../ast/renderer-ast-util'
 import { HelperCall, ArrayIncludes, Else, Foreach, If, MapLiteral } from '../ast/renderer-ast-dfn'
 import { sanExpr, OutputType } from './san-expr-compiler'
 import assert from 'assert'
@@ -117,7 +120,9 @@ export class ElementCompiler {
         if (this.isLiteral(prop.expr)) {
             yield createHTMLLiteralAppend(_.attrFilter(prop.name, prop.expr.value, true))
         } else {
-            yield createHTMLExpressionAppend(new HelperCall('attrFilter', [L(prop.name), sanExpr(prop.expr, OutputType.ESCAPE), L(false)]))
+            yield createHTMLExpressionAppend(
+                new HelperCall('attrFilter', [L(prop.name), sanExpr(prop.expr, OutputType.ESCAPE), L(false)])
+            )
         }
     }
 

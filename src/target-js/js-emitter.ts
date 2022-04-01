@@ -1,4 +1,7 @@
-import { Literal, Foreach, FunctionDefinition, ArrayLiteral, UnaryExpression, MapLiteral, Statement, SyntaxKind, Expression, VariableDefinition, SlotRendererDefinition } from '../ast/renderer-ast-dfn'
+import {
+    Literal, Foreach, FunctionDefinition, ArrayLiteral, UnaryExpression, MapLiteral, Statement, SyntaxKind, Expression,
+    VariableDefinition, SlotRendererDefinition
+} from '../ast/renderer-ast-dfn'
 import { Emitter } from '../utils/emitter'
 import { assertNever } from '../utils/lang'
 
@@ -221,7 +224,9 @@ export class JSEmitter extends Emitter {
             return LITERAL_DATE_INDICATOR + this.getTime()
         }
         // 利用 toJSON 不能直接实现，因为 JS Date 无法表达为 JSON 字符串。
-        const str = node.value === undefined ? 'undefined' : JSON.stringify(node.value).replace(LITERAL_DATE_MATCHER, 'new Date($1)');
+        const str = node.value === undefined
+            ? 'undefined'
+            : JSON.stringify(node.value).replace(LITERAL_DATE_MATCHER, 'new Date($1)');
         (Date.prototype as any).toJSON = toJSON
 
         return this.write(str)

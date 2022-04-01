@@ -17,7 +17,9 @@ import { Node } from 'estree'
 import { visitANodeRecursively } from '../ast/san-ast-util'
 import { ComponentReference, DynamicComponentReference } from './component-reference'
 import { getObjectLiteralPropertyKeys } from '../ast/ts-ast-util'
-import { assertObjectExpression, getLiteralValue, getPropertiesFromObject, getStringArrayValue } from '../ast/js-ast-util'
+import {
+    assertObjectExpression, getLiteralValue, getPropertiesFromObject, getStringArrayValue
+} from '../ast/js-ast-util'
 import type { RenderOptions } from '../compilers/renderer-options'
 import { RendererCompiler } from '../compilers/renderer-compiler'
 import { isATextNode } from '../ast/san-ast-type-guards'
@@ -118,8 +120,10 @@ export class JSComponentInfo extends ComponentInfoImpl<ComponentReference> {
         isRawObject: boolean = false
     ) {
         const template = properties.has('template') ? getLiteralValue(properties.get('template')!) as string : ''
-        const trimWhitespace: TrimWhitespace = properties.has('trimWhitespace') ? getLiteralValue(properties.get('trimWhitespace')!) : undefined
-        const delimiters = properties.has('delimiters') ? getStringArrayValue(properties.get('delimiters')!) as [string, string] : undefined
+        const trimWhitespace: TrimWhitespace = properties.has('trimWhitespace')
+            ? getLiteralValue(properties.get('trimWhitespace')!) : undefined
+        const delimiters = properties.has('delimiters')
+            ? getStringArrayValue(properties.get('delimiters')!) as [string, string] : undefined
         const root = parseAndNormalizeTemplate(template, { trimWhitespace, delimiters })
 
         super(id, root, new Map())

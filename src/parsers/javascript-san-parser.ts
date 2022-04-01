@@ -87,7 +87,12 @@ export class JavaScriptSanParser {
         this.parseComponents()
         this.wireChildComponents()
         this.deleteChildComponentRequires()
-        return new JSSanSourceFile(this.filePath, this.stringify(this.root), this.componentInfos, this.entryComponentInfo)
+        return new JSSanSourceFile(
+            this.filePath,
+            this.stringify(this.root),
+            this.componentInfos,
+            this.entryComponentInfo
+        )
     }
 
     parseComponents (): [JSComponentInfo[], JSComponentInfo | undefined] {
@@ -217,8 +222,12 @@ export class JavaScriptSanParser {
     }
 
     * parseImportedNames (): Generator<[string, string, string]> {
-        for (const [localName, moduleName, exportName] of findESMImports(this.root)) yield [localName, moduleName, exportName]
-        for (const [localName, moduleName, exportName] of findScriptRequires(this.root)) yield [localName, moduleName, exportName]
+        for (const [localName, moduleName, exportName] of findESMImports(this.root)) {
+            yield [localName, moduleName, exportName]
+        }
+        for (const [localName, moduleName, exportName] of findScriptRequires(this.root)) {
+            yield [localName, moduleName, exportName]
+        }
     }
 
     createComponent (node: Node, name: string = getClassName(node), isDefault = false) {
@@ -268,7 +277,8 @@ export class JavaScriptSanParser {
     }
 
     private isDefineComponentCall (node: Node): node is CallExpression {
-        return isCallExpression(node) && this.isImportedFromSan(node.callee, this.sanReferenceInfo?.methodName || 'defineComponent')
+        return isCallExpression(node) &&
+            this.isImportedFromSan(node.callee, this.sanReferenceInfo?.methodName || 'defineComponent')
     }
 
     private isCreateComponentLoaderCall (node: Node): node is CallExpression {
@@ -280,9 +290,15 @@ export class JavaScriptSanParser {
     }
 
     private isImportedFromSan (expr: Node, sanExport: string): boolean {
-        if (isIdentifier(expr)) return this.isImportedFrom(expr.name, this.sanReferenceInfo?.moduleName || 'san', sanExport)
-        if (isMemberExpression(expr)) return this.isImportedFromSan(expr.object, 'default') && getStringValue(expr.property) === sanExport
-        if (isCallExpression(expr)) return isRequireSpecifier(expr, this.sanReferenceInfo?.moduleName || 'san') && sanExport === 'default'
+        if (isIdentifier(expr)) {
+            return this.isImportedFrom(expr.name, this.sanReferenceInfo?.moduleName || 'san', sanExport)
+        }
+        if (isMemberExpression(expr)) {
+            return this.isImportedFromSan(expr.object, 'default') && getStringValue(expr.property) === sanExport
+        }
+        if (isCallExpression(expr)) {
+            return isRequireSpecifier(expr, this.sanReferenceInfo?.moduleName || 'san') && sanExport === 'default'
+        }
         return false
     }
 

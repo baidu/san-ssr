@@ -105,12 +105,26 @@ export default class ToJSCompiler implements TargetCodeGenerator {
             else if (isJSSanSourceFile(sourceFile)) this.compileJSComponentToSource(sourceFile, emitter)
             // DynamicSanSourceFile
             else this.compileComponentClassToSource(sourceFile, emitter)
+        } else if (typeof options.useProvidedComponentClass === 'object') {
+            const { componentPath, componentName } = options.useProvidedComponentClass
+            emitter.nextLine(
+                'sanSSRResolver.setPrototype(' +
+                    `"${sourceFile.entryComponentInfo!.id}", ` +
+                    'sanSSRHelpers._.createInstanceFromClass(' +
+                        `require('${componentPath}')` +
+                            `${componentName ? '.' + componentName : ''}` +
+                    ')' +
+                ');')
         }
 
         // 编译 render 函数
         for (const info of sourceFile.componentInfos) {
             emitter.nextLine(`sanSSRResolver.setRenderer("${info.id}", `)
-            emitter.writeFunctionDefinition(this.optimize(info.compileToRenderer(options)))
+            emitter.writeFunctionDefinition(
+                this.optimize(
+                    info.compileToRenderer(options)
+                )
+            )
             emitter.feedLine(');')
         }
 

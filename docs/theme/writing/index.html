@@ -1,0 +1,37 @@
+<!doctype html><html><head><meta charset="utf-8"/><title>San-SSR</title><link rel="icon" href="/san-ssr/favicon.ico"><script>window['SAN_DOCIT'] = {};</script><base href="/san-ssr/"><meta name="description" content="文档，文档工具，建站"><link href="/san-ssr/static/css/chunk-vendors.css" rel="stylesheet"></head><body><div id="app"><div id="site"><header id="header"><a href="/san-ssr/" class="navbar"><img src="/san-ssr/logo.svg" alt="Home" class="logo"> <span>San-SSR</span></a><ul><li><a target="_blank" href="https://github.com/kidnes/san-docit">GitHub</a></li></ul></header><aside id="sidebar" class="sidebar"><ul class="tree"><li><span>指南</span><ul><li data-id="/"><a href="/san-ssr/" onclick="return false;">介绍</a></li><li data-id="/guide/quick-start/"><a href="/san-ssr/guide/quick-start/" onclick="return false;">快速上手</a></li><li data-id="/guide/directory-structure/"><a href="/san-ssr/guide/directory-structure/" onclick="return false;">目录结构</a></li><li data-id="/guide/basic-config/"><a href="/san-ssr/guide/basic-config/" onclick="return false;">基本配置</a></li><li data-id="/guide/config/"><a href="/san-ssr/guide/config/" onclick="return false;">API</a></li></ul></li><li><span>样式</span><ul><li data-id="/theme/using/"><a href="/san-ssr/theme/using/" onclick="return false;">使用主题</a></li><li data-id="/theme/writing/"><a href="/san-ssr/theme/writing/" onclick="return false;">开发主题</a></li><li data-id="/theme/default-theme-config/"><a href="/san-ssr/theme/default-theme-config/" onclick="return false;">默认主题配置</a></li></ul></li><li><span>深入</span><ul><li data-id="/codebox/"><a href="/san-ssr/codebox/" onclick="return false;">Markdown 预览组件</a></li><li data-id="/markdown-advance/"><a href="/san-ssr/markdown-advance/" onclick="return false;">Markdown 高级功能</a></li></ul></li></ul></aside><article id="content"><div id="router-view" class="router-view"><div class="content markdown-content"><div class="markdown"><h1 id="%E5%BC%80%E5%8F%91%E4%B8%BB%E9%A2%98">开发主题</h1><p>想要书写一个主题，首先在你文档根目录创建一个 <code>.sdoc/theme</code> 目录，接着创建一个 <code>layout.san</code> 文件：</p><pre class="language-text"><code class="language-text">.
+└─ .sdoc
+    └─ theme
+        └─ layout.san</code></pre><p>到这里，就像开发一个普通的 San 应用一样。如何组织你的主题，这完全取决于你。</p><h2 id="%E8%8E%B7%E5%8F%96%E6%B8%B2%E6%9F%93%E5%86%85%E5%AE%B9">获取渲染内容</h2><p>当前的 <code>.md</code> 文件渲染的内容，可以通过组件的属性 <code>docit.content</code> 来使用，你可能想要它显示在页面中的某个地方。一个最简单的主题，可以是一个唯一的 <code>layout.san</code> 组件，并包含以下内容：</p><pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>template</span><span class="token punctuation">&gt;</span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">&quot;</span>theme-container<span class="token punctuation">&quot;</span></span><span class="token punctuation">&gt;</span></span>
+        {{docit.content | raw}}
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>template</span><span class="token punctuation">&gt;</span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>script</span><span class="token punctuation">&gt;</span></span><span class="token script"><span class="token language-javascript">
+<span class="token keyword">export</span> <span class="token keyword">default</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">dataTypes</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">docit</span><span class="token operator">:</span> DataTypes<span class="token punctuation">.</span>object
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>script</span><span class="token punctuation">&gt;</span></span></code></pre><h2 id="%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84">目录结构</h2><p>随着需求的变化，只有一个布局组件 <code>layout.san</code> 可能还不够，你可能想要定义更多的布局组件用于不同的页面。</p><p>那么是时候重新组织你的主题了！一个约定的主题的目录结构如下：</p><pre class="language-text"><code class="language-text">theme
+├── global-components
+│   └── xxx.san
+├── components
+│   └── xxx.san
+├── layouts
+│   ├── layout.san (必要的)
+│   └── 404.san
+├── styles
+│   ├── index.less
+│   └── palette.less
+├── templates
+│   ├── dev.ejs
+│   └── ssr.ejs
+├── index.js
+└── package.json</code></pre><ul><li><code>theme/global-components</code>: 该目录下的组件都会被自动注册为全局组件。</li><li><code>theme/components</code>: San 组件。</li><li><code>theme/layouts</code>: 布局组件，其中 <code>layout.san</code> 是必需的。</li><li><code>theme/styles</code>: 全局的样式和调色板。</li><li><code>theme/templates</code>: 修改默认的模板文件。</li><li><code>theme/index.js</code>: 主题文件的入口文件。</li></ul><p>当你将你的主题以一个 npm 包的形式发布时，如果你没有任何主题配置，即没有 <code>theme/index.js</code>，那么你需要将 <code>package.json</code> 中的 <code>&quot;main&quot;</code> 字段设置为 <code>layouts/layout.san</code>，只有这样 SDoc 才能正确地解析主题。</p><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+    ...
+    <span class="token property">&quot;main&quot;</span><span class="token operator">:</span> <span class="token string">&quot;layouts/layout.san&quot;</span><span class="token punctuation">,</span>
+    ...
+<span class="token punctuation">}</span></code></pre><h2 id="%E5%B8%83%E5%B1%80%E7%BB%84%E4%BB%B6">布局组件</h2><p>假设你的主题 <code>layouts</code> 目录如下：</p><pre class="language-text"><code class="language-text">theme
+└── layouts
+   ├── layout.san
+   └── 404.san</code></pre><p>然后，所有的页面将会默认使用 <code>layout.san</code> 作为布局组件，对于那些匹配不到的路由将会使用 <code>404.vue</code>。</p></div></div></div><aside class="toc"><ul class="tree"></ul></aside></article></div></div><script src="/san-ssr/static/js/chunk-vendors.js"></script><script src="/san-ssr/static/js/client-entry.js"></script></body></html>

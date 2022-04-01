@@ -1,0 +1,27 @@
+<!doctype html><html><head><meta charset="utf-8"/><title>San-SSR</title><link rel="icon" href="/san-ssr/favicon.ico"><script>window['SAN_DOCIT'] = {};</script><base href="/san-ssr/"><meta name="description" content="文档，文档工具，建站"><link href="/san-ssr/static/css/chunk-vendors.css" rel="stylesheet"></head><body><div id="app"><div id="site"><header id="header"><a href="/san-ssr/" class="navbar"><img src="/san-ssr/logo.svg" alt="Home" class="logo"> <span>San-SSR</span></a><ul><li><a target="_blank" href="https://github.com/kidnes/san-docit">GitHub</a></li></ul></header><aside id="sidebar" class="sidebar"><ul class="tree"><li><span>指南</span><ul><li data-id="/"><a href="/san-ssr/" onclick="return false;">介绍</a></li><li data-id="/guide/quick-start/"><a href="/san-ssr/guide/quick-start/" onclick="return false;">快速上手</a></li><li data-id="/guide/directory-structure/"><a href="/san-ssr/guide/directory-structure/" onclick="return false;">目录结构</a></li><li data-id="/guide/basic-config/"><a href="/san-ssr/guide/basic-config/" onclick="return false;">基本配置</a></li><li data-id="/guide/config/"><a href="/san-ssr/guide/config/" onclick="return false;">API</a></li></ul></li><li><span>样式</span><ul><li data-id="/theme/using/"><a href="/san-ssr/theme/using/" onclick="return false;">使用主题</a></li><li data-id="/theme/writing/"><a href="/san-ssr/theme/writing/" onclick="return false;">开发主题</a></li><li data-id="/theme/default-theme-config/"><a href="/san-ssr/theme/default-theme-config/" onclick="return false;">默认主题配置</a></li></ul></li><li><span>深入</span><ul><li data-id="/codebox/"><a href="/san-ssr/codebox/" onclick="return false;">Markdown 预览组件</a></li><li data-id="/markdown-advance/"><a href="/san-ssr/markdown-advance/" onclick="return false;">Markdown 高级功能</a></li></ul></li></ul></aside><article id="content"><div id="router-view" class="router-view"><div class="content markdown-content"><div class="markdown"><h1 id="%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84">目录结构</h1><p>SDoc 遵循 “约定优于配置” 的原则，推荐的目录结构如下：</p><pre class="language-shell"><code class="language-shell"><span class="token builtin class-name">.</span>
+├── docs
+│   ├── .sdoc <span class="token punctuation">(</span>可选的<span class="token punctuation">)</span>
+│   │   ├── components <span class="token punctuation">(</span>可选的<span class="token punctuation">)</span>
+│   │   ├── theme <span class="token punctuation">(</span>可选的<span class="token punctuation">)</span>
+│   │   │   └── layout.san
+│   │   ├── public <span class="token punctuation">(</span>可选的<span class="token punctuation">)</span>
+│   │   ├── styles <span class="token punctuation">(</span>可选的<span class="token punctuation">)</span>
+│   │   │   ├── index.less
+│   │   │   └── vars.less
+│   │   ├── templates <span class="token punctuation">(</span>可选的<span class="token punctuation">)</span>
+│   │   │   ├── dev.html
+│   │   │   └── ssr.html
+│   │   ├── config.js <span class="token punctuation">(</span>可选的<span class="token punctuation">)</span>
+│   │   └── enhanceApp.js <span class="token punctuation">(</span>可选的<span class="token punctuation">)</span>
+│   │ 
+│   ├── README.md
+│   ├── guide
+│   │   └── README.md
+│   └── config.md
+│ 
+└── package.json</code></pre><ul><li><code>docs/.sdoc</code>: 用于存放全局的配置、组件、静态资源等。</li><li><code>docs/.sdoc/components</code>: 该目录中的 San 组件将会被自动注册为全局组件。</li><li><code>docs/.sdoc/theme</code>: 用于存放本地主题。</li><li><code>docs/.sdoc/styles</code>: 用于存放样式相关的文件。</li><li><code>docs/.sdoc/styles/index.less</code>: 将会被自动应用的全局样式文件，会生成在最终的 CSS 文件结尾，具有比默认样式高的优先级。</li><li><code>docs/.sdoc/styles/vars.less</code>: 用于重写默认颜色常量，或者设置新的 less 颜色常量。</li><li><code>docs/.sdoc/public</code>: 静态资源目录。</li><li><code>docs/.sdoc/templates</code>: 存储 HTML 模板文件。</li><li><code>docs/.sdoc/templates/dev.ejs</code>: 用于开发环境的 HTML 模板文件。</li><li><code>docs/.sdoc/templates/ssr.ejs</code>: 构建时基于 San SSR 的 HTML 模板文件。</li><li><code>docs/.sdoc/config.js</code>: 配置文件的入口文件。</li></ul><blockquote><p><strong>注意</strong></p><p>当你想要去自定义 templates/ssr.ejs 或 templates/dev.ejs 时，最好基于 默认的模板文件来修改，否则可能会导致构建出错。</p></blockquote><h2 id="%E9%BB%98%E8%AE%A4%E7%9A%84%E9%A1%B5%E9%9D%A2%E8%B7%AF%E7%94%B1">默认的页面路由</h2><p>此处我们把 docs 作为文档目录，下面所有的“文件的相对路径”都是相对于 docs 目录的。在项目根目录下的 package.json 中添加 scripts ：</p><pre class="language-shell"><code class="language-shell"><span class="token punctuation">{</span>
+  <span class="token string">&quot;scripts&quot;</span><span class="token builtin class-name">:</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;start&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;sdoc start docs&quot;</span>,
+    <span class="token string">&quot;build&quot;</span><span class="token builtin class-name">:</span> <span class="token string">&quot;sdoc build docs&quot;</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p>对于上述的目录结构，默认页面路由地址如下：</p><table><thead><tr><th>文件的相对路径</th><th>页面路由地址</th></tr></thead><tbody><tr><td>/README.md</td><td>/</td></tr><tr><td>/guide/README.md</td><td>/guide/</td></tr><tr><td>/config.md</td><td>/config/</td></tr></tbody></table><blockquote><p><strong>注意</strong></p><p>避免同时存在 /config.md 和 /config/README.md，会同时解析为 /config/ 路径。默认使用 /config.md 文件。</p></blockquote></div></div></div><aside class="toc"><ul class="tree"></ul></aside></article></div></div><script src="/san-ssr/static/js/chunk-vendors.js"></script><script src="/san-ssr/static/js/client-entry.js"></script></body></html>

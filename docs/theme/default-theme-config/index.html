@@ -1,0 +1,97 @@
+<!doctype html><html><head><meta charset="utf-8"/><title>San-SSR</title><link rel="icon" href="/san-ssr/favicon.ico"><script>window['SAN_DOCIT'] = {};</script><base href="/san-ssr/"><meta name="description" content="文档，文档工具，建站"><link href="/san-ssr/static/css/chunk-vendors.css" rel="stylesheet"></head><body><div id="app"><div id="site"><header id="header"><a href="/san-ssr/" class="navbar"><img src="/san-ssr/logo.svg" alt="Home" class="logo"> <span>San-SSR</span></a><ul><li><a target="_blank" href="https://github.com/kidnes/san-docit">GitHub</a></li></ul></header><aside id="sidebar" class="sidebar"><ul class="tree"><li><span>指南</span><ul><li data-id="/"><a href="/san-ssr/" onclick="return false;">介绍</a></li><li data-id="/guide/quick-start/"><a href="/san-ssr/guide/quick-start/" onclick="return false;">快速上手</a></li><li data-id="/guide/directory-structure/"><a href="/san-ssr/guide/directory-structure/" onclick="return false;">目录结构</a></li><li data-id="/guide/basic-config/"><a href="/san-ssr/guide/basic-config/" onclick="return false;">基本配置</a></li><li data-id="/guide/config/"><a href="/san-ssr/guide/config/" onclick="return false;">API</a></li></ul></li><li><span>样式</span><ul><li data-id="/theme/using/"><a href="/san-ssr/theme/using/" onclick="return false;">使用主题</a></li><li data-id="/theme/writing/"><a href="/san-ssr/theme/writing/" onclick="return false;">开发主题</a></li><li data-id="/theme/default-theme-config/"><a href="/san-ssr/theme/default-theme-config/" onclick="return false;">默认主题配置</a></li></ul></li><li><span>深入</span><ul><li data-id="/codebox/"><a href="/san-ssr/codebox/" onclick="return false;">Markdown 预览组件</a></li><li data-id="/markdown-advance/"><a href="/san-ssr/markdown-advance/" onclick="return false;">Markdown 高级功能</a></li></ul></li></ul></aside><article id="content"><div id="router-view" class="router-view"><div class="content markdown-content"><div class="markdown"><h1 id="%E9%BB%98%E8%AE%A4%E4%B8%BB%E9%A2%98%E9%85%8D%E7%BD%AE">默认主题配置</h1><div class="info"><p><strong>提示</strong></p><p>本页所列的选项仅对默认主题生效。如果你在使用一个自定义主题，选项可能会有不同。</p></div><h2 id="%E5%AF%BC%E8%88%AA%E6%A0%8F">导航栏</h2><p>导航栏可能包含你的页面标题、它们均取决于你的配置。</p><h3 id="%E5%AF%BC%E8%88%AA%E6%A0%8F-logo">导航栏 Logo</h3><p>你可以通过 <code>themeConfig.logo</code> 增加导航栏 Logo ，Logo 可以被放置在<a href="https://github.com/kidnes/san-docit/tree/master/%40sdoc/theme/public" target="_blank">公共文件目录</a>：</p><pre class="language-js"><code class="language-js"><span class="token comment">// .sdoc/config.js</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">themeConfig</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">logo</span><span class="token operator">:</span> <span class="token string">&#39;logo.svg&#39;</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><h3 id="%E5%AF%BC%E8%88%AA%E6%A0%8F%E9%93%BE%E6%8E%A5">导航栏链接</h3><p>你可以通过 <code>themeConfig.nav</code> 增加一些导航栏链接:</p><pre class="language-js"><code class="language-js"><span class="token comment">// .sdoc/config.js</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">themeConfig</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">nav</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">{</span><span class="token literal-property property">text</span><span class="token operator">:</span> <span class="token string">&#39;Home&#39;</span><span class="token punctuation">,</span> <span class="token literal-property property">link</span><span class="token operator">:</span> <span class="token string">&#39;/&#39;</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token punctuation">{</span><span class="token literal-property property">text</span><span class="token operator">:</span> <span class="token string">&#39;Github&#39;</span><span class="token punctuation">,</span> <span class="token literal-property property">link</span><span class="token operator">:</span> <span class="token string">&#39;https://github.com/kidnes/san-docit&#39;</span><span class="token punctuation">}</span>
+        <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p>外部链接 <code>&lt;a&gt;</code> 标签的特性将默认包含<code>target=&quot;_blank&quot; rel=&quot;noopener noreferrer&quot;</code>，你可以提供 <code>target</code> 与 <code>rel</code>，它们将被作为特性被增加到 <code>&lt;a&gt;</code> 标签上：</p><pre class="language-js"><code class="language-js"><span class="token comment">// .sdoc/config.js</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">themeConfig</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">nav</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+            <span class="token punctuation">{</span><span class="token literal-property property">text</span><span class="token operator">:</span> <span class="token string">&#39;Home&#39;</span><span class="token punctuation">,</span> <span class="token literal-property property">link</span><span class="token operator">:</span> <span class="token string">&#39;/&#39;</span><span class="token punctuation">,</span> <span class="token literal-property property">target</span><span class="token operator">:</span><span class="token string">&#39;_self&#39;</span><span class="token punctuation">,</span> <span class="token literal-property property">rel</span><span class="token operator">:</span><span class="token string">&#39;&#39;</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token punctuation">{</span><span class="token literal-property property">text</span><span class="token operator">:</span> <span class="token string">&#39;Github&#39;</span><span class="token punctuation">,</span> <span class="token literal-property property">link</span><span class="token operator">:</span> <span class="token string">&#39;https://github.com/kidnes/san-docit&#39;</span><span class="token punctuation">,</span> <span class="token literal-property property">target</span><span class="token operator">:</span><span class="token string">&#39;_blank&#39;</span><span class="token punctuation">}</span>
+        <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><h3 id="%E7%A6%81%E7%94%A8%E5%AF%BC%E8%88%AA%E6%A0%8F">禁用导航栏</h3><p>你可以使用 <code>themeConfig.navbar</code> 来禁用所有页面的导航栏：</p><pre class="language-js"><code class="language-js"><span class="token comment">// .sdoc/config.js</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">themeConfig</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">navbar</span><span class="token operator">:</span> <span class="token boolean">false</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><h2 id="%E4%BE%A7%E8%BE%B9%E6%A0%8F">侧边栏</h2><p>想要使 侧边栏（Sidebar）生效，需要配置 <code>themeConfig.sidebar</code>，基本的配置，需要一个包含了多个链接的数组：</p><pre class="language-js"><code class="language-js"><span class="token comment">// .sdoc/config.js</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">themeConfig</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">sidebar</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token string-property property">&#39;/&#39;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">&#39;/&#39;</span><span class="token punctuation">,</span>
+                <span class="token string">&#39;/page-a/&#39;</span><span class="token punctuation">,</span>
+                <span class="token punctuation">[</span><span class="token string">&#39;/page-b/&#39;</span><span class="token punctuation">]</span>
+            <span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><p>路由配置需要以 <code>/</code> 结尾，会自动解析对应的 <code>md</code> 文件，并提取的 <code>title</code> 标题。对标题的提取，可以明确地在<code>YAML front matter</code> 中指定页面的标题，或者自动分析 <code>md</code> 文件的 <code>[H1 H2]</code> 标题。</p><p>路由解析后会变成如下的数据结构：</p><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <span class="token property">&quot;path&quot;</span><span class="token operator">:</span> <span class="token string">&quot;/&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;filename&quot;</span><span class="token operator">:</span> <span class="token string">&quot;/a/b/c.md&quot;</span><span class="token punctuation">,</span>
+    <span class="token property">&quot;title&quot;</span><span class="token operator">:</span> <span class="token string">&quot;标题&quot;</span>
+<span class="token punctuation">}</span></code></pre><p>所以此处可以直接配置成这三项，明确指定 <code>title</code> 和 <code>path</code>。</p><p>有些情况下，我们侧边栏的导航会存在多级的树状结构，父节点不能点击，这时可以通过配置 <code>title</code> 和 <code>children</code> 来实现。</p><pre class="language-js"><code class="language-js">module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">themeConfig</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">sidebar</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token string-property property">&#39;/&#39;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+                    <span class="token literal-property property">title</span><span class="token operator">:</span> <span class="token string">&#39;介绍&#39;</span><span class="token punctuation">,</span>
+                    <span class="token literal-property property">path</span><span class="token operator">:</span> <span class="token string">&#39;/&#39;</span><span class="token punctuation">,</span>
+                <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+                    <span class="token literal-property property">title</span><span class="token operator">:</span> <span class="token string">&#39;配置&#39;</span><span class="token punctuation">,</span>
+                    <span class="token literal-property property">children</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">&#39;/basic-config/&#39;</span><span class="token punctuation">,</span> <span class="token string">&#39;/config/&#39;</span><span class="token punctuation">,</span> <span class="token string">&#39;/advance-config/&#39;</span><span class="token punctuation">]</span>
+                <span class="token punctuation">}</span><span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre><p>侧边栏除了md文件外，同时支持 JS 文件，以及 SSR 渲染。</p><pre class="language-js"><code class="language-js">module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">themeConfig</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">sidebar</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token string-property property">&#39;/&#39;</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+                <span class="token literal-property property">path</span><span class="token operator">:</span> <span class="token string">&#39;/&#39;</span><span class="token punctuation">,</span>
+                <span class="token literal-property property">title</span><span class="token operator">:</span> <span class="token string">&#39;Button 按钮&#39;</span><span class="token punctuation">,</span>
+                <span class="token literal-property property">filename</span><span class="token operator">:</span> <span class="token string">&#39;/components/button/docs/index.js&#39;</span>
+            <span class="token punctuation">}</span><span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre><h3 id="%E5%A4%9A%E4%B8%AA%E4%BE%A7%E8%BE%B9%E6%A0%8F">多个侧边栏</h3><p>如果你想为不同的页面组来显示不同的侧边栏，首先，将你的页面文件组织成下述的目录结构：</p><pre class="language-html"><code class="language-html">.
+├─ README.md
+├─ contact.md
+├─ about.md
+├─ foo/
+│  ├─ README.md
+│  ├─ one.md
+│  └─ two.md
+└─ bar/
+   ├─ README.md
+   ├─ three.md
+   └─ four.md</code></pre><p>接着，遵循以下的侧边栏配置：</p><pre class="language-js"><code class="language-js"><span class="token comment">// .sdoc/config.js</span>
+module<span class="token punctuation">.</span>exports <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token literal-property property">themeConfig</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token literal-property property">sidebar</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+            <span class="token string-property property">&#39;/foo/&#39;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">&#39;/&#39;</span><span class="token punctuation">,</span>
+                <span class="token string">&#39;/foo/one/&#39;</span><span class="token punctuation">,</span>
+                <span class="token string">&#39;/foo/two/&#39;</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+
+            <span class="token string-property property">&#39;/bar/&#39;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">&#39;/bar/three/&#39;</span><span class="token punctuation">,</span>
+                <span class="token string">&#39;/bar/four/&#39;</span>
+            <span class="token punctuation">]</span><span class="token punctuation">,</span>
+
+            <span class="token comment">// fallback，放在最后</span>
+            <span class="token string-property property">&#39;/&#39;</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+                <span class="token string">&#39;/contact/&#39;</span><span class="token punctuation">,</span>
+                <span class="token string">&#39;/about/&#39;</span>
+            <span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre><blockquote><p><strong>注意</strong></p><p>确保 fallback 侧边栏被最后定义。SDoc 会按顺序遍历侧边栏配置来寻找匹配的配置。</p></blockquote></div></div></div><aside class="toc"><ul class="tree"></ul></aside></article></div></div><script src="/san-ssr/static/js/chunk-vendors.js"></script><script src="/san-ssr/static/js/client-entry.js"></script></body></html>

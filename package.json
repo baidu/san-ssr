@@ -1,0 +1,23 @@
+{
+  "name": "san-ssr",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "sdoc start src",
+    "build": "sdoc build src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baidu/san-ssr.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/baidu/san-ssr/issues"
+  },
+  "homepage": "https://github.com/baidu/san-ssr#readme",
+  "devDependencies": {
+    "@sdoc/cli": "^1.0.9"
+  }
+}

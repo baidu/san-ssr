@@ -21,7 +21,6 @@
   },
   "scripts": {
     "lint": "eslint '**/*.ts' '**/*.js'",
-    "docs": "typedoc --theme pages-plugin --pages ./manual/config.json --out docs src && touch docs/.nojekyll",
     "build": "tsc && chmod a+x dist/bin/*",
     "watch": "tsc --watch",
     "unit": "jest test/unit",
@@ -77,9 +76,7 @@
     "san-ssr-target-fake-cmd": "^1.0.0",
     "san-ssr-target-fake-esm": "^1.0.0",
     "source-map-support": "^0.5.19",
-    "swig-templates": "^2.0.3",
-    "typedoc": "^0.17.8",
-    "typedoc-plugin-pages": "^1.1.0"
+    "swig-templates": "^2.0.3"
   },
   "optionalDependencies": {
     "@semantic-release/changelog": "^6.0.1",

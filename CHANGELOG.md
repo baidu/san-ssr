@@ -1,3 +1,17 @@
+# [5.1.0](https://github.com/baidu/san-ssr/compare/v5.0.4...v5.1.0) (2022-04-02)
+
+
+### Bug Fixes
+
+* move define ComponentClass into if block ([e7f1fd6](https://github.com/baidu/san-ssr/commit/e7f1fd640a6c24dc13e9f946975cde85a9132cd0))
+* 插值运算为 + 时，进行了局部转义，应为整体转义 ([a6d4622](https://github.com/baidu/san-ssr/commit/a6d4622f857f374abe4dfe2f811d5486851c7f54))
+
+
+### Features
+
+* render 函数兼容多参数的情况 ([ff24c26](https://github.com/baidu/san-ssr/commit/ff24c26d249d46ce26acb5464e19ae4fa6214434))
+* support auto require entry component ([2ca6c32](https://github.com/baidu/san-ssr/commit/2ca6c32e60120ec15024ef05dc9e99aca2ae8dc1))
+
 ## [5.0.4](https://github.com/baidu/san-ssr/compare/v5.0.3...v5.0.4) (2021-12-27)
 
 

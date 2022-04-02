@@ -29,7 +29,6 @@
     "check": "npm test && npm run lint",
     "test": "jest",
     "coverage": "jest --coverage",
-    "version": "npm run build",
     "semantic-release": "semantic-release",
     "esbuild": "esbuild `find src -name '*.ts'` --sourcemap --platform=node --target=node10 --format=cjs --outdir=dist"
   },

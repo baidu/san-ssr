@@ -48,7 +48,7 @@ export class ANodeCompiler {
 
     compile (aNode: ANode, isRootElement: boolean): Generator<Statement> {
         if (TypeGuards.isATextNode(aNode)) return this.compileText(aNode)
-        if (TypeGuards.isAIfNode(aNode)) return this.compileIf(aNode)
+        if (TypeGuards.isAIfNode(aNode)) return this.compileIf(aNode, isRootElement)
         if (TypeGuards.isAForNode(aNode)) return this.compileFor(aNode)
         if (TypeGuards.isASlotNode(aNode)) return this.compileSlot(aNode)
         if (TypeGuards.isAFragmentNode(aNode) && aNode.tagName === 'template') return this.compileTemplate(aNode)
@@ -112,7 +112,7 @@ export class ANodeCompiler {
         yield new Else(this.compileElement(aNode, dynamicTagName, isRootElement))
     }
 
-    private * compileIf (aNode: AIfNode): Generator<Statement> {
+    private * compileIf (aNode: AIfNode, isRootElement: boolean): Generator<Statement> {
         const ifDirective = aNode.directives.if
 
         // 动态节点 s-is 的子节点，会被编译两次。期间不能被修改。
@@ -124,11 +124,11 @@ export class ANodeCompiler {
         // @ts-ignore
         delete aNodeWithoutIf.directives.if
 
-        yield new If(sanExpr(ifDirective.value), this.compile(aNodeWithoutIf, false))
+        yield new If(sanExpr(ifDirective.value), this.compile(aNodeWithoutIf, isRootElement))
 
         for (const elseANode of aNode.elses || []) {
             const elifDirective = elseANode.directives.elif
-            const body = this.compile(elseANode, false)
+            const body = this.compile(elseANode, isRootElement)
             yield elifDirective ? new ElseIf(sanExpr(elifDirective.value), body) : new Else(body)
         }
     }

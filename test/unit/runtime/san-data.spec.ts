@@ -72,4 +72,42 @@ describe('runtime/SanSSRData', () => {
             expect(data.get('bar')).toBeUndefined()
         })
     })
+    describe('.parseExpr', () => {
+        it('should parse []', () => {
+            const data = new SanSSRData({}, {})
+            expect(data.parseExpr('data1.data3[0].age')).toEqual(['data1', 'data3', 0, 'age'])
+            expect(data.parseExpr('data1.data3["bbb"].age')).toEqual(['data1', 'data3', 'bbb', 'age'])
+        })
+        it('can use [] to get', () => {
+            const data = new SanSSRData({
+                data1: {
+                    data2: {
+                        schoolAge: 9
+                    },
+                    data3: [
+                        {
+                            age: 9
+                        }
+                    ]
+                }
+            }, {})
+            expect(data.get('data1.data3[0].age')).toEqual(9)
+        })
+        it('can use [] to set', () => {
+            const data = new SanSSRData({
+                data1: {
+                    data2: {
+                        schoolAge: 9
+                    },
+                    data3: [
+                        {
+                            age: 9
+                        }
+                    ]
+                }
+            }, {})
+            data.set('data1.data3[1]', { age: 10 })
+            expect(data.get('data1.data3').length).toEqual(2)
+        })
+    })
 })

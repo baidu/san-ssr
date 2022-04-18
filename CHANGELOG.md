@@ -1,3 +1,16 @@
+# [5.2.0](https://github.com/baidu/san-ssr/compare/v5.1.0...v5.2.0) (2022-04-18)
+
+
+### Bug Fixes
+
+* revert "computed 应该在 inited 之前调用" [#144](https://github.com/baidu/san-ssr/issues/144) ([2b80c02](https://github.com/baidu/san-ssr/commit/2b80c0257bbf46d19e3ebfba4faa950e2c4dc2ec))
+* 根组件有 if 指令时，没有输出数据 [#146](https://github.com/baidu/san-ssr/issues/146) ([30b7f1c](https://github.com/baidu/san-ssr/commit/30b7f1cc45bb848979524f3d48139d6b69b2bc46))
+
+
+### Features
+
+* support [] while calling data methods ([30fd0dd](https://github.com/baidu/san-ssr/commit/30fd0dd650a519cdc0d072870c95314741b8fef1)), closes [#145](https://github.com/baidu/san-ssr/issues/145)
+
 # [5.1.0](https://github.com/baidu/san-ssr/compare/v5.0.4...v5.1.0) (2022-04-02)
 
 

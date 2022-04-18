@@ -109,5 +109,22 @@ describe('runtime/SanSSRData', () => {
             data.set('data1.data3[1]', { age: 10 })
             expect(data.get('data1.data3').length).toEqual(2)
         })
+        it('readIndent error', () => {
+            const data = new SanSSRData({}, {})
+            expect(() => data.parseExpr('data1..data3')).toThrow(/expect an identifier/)
+        })
+        it('readString error', () => {
+            const data = new SanSSRData({}, {})
+            expect(() => data.parseExpr('data1["a]')).toThrow(/expect a string/)
+        })
+        it('parse [] error', () => {
+            const data = new SanSSRData({}, {})
+            expect(() => data.parseExpr('data1[a]')).toThrow(/identifier is not support/)
+            expect(() => data.parseExpr('data1["a"')).toThrow(/expect ]/)
+        })
+        it('read accessor error', () => {
+            const data = new SanSSRData({}, {})
+            expect(() => data.parseExpr('data1-aaa')).toThrow(/expect . or \[/)
+        })
     })
 })

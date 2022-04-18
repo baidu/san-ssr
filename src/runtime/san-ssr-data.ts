@@ -56,7 +56,7 @@ function readIdent (walker: Walker) {
     const match = walker.match(/\s*([$0-9a-z_]+)/ig, true)
 
     if (!match) {
-        throw new Error('[SAN_SSR FATAL] expect an ident: ' + walker.source.slice(walker.index))
+        throw new Error('[SAN_SSR FATAL] expect an identifier: ' + walker.source.slice(walker.index))
     }
 
     return match[1]

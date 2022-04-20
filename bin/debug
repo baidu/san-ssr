@@ -2,12 +2,13 @@
 
 require('source-map-support/register')
 const { assertSanHTMLEqual } = require('../dist/index')
-const { execFileSync } = require('child_process')
 const chalk = require('chalk')
 const { readFileSync } = require('fs')
 const assert = require('assert')
 const { join } = require('path')
 const { jsExists, tsExists, compileComponent, compileJS, compileTS, ls } = require('../dist/fixtures/case')
+const { renderBySource } = require('./render-by-source')
+const { renderOnTheFly } = require('./render-onthefly')
 
 const caseName = process.argv[2]
 const caseItem = ls().find(item => item.caseName === caseName)
@@ -31,7 +32,7 @@ const cases = {
         desc: 'JS->源码->渲染',
         fn: () => {
             compileJS(caseName, caseRoot)
-            return exec('./render-by-source.js')
+            return renderBySource(caseName)
         }
     },
     tssrc: {
@@ -39,7 +40,7 @@ const cases = {
         desc: 'TS->源码->渲染',
         fn: () => {
             compileTS(caseName, caseRoot)
-            return exec('./render-by-source.js')
+            return renderBySource(caseName)
         }
     },
     comsrc: {
@@ -47,13 +48,13 @@ const cases = {
         desc: '组件->源码->渲染',
         fn: () => {
             compileComponent(caseName, caseRoot)
-            return exec('./render-by-source.js')
+            return renderBySource(caseName)
         }
     },
     comrdr: {
         need: 'js',
         desc: '组件->Renderer->渲染',
-        fn: () => exec('./render-onthefly.js')
+        fn: () => renderOnTheFly(caseName)
     }
 }
 
@@ -94,8 +95,4 @@ process.exit(exitCode)
 
 function depsReady (key) {
     return cases[key].need === 'js' ? jsExists(caseName, caseRoot) : tsExists(caseName, caseRoot)
-}
-
-function exec (bin) {
-    return execFileSync(join(__dirname, bin), [caseName], { encoding: 'utf8' }).toString()
 }

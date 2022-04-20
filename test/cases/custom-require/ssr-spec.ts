@@ -12,10 +12,14 @@ export default {
         comsrc: true,
         comrdr: false
     },
-    context: {
-        customSSRFilePath ({ specifier }) {
-            if (specifier.endsWith('childA.san')) {
-                return specifier.replace('childA', 'childB')
+    info: {
+        parentCtx: {
+            context: {
+                customSSRFilePath ({ specifier }) {
+                    if (specifier.endsWith('childA.san')) {
+                        return specifier.replace('childA', 'childB')
+                    }
+                }
             }
         }
     },

@@ -7,7 +7,6 @@ import { parseSanHTML } from '../src/index'
 import type { RenderOptions } from '../src/index'
 import { existsSync } from 'fs'
 import { execSync } from 'child_process'
-import type { GlobalContext } from '../src/models/global-context'
 import type { Renderer } from '../src/models/renderer'
 
 export interface SsrSpecConfig {
@@ -17,7 +16,7 @@ export interface SsrSpecConfig {
         comsrc?: boolean
         comrdr?: boolean
     }
-    context?: GlobalContext
+    info?: Parameters<Renderer>[1]
     beforeHook?: (type: keyof SsrSpecConfig['enabled']) => void
     afterHook?: (type: keyof SsrSpecConfig['enabled']) => void
     compileOptions?: RenderOptions
@@ -90,7 +89,7 @@ for (const { caseName, caseRoot } of cases) {
                 const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js')) as Renderer
                 // 测试在 strict mode，因此需要手动传入 require
                 const got = render(
-                    ...getRenderArguments(caseName, caseRoot, { parentCtx: { context: ssrSpec && ssrSpec.context } })
+                    ...getRenderArguments(caseName, caseRoot, ssrSpec.info || {})
                 )
                 const [data, html] = parseSanHTML(got)
 
@@ -113,9 +112,7 @@ for (const { caseName, caseRoot } of cases) {
                 const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js')) as Renderer
 
                 // 测试在 strict mode，因此需要手动传入 require
-                const info = {
-                    parentCtx: { context: ssrSpec && ssrSpec.context }
-                } as Parameters<Renderer>[1]
+                const info = Object.assign({}, ssrSpec.info || {})
                 if (ssrSpec.compileOptions.useProvidedComponentClass) {
                     info.ComponentClass = require(join(caseRoot, caseName, 'component.js'))
                 }

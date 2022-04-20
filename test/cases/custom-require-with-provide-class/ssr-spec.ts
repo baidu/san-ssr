@@ -10,21 +10,25 @@ export default {
         comsrc: true,
         comrdr: false
     },
-    context: {
-        customComponentFilePath ({ specifier, tagName }) {
-            if (specifier === './childA.san') {
-                if (tagName === 'x-b') {
-                    return path.resolve(__dirname, './childB.san')
+    info: {
+        parentCtx: {
+            context: {
+                customComponentFilePath ({ specifier, tagName }) {
+                    if (specifier === './childA.san') {
+                        if (tagName === 'x-b') {
+                            return path.resolve(__dirname, './childB.san')
+                        }
+                        return path.resolve(__dirname, './childA.san')
+                    }
+                },
+                customSSRFilePath ({ specifier, tagName }) {
+                    if (specifier === './childA.san') {
+                        if (tagName === 'x-b') {
+                            return './childB.san'
+                        }
+                        return './childA.san'
+                    }
                 }
-                return path.resolve(__dirname, './childA.san')
-            }
-        },
-        customSSRFilePath ({ specifier, tagName }) {
-            if (specifier === './childA.san') {
-                if (tagName === 'x-b') {
-                    return './childB.san'
-                }
-                return './childA.san'
             }
         }
     },

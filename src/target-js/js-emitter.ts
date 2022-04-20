@@ -209,6 +209,11 @@ export class JSEmitter extends Emitter {
             this.write(') ')
             this.writeBlockStatements(node.handler.body)
             break
+        case SyntaxKind.Typeof:
+            this.write('typeof (')
+            this.writeSyntaxNode(node.value)
+            this.write(')')
+            break
         default: assertNever(node)
         }
     }

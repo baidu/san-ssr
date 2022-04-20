@@ -15,7 +15,11 @@ import { IDGenerator } from '../utils/id-generator'
 import {
     JSONStringify, RegexpReplace, Statement, SlotRendererDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral,
     ComponentRendererReference, FunctionCall, SlotRenderCall, Expression, GetRootCtxCall, ComponentReferenceLiteral,
-    ComponentClassReference
+    ComponentClassReference,
+    VariableDefinition,
+    ConditionalExpression,
+    Typeof,
+    AssignmentStatement
 } from '../ast/renderer-ast-dfn'
 import {
     CTX_DATA, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATEMENT, UNARY, DEF, BINARY, RETURN
@@ -211,9 +215,21 @@ export class ANodeCompiler {
 
     private createDataComment () {
         const dataExpr = BINARY(new GetRootCtxCall([I('ctx')]), '.', I('data'))
+        const outputDataExpr = BINARY(I('info'), '.', I('outputData'))
         return [
+            new VariableDefinition('data', dataExpr),
+            new If(outputDataExpr, [
+                new AssignmentStatement(
+                    I('data'),
+                    new ConditionalExpression(
+                        BINARY(new Typeof(outputDataExpr), '===', L('function')),
+                        new FunctionCall(outputDataExpr, [dataExpr]),
+                        outputDataExpr
+                    )
+                )
+            ]),
             createHTMLLiteralAppend('<!--s-data:'),
-            createHTMLExpressionAppend(new RegexpReplace(new JSONStringify(dataExpr), '(?<=-)-', L('\\-'))),
+            createHTMLExpressionAppend(new RegexpReplace(new JSONStringify(I('data')), '(?<=-)-', L('\\-'))),
             createHTMLLiteralAppend('-->')
         ]
     }

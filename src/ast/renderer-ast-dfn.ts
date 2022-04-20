@@ -66,14 +66,15 @@ export enum SyntaxKind {
     TryStatement = 36,
     CatchClause = 37,
     ComponentClassReference = 38,
-    CreateComponentPrototype = 39
+    CreateComponentPrototype = 39,
+    Typeof = 40
 }
 
 export type Expression = Identifier | FunctionDefinition | Literal | BinaryExpression | UnaryExpression |
     CreateComponentInstance | NewExpression | MapLiteral | ComponentRendererReference | FunctionCall | Null |
     Undefined | MapAssign | ArrayIncludes | ConditionalExpression | FilterCall | HelperCall | EncodeURIComponent |
     ArrayLiteral | RegexpReplace | JSONStringify | ComputedCall | GetRootCtxCall | ComponentReferenceLiteral |
-    SlotRendererDefinition | SlotRenderCall | ComponentClassReference | CreateComponentPrototype
+    SlotRendererDefinition | SlotRenderCall | ComponentClassReference | CreateComponentPrototype | Typeof
 
 export type Statement = ReturnStatement | ImportHelper | VariableDefinition | AssignmentStatement | If | ElseIf | Else |
     Foreach | ExpressionStatement | TryStatement
@@ -421,6 +422,13 @@ export class Literal implements SyntaxNode {
 
 export class ReturnStatement implements SyntaxNode {
     public readonly kind = SyntaxKind.ReturnStatement
+    constructor (
+        public value: Expression
+    ) {}
+}
+
+export class Typeof implements SyntaxNode {
+    public readonly kind = SyntaxKind.Typeof
     constructor (
         public value: Expression
     ) {}

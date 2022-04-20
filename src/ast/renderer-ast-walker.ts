@@ -17,6 +17,7 @@ export function * walk (node: Expression | Statement): Iterable<Expression | Sta
     case SyntaxKind.EncodeURIComponent:
     case SyntaxKind.ReturnStatement:
     case SyntaxKind.ExpressionStatement:
+    case SyntaxKind.Typeof:
         yield * walk(node.value)
         break
     case SyntaxKind.Literal:

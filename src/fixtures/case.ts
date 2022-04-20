@@ -170,9 +170,9 @@ export function getRenderArguments (
     }, info)]
 }
 
-export function renderOnthefly (caseName: string, caseRoot: string) {
+export function renderOnthefly (caseName: string, caseRoot: string, info: Partial<Parameters<Renderer>['1']> = {}) {
     const render = compileCaseToRenderer(caseName, caseRoot)
     const data = readCaseData(caseName, caseRoot)
     const noDataOutput = /-ndo$/.test(caseName)
-    return render(data, { noDataOutput })
+    return render(data, Object.assign({ noDataOutput }, info))
 }

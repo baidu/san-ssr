@@ -13,5 +13,8 @@ export interface Renderer {
         },
         tagName?: string,
         ComponentClass?: Component
+        slots?: {
+            [slotName: string]: Renderer
+        }
     }): string
 }

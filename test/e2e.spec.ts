@@ -46,9 +46,11 @@ for (const { caseName, caseRoot } of cases) {
         },
         compileOptions: {}
     } as SsrSpecConfig
-    const ssrSpecPath = join(caseRoot, caseName, 'ssr-spec.ts')
-    if (existsSync(ssrSpecPath)) {
-        Object.assign(ssrSpec, require(ssrSpecPath).default)
+    const ssrSpecPath = join(caseRoot, caseName, 'ssr-spec')
+    if (existsSync(ssrSpecPath + '.ts')) {
+        Object.assign(ssrSpec, require(ssrSpecPath + '.ts').default)
+    } else if (existsSync(ssrSpecPath + '.js')) {
+        Object.assign(ssrSpec, require(ssrSpecPath + '.js'))
     }
 
     if (tsExists(caseName, caseRoot)) {

@@ -1,3 +1,10 @@
+# [5.3.0](https://github.com/baidu/san-ssr/compare/v5.2.0...v5.3.0) (2022-04-21)
+
+
+### Features
+
+* support custom output data ([e3b8664](https://github.com/baidu/san-ssr/commit/e3b8664259d39ce0a3fed7a523d58f484c9f19cd))
+
 # [5.2.0](https://github.com/baidu/san-ssr/compare/v5.1.0...v5.2.0) (2022-04-18)
 
 

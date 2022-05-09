@@ -15,7 +15,7 @@ function compile (componentPath, externalPath, outputPath) {
     const MyComponent = require(componentPath)
     const sanProject = new SanProject()
     const res = sanProject.compileToSource(MyComponent, 'js', {
-        // useProvidedComponentClass: true
+        useProvidedComponentClass: true
     })
 
     cancelMarkExternalComponent()
@@ -24,13 +24,13 @@ function compile (componentPath, externalPath, outputPath) {
 }
 
 compile('./sample/component', './component2', './dist/component.js')
-// compile('./component2', './component', './dist/component2')
+compile('./sample/component2', './component', './dist/component2.js')
 
 // // online
-// const Component = require('./component')
+const Component = require('./sample/component')
 const render = require('./dist/component')
 
-const html = render({})
-// const html = render({}, { ComponentClass: Component })
+// const html = render({})
+const html = render({}, { ComponentClass: Component })
 
 console.log(html)

@@ -8,13 +8,24 @@ const List = san.defineComponent({
     template: '<div>{{ text }}</div>'
 })
 
+const CompB = san.defineComponent({
+    initData () {
+        return {
+            text: 'comp b'
+        }
+    },
+    template: '<div>{{ text }}</div>'
+})
 const CompA = san.defineComponent({
+    components: {
+        'x-l': CompB
+    },
     initData () {
         return {
             text: 'component a'
         }
     },
-    template: '<div>{{ text }}</div>'
+    template: '<div><div>{{ text }}</div><x-l/></div>'
 })
 
 const MyComponent = san.defineComponent({

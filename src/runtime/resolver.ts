@@ -37,9 +37,17 @@ export interface Resolver {
 type nodeRequire = typeof require;
 
 export function createResolver (exports: {[key: string]: any}, require: nodeRequire): Resolver {
+    const renderCache = {} as {[key: string]: Function}
     return {
         getRenderer: function ({ id, specifier = '.' }, tagName, context) {
             const customSSRFilePath = context && context.customSSRFilePath
+            const cacheKey = id + '  ' + specifier
+
+            // 没有自定义时，尝试缓存
+            if (!customSSRFilePath && renderCache[cacheKey]) {
+                return renderCache[cacheKey]
+            }
+
             let mod: {[key: string]: any}
             if (specifier === '.') {
                 mod = exports
@@ -50,10 +58,26 @@ export function createResolver (exports: {[key: string]: any}, require: nodeRequ
                 }
                 mod = require(path || specifier)
             }
+
+            if (!customSSRFilePath) {
+                renderCache[cacheKey] = mod.sanSSRRenders[id]
+            }
+
             return mod.sanSSRRenders[id]
         },
         getChildComponentClass: function ({ id, specifier = '.' }, instance: Component, tagName: string, context) {
             const customComponentFilePath = context && context.customComponentFilePath
+            const pro = Object.getPrototypeOf(instance)
+            if (!pro.__componentClassCache) {
+                pro.__componentClassCache = {}
+            }
+            const componentClassCache = pro.__componentClassCache as {[key: string]: Component}
+            const cacheKey = tagName
+
+            // 没有自定义时，尝试缓存
+            if (!customComponentFilePath && componentClassCache[cacheKey]) {
+                return componentClassCache[cacheKey]
+            }
 
             if (customComponentFilePath && specifier !== '.') {
                 const path = customComponentFilePath({ id, specifier, tagName })
@@ -69,6 +93,7 @@ export function createResolver (exports: {[key: string]: any}, require: nodeRequ
                 throw Error(`child component is not fount: ${tagName}${instance.prototype?.id || ''}`)
             }
             if (typeof ChildComponentClassOrInstance === 'string' && ChildComponentClassOrInstance === 'self') {
+                componentClassCache[cacheKey] = instance
                 return instance
             }
             // component loader
@@ -76,6 +101,7 @@ export function createResolver (exports: {[key: string]: any}, require: nodeRequ
                 Object.prototype.hasOwnProperty.call(ChildComponentClassOrInstance, 'load') &&
                 Object.prototype.hasOwnProperty.call(ChildComponentClassOrInstance, 'placeholder')
             ) {
+                componentClassCache[cacheKey] = ChildComponentClassOrInstance.placeholder
                 return ChildComponentClassOrInstance.placeholder
             }
             if (
@@ -84,6 +110,7 @@ export function createResolver (exports: {[key: string]: any}, require: nodeRequ
             ) {
                 throw Error(`external component is not provided: ${tagName}${instance.prototype?.id || ''}`)
             }
+            componentClassCache[cacheKey] = ChildComponentClassOrInstance
             return ChildComponentClassOrInstance
         },
         setRenderer: function (id: string, fn: Function) {

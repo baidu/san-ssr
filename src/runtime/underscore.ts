@@ -49,28 +49,46 @@ function isArray (source: any): source is any[] {
 }
 
 function output (value: any, needEscape: boolean) {
-    if (value == null || value === '') return ''
-    value = String(value)
+    if (value == null || value === '') {
+        return ''
+    }
+    value = '' + value
     return needEscape ? escapeHTML(value) : value
 }
 
 function classFilter (source: string | string[]) {
-    if (!isArray(source)) source = [source]
-    return source.filter(x => x != null).join(' ')
+    if (!isArray(source)) {
+        source = [source]
+    }
+    let res = ''
+    for (let i = 0; i < source.length; i++) {
+        const s = source[i]
+        if (s != null) {
+            if (i !== 0) {
+                res += ' '
+            }
+            res += s
+        }
+    }
+    return res
 }
 
 function styleFilter (source: object | string) {
     if (isObject(source)) {
-        return Object.keys(source)
-            .map(key => key + ':' + source[key] + ';')
-            .join('')
+        const keys = Object.keys(source)
+        let res = ''
+        for (let i = 0; i < keys.length; i++) {
+            const key = keys[i]
+            res += (key + ':' + source[key] + ';')
+        }
+        return res
     }
     return source
 }
 
 function xclassFilter (inherits: string | string[], own: string) {
-    if (!isArray(inherits)) inherits = [inherits]
-    const inheritStr = inherits = inherits.filter(x => x != null).join(' ')
+    const inheritStr = classFilter(inherits)
+
     if (inheritStr) {
         if (own) return own + ' ' + inheritStr
         return inheritStr
@@ -92,7 +110,7 @@ function attrFilter (name: string, value: string | number | boolean, needEscape:
     if (value == null || (!value && BASE_PROPS[name])) {
         return ''
     }
-    value = String(value)
+    value = '' + value
     return ` ${name}="${needEscape ? escapeHTML(value) : value}"`
 }
 
@@ -192,15 +210,16 @@ function mergeChildSlots (childSlots: {[name: string]: Function}) {
         named: {} as {[name: string]: boolean},
         noname: false
     }
-    Object.keys(childSlots).forEach(key => {
+    const keys = Object.keys(childSlots)
+    for (let i = 0; i < keys.length; i++) {
+        const key = keys[i]
         if (key === '') {
             sourceSlots.noname = true
-            return
+            continue
         }
 
         sourceSlots.named[key] = true
-    })
-
+    }
     return sourceSlots
 }
 

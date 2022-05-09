@@ -11,6 +11,16 @@ describe('utils/underscore', function () {
             expect(_.escapeHTML('<a foo="bar">')).toEqual('&lt;a foo=&quot;bar&quot;&gt;')
         })
     })
+    describe('.classFilter()', () => {
+        it('should join class', () => {
+            expect(_.classFilter(['a', 'b', undefined, 'c']))
+                .toEqual('a b c')
+        })
+        it('not array', () => {
+            expect(_.classFilter('a'))
+                .toEqual('a')
+        })
+    })
     describe('.xclassFilter()', () => {
         it('should append outer styles', () => {
             expect(_.xclassFilter(['foo', 'bar'], 'coo'))

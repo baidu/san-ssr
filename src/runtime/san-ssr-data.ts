@@ -147,10 +147,18 @@ export class SanSSRData {
     get (path: string): any {
         if (arguments.length === 0) return this.data
         if (this.computed[path]) return this.computed[path].call({ data: this })
-        return this.parseExpr(path).reduce(
-            (val: any, name: string | number) => val == null ? val : val[name],
-            this.data
-        )
+
+        let res = this.data
+        const paths = this.parseExpr(path)
+        for (let i = 0; i < paths.length; i++) {
+            const p = paths[i]
+            if (res == null) {
+                break
+            }
+            res = res[p]
+        }
+
+        return res
     }
 
     set (path: string, value: any) {

@@ -1,3 +1,10 @@
+## [5.3.1](https://github.com/baidu/san-ssr/compare/v5.3.0...v5.3.1) (2022-05-09)
+
+
+### Bug Fixes
+
+* update deps @semantic-release/commit-analyzer and @semantic-release/npm ([cf75d47](https://github.com/baidu/san-ssr/commit/cf75d47967e44683f4cd44cf85980829bf672d51))
+
 # [5.3.0](https://github.com/baidu/san-ssr/compare/v5.2.0...v5.3.0) (2022-04-21)
 
 

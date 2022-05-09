@@ -1,3 +1,11 @@
+# [5.4.0](https://github.com/baidu/san-ssr/compare/v5.3.1...v5.4.0) (2022-05-09)
+
+
+### Features
+
+* add cache to getRenderer and getChildComponentClass ([bf091b4](https://github.com/baidu/san-ssr/commit/bf091b4654615139c5c384aad9d0a359e6fa54a2))
+* remove map filter reduce foreach in runtime ([a757013](https://github.com/baidu/san-ssr/commit/a757013a055d2fd09a5c05e7c0a0cc422b1406f7))
+
 ## [5.3.1](https://github.com/baidu/san-ssr/compare/v5.3.0...v5.3.1) (2022-05-09)
 
 

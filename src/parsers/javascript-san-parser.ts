@@ -60,7 +60,8 @@ export class JavaScriptSanParser {
     entryComponentInfo?: JSComponentInfo
 
     private sanComponentIdentifier?: string
-    private defineComponentIdentifier?: string
+    private defineComponentIdentifier: string
+    private defineTemplateComponentIdentifier: string
     private defaultExport?: string
     private imports: Map<LocalName, [ImportSpecifier, ImportName]> = new Map()
     private exports: Map<LocalName, ExportName> = new Map()
@@ -75,6 +76,8 @@ export class JavaScriptSanParser {
         sourceType: 'module' | 'script' = 'script',
         options?: parseSanSourceFileOptions
     ) {
+        this.defineComponentIdentifier = 'defineComponent'
+        this.defineTemplateComponentIdentifier = 'defineTemplateComponent'
         this.root = parse(
             fileContent === undefined ? readFileSync(filePath, 'utf8') : fileContent,
             { ecmaVersion: 2020, sourceType }
@@ -214,7 +217,15 @@ export class JavaScriptSanParser {
             if (imported === 'defineComponent' && specifier === 'san') {
                 this.defineComponentIdentifier = local
             }
+            if (imported === 'defineTemplateComponent' && specifier === 'san') {
+                this.defineTemplateComponentIdentifier = local
+            }
         }
+        if (this.sanReferenceInfo) {
+            this.sanComponentIdentifier = this.sanReferenceInfo.moduleName
+            this.defineComponentIdentifier = this.sanReferenceInfo.methodName || this.defineComponentIdentifier
+        }
+
         for (const [local, exported] of findExportNames(this.root)) {
             if (exported === 'default') this.defaultExport = local
             this.exports.set(local, exported)
@@ -278,23 +289,24 @@ export class JavaScriptSanParser {
 
     private isDefineComponentCall (node: Node): node is CallExpression {
         return isCallExpression(node) &&
-            this.isImportedFromSan(node.callee, this.sanReferenceInfo?.methodName || 'defineComponent')
+            (this.isImportedFromSanWithName(node.callee, this.defineComponentIdentifier) ||
+                this.isImportedFromSanWithName(node.callee, this.defineTemplateComponentIdentifier))
     }
 
     private isCreateComponentLoaderCall (node: Node): node is CallExpression {
-        return isCallExpression(node) && this.isImportedFromSan(node.callee, 'createComponentLoader')
+        return isCallExpression(node) && this.isImportedFromSanWithName(node.callee, 'createComponentLoader')
     }
 
     private isComponentClass (node: Node): node is Class {
-        return isClass(node) && !!node.superClass && this.isImportedFromSan(node.superClass, 'Component')
+        return isClass(node) && !!node.superClass && this.isImportedFromSanWithName(node.superClass, 'Component')
     }
 
-    private isImportedFromSan (expr: Node, sanExport: string): boolean {
+    private isImportedFromSanWithName (expr: Node, sanExport: string): boolean {
         if (isIdentifier(expr)) {
             return this.isImportedFrom(expr.name, this.sanReferenceInfo?.moduleName || 'san', sanExport)
         }
         if (isMemberExpression(expr)) {
-            return this.isImportedFromSan(expr.object, 'default') && getStringValue(expr.property) === sanExport
+            return this.isImportedFromSanWithName(expr.object, 'default') && getStringValue(expr.property) === sanExport
         }
         if (isCallExpression(expr)) {
             return isRequireSpecifier(expr, this.sanReferenceInfo?.moduleName || 'san') && sanExport === 'default'

@@ -7,9 +7,9 @@
 import debugFactory from 'debug'
 import { ancestor } from 'acorn-walk'
 import { Node as AcornNode, parse } from 'acorn'
-import { CallExpression, Program, Node, Class } from 'estree'
+import { CallExpression, Program, Node, Class, ObjectExpression } from 'estree'
 import { generate } from 'astring'
-import { JSComponentInfo } from '../models/component-info'
+import { ComponentType, JSComponentInfo } from '../models/component-info'
 import {
     isVariableDeclarator,
     isProperty,
@@ -50,6 +50,16 @@ type LocalName = string
 type ImportName = string
 type ExportName = string
 type ImportSpecifier = string
+
+/**
+ * 组件定义可能的 node 类型
+ */
+export type ComponentDefinition = CallExpression | Class | ObjectExpression
+
+/**
+ * 子组件（components 属性中）可能的 node 类型
+ */
+export type ChildComponentDefinition = ObjectExpression
 
 /**
  * 把包含 San 组件定义的 JavaScript 源码，通过静态分析（AST），得到组件信息。
@@ -99,18 +109,20 @@ export class JavaScriptSanParser {
     }
 
     parseComponents (): [JSComponentInfo[], JSComponentInfo | undefined] {
-        const parseComponentFromNode = (node: AcornNode, ancestors: AcornNode[]) => {
+        const visitor = (node: AcornNode, ancestors: AcornNode[]) => {
             const parent = ancestors[ancestors.length - 2] as Node
-            if (!this.isComponent(node as Node)) return
-            const component = this.parseComponentFromNode(node as Node, parent)
-            if (component.className === this.defaultExport) {
-                this.entryComponentInfo = component
+            const n = node as Node
+            if (this.isComponent(n)) {
+                const component = this.parseComponentFromNode(n, parent)
+                if (component.className === this.defaultExport) {
+                    this.entryComponentInfo = component
+                }
             }
         }
         ancestor(this.root as any as AcornNode, {
-            CallExpression: parseComponentFromNode,
-            ClassExpression: parseComponentFromNode,
-            ClassDeclaration: parseComponentFromNode
+            CallExpression: visitor,
+            ClassExpression: visitor,
+            ClassDeclaration: visitor
         })
         return [this.componentInfos, this.entryComponentInfo]
     }
@@ -177,7 +189,7 @@ export class JavaScriptSanParser {
         throw new Error(`${location(child)} cannot parse components`)
     }
 
-    private parseComponentFromNode (node: Node, parent: Node) {
+    private parseComponentFromNode (node: ComponentDefinition, parent: Node) {
         // export default Component
         if (isExportDefaultDeclaration(parent)) {
             return (this.entryComponentInfo = this.createComponent(node, undefined, true))
@@ -241,14 +253,21 @@ export class JavaScriptSanParser {
         }
     }
 
-    createComponent (node: Node, name: string = getClassName(node), isDefault = false) {
+    createComponent (node: ComponentDefinition, name: string = getClassName(node), isDefault = false) {
         const properties = new Map(this.getPropertiesFromComponentDeclaration(node, name))
         const id = componentID(isDefault, (name
             ? (this.exports.get(name) || name)
             : ('SanSSRAnonymousComponent' + this.id++)
         ))
         this.componentIDs.set(node, id)
-        const comp = new JSComponentInfo(id, name, properties, this.stringify(node), isObjectExpression(node))
+        const comp = new JSComponentInfo(
+            id,
+            name,
+            properties,
+            this.stringify(node),
+            this.getComponentType(node),
+            isObjectExpression(node)
+        )
         this.componentInfos.push(comp)
 
         // 删除掉子组件
@@ -258,7 +277,13 @@ export class JavaScriptSanParser {
 
     private getOrCreateDefaultLoaderComponent (): JSComponentInfo {
         if (!this.defaultPlaceholderComponent) {
-            this.defaultPlaceholderComponent = new JSComponentInfo(DEFAULT_LOADER_CMP, '', new Map(), 'function(){}')
+            this.defaultPlaceholderComponent = new JSComponentInfo(
+                DEFAULT_LOADER_CMP,
+                '',
+                new Map(),
+                'function(){}',
+                'template'
+            )
             this.componentInfos.push(this.defaultPlaceholderComponent)
         }
         return this.defaultPlaceholderComponent
@@ -283,8 +308,19 @@ export class JavaScriptSanParser {
         yield * getMemberAssignmentsTo(this.root, name)
     }
 
-    private isComponent (node: Node) {
+    private isComponent (node: Node): node is ComponentDefinition {
         return this.isDefineComponentCall(node) || this.isComponentClass(node)
+    }
+
+    private getComponentType (node: ComponentDefinition): ComponentType {
+        if (
+            isCallExpression(node) &&
+            this.isImportedFromSanWithName(node.callee, this.defineTemplateComponentIdentifier)
+        ) {
+            return 'template'
+        }
+
+        return 'normal'
     }
 
     private isDefineComponentCall (node: Node): node is CallExpression {

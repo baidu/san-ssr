@@ -2,7 +2,7 @@ import { JSComponentInfo, TypedComponentInfo, DynamicComponentInfo } from '../..
 import { getPropertiesFromObject } from '../../../src/ast/js-ast-util'
 import { parse } from 'acorn'
 import { Project } from 'ts-morph'
-import { ANode, defineComponent } from 'san'
+import { ANode, Component, defineComponent } from 'san'
 
 describe('TypedComponentInfo', function () {
     let proj
@@ -36,12 +36,12 @@ describe('DynamicComponentInfo', function () {
                 b
             }
         })
-        const info = new DynamicComponentInfo('id', null as ANode, new Map(), component)
+        const info = new DynamicComponentInfo('id', null as ANode, new Map(), 'normal', component)
         expect(info.getFilterNames()).toEqual(['a', 'x-b', 'b'])
     })
     it('should return empty array if filters not defined', () => {
         const component = defineComponent({})
-        const info = new DynamicComponentInfo('id', null as ANode, new Map(), component)
+        const info = new DynamicComponentInfo('id', null as ANode, new Map(), 'normal', component)
         expect(info.getFilterNames()).toEqual([])
     })
 })

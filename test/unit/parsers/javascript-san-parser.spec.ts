@@ -32,10 +32,25 @@ describe('JavaScriptSanParser', () => {
                 const [components, entry] = parser.parseComponents()
                 expect(components).toHaveLength(1)
                 expect(components[0]).toEqual(entry)
+                expect(components[0]).toHaveProperty('componentType', 'normal')
                 expect(entry).toHaveProperty('id', 'default')
                 expect(entry.getComputedNames()).toEqual(['foo'])
                 expect(entry.hasMethod('inited')).toBeTruthy()
                 expect(entry.hasMethod('created')).toBeFalsy()
+            })
+            it('should parse defineTemplateComponent', () => {
+                const script = `
+                import { defineTemplateComponent } from 'san'
+                const YComponent = defineTemplateComponent({ template: '<div></div>' })
+                export default defineTemplateComponent({ template: '<div></div>' })
+                `
+                const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module')
+                parser.parseNames()
+                const [components, entry] = parser.parseComponents()
+                expect(components).toHaveLength(2)
+                expect(components[0]).toHaveProperty('componentType', 'template')
+                expect(components[1]).toHaveProperty('componentType', 'template')
+                expect(components[1]).toEqual(entry)
             })
             it('should parse multiple components from ESM', () => {
                 const script = `
@@ -106,6 +121,21 @@ describe('JavaScriptSanParser', () => {
                 expect(entry).toHaveProperty('id', 'default')
                 expect(components).toHaveLength(1)
                 expect(components[0]).toEqual(entry)
+                expect(components[0]).toHaveProperty('componentType', 'normal')
+            })
+            it('should parse defineTemplateComponent', () => {
+                const script = `
+                const { defineTemplateComponent } = require('san')
+                exports.YComponent = defineTemplateComponent({ template: '<div></div>' })
+                module.exports = defineTemplateComponent({ template: '<div></div>' })
+                `
+                const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module')
+                parser.parseNames()
+                const [components, entry] = parser.parseComponents()
+                expect(components).toHaveLength(2)
+                expect(components[0]).toHaveProperty('componentType', 'template')
+                expect(components[1]).toHaveProperty('componentType', 'template')
+                expect(components[1]).toEqual(entry)
             })
             it('should parse multiple components from script', () => {
                 const script = `

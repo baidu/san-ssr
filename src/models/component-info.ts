@@ -27,6 +27,8 @@ import { isATextNode } from '../ast/san-ast-type-guards'
 export type TagName = string
 type TrimWhitespace = 'none' | 'blank' | 'all' | undefined
 
+export type ComponentType = 'normal' | 'template'
+
 /**
  * 所有类型的 ComponentInfo，都需要实现如下接口
  */
@@ -57,7 +59,8 @@ abstract class ComponentInfoImpl<R extends ComponentReference = ComponentReferen
          */
         public readonly id: string,
         public readonly root: ANode,
-        public readonly childComponents: Map<TagName, R>
+        public readonly childComponents: Map<TagName, R>,
+        public readonly componentType: ComponentType
     ) {}
 
     abstract hasMethod (name: string): boolean
@@ -88,9 +91,10 @@ export class DynamicComponentInfo extends ComponentInfoImpl<DynamicComponentRefe
         id: string,
         root: ANode,
         childComponents: Map<TagName, DynamicComponentReference>,
+        componentType: ComponentType,
         public readonly componentClass: Component
     ) {
-        super(id, root, childComponents)
+        super(id, root, childComponents, componentType)
         this.proto = Object.assign(componentClass.prototype, componentClass)
     }
 
@@ -117,6 +121,7 @@ export class JSComponentInfo extends ComponentInfoImpl<ComponentReference> {
         className: string,
         properties: Map<string, Node>,
         sourceCode: string,
+        componentType: ComponentType = 'normal',
         isRawObject: boolean = false
     ) {
         const template = properties.has('template') ? getLiteralValue(properties.get('template')!) as string : ''
@@ -126,7 +131,7 @@ export class JSComponentInfo extends ComponentInfoImpl<ComponentReference> {
             ? getStringArrayValue(properties.get('delimiters')!) as [string, string] : undefined
         const root = parseAndNormalizeTemplate(template, { trimWhitespace, delimiters })
 
-        super(id, root, new Map())
+        super(id, root, new Map(), componentType)
         this.className = className
         this.properties = properties
         this.sourceCode = sourceCode
@@ -167,9 +172,10 @@ export class TypedComponentInfo extends ComponentInfoImpl implements ComponentIn
         id: string,
         root: ANode,
         childComponents: Map<TagName, ComponentReference>,
-        public readonly classDeclaration: ClassDeclaration
+        public readonly classDeclaration: ClassDeclaration,
+        componentType: ComponentType = 'normal'
     ) {
-        super(id, root, childComponents)
+        super(id, root, childComponents, componentType)
         this.computedNames = getObjectLiteralPropertyKeys(this.classDeclaration, 'computed')
         this.filterNames = getObjectLiteralPropertyKeys(this.classDeclaration, 'filters')
     }

@@ -91,7 +91,10 @@ export class TypeScriptSanParser {
                 trimWhitespace, delimiters
             }),
             childComponents,
-            classDeclaration
+            classDeclaration,
+
+            // TypeScript 目前只支持 class 方式定义组件，还不支持 TemplateComponent
+            'normal'
         )
     }
 

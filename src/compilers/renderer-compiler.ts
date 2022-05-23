@@ -39,7 +39,9 @@ export class RendererCompiler {
             DEF('...info')
         ]
         const fn = new FunctionDefinition(this.options.functionName || '', args,
-            this.compileComponentRendererBody(componentInfo)
+            componentInfo.componentType === 'template'
+                ? this.compileTemplateComponentRendererBody(componentInfo)
+                : this.compileComponentRendererBody(componentInfo)
         )
         mergeLiteralAdd(fn)
         return fn
@@ -132,6 +134,68 @@ export class RendererCompiler {
         return body
     }
 
+    private compileTemplateComponentRendererBody (info: ComponentInfo) {
+        const body = []
+        // 没有 ANode 的组件，比如 load-success 样例
+        if (!info.root) {
+            body.push(RETURN(L('')))
+            return body
+        }
+
+        // 兼容多参数的情况
+        body.push(new If(
+            new BinaryExpression(
+                BINARY(I('info'), '.', I('length')),
+                '===',
+                L(1)
+            ),
+            [ASSIGN(I('info'), BINARY(
+                BINARY(I('info'), '[]', L(0)),
+                '||',
+                L({})
+            ))]
+        ))
+        body.push(new Else([
+            ASSIGN(I('info'), new MapLiteral([
+                [I('noDataOutput'), BINARY(I('info'), '[]', L(1))],
+                [I('parentCtx'), BINARY(I('info'), '[]', L(2))],
+                [I('slots'), BINARY(I('info'), '[]', L(4))]
+            ]))
+        ]))
+
+        // get params from info
+        body.push(createDefineWithDefaultValue('noDataOutput', BINARY(I('info'), '.', I('noDataOutput')), L(false)))
+        body.push(createDefineWithDefaultValue('parentCtx', BINARY(I('info'), '.', I('parentCtx')), NULL))
+        body.push(createDefineWithDefaultValue('slots', BINARY(I('info'), '.', I('slots')), EMPTY_MAP))
+
+        // helper
+        body.push(new ImportHelper('_'))
+
+        // instance preraration
+        if (info.hasMethod('initData')) {
+            if (this.options.useProvidedComponentClass) {
+                body.push(STATEMENT(new CreateComponentPrototype(info)))
+            }
+            // context
+            body.push(this.compileGenInstance(info))
+            body.push(...this.compileTemplateComponentContext())
+            body.push(...this.emitInitData())
+        } else {
+            body.push(DEF('instance', I('{}')))
+            body.push(...this.compileTemplateComponentContext())
+        }
+
+        body.push(DEF('html', L('')))
+        body.push(ASSIGN(I('parentCtx'), I('ctx')))
+        const aNodeCompiler = new ANodeCompiler(
+            info, !!this.options.ssrOnly, this.id, this.options.useProvidedComponentClass
+        )
+        body.push(...aNodeCompiler.compile(info.root, true))
+
+        body.push(RETURN(I('html')))
+        return body
+    }
+
     private compileGenInstance (info: ComponentInfo) {
         return DEF('instance', new CreateComponentInstance(info))
     }
@@ -181,6 +245,24 @@ export class RendererCompiler {
                 // 单次渲染级别的 context
                 // 从最外层一直传下来的，上面可以绑 customRequirePath 等方法
                 [I('context'), BINARY(I('parentCtx'), '&&', BINARY(I('parentCtx'), '.', I('context')))]
+            ]))
+        ]
+    }
+
+    private compileTemplateComponentContext () {
+        return [
+            ASSIGN(
+                BINARY(I('instance'), '.', I('sourceSlots')),
+                new FunctionCall(
+                    BINARY(I('_'), '.', I('mergeChildSlots')),
+                    [I('slots')]
+                )
+            ),
+            DEF('ctx', new MapLiteral([
+                I('instance'),
+                I('slots'),
+                I('data'),
+                I('parentCtx')
             ]))
         ]
     }

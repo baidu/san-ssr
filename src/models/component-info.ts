@@ -33,9 +33,10 @@ export type ComponentType = 'normal' | 'template'
  * 所有类型的 ComponentInfo，都需要实现如下接口
  */
 export interface ComponentInfo {
-    id: string,
-    root: ANode,
+    id: string
+    root: ANode
     childComponents: Map<TagName, ComponentReference>
+    componentType: ComponentType
     hasMethod (name: string): boolean
     getComputedNames (): string[]
     getFilterNames (): string[]

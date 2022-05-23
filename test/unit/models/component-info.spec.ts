@@ -2,7 +2,7 @@ import { JSComponentInfo, TypedComponentInfo, DynamicComponentInfo } from '../..
 import { getPropertiesFromObject } from '../../../src/ast/js-ast-util'
 import { parse } from 'acorn'
 import { Project } from 'ts-morph'
-import { ANode, Component, defineComponent } from 'san'
+import { ANode, defineComponent } from 'san'
 
 describe('TypedComponentInfo', function () {
     let proj

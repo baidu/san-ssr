@@ -71,7 +71,7 @@
     "mkdirp": "^1.0.4",
     "mustache": "^4.0.1",
     "san": "^3.12.0",
-    "san-html-cases": "^3.12.2",
+    "san-html-cases": "^3.12.3",
     "san-ssr-target-fake-cmd": "^1.0.0",
     "san-ssr-target-fake-esm": "^1.0.0",
     "source-map-support": "^0.5.19",

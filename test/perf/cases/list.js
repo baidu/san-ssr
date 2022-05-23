@@ -1,5 +1,12 @@
+const common = require('../utils/common')
+
+const bench = common.createBenchmark(main, {
+    type: ['san', 'artTpl', 'swig', 'eptl', 'ejs', 'handlebars', 'mustache'],
+    n: [1e2]
+})
+
 const san = require('san')
-const { compileToRenderer } = require('../../dist/index')
+const { compileToRenderer } = require('../../../dist/index')
 const art = require('art-template')
 const swig = require('swig-templates')
 const etpl = require('etpl')
@@ -275,78 +282,86 @@ for (let i = 500; i > 0; i--) {
 
 const renderer = compileToRenderer(MyComponent)
 
-console.log('----- List SSR Perf (500 items x 100 times) -----')
+function main ({ type, n }) {
+    switch (type) {
+    case 'san':
+        console.log('----- List SSR Perf (500 items x 100 times) -----')
+        bench.start()
+        for (let i = 0; i < n; i++) {
+            renderer(data, true)
+        }
+        bench.end(n)
+        break
+    case 'artTpl':
+        bench.start()
+        for (let i = 0; i < n; i++) {
+            artRenderer(data)
+        }
+        bench.end(n)
+        break
+    case 'swig':
+        bench.start()
+        for (let i = 0; i < n; i++) {
+            swigRenderer(data)
+        }
+        bench.end(n)
+        break
+    case 'etpl':
+        bench.start()
+        for (let i = 0; i < n; i++) {
+            etplRenderer(data)
+        }
+        bench.end(n)
+        break
+    case 'ejs':
+        bench.start()
+        for (let i = 0; i < n; i++) {
+            ejsRenderer(data)
+        }
+        bench.end(n)
+        break
+    case 'handlebars':
+        bench.start()
+        for (let i = 0; i < n; i++) {
+            handlebarsRenderer(data)
+        }
+        break
+    case 'mustache':
+        bench.start()
+        for (let i = 0; i < n; i++) {
+            mustache.render(`
+        <div class="todos">
+            <a href="#/add" class="todo-add"><i class="fa fa-plus-square"></i></a>
+            <ul class="filter-category">
+                {{#categories}}
+                <li style="background: {{color}}">
+                    <a href="/todos/category/{{ id }}">{{ title }}</a>
+                </li>
+                {{/categories}}
+            </ul>
 
-console.time('san')
-for (let i = 0; i < 100; i++) {
-    renderer(data, true)
+            <ul class="todo-list">
+                {{#todos}}
+                <li style="border-color: {{category.color}}"
+                    class="{{#done}}todo-done{{/done}}"
+                >
+                    <h3>{{ title }}</h3>
+                    <p>{{ desc }}</p>
+                    <div class="todo-meta">
+                        {{#category}}
+                        <span>{{ title }} | </span>
+                        {{/category}}
+                    </div>
+                    <a class="fa fa-pencil" href="/edit/{{ id }}"></a>
+                    <i class="fa fa-check></i>
+                    <i class="fa fa-trash-o"></i>
+                </li>
+                {{/todos}}
+            </ul>
+        </div>
+        `, data)
+        }
+        bench.end(n)
+        break
+    }
 }
-console.timeEnd('san')
-
-console.time('artTpl')
-for (let i = 0; i < 100; i++) {
-    artRenderer(data)
-}
-console.timeEnd('artTpl')
-
-console.time('swig')
-for (let i = 0; i < 100; i++) {
-    swigRenderer(data)
-}
-console.timeEnd('swig')
-
-console.time('etpl')
-for (let i = 0; i < 100; i++) {
-    etplRenderer(data)
-}
-console.timeEnd('etpl')
-
-console.time('ejs')
-for (let i = 0; i < 100; i++) {
-    ejsRenderer(data)
-}
-console.timeEnd('ejs')
-
-console.time('handlebars')
-for (let i = 0; i < 100; i++) {
-    handlebarsRenderer(data)
-}
-console.timeEnd('handlebars')
-
-console.time('mustache')
-for (let i = 0; i < 100; i++) {
-    mustache.render(`
-<div class="todos">
-    <a href="#/add" class="todo-add"><i class="fa fa-plus-square"></i></a>
-    <ul class="filter-category">
-        {{#categories}}
-        <li style="background: {{color}}">
-            <a href="/todos/category/{{ id }}">{{ title }}</a>
-        </li>
-        {{/categories}}
-    </ul>
-
-    <ul class="todo-list">
-        {{#todos}}
-        <li style="border-color: {{category.color}}"
-            class="{{#done}}todo-done{{/done}}"
-        >
-            <h3>{{ title }}</h3>
-            <p>{{ desc }}</p>
-            <div class="todo-meta">
-                {{#category}}
-                <span>{{ title }} | </span>
-                {{/category}}
-            </div>
-            <a class="fa fa-pencil" href="/edit/{{ id }}"></a>
-            <i class="fa fa-check></i>
-            <i class="fa fa-trash-o"></i>
-        </li>
-        {{/todos}}
-    </ul>
-</div>
-`, data)
-}
-console.timeEnd('mustache')
-
-exports = module.exports = MyComponent

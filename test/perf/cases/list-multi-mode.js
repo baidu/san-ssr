@@ -1,5 +1,15 @@
+const common = require('../utils/common')
+
+const bench = common.createBenchmark(main, {
+    type: [
+        'san', 'san(item as component)',
+        'san(item as component, slot contented)', 'san(item as component, scoped slot)'
+    ],
+    n: [1e2]
+})
+
 const san = require('san')
-const { compileToRenderer } = require('../../dist/index')
+const { compileToRenderer } = require('../../../dist/index')
 
 const App = san.defineComponent({
     template: `
@@ -235,29 +245,36 @@ const itemComponentRenderer = compileToRenderer(ItemAsComponentApp)
 const slotRenderer = compileToRenderer(SlotApp)
 const sslotRenderer = compileToRenderer(SSlotApp)
 
-console.log('----- List Multi Mode Perf (500 items x 100 times) -----')
-
-console.time('san')
-for (let i = 0; i < 100; i++) {
-    renderer(data, true)
+function main ({ type, n }) {
+    switch (type) {
+    case 'san':
+        console.log('----- List Multi Mode Perf (500 items x 100 times) -----')
+        bench.start()
+        for (let i = 0; i < n; i++) {
+            renderer(data, true)
+        }
+        bench.end(n)
+        break
+    case 'san(item as component)':
+        bench.start()
+        for (let i = 0; i < n; i++) {
+            itemComponentRenderer(data, true)
+        }
+        bench.end(n)
+        break
+    case 'san(item as component, slot contented)':
+        bench.start()
+        for (let i = 0; i < n; i++) {
+            slotRenderer(data, true)
+        }
+        bench.end(n)
+        break
+    case 'san(item as component, scoped slot)':
+        bench.start()
+        for (let i = 0; i < n; i++) {
+            sslotRenderer(data, true)
+        }
+        bench.end(n)
+        break
+    }
 }
-console.timeEnd('san')
-
-console.time('san(item as component)')
-for (let i = 0; i < 100; i++) {
-    itemComponentRenderer(data, true)
-}
-console.timeEnd('san(item as component)')
-
-console.time('san(item as component, slot contented)')
-for (let i = 0; i < 100; i++) {
-    slotRenderer(data, true)
-}
-console.timeEnd('san(item as component, slot contented)')
-
-console.time('san(item as component, scoped slot)')
-for (let i = 0; i < 100; i++) {
-    sslotRenderer(data, true)
-}
-console.timeEnd('san(item as component, scoped slot)')
-// console.log(san.compileToSource(SSlotApp))

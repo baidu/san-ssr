@@ -25,7 +25,7 @@
     "watch": "tsc --watch",
     "unit": "jest test/unit",
     "e2e": "jest test/e2e.spec.ts",
-    "perf": "node ./test/perf/index.js",
+    "perf": "node ./test/perf/run.js cases",
     "check": "npm test && npm run lint",
     "test": "jest",
     "coverage": "jest --coverage",

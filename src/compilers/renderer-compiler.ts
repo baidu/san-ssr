@@ -177,7 +177,7 @@ export class RendererCompiler {
                 body.push(STATEMENT(new CreateComponentPrototype(info)))
             }
             // context
-            body.push(this.compileGenInstance(info))
+            body.push(DEF('instance', new CreateComponentInstance(info)))
             body.push(...this.compileTemplateComponentContext())
             body.push(...this.emitInitData())
         } else {

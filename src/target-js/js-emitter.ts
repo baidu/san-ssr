@@ -155,7 +155,7 @@ export class JSEmitter extends Emitter {
         case SyntaxKind.ComponentClassReference:
             this.write('sanSSRResolver.getChildComponentClass(')
             this.writeSyntaxNode(node.value)
-            this.write(', instance')
+            this.write(', ctx.instance')
             this.write(', ')
             this.writeSyntaxNode(node.tagName)
             this.write(', ctx.context')

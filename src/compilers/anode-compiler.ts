@@ -19,7 +19,8 @@ import {
     VariableDefinition,
     ConditionalExpression,
     Typeof,
-    AssignmentStatement
+    AssignmentStatement,
+    Identifier
 } from '../ast/renderer-ast-dfn'
 import {
     CTX_DATA, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATEMENT, UNARY, DEF, BINARY, RETURN
@@ -35,6 +36,7 @@ import type { RenderOptions } from './renderer-options'
 export class ANodeCompiler {
     private elementCompiler: ElementCompiler
     private inScript = false
+    public childSlots = [] as {identifier: Identifier; res: Statement[]}[]
 
     /**
      * @param componentInfo 要被编译的节点所在组件的信息
@@ -259,22 +261,25 @@ export class ANodeCompiler {
                 defaultSlotContents.push(child)
             }
         }
-
         const childSlots = I(this.id.next('childSlots'))
-        yield DEF(childSlots.name, new MapLiteral([]))
+        const res = [] as Statement[]
+        res.push(DEF(childSlots.name, new MapLiteral([])))
         if (defaultSlotContents.length) {
-            yield ASSIGN(
+            res.push(ASSIGN(
                 BINARY(childSlots, '[]', L('')),
                 this.compileSlotRenderer(defaultSlotContents)
-            )
+            ))
         }
-
         for (const sourceSlotCode of namedSlotContents.values()) {
-            yield ASSIGN(
+            res.push(ASSIGN(
                 BINARY(childSlots, '[]', sanExpr(sourceSlotCode.prop.expr)),
                 this.compileSlotRenderer(sourceSlotCode.children)
-            )
+            ))
         }
+        this.childSlots.push({
+            identifier: childSlots,
+            res
+        })
 
         // data output
         const ndo = isRootElement ? I('noDataOutput') : L(true)

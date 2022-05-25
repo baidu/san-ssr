@@ -9,7 +9,8 @@ import { ComponentInfo } from '../models/component-info'
 import { RenderOptions } from './renderer-options'
 import {
     FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper,
-    ComponentReferenceLiteral, ConditionalExpression, BinaryExpression, CreateComponentPrototype, Else
+    ComponentReferenceLiteral, ConditionalExpression, BinaryExpression, CreateComponentPrototype, Else, Statement,
+    Identifier, UnaryExpression, ExpressionStatement
 } from '../ast/renderer-ast-dfn'
 import {
     EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL, UNDEFINED,
@@ -17,12 +18,14 @@ import {
 } from '../ast/renderer-ast-util'
 import { IDGenerator } from '../utils/id-generator'
 import { mergeLiteralAdd } from '../optimizers/merge-literal-add'
+import { insertSetGlobalCtxCall } from './modifiers/insertSetGlobalCtxCall'
 
 /**
  * 每个 ComponentClass 对应一个 Render 函数，由 RendererCompiler 生成。
  */
 export class RendererCompiler {
     private id = new IDGenerator()
+    private childSlots = [] as {identifier: Identifier; res: Statement[]}[]
 
     constructor (
         private options: RenderOptions
@@ -44,7 +47,36 @@ export class RendererCompiler {
                 : this.compileComponentRendererBody(componentInfo)
         )
         mergeLiteralAdd(fn)
-        return fn
+
+        if (this.childSlots.length === 0) {
+            return fn
+        }
+
+        // 存在 childSlots，编译成 IIFE
+        const slots = []
+        for (const s of this.childSlots) {
+            slots.push(...s.res)
+        }
+        insertSetGlobalCtxCall(fn)
+        const iife = new FunctionCall(
+            new UnaryExpression(
+                '()',
+                new FunctionDefinition('', [], [
+                    DEF('ctx'),
+                    new ExpressionStatement(
+                        new FunctionDefinition(
+                            'setGlobalCtx',
+                            [DEF('c')],
+                            [ASSIGN(I('ctx'), I('c'))]
+                        )
+                    ),
+                    ...slots,
+                    RETURN(fn)
+                ])
+            ),
+            []
+        )
+        return iife
     }
 
     private compileComponentRendererBody (info: ComponentInfo) {
@@ -84,7 +116,6 @@ export class RendererCompiler {
         body.push(createDefineWithDefaultValue('slots', BINARY(I('info'), '.', I('slots')), EMPTY_MAP))
 
         // helper
-        body.push(new ImportHelper('_'))
         body.push(new ImportHelper('SanSSRData'))
 
         if (this.options.useProvidedComponentClass) {
@@ -125,10 +156,12 @@ export class RendererCompiler {
 
         body.push(DEF('html', L('')))
         body.push(ASSIGN(I('parentCtx'), I('ctx')))
+
         const aNodeCompiler = new ANodeCompiler(
             info, !!this.options.ssrOnly, this.id, this.options.useProvidedComponentClass
         )
         body.push(...aNodeCompiler.compile(info.root, true))
+        this.childSlots = aNodeCompiler.childSlots
 
         body.push(RETURN(I('html')))
         return body
@@ -167,9 +200,6 @@ export class RendererCompiler {
         body.push(createDefineWithDefaultValue('noDataOutput', BINARY(I('info'), '.', I('noDataOutput')), L(false)))
         body.push(createDefineWithDefaultValue('parentCtx', BINARY(I('info'), '.', I('parentCtx')), NULL))
         body.push(createDefineWithDefaultValue('slots', BINARY(I('info'), '.', I('slots')), EMPTY_MAP))
-
-        // helper
-        body.push(new ImportHelper('_'))
 
         // instance preraration
         if (info.hasMethod('initData')) {

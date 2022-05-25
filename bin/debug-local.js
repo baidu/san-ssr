@@ -4,13 +4,13 @@ const path = require('path')
 
 // component to source
 function compile (componentPath, externalPath, outputPath) {
-    markExternalComponent({
-        isExternalComponent (id) {
-            if (id === externalPath) {
-                return true
-            }
-        }
-    })
+    // markExternalComponent({
+    //     isExternalComponent (id) {
+    //         if (id === externalPath) {
+    //             return true
+    //         }
+    //     }
+    // })
 
     // offline
     const MyComponent = require(componentPath)
@@ -19,7 +19,7 @@ function compile (componentPath, externalPath, outputPath) {
         useProvidedComponentClass: true
     })
 
-    cancelMarkExternalComponent()
+    // cancelMarkExternalComponent()
 
     fs.writeFileSync(path.resolve(__dirname, outputPath), res)
 }
@@ -32,7 +32,7 @@ function compile (componentPath, externalPath, outputPath) {
 // }
 
 compile('./sample/component.js', './component2', './dist/component.js')
-compile('./sample/component2.js', './component', './dist/component2.js')
+// compile('./sample/component2.js', './component', './dist/component2.js')
 
 // // online
 const Component = require('./sample/component')

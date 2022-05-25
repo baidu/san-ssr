@@ -1,10 +1,13 @@
 import { RendererCompiler } from '../../../src/compilers/renderer-compiler'
-import { defineComponent } from 'san'
+import { Component, defineComponent } from 'san'
 import { ComponentClassParser } from '../../../src/parsers/component-class-parser'
 import {
     AssignmentStatement,
     SlotRendererDefinition,
-    SyntaxKind
+    SyntaxKind,
+    FunctionDefinition,
+    FunctionCall,
+    UnaryExpression
 } from '../../../src/ast/renderer-ast-dfn'
 import { matchHTMLAddEqual } from '../../stub/util'
 
@@ -15,9 +18,9 @@ describe('compilers/renderer-compiler', () => {
                 template: '<div></div>',
                 foo: [1, x => x]
             })
-            const sourceFile = new ComponentClassParser(ComponentClass, '/tmp/foo.js').parse()
+            const sourceFile = new ComponentClassParser(ComponentClass as any as Component, '/tmp/foo.js').parse()
             const compiler = new RendererCompiler({})
-            const body = [...compiler.compileToRenderer(sourceFile.componentInfos[0]).body]
+            const body = [...(compiler.compileToRenderer(sourceFile.componentInfos[0]) as FunctionDefinition).body]
             expect(body.pop()).toEqual(expect.objectContaining({
                 kind: SyntaxKind.ReturnStatement,
                 value: {
@@ -37,9 +40,12 @@ describe('compilers/renderer-compiler', () => {
                 },
                 template: '<ccc><span></span>   \nassa</ccc>'
             })
-            const sourceFile = new ComponentClassParser(ComponentClass, '/tmp/foo.js').parse()
+            const sourceFile = new ComponentClassParser(ComponentClass as any as Component, '/tmp/foo.js').parse()
             const compiler = new RendererCompiler({})
-            const body = [...compiler.compileToRenderer(sourceFile.componentInfos[0]).body]
+            const compileRes = compiler.compileToRenderer(sourceFile.componentInfos[0])
+            const body = [
+                ...((((compileRes as FunctionCall).fn as UnaryExpression).value as FunctionDefinition).body)
+            ]
 
             const assignmentNode = body.find(item =>
                 item.kind === SyntaxKind.AssignmentStatement &&
@@ -61,9 +67,12 @@ describe('compilers/renderer-compiler', () => {
                 },
                 template: '<ccc>{{   \nassa | aaa | bbb}}<div></div></ccc>'
             })
-            const sourceFile = new ComponentClassParser(ComponentClass, '/tmp/foo.js').parse()
+            const sourceFile = new ComponentClassParser(ComponentClass as any as Component, '/tmp/foo.js').parse()
             const compiler = new RendererCompiler({})
-            const body = [...compiler.compileToRenderer(sourceFile.componentInfos[0]).body]
+            const compileRes = compiler.compileToRenderer(sourceFile.componentInfos[0])
+            const body = [
+                ...((((compileRes as FunctionCall).fn as UnaryExpression).value as FunctionDefinition).body)
+            ]
 
             const assignmentNode = body.find(item =>
                 item.kind === SyntaxKind.AssignmentStatement &&
@@ -87,7 +96,10 @@ describe('compilers/renderer-compiler', () => {
             })
             const sourceFile = new ComponentClassParser(ComponentClass, '/tmp/foo.js').parse()
             const compiler = new RendererCompiler({})
-            const body = [...compiler.compileToRenderer(sourceFile.componentInfos[0]).body]
+            const compileRes = compiler.compileToRenderer(sourceFile.componentInfos[0])
+            const body = [
+                ...((((compileRes as FunctionCall).fn as UnaryExpression).value as FunctionDefinition).body)
+            ]
 
             const assignmentNode = body.find(item =>
                 item.kind === SyntaxKind.AssignmentStatement &&

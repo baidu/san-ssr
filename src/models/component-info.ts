@@ -10,7 +10,7 @@
  * 对于其他输入，解析得到的是 JSComponentInfo。
  */
 import type { ANode, Component, ComponentDefineOptions } from 'san'
-import { FunctionDefinition } from '../ast/renderer-ast-dfn'
+import { FunctionCall, FunctionDefinition } from '../ast/renderer-ast-dfn'
 import { parseAndNormalizeTemplate } from '../parsers/parse-template'
 import type { ClassDeclaration } from 'ts-morph'
 import { Node } from 'estree'
@@ -41,7 +41,7 @@ export interface ComponentInfo {
     getComputedNames (): string[]
     getFilterNames (): string[]
     hasDynamicComponent (): boolean
-    compileToRenderer (options: RenderOptions): FunctionDefinition
+    compileToRenderer (options: RenderOptions): FunctionDefinition | FunctionCall
 }
 
 /**
@@ -75,7 +75,7 @@ abstract class ComponentInfoImpl<R extends ComponentReference = ComponentReferen
         return found
     }
 
-    compileToRenderer (options: RenderOptions): FunctionDefinition {
+    compileToRenderer (options: RenderOptions): FunctionDefinition | FunctionCall {
         return new RendererCompiler(options).compileToRenderer(this)
     }
 }

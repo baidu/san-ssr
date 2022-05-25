@@ -16,7 +16,7 @@ import { TargetCodeGenerator } from '../models/target-code-generator'
 import { tsSourceFile2js } from '../compilers/ts2js'
 import { RenderOptions } from '../compilers/renderer-options'
 import { CompileOptions } from './compilers/compile-options'
-import { FunctionDefinition } from '../ast/renderer-ast-dfn'
+import { FunctionCall, FunctionDefinition, ImportHelper } from '../ast/renderer-ast-dfn'
 import { bracketToDot } from '../optimizers/bracket-to-dot'
 
 const debug = debugFactory('san-ssr:target-js')
@@ -66,10 +66,13 @@ export default class ToJSCompiler implements TargetCodeGenerator {
 
         for (const info of componentInfos) {
             const emitter = new JSEmitter()
-            emitter.writeFunctionDefinition(this.optimize(info.compileToRenderer(options)))
+            emitter.writeSyntaxNode(this.optimize(info.compileToRenderer(options)))
 
             const rawRendererText = emitter.fullText()
-            const resolvedRenderer = this.createRenderer(rawRendererText, { sanSSRHelpers, sanSSRResolver })
+            const resolvedRenderer = this.createRenderer(
+                rawRendererText,
+                { sanSSRHelpers, sanSSRResolver, _: sanSSRHelpers._ }
+            )
             sanSSRResolver.setPrototype(info.id, info.componentClass.prototype)
             sanSSRResolver.setRenderer(info.id, resolvedRenderer)
         }
@@ -117,10 +120,12 @@ export default class ToJSCompiler implements TargetCodeGenerator {
                 ');')
         }
 
+        emitter.writeSyntaxNode(new ImportHelper('_'))
+
         // 编译 render 函数
         for (const info of sourceFile.componentInfos) {
             emitter.nextLine(`sanSSRResolver.setRenderer("${info.id}", `)
-            emitter.writeFunctionDefinition(
+            emitter.writeSyntaxNode(
                 this.optimize(
                     info.compileToRenderer(options)
                 )
@@ -175,7 +180,7 @@ export default class ToJSCompiler implements TargetCodeGenerator {
         }
     }
 
-    private optimize (root: FunctionDefinition) {
+    private optimize (root: FunctionDefinition | FunctionCall) {
         bracketToDot(root)
         return root
     }

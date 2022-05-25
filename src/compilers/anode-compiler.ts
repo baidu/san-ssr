@@ -36,7 +36,12 @@ import type { RenderOptions } from './renderer-options'
 export class ANodeCompiler {
     private elementCompiler: ElementCompiler
     private inScript = false
-    public childSlots = [] as {identifier: Identifier; res: Statement[]}[]
+    public childSlots = [] as {
+        identifier: Identifier;
+        staticIdentifier: Identifier;
+        res: Statement[];
+        keyMap: Map<string, Expression>
+    }[]
 
     /**
      * @param componentInfo 要被编译的节点所在组件的信息
@@ -262,23 +267,31 @@ export class ANodeCompiler {
             }
         }
         const childSlots = I(this.id.next('childSlots'))
+        const childSlotsStatic = I(childSlots.name + 'Static')
         const res = [] as Statement[]
-        res.push(DEF(childSlots.name, new MapLiteral([])))
+        const keyMap = new Map()
+        res.push(DEF(childSlotsStatic.name, new MapLiteral([])))
         if (defaultSlotContents.length) {
+            keyMap.set('', L(''))
             res.push(ASSIGN(
-                BINARY(childSlots, '[]', L('')),
+                BINARY(childSlotsStatic, '[]', L('')),
                 this.compileSlotRenderer(defaultSlotContents)
             ))
         }
         for (const sourceSlotCode of namedSlotContents.values()) {
+            const expr = sanExpr(sourceSlotCode.prop.expr)
+            const key = this.id.next('slotKey')
+            keyMap.set(key, expr)
             res.push(ASSIGN(
-                BINARY(childSlots, '[]', sanExpr(sourceSlotCode.prop.expr)),
+                BINARY(childSlotsStatic, '[]', L(key)),
                 this.compileSlotRenderer(sourceSlotCode.children)
             ))
         }
         this.childSlots.push({
             identifier: childSlots,
-            res
+            staticIdentifier: childSlotsStatic,
+            res,
+            keyMap
         })
 
         // data output

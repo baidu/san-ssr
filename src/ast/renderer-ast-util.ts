@@ -28,7 +28,9 @@ import {
     Literal,
     TryStatement,
     CatchClause,
-    ConditionalExpression
+    ConditionalExpression,
+    FunctionCall,
+    FunctionDefinition
 } from './renderer-ast-dfn'
 
 export function createHTMLLiteralAppend (html: string) {
@@ -99,6 +101,15 @@ export function STATEMENT (expr: Expression) {
 
 export function DEF (name: string, expr?: Expression) {
     return new VariableDefinition(name, expr)
+}
+export function IIFE (body: Statement[]) {
+    return new FunctionCall(
+        new UnaryExpression(
+            '()',
+            new FunctionDefinition('', [], body)
+        ),
+        []
+    )
 }
 
 export function NEW (name: Expression, args: Expression[]) {

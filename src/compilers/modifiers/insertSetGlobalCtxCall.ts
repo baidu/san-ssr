@@ -1,7 +1,10 @@
 import { ExpressionStatement, FunctionCall, FunctionDefinition, SyntaxKind } from '../../ast/renderer-ast-dfn'
 import assert from 'assert'
-import {I} from '../../ast/renderer-ast-util'
+import { I } from '../../ast/renderer-ast-util'
 
+/**
+ * 在 render 函数中，ctx 初始化之后，增加 setGlobalCtx 函数的调用
+ */
 export function insertSetGlobalCtxCall (fn: FunctionDefinition) {
     const body = [...fn.body]
     const index = body.findIndex((value) =>

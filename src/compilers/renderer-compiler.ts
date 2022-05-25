@@ -10,11 +10,11 @@ import { RenderOptions } from './renderer-options'
 import {
     FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper,
     ComponentReferenceLiteral, ConditionalExpression, BinaryExpression, CreateComponentPrototype, Else, Statement,
-    Identifier, UnaryExpression, ExpressionStatement
+    Identifier, ExpressionStatement, Expression
 } from '../ast/renderer-ast-dfn'
 import {
     EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL, UNDEFINED,
-    createTryStatement, createDefineWithDefaultValue
+    createTryStatement, createDefineWithDefaultValue, IIFE
 } from '../ast/renderer-ast-util'
 import { IDGenerator } from '../utils/id-generator'
 import { mergeLiteralAdd } from '../optimizers/merge-literal-add'
@@ -25,7 +25,12 @@ import { insertSetGlobalCtxCall } from './modifiers/insertSetGlobalCtxCall'
  */
 export class RendererCompiler {
     private id = new IDGenerator()
-    private childSlots = [] as {identifier: Identifier; res: Statement[]}[]
+    private childSlots = [] as {
+        identifier: Identifier;
+        staticIdentifier: Identifier;
+        res: Statement[];
+        keyMap: Map<string, Expression>
+    }[]
 
     constructor (
         private options: RenderOptions
@@ -52,33 +57,51 @@ export class RendererCompiler {
             return fn
         }
 
-        // 存在 childSlots，编译成 IIFE
+        return this.compileChildSlotsDefinition(fn)
+    }
+
+    /**
+     * 以 IIFE 的形式输出 childSlots 定义
+     */
+    private compileChildSlotsDefinition (renderFunc: FunctionDefinition) {
+        // 把所有 slot 函数拍平
         const slots = []
+        const slotChildInit = []
         for (const s of this.childSlots) {
+            slotChildInit.push(ASSIGN(s.identifier, I('{}')))
             for (const i of s.res) {
                 mergeLiteralAdd(i)
                 slots.push(i)
             }
+
+            for (const [key, value] of s.keyMap.entries()) {
+                slotChildInit.push(ASSIGN(
+                    BINARY(s.identifier, '[]', value),
+                    BINARY(s.staticIdentifier, '[]', L(key))
+                ))
+            }
         }
-        insertSetGlobalCtxCall(fn)
-        const iife = new FunctionCall(
-            new UnaryExpression(
-                '()',
-                new FunctionDefinition('', [], [
-                    DEF('ctx'),
-                    new ExpressionStatement(
-                        new FunctionDefinition(
-                            'setGlobalCtx',
-                            [DEF('c')],
-                            [ASSIGN(I('ctx'), I('c'))]
-                        )
-                    ),
-                    ...slots,
-                    RETURN(fn)
-                ])
+
+        insertSetGlobalCtxCall(renderFunc)
+
+        // setGlobalCtx 函数中，初始化 childSlot 对象
+
+        const iife = IIFE([
+            DEF('ctx'),
+            ...this.childSlots.map(s => DEF(s.identifier.name, new MapLiteral([]))),
+            new ExpressionStatement(
+                new FunctionDefinition(
+                    'setGlobalCtx',
+                    [DEF('c')],
+                    [
+                        ASSIGN(I('ctx'), I('c')),
+                        ...slotChildInit
+                    ]
+                )
             ),
-            []
-        )
+            ...slots,
+            RETURN(renderFunc)
+        ])
         return iife
     }
 

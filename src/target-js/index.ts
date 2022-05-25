@@ -100,7 +100,10 @@ export default class ToJSCompiler implements TargetCodeGenerator {
 
     private doCompileToSource (sourceFile: SanSourceFile, options: RenderOptions, emitter: JSEmitter) {
         // 如果源文件中有 san 组件，才输出一个运行时
-        if (sourceFile.componentInfos.length) this.ensureHelpers(options.importHelpers, emitter)
+        if (sourceFile.componentInfos.length) {
+            this.ensureHelpers(options.importHelpers, emitter)
+            emitter.writeSyntaxNode(new ImportHelper('_'))
+        }
 
         if (!options.useProvidedComponentClass) {
             // 编译源文件到 JS
@@ -119,8 +122,6 @@ export default class ToJSCompiler implements TargetCodeGenerator {
                     ')' +
                 ');')
         }
-
-        emitter.writeSyntaxNode(new ImportHelper('_'))
 
         // 编译 render 函数
         for (const info of sourceFile.componentInfos) {

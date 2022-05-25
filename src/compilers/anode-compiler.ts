@@ -38,9 +38,7 @@ export class ANodeCompiler {
     private inScript = false
     public childSlots = [] as {
         identifier: Identifier;
-        staticIdentifier: Identifier;
         res: Statement[];
-        keyMap: Map<string, Expression>
     }[]
 
     /**
@@ -268,30 +266,33 @@ export class ANodeCompiler {
         }
         const childSlots = I(this.id.next('childSlots'))
         const childSlotsStatic = I(childSlots.name + 'Static')
+        yield DEF(childSlots.name, new MapLiteral([]))
         const res = [] as Statement[]
-        const keyMap = new Map()
         res.push(DEF(childSlotsStatic.name, new MapLiteral([])))
         if (defaultSlotContents.length) {
-            keyMap.set('', L(''))
             res.push(ASSIGN(
                 BINARY(childSlotsStatic, '[]', L('')),
                 this.compileSlotRenderer(defaultSlotContents)
             ))
+            yield ASSIGN(
+                BINARY(childSlots, '[]', L('')),
+                BINARY(childSlotsStatic, '[]', L(''))
+            )
         }
         for (const sourceSlotCode of namedSlotContents.values()) {
-            const expr = sanExpr(sourceSlotCode.prop.expr)
             const key = this.id.next('slotKey')
-            keyMap.set(key, expr)
             res.push(ASSIGN(
                 BINARY(childSlotsStatic, '[]', L(key)),
                 this.compileSlotRenderer(sourceSlotCode.children)
             ))
+            yield ASSIGN(
+                BINARY(childSlots, '[]', sanExpr(sourceSlotCode.prop.expr)),
+                BINARY(childSlotsStatic, '[]', L(key))
+            )
         }
         this.childSlots.push({
             identifier: childSlots,
-            staticIdentifier: childSlotsStatic,
-            res,
-            keyMap
+            res
         })
 
         // data output

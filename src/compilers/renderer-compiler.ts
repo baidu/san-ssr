@@ -55,7 +55,10 @@ export class RendererCompiler {
         // 存在 childSlots，编译成 IIFE
         const slots = []
         for (const s of this.childSlots) {
-            slots.push(...s.res)
+            for (const i of s.res) {
+                mergeLiteralAdd(i)
+                slots.push(i)
+            }
         }
         insertSetGlobalCtxCall(fn)
         const iife = new FunctionCall(

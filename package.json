@@ -103,6 +103,7 @@
     "san": "^3.9.5"
   },
   "release": {
+    "tagFormat": "nv${version}",
     "branches": [
       "master",
       {

@@ -1,3 +1,13 @@
+# [3.12.0](https://github.com/baidu/san-ssr/compare/nv3.11.0...nv3.12.0) (2022-05-30)
+
+
+### Features
+
+* parse templateComponent ([883cd24](https://github.com/baidu/san-ssr/commit/883cd249e0fb0da2be580d6d699fc0815b4caedf))
+* replace instance creation with object literal in template component ([7a59118](https://github.com/baidu/san-ssr/commit/7a59118b1f0a6f0a5872683f81d483f7afc42d3b))
+* simplify the template component's rendering function ([1955ddc](https://github.com/baidu/san-ssr/commit/1955ddc05607bfa3043e7ab5e8e643903e014d1d))
+* support defineTemplateComponent ([15c17ec](https://github.com/baidu/san-ssr/commit/15c17ecb1d7bbac9c5dc7f5273d6cb4473f79ffd))
+
 # [5.4.0](https://github.com/baidu/san-ssr/compare/v5.3.1...v5.4.0) (2022-05-09)
 
 

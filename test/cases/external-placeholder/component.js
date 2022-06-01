@@ -1,5 +1,5 @@
 const san = require('san')
-const ChildA = require('./childA.san.js')
+const ChildA = require('./childA.san')
 
 const MyComponent = san.defineComponent({
     components: {

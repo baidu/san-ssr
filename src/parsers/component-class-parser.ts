@@ -99,7 +99,7 @@ export class ComponentClassParser {
 
         const components: { [key: string]: Component<{}> | undefined } =
             getMemberFromClass(parentComponentClass, 'components', {})
-        for (const [tagName, componentClass] of Object.entries(components)) {
+        for (let [tagName, componentClass] of Object.entries(components)) {
             if (!componentClass) {
                 continue
             }
@@ -115,6 +115,10 @@ export class ComponentClassParser {
                 continue
             }
 
+            if (isComponentLoader(componentClass) && componentClass.placeholder) {
+                componentClass = componentClass.placeholder
+            }
+
             // 外部组件
             if (componentClass[COMPONENT_REFERENCE]) {
                 children.set(tagName, componentClass[COMPONENT_REFERENCE])
@@ -124,7 +128,7 @@ export class ComponentClassParser {
             // 可能是空，例如 var Foo = defineComponent({components: {foo: Foo}})
             children.set(tagName, new DynamicComponentReference(
                 '.',
-                componentID(componentClass === this.root, () => this.getOrSetID(componentClass)),
+                componentID(componentClass === this.root, () => this.getOrSetID(componentClass as Component<{}>)),
                 componentClass
             ))
         }

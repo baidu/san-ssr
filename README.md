@@ -123,7 +123,7 @@ debug 命令：
 - 如果没能执行 ./bin/auto-complete，则没法 Tab 自动补全 array-literal
 
 [san]: https://github.com/baidu/san
-[sanproject]: https://baidu.github.io/san-ssr/classes/_src_models_san_project_.sanproject.html
+[sanproject]: https://github.com/baidu/san-ssr/blob/master/src/models/san-project.ts
 [target-compile]: https://baidu.github.io/san-ssr/interfaces/_models_compiler_.compiler.html#compile
 [compiler]: https://github.com/baidu/san-ssr/blob/809fc8eb710253f6e5aa3bd1afc0b7f615ef572e/src/models/compiler.ts#L3
 [san-html-cases]: https://github.com/ecomfe/san-html-cases

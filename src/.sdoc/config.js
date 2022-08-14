@@ -40,6 +40,7 @@ module.exports = {
                     title: 'Guide',
                     children: [
                         '/guide/use-san-store/',
+                        '/guide/use-san-composition/',
                         '/guide/custom-output-data/',
                         '/guide/custom-components-path/',
                         '/guide/use-outside-component/',

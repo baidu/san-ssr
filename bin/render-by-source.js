@@ -16,7 +16,7 @@ function renderBySource (caseName) {
     }
 
     const render = require(join(caseRoot, `${caseName}/output/ssr.js`))
-    const html = render(...getRenderArguments(caseName, caseRoot, ssrSpec.info || {}))
+    const html = render(...getRenderArguments(caseName, caseRoot, ssrSpec?.info || {}))
 
     return html
 }

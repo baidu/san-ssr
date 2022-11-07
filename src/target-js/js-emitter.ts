@@ -55,6 +55,15 @@ export class JSEmitter extends Emitter {
                 this.write('[')
                 this.writeSyntaxNode(node.rhs)
                 this.write(']')
+            } else if (node.op === '+') {
+                // + 可能是字符串拼接，也可能是数值加法。涉及到类型转换，因此需要特殊处理,
+                // 例如 "index is: {{index + 1}}",
+                // 不能输出为 "index is: " + index + 1，而应该是 "index is: " + (index + 1)
+                this.writeSyntaxNode(node.lhs)
+                this.write(` ${node.op} `)
+                this.write('(')
+                this.writeSyntaxNode(node.rhs)
+                this.write(')')
             } else {
                 this.writeSyntaxNode(node.lhs)
                 this.write(` ${node.op} `)

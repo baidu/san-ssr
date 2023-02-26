@@ -26,6 +26,7 @@ import { isATextNode } from '../ast/san-ast-type-guards'
 
 export type TagName = string
 type TrimWhitespace = 'none' | 'blank' | 'all' | undefined
+export type ComponentSSRType = 'client-render' | 'render-only' | 'render-hydrate' | undefined
 
 export type ComponentType = 'normal' | 'template'
 
@@ -37,6 +38,7 @@ export interface ComponentInfo {
     root: ANode
     childComponents: Map<TagName, ComponentReference>
     componentType: ComponentType
+    ssrType: ComponentSSRType
     hasMethod (name: string): boolean
     getComputedNames (): string[]
     getFilterNames (): string[]
@@ -61,7 +63,8 @@ abstract class ComponentInfoImpl<R extends ComponentReference = ComponentReferen
         public readonly id: string,
         public readonly root: ANode,
         public readonly childComponents: Map<TagName, R>,
-        public readonly componentType: ComponentType
+        public readonly componentType: ComponentType,
+        public readonly ssrType: ComponentSSRType
     ) {}
 
     abstract hasMethod (name: string): boolean
@@ -93,9 +96,10 @@ export class DynamicComponentInfo extends ComponentInfoImpl<DynamicComponentRefe
         root: ANode,
         childComponents: Map<TagName, DynamicComponentReference>,
         componentType: ComponentType,
+        ssrType: ComponentSSRType,
         public readonly componentClass: Component
     ) {
-        super(id, root, childComponents, componentType)
+        super(id, root, childComponents, componentType, ssrType)
         this.proto = Object.assign(componentClass.prototype, componentClass)
     }
 
@@ -112,7 +116,7 @@ export class DynamicComponentInfo extends ComponentInfoImpl<DynamicComponentRefe
     }
 }
 
-export class JSComponentInfo extends ComponentInfoImpl<ComponentReference> {
+export class JSComponentInfo extends ComponentInfoImpl<ComponentReference> implements ComponentInfo {
     public readonly className: string
     public readonly sourceCode: string
     public readonly isRawObject: boolean
@@ -131,8 +135,10 @@ export class JSComponentInfo extends ComponentInfoImpl<ComponentReference> {
         const delimiters = properties.has('delimiters')
             ? getStringArrayValue(properties.get('delimiters')!) as [string, string] : undefined
         const root = parseAndNormalizeTemplate(template, { trimWhitespace, delimiters })
+        const ssrType = properties.has('ssr') ? getLiteralValue(properties.get('ssr')!) as ComponentSSRType
+            : undefined
 
-        super(id, root, new Map(), componentType)
+        super(id, root, new Map(), componentType, ssrType)
         this.className = className
         this.properties = properties
         this.sourceCode = sourceCode
@@ -173,10 +179,11 @@ export class TypedComponentInfo extends ComponentInfoImpl implements ComponentIn
         id: string,
         root: ANode,
         childComponents: Map<TagName, ComponentReference>,
+        ssrType: ComponentSSRType,
         public readonly classDeclaration: ClassDeclaration,
         componentType: ComponentType = 'normal'
     ) {
-        super(id, root, childComponents, componentType)
+        super(id, root, childComponents, componentType, ssrType)
         this.computedNames = getObjectLiteralPropertyKeys(this.classDeclaration, 'computed')
         this.filterNames = getObjectLiteralPropertyKeys(this.classDeclaration, 'filters')
     }

@@ -6,7 +6,7 @@
  */
 import { Component, defineComponent, DefinedComponentClass } from 'san'
 import { DynamicSanSourceFile } from '../models/san-source-file'
-import { ComponentType, DynamicComponentInfo } from '../models/component-info'
+import { ComponentSSRType, ComponentType, DynamicComponentInfo } from '../models/component-info'
 import { getMemberFromClass } from '../utils/lang'
 import { isComponentLoader } from '../models/component'
 import { parseAndNormalizeTemplate } from './parse-template'
@@ -68,6 +68,7 @@ export class ComponentClassParser {
 
         const template = getMemberFromClass(componentClass, 'template', '')
         const trimWhitespace = getMemberFromClass<'none' | 'blank' | 'all'>(componentClass, 'trimWhitespace')
+        const ssrType = getMemberFromClass<ComponentSSRType>(componentClass, 'ssr', undefined)
         const delimiters = getMemberFromClass<[string, string]>(componentClass, 'delimiters')
         const rootANode = parseAndNormalizeTemplate(template, { trimWhitespace, delimiters })
         const childComponents = this.getChildComponentClasses(componentClass, id)
@@ -76,7 +77,9 @@ export class ComponentClassParser {
             id,
             rootANode,
             childComponents,
-            this.getComponentType(componentClass as Component), componentClass as Component
+            this.getComponentType(componentClass as Component),
+            ssrType,
+            componentClass as Component
         )
     }
 

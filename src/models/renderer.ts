@@ -7,6 +7,9 @@ import type { GlobalContext } from './global-context'
 
 export interface Renderer {
     (data: { [key: string]: any }, info?: {
+        preferRenderOnly?: boolean | {
+            cmpt: string[]
+        } | undefined,
         noDataOutput?: boolean,
         parentCtx?: {
             context?: GlobalContext

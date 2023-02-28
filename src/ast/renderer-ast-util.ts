@@ -28,7 +28,8 @@ import {
     Literal,
     TryStatement,
     CatchClause,
-    ConditionalExpression
+    ConditionalExpression,
+    ArrayLiteral
 } from './renderer-ast-dfn'
 
 export function createHTMLLiteralAppend (html: string) {
@@ -106,6 +107,7 @@ export function NEW (name: Expression, args: Expression[]) {
 }
 
 export const EMPTY_MAP = new MapLiteral([])
+export const EMPTY_ARRAY = new ArrayLiteral([])
 
 export function isBlock (node: any): node is Block {
     const blocks = [

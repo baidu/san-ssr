@@ -15,7 +15,7 @@ import {
     createIfStrictEqual, createIfNotNull, createDefaultValue, createHTMLLiteralAppend, createHTMLExpressionAppend, NULL,
     L, I, ASSIGN, DEF, BINARY
 } from '../ast/renderer-ast-util'
-import { HelperCall, ArrayIncludes, Else, Foreach, If, MapLiteral } from '../ast/renderer-ast-dfn'
+import { HelperCall, ArrayIncludes, Else, Foreach, If, MapLiteral, Statement } from '../ast/renderer-ast-dfn'
 import { sanExpr, OutputType } from './san-expr-compiler'
 import assert from 'assert'
 
@@ -39,7 +39,7 @@ export class ElementCompiler {
     /**
      * 编译元素标签头
      */
-    * tagStart (aNode: AElement, dynamicTagName?: string) {
+    * tagStart (aNode: AElement, dynamicTagName?: string, beforeEnd?: () => Generator<Statement, void, unknown>) {
         const props = aNode.props
         const bindDirective = aNode.directives.bind
         const tagName = aNode.tagName!
@@ -60,6 +60,8 @@ export class ElementCompiler {
         for (const prop of props) propsIndex[prop.name] = prop
         for (const prop of props) yield * this.compileProperty(tagName, prop, propsIndex)
         if (bindDirective) yield * this.compileBindProperties(tagName, bindDirective)
+
+        if (beforeEnd) yield * beforeEnd()
 
         // element end '>'
         yield createHTMLLiteralAppend('>')

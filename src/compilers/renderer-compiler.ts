@@ -13,7 +13,7 @@ import {
 } from '../ast/renderer-ast-dfn'
 import {
     EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL, UNDEFINED,
-    createTryStatement, createDefineWithDefaultValue, UNARY
+    createTryStatement, createDefineWithDefaultValue, UNARY, EMPTY_ARRAY
 } from '../ast/renderer-ast-util'
 import { IDGenerator } from '../utils/id-generator'
 import { mergeLiteralAdd } from '../optimizers/merge-literal-add'
@@ -82,13 +82,20 @@ export class RendererCompiler {
         body.push(createDefineWithDefaultValue('parentCtx', BINARY(I('info'), '.', I('parentCtx')), NULL))
         body.push(createDefineWithDefaultValue('tagName', BINARY(I('info'), '.', I('tagName')), L('div')))
         body.push(createDefineWithDefaultValue('slots', BINARY(I('info'), '.', I('slots')), EMPTY_MAP))
-        if (info.ssrType === 'render-only') {
-            body.push(DEF(
-                'renderOnly',
-                BINARY(BINARY(I('info'), '.', I('preferRenderOnly')), '!==', L(false))
-            ))
-        } else if (info.ssrType === undefined) {
-            body.push(DEF('renderOnly', UNARY('!', UNARY('!', BINARY(I('info'), '.', I('preferRenderOnly'))))))
+        body.push(createDefineWithDefaultValue('attrs', BINARY(I('info'), '.', I('attrs')), EMPTY_ARRAY))
+        if (info.ssrType === 'render-only' || info.ssrType === undefined) {
+            if (info.ssrType === 'render-only') {
+                body.push(DEF(
+                    'renderOnly',
+                    BINARY(BINARY(I('info'), '.', I('preferRenderOnly')), '!==', L(false))
+                ))
+            } else {
+                body.push(DEF('renderOnly', UNARY('!', UNARY('!', BINARY(I('info'), '.', I('preferRenderOnly'))))))
+            }
+
+            body.push(new If(BINARY(I('renderOnly'), '&&', UNARY('!', BINARY(I('info'), '.', I('isChild')))), [
+                STATEMENT(new FunctionCall(BINARY(I('attrs'), '.', I('push')), [L('data-sanssr="render-only"')]))
+            ]))
         }
 
         // helper

@@ -202,7 +202,11 @@ export class ANodeCompiler {
         dynamicTagName: string | undefined = undefined,
         isRootElement: boolean
     ): Generator<Statement> {
-        yield * this.elementCompiler.tagStart(aNode, dynamicTagName)
+        yield * this.elementCompiler.tagStart(
+            aNode,
+            dynamicTagName,
+            isRootElement ? this.compileRootAttrs : undefined
+        )
         if (aNode.tagName === 'script') this.inScript = true
         if (isRootElement && !this.ssrOnly && !this.inScript) {
             yield new If(UNARY('!', I('noDataOutput')), this.createDataComment())
@@ -211,6 +215,16 @@ export class ANodeCompiler {
         yield * this.elementCompiler.inner(aNode)
         this.inScript = false
         yield * this.elementCompiler.tagEnd(aNode, dynamicTagName)
+    }
+
+    /**
+     * add attrs to root element
+     */
+    private * compileRootAttrs () {
+        yield new If(BINARY(I('attrs'), '&&', BINARY(I('attrs'), '.', I('length'))), [
+            createHTMLLiteralAppend(' '),
+            createHTMLExpressionAppend(new FunctionCall(BINARY(I('attrs'), '.', I('join')), [L(' ')]))
+        ])
     }
 
     private createDataComment () {
@@ -294,11 +308,18 @@ export class ANodeCompiler {
             [I('noDataOutput'), ndo],
             [I('parentCtx'), I('parentCtx')],
             [I('tagName'), L(aNode.tagName)],
-            [I('slots'), childSlots]
+            [I('slots'), childSlots],
+            [I('isChild'), L(true)]
         ] as ConstructorParameters<typeof MapLiteral>[0]
         if (this.useProvidedComponentClass) {
             assert(ChildComponentClassName !== '')
             mapItems.push([I('ComponentClass'), I(ChildComponentClassName)])
+        }
+        if (isRootElement) {
+            mapItems.push([I('attrs'), I('attrs')])
+        }
+        if (this.componentInfo.ssrType === 'render-only' || this.componentInfo.ssrType === undefined) {
+            mapItems.push([I('preferRenderOnly'), I('renderOnly')])
         }
 
         const args = [this.childRenderData(aNode), new MapLiteral(mapItems)]

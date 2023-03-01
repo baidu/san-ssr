@@ -9,7 +9,7 @@ import { ComponentInfo } from '../models/component-info'
 import { RenderOptions } from './renderer-options'
 import {
     FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper,
-    ComponentReferenceLiteral, ConditionalExpression, BinaryExpression, CreateComponentPrototype, Else
+    ComponentReferenceLiteral, ConditionalExpression, BinaryExpression, CreateComponentPrototype, Else, Typeof
 } from '../ast/renderer-ast-dfn'
 import {
     EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL, UNDEFINED,
@@ -95,6 +95,19 @@ export class RendererCompiler {
 
             body.push(new If(BINARY(I('renderOnly'), '&&', UNARY('!', BINARY(I('info'), '.', I('isChild')))), [
                 STATEMENT(new FunctionCall(BINARY(I('attrs'), '.', I('push')), [L('data-sanssr="render-only"')]))
+            ]))
+        } else {
+            // if (typeof info.preferRenderOnly === "object") {
+            //     attrs.push('data-sanssr="render-hydrate"');
+            //     attrs.push('data-sanssr-cmpt="' + info.preferRenderOnly.cmpt.join("/") + '"');
+            // }
+            const cmptJoinCall = new FunctionCall(
+                BINARY(I('info'), '.', BINARY(I('preferRenderOnly'), '.', BINARY(I('cmpt'), '.', I('join')))), [L('/')])
+            body.push(new If(BINARY(new Typeof(BINARY(I('info'), '.', I('preferRenderOnly'))), '===', L('object')), [
+                STATEMENT(new FunctionCall(BINARY(I('attrs'), '.', I('push')), [L('data-sanssr="render-hydrate"')])),
+                STATEMENT(new FunctionCall(BINARY(I('attrs'), '.', I('push')), [
+                    BINARY(L('data-sanssr-cmpt="'), '+', BINARY(cmptJoinCall, '+', L('"')))
+                ]))
             ]))
         }
 

@@ -14,7 +14,7 @@ import * as TypeGuards from '../ast/san-ast-type-guards'
 import { IDGenerator } from '../utils/id-generator'
 import {
     JSONStringify, RegexpReplace, Statement, SlotRendererDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral,
-    ComponentRendererReference, FunctionCall, SlotRenderCall, Expression, GetRootCtxCall, ComponentReferenceLiteral,
+    ComponentRendererReference, FunctionCall, SlotRenderCall, Expression, ComponentReferenceLiteral,
     ComponentClassReference,
     VariableDefinition,
     ConditionalExpression,
@@ -249,7 +249,11 @@ export class ANodeCompiler {
         const dataExpr = CONDITIONAL(
             BINARY(I('info'), '.', I('preferRenderOnly')),
             BINARY(I('ctx'), '.', I('data')),
-            BINARY(new GetRootCtxCall([I('ctx')]), '.', I('data'))
+            BINARY(
+                BINARY(I('info'), '.', I('rootOutputData')),
+                '||',
+                BINARY(I('ctx'), '.', I('data'))
+            )
         )
         const outputDataExpr = BINARY(I('info'), '.', I('outputData'))
         return [
@@ -341,6 +345,10 @@ export class ANodeCompiler {
         }
         if (isRootElement) {
             mapItems.push([I('attrs'), I('attrs')])
+            mapItems.push([
+                I('rootOutputData'),
+                BINARY(BINARY(I('info'), '.', I('rootOutputData')), '||', BINARY(I('ctx'), '.', I('data')))
+            ])
         }
         if (this.componentInfo.ssrType === 'render-only' || this.componentInfo.ssrType === undefined) {
             mapItems.push([I('preferRenderOnly'), this.compileComponentRenderOnlyParam(aNode.tagName)])

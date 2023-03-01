@@ -348,16 +348,16 @@ export class ANodeCompiler {
 
     /**
      * renderOnly
-     *     ? typeof (info.renderOnly) === "object" ? {cmpt: [...info.renderOnly.cmpt, "ui-c"]}
+     *     ? typeof (info.preferRenderOnly) === "object" ? {cmpt: [...info.preferRenderOnly.cmpt, "ui-c"]}
      *     : {cmpt: ["ui-c"]} : false
      */
     private compileComponentRenderOnlyParam (tagName: AElement['tagName']) {
         const thenValue = CONDITIONAL(
-            BINARY(new Typeof(BINARY(I('info'), '.', I('renderOnly'))), '===', L('object')),
+            BINARY(new Typeof(BINARY(I('info'), '.', I('preferRenderOnly'))), '===', L('object')),
             new MapLiteral([[
                 I('cmpt'),
                 new ArrayLiteral([
-                    [BINARY(I('info'), '.', BINARY(I('renderOnly'), '.', I('cmpt'))), true],
+                    [BINARY(I('info'), '.', BINARY(I('preferRenderOnly'), '.', I('cmpt'))), true],
                     [L(tagName), false]
                 ])
             ]]),

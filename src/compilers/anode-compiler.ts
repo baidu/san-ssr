@@ -19,10 +19,22 @@ import {
     VariableDefinition,
     ConditionalExpression,
     Typeof,
-    AssignmentStatement
+    AssignmentStatement,
+    ArrayLiteral
 } from '../ast/renderer-ast-dfn'
 import {
-    CTX_DATA, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATEMENT, UNARY, DEF, BINARY, RETURN
+    CTX_DATA,
+    createHTMLExpressionAppend,
+    createHTMLLiteralAppend,
+    L,
+    I,
+    ASSIGN,
+    STATEMENT,
+    UNARY,
+    DEF,
+    BINARY,
+    RETURN,
+    CONDITIONAL
 } from '../ast/renderer-ast-util'
 import { sanExpr, OutputType } from './san-expr-compiler'
 import type { RenderOptions } from './renderer-options'
@@ -209,7 +221,11 @@ export class ANodeCompiler {
         )
         if (aNode.tagName === 'script') this.inScript = true
         if (isRootElement && !this.ssrOnly && !this.inScript) {
-            yield new If(UNARY('!', I('noDataOutput')), this.createDataComment())
+            let dataOutputCondition = UNARY('!', I('noDataOutput')) as Expression
+            if (this.componentInfo.ssrType === 'render-only' || this.componentInfo.ssrType === undefined) {
+                dataOutputCondition = BINARY(dataOutputCondition, '&&', UNARY('!', I('renderOnly')))
+            }
+            yield new If(dataOutputCondition, this.createDataComment())
         }
 
         yield * this.elementCompiler.inner(aNode)
@@ -319,7 +335,7 @@ export class ANodeCompiler {
             mapItems.push([I('attrs'), I('attrs')])
         }
         if (this.componentInfo.ssrType === 'render-only' || this.componentInfo.ssrType === undefined) {
-            mapItems.push([I('preferRenderOnly'), I('renderOnly')])
+            mapItems.push([I('preferRenderOnly'), this.compileComponentRenderOnlyParam(aNode.tagName)])
         }
 
         const args = [this.childRenderData(aNode), new MapLiteral(mapItems)]
@@ -328,6 +344,29 @@ export class ANodeCompiler {
             args
         )
         yield createHTMLExpressionAppend(childRenderCall)
+    }
+
+    /**
+     * renderOnly
+     *     ? typeof (info.renderOnly) === "object" ? {cmpt: [...info.renderOnly.cmpt, "ui-c"]}
+     *     : {cmpt: ["ui-c"]} : false
+     */
+    private compileComponentRenderOnlyParam (tagName: AElement['tagName']) {
+        const thenValue = CONDITIONAL(
+            BINARY(new Typeof(BINARY(I('info'), '.', I('renderOnly'))), '===', L('object')),
+            new MapLiteral([[
+                I('cmpt'),
+                new ArrayLiteral([
+                    [BINARY(I('info'), '.', BINARY(I('renderOnly'), '.', I('cmpt'))), true],
+                    [L(tagName), false]
+                ])
+            ]]),
+            new MapLiteral([[
+                I('cmpt'),
+                new ArrayLiteral([[L(tagName), false]])
+            ]])
+        )
+        return CONDITIONAL(I('renderOnly'), thenValue, L(false))
     }
 
     private compileSlotRenderer (content: ANode[]) {

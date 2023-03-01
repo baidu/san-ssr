@@ -86,7 +86,7 @@ export type UnaryOperator = '!' | '~' | '+' | '()' | '-'
 export class ArrayLiteral implements SyntaxNode {
     public readonly kind = SyntaxKind.ArrayLiteral
     constructor (
-        public items: [Expression, boolean][]
+        public items: [Expression, boolean][] // [item, isSpread]
     ) {}
 }
 

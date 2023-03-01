@@ -48,7 +48,6 @@ export function * walk (node: Expression | Statement): Iterable<Expression | Sta
         yield * walk(node.trueValue)
         break
     case SyntaxKind.FilterCall:
-    case SyntaxKind.GetRootCtxCall:
     case SyntaxKind.HelperCall:
         for (const arg of node.args) yield * walk(arg)
         break

@@ -20,6 +20,7 @@ export interface SsrSpecConfig {
     beforeHook?: (type: keyof SsrSpecConfig['enabled']) => void
     afterHook?: (type: keyof SsrSpecConfig['enabled']) => void
     compileOptions?: RenderOptions
+    checkData?: boolean
 }
 
 // 每次执行前，把之前的产物删掉
@@ -68,7 +69,9 @@ for (const { caseName, caseRoot } of cases) {
                 const got = render(...getRenderArguments(caseName, caseRoot))
                 const [data, html] = parseSanHTML(got)
 
-                expect(data).toEqual(expectedData)
+                if (ssrSpec.checkData !== false) {
+                    expect(data).toEqual(expectedData)
+                }
                 expect(html).toEqual(expectedHtml)
             })
         }
@@ -93,7 +96,9 @@ for (const { caseName, caseRoot } of cases) {
                 )
                 const [data, html] = parseSanHTML(got)
 
-                expect(data).toEqual(expectedData)
+                if (ssrSpec.checkData !== false) {
+                    expect(data).toEqual(expectedData)
+                }
                 expect(html).toEqual(expectedHtml)
             })
         }
@@ -119,7 +124,9 @@ for (const { caseName, caseRoot } of cases) {
                 const got = render(...getRenderArguments(caseName, caseRoot, info))
                 const [data, html] = parseSanHTML(got)
 
-                expect(data).toEqual(expectedData)
+                if (ssrSpec.checkData !== false) {
+                    expect(data).toEqual(expectedData)
+                }
                 expect(html).toEqual(expectedHtml)
             })
         }
@@ -131,7 +138,9 @@ for (const { caseName, caseRoot } of cases) {
                 const got = renderOnthefly(caseName, caseRoot, info)
                 const [data, html] = parseSanHTML(got)
 
-                expect(data).toEqual(expectedData)
+                if (ssrSpec.checkData !== false) {
+                    expect(data).toEqual(expectedData)
+                }
                 expect(html).toEqual(expectedHtml)
             })
             ssrSpec.afterHook && ssrSpec.afterHook('comrdr')

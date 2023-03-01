@@ -38,13 +38,18 @@ export class RendererCompiler {
             // 参数太多了，后续要增加的参数统一收敛到这里
             DEF('...info')
         ]
-        const fn = new FunctionDefinition(this.options.functionName || '', args,
-            componentInfo.componentType === 'template'
+        const rendererFunctionBody = componentInfo.ssrType === 'client-render'
+            ? this.compileClientRendererBody()
+            : componentInfo.componentType === 'template'
                 ? this.compileTemplateComponentRendererBody(componentInfo)
                 : this.compileComponentRendererBody(componentInfo)
-        )
+        const fn = new FunctionDefinition(this.options.functionName || '', args, rendererFunctionBody)
         mergeLiteralAdd(fn)
         return fn
+    }
+
+    private compileClientRendererBody () {
+        return [RETURN(L(''))]
     }
 
     private compileComponentRendererBody (info: ComponentInfo) {

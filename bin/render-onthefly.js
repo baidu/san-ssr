@@ -10,7 +10,7 @@ function renderOnTheFly (caseName) {
     const caseRoot = caseItem.caseRoot
 
     const ssrSpecPath = join(caseRoot, `${caseName}/ssr-spec.js`)
-    let ssrSpec
+    let ssrSpec = {}
     if (fs.existsSync(ssrSpecPath)) {
         ssrSpec = require(ssrSpecPath)
     }

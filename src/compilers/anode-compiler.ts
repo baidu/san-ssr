@@ -244,7 +244,11 @@ export class ANodeCompiler {
     }
 
     private createDataComment () {
-        const dataExpr = BINARY(new GetRootCtxCall([I('ctx')]), '.', I('data'))
+        const dataExpr = CONDITIONAL(
+            BINARY(I('info'), '.', I('preferRenderOnly')),
+            BINARY(I('ctx'), '.', I('data')),
+            BINARY(new GetRootCtxCall([I('ctx')]), '.', I('data'))
+        )
         const outputDataExpr = BINARY(I('info'), '.', I('outputData'))
         return [
             new VariableDefinition('data', dataExpr),
@@ -253,7 +257,7 @@ export class ANodeCompiler {
                     I('data'),
                     new ConditionalExpression(
                         BINARY(new Typeof(outputDataExpr), '===', L('function')),
-                        new FunctionCall(outputDataExpr, [dataExpr]),
+                        new FunctionCall(outputDataExpr, [I('data')]),
                         outputDataExpr
                     )
                 )
@@ -307,7 +311,9 @@ export class ANodeCompiler {
         }
 
         // data output
-        const ndo = isRootElement ? I('noDataOutput') : L(true)
+        const normalNoDataOutput = isRootElement ? I('noDataOutput') : L(true)
+        const ndo = (this.componentInfo.ssrType === 'render-only' || this.componentInfo.ssrType === undefined)
+            ? CONDITIONAL(I('renderOnly'), L(false), normalNoDataOutput) : normalNoDataOutput
 
         // child component class
         let ChildComponentClassName = ''

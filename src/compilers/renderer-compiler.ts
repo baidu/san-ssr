@@ -195,6 +195,7 @@ export class RendererCompiler {
         body.push(createDefineWithDefaultValue('noDataOutput', BINARY(I('info'), '.', I('noDataOutput')), L(false)))
         body.push(createDefineWithDefaultValue('parentCtx', BINARY(I('info'), '.', I('parentCtx')), NULL))
         body.push(createDefineWithDefaultValue('slots', BINARY(I('info'), '.', I('slots')), EMPTY_MAP))
+        body.push(createDefineWithDefaultValue('attrs', BINARY(I('info'), '.', I('attrs')), EMPTY_ARRAY))
 
         // helper
         body.push(new ImportHelper('_'))

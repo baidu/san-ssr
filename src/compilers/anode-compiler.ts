@@ -222,7 +222,9 @@ export class ANodeCompiler {
         if (aNode.tagName === 'script') this.inScript = true
         if (isRootElement && !this.ssrOnly && !this.inScript) {
             let dataOutputCondition = UNARY('!', I('noDataOutput')) as Expression
-            if (this.componentInfo.ssrType === 'render-only' || this.componentInfo.ssrType === undefined) {
+            if (
+                this.componentInfo.componentType !== 'template' &&
+                (this.componentInfo.ssrType === 'render-only' || this.componentInfo.ssrType === undefined)) {
                 dataOutputCondition = BINARY(dataOutputCondition, '&&', UNARY('!', I('renderOnly')))
             }
             yield new If(dataOutputCondition, this.createDataComment())

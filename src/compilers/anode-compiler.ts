@@ -353,6 +353,8 @@ export class ANodeCompiler {
         }
         if (this.componentInfo.ssrType === 'render-only' || this.componentInfo.ssrType === undefined) {
             mapItems.push([I(RESERVED_NAMES.renderOnly), this.compileComponentRenderOnlyParam(aNode.tagName)])
+        } else {
+            mapItems.push([I(RESERVED_NAMES.renderOnly), L(false)])
         }
 
         const args = [this.childRenderData(aNode), new MapLiteral(mapItems)]

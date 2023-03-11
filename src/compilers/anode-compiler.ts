@@ -38,6 +38,7 @@ import {
 } from '../ast/renderer-ast-util'
 import { sanExpr, OutputType } from './san-expr-compiler'
 import type { RenderOptions } from './renderer-options'
+import { RESERVED_NAMES } from './reserved-names'
 
 /**
  * ANode 编译
@@ -247,7 +248,7 @@ export class ANodeCompiler {
 
     private createDataComment () {
         const dataExpr = CONDITIONAL(
-            BINARY(I('info'), '.', I('preferRenderOnly')),
+            BINARY(I('info'), '.', I(RESERVED_NAMES.renderOnly)),
             BINARY(I('ctx'), '.', I('data')),
             BINARY(
                 BINARY(I('info'), '.', I('rootOutputData')),
@@ -351,7 +352,7 @@ export class ANodeCompiler {
             ])
         }
         if (this.componentInfo.ssrType === 'render-only' || this.componentInfo.ssrType === undefined) {
-            mapItems.push([I('preferRenderOnly'), this.compileComponentRenderOnlyParam(aNode.tagName)])
+            mapItems.push([I(RESERVED_NAMES.renderOnly), this.compileComponentRenderOnlyParam(aNode.tagName)])
         }
 
         const args = [this.childRenderData(aNode), new MapLiteral(mapItems)]
@@ -369,11 +370,11 @@ export class ANodeCompiler {
      */
     private compileComponentRenderOnlyParam (tagName: AElement['tagName']) {
         const thenValue = CONDITIONAL(
-            BINARY(new Typeof(BINARY(I('info'), '.', I('preferRenderOnly'))), '===', L('object')),
+            BINARY(new Typeof(BINARY(I('info'), '.', I(RESERVED_NAMES.renderOnly))), '===', L('object')),
             new MapLiteral([[
                 I('cmpt'),
                 new ArrayLiteral([
-                    [BINARY(I('info'), '.', BINARY(I('preferRenderOnly'), '.', I('cmpt'))), true],
+                    [BINARY(I('info'), '.', BINARY(I(RESERVED_NAMES.renderOnly), '.', I('cmpt'))), true],
                     [L(tagName), false]
                 ])
             ]]),

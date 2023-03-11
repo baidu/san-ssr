@@ -17,6 +17,7 @@ import {
 } from '../ast/renderer-ast-util'
 import { IDGenerator } from '../utils/id-generator'
 import { mergeLiteralAdd } from '../optimizers/merge-literal-add'
+import { RESERVED_NAMES } from './reserved-names'
 
 /**
  * 每个 ComponentClass 对应一个 Render 函数，由 RendererCompiler 生成。
@@ -88,32 +89,46 @@ export class RendererCompiler {
         body.push(createDefineWithDefaultValue('tagName', BINARY(I('info'), '.', I('tagName')), L('div')))
         body.push(createDefineWithDefaultValue('slots', BINARY(I('info'), '.', I('slots')), EMPTY_MAP))
         body.push(createDefineWithDefaultValue('attrs', BINARY(I('info'), '.', I('attrs')), EMPTY_ARRAY))
+
+        // server render component
         if (info.ssrType === 'render-only' || info.ssrType === undefined) {
             if (info.ssrType === 'render-only') {
+                // TO: let renderOnly = info.renderOnly !== false
                 body.push(DEF(
                     'renderOnly',
-                    BINARY(BINARY(I('info'), '.', I('preferRenderOnly')), '!==', L(false))
+                    BINARY(BINARY(I('info'), '.', I(RESERVED_NAMES.renderOnly)), '!==', L(false))
                 ))
             } else {
-                body.push(DEF('renderOnly', UNARY('!', UNARY('!', BINARY(I('info'), '.', I('preferRenderOnly'))))))
+                // TO: let renderOnly = !!(info.renderOnly);
+                body.push(DEF(
+                    'renderOnly',
+                    UNARY('!', UNARY('!', BINARY(I('info'), '.', I(RESERVED_NAMES.renderOnly))))
+                ))
             }
 
             body.push(new If(BINARY(I('renderOnly'), '&&', UNARY('!', BINARY(I('info'), '.', I('isChild')))), [
                 STATEMENT(new FunctionCall(BINARY(I('attrs'), '.', I('push')), [L('data-sanssr="render-only"')]))
             ]))
         } else {
-            // if (typeof info.preferRenderOnly === "object") {
-            //     attrs.push('data-sanssr="render-hydrate"');
-            //     attrs.push('data-sanssr-cmpt="' + info.preferRenderOnly.cmpt.join("/") + '"');
+            // TO:
+            // if (typeof info.renderOnly === "object") {
+            //     attrs.push('data-sanssr-cmpt="' + info.renderOnly.cmpt.join("/") + '"');
             // }
             const cmptJoinCall = new FunctionCall(
-                BINARY(I('info'), '.', BINARY(I('preferRenderOnly'), '.', BINARY(I('cmpt'), '.', I('join')))), [L('/')])
-            body.push(new If(BINARY(new Typeof(BINARY(I('info'), '.', I('preferRenderOnly'))), '===', L('object')), [
-                STATEMENT(new FunctionCall(BINARY(I('attrs'), '.', I('push')), [L('data-sanssr="render-hydrate"')])),
-                STATEMENT(new FunctionCall(BINARY(I('attrs'), '.', I('push')), [
-                    BINARY(L('data-sanssr-cmpt="'), '+', BINARY(cmptJoinCall, '+', L('"')))
-                ]))
-            ]))
+                BINARY(
+                    I('info'),
+                    '.',
+                    BINARY(I(RESERVED_NAMES.renderOnly), '.', BINARY(I('cmpt'), '.', I('join')))
+                ), [L('/')]
+            )
+            body.push(new If(
+                BINARY(new Typeof(BINARY(I('info'), '.', I(RESERVED_NAMES.renderOnly))), '===', L('object')),
+                [
+                    STATEMENT(new FunctionCall(BINARY(I('attrs'), '.', I('push')), [
+                        BINARY(L('data-sanssr-cmpt="'), '+', BINARY(cmptJoinCall, '+', L('"')))
+                    ]))
+                ]
+            ))
         }
 
         // helper

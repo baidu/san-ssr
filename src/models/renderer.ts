@@ -8,7 +8,6 @@ import type { GlobalContext } from './global-context'
 export type Renderer = (data: { [key: string]: any }, info?: RendererInfo) => string
 
 export interface RendererInfo {
-    preferRenderOnly?: boolean,
     noDataOutput?: boolean,
     parentCtx?: {
         context?: GlobalContext
@@ -17,7 +16,7 @@ export interface RendererInfo {
     ComponentClass?: Component
 }
 export type InnerRendererInfo = RendererInfo & {
-    preferRenderOnly?: boolean | {
+    renderOnly?: boolean | {
         cmpt: string[]
     }
     tagName?: string

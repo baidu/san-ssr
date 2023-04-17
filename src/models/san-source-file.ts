@@ -9,7 +9,7 @@
  */
 import type { SourceFile } from 'ts-morph'
 import debugFactory from 'debug'
-import { DynamicComponentInfo, ComponentInfo, JSComponentInfo, TypedComponentInfo } from '../models/component-info'
+import type { DynamicComponentInfo, ComponentInfo, JSComponentInfo, TypedComponentInfo } from '../models/component-info'
 
 const debug = debugFactory('san-source-file')
 

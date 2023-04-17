@@ -16,7 +16,7 @@ import {
 import { normalizeComponentClass } from './normalize-component'
 import { TypedSanSourceFile } from '../models/san-source-file'
 import { parseAndNormalizeTemplate } from './parse-template'
-import { TypedComponentInfo } from '../models/component-info'
+import { ComponentSSRType, TypedComponentInfo } from '../models/component-info'
 import { componentID } from '../models/component-reference'
 
 const debug = debugFactory('ts-component-parser')
@@ -74,6 +74,7 @@ export class TypeScriptSanParser {
     ): TypedComponentInfo {
         const template = getPropertyStringValue(classDeclaration, 'template', '')
         const trimWhitespace = getPropertyStringValue<'none' | 'blank' | 'all'>(classDeclaration, 'trimWhitespace')
+        const ssrType = getPropertyStringValue<Exclude<ComponentSSRType, undefined>>(classDeclaration, 'ssr')
         const delimiters = getPropertyStringArrayValue<[string, string]>(classDeclaration, 'delimiters')
         const childComponents = getChildComponents(
             classDeclaration,
@@ -91,6 +92,7 @@ export class TypeScriptSanParser {
                 trimWhitespace, delimiters
             }),
             childComponents,
+            ssrType,
             classDeclaration,
 
             // TypeScript 目前只支持 class 方式定义组件，还不支持 TemplateComponent

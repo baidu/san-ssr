@@ -5,16 +5,27 @@
 import { Component } from 'san'
 import type { GlobalContext } from './global-context'
 
-export interface Renderer {
-    (data: { [key: string]: any }, info?: {
-        noDataOutput?: boolean,
-        parentCtx?: {
-            context?: GlobalContext
-        },
-        tagName?: string,
-        ComponentClass?: Component
-        slots?: {
-            [slotName: string]: Renderer
-        }
-    }): string
+export type Renderer = (data: { [key: string]: any }, info?: RendererInfo) => string
+
+export interface RendererInfo {
+    noDataOutput?: boolean,
+    parentCtx?: {
+        context?: GlobalContext
+    },
+    outputData?: Record<string, unknown> | ((data: Record<string, unknown>) => Record<string, unknown>),
+    ComponentClass?: Component
+}
+export type InnerRendererInfo = RendererInfo & {
+    renderOnly?: boolean | {
+        cmpt: string[]
+    }
+    tagName?: string
+    attrs?: string[]
+    slots?: {
+        [slotName: string]: Renderer
+    }
+
+    // not root Component
+    isChild: boolean
+    rootOutputData: Record<string, unknown>
 }

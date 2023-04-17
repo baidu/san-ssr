@@ -14,18 +14,31 @@ import * as TypeGuards from '../ast/san-ast-type-guards'
 import { IDGenerator } from '../utils/id-generator'
 import {
     JSONStringify, RegexpReplace, Statement, SlotRendererDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral,
-    ComponentRendererReference, FunctionCall, SlotRenderCall, Expression, GetRootCtxCall, ComponentReferenceLiteral,
+    ComponentRendererReference, FunctionCall, SlotRenderCall, Expression, ComponentReferenceLiteral,
     ComponentClassReference,
     VariableDefinition,
     ConditionalExpression,
     Typeof,
-    AssignmentStatement
+    AssignmentStatement,
+    ArrayLiteral
 } from '../ast/renderer-ast-dfn'
 import {
-    CTX_DATA, createHTMLExpressionAppend, createHTMLLiteralAppend, L, I, ASSIGN, STATEMENT, UNARY, DEF, BINARY, RETURN
+    CTX_DATA,
+    createHTMLExpressionAppend,
+    createHTMLLiteralAppend,
+    L,
+    I,
+    ASSIGN,
+    STATEMENT,
+    UNARY,
+    DEF,
+    BINARY,
+    RETURN,
+    CONDITIONAL
 } from '../ast/renderer-ast-util'
 import { sanExpr, OutputType } from './san-expr-compiler'
 import type { RenderOptions } from './renderer-options'
+import { RESERVED_NAMES } from './reserved-names'
 
 /**
  * ANode 编译
@@ -202,10 +215,20 @@ export class ANodeCompiler {
         dynamicTagName: string | undefined = undefined,
         isRootElement: boolean
     ): Generator<Statement> {
-        yield * this.elementCompiler.tagStart(aNode, dynamicTagName)
+        yield * this.elementCompiler.tagStart(
+            aNode,
+            dynamicTagName,
+            isRootElement ? this.compileRootAttrs : undefined
+        )
         if (aNode.tagName === 'script') this.inScript = true
         if (isRootElement && !this.ssrOnly && !this.inScript) {
-            yield new If(UNARY('!', I('noDataOutput')), this.createDataComment())
+            let dataOutputCondition = UNARY('!', I('noDataOutput')) as Expression
+            if (
+                this.componentInfo.componentType !== 'template' &&
+                (this.componentInfo.ssrType === 'render-only' || this.componentInfo.ssrType === undefined)) {
+                dataOutputCondition = BINARY(dataOutputCondition, '&&', UNARY('!', I('renderOnly')))
+            }
+            yield new If(dataOutputCondition, this.createDataComment())
         }
 
         yield * this.elementCompiler.inner(aNode)
@@ -213,8 +236,26 @@ export class ANodeCompiler {
         yield * this.elementCompiler.tagEnd(aNode, dynamicTagName)
     }
 
+    /**
+     * add attrs to root element
+     */
+    private * compileRootAttrs () {
+        yield new If(BINARY(I('attrs'), '&&', BINARY(I('attrs'), '.', I('length'))), [
+            createHTMLLiteralAppend(' '),
+            createHTMLExpressionAppend(new FunctionCall(BINARY(I('attrs'), '.', I('join')), [L(' ')]))
+        ])
+    }
+
     private createDataComment () {
-        const dataExpr = BINARY(new GetRootCtxCall([I('ctx')]), '.', I('data'))
+        const dataExpr = CONDITIONAL(
+            BINARY(I('info'), '.', I(RESERVED_NAMES.renderOnly)),
+            BINARY(I('ctx'), '.', I('data')),
+            BINARY(
+                BINARY(I('info'), '.', I('rootOutputData')),
+                '||',
+                BINARY(I('ctx'), '.', I('data'))
+            )
+        )
         const outputDataExpr = BINARY(I('info'), '.', I('outputData'))
         return [
             new VariableDefinition('data', dataExpr),
@@ -223,7 +264,7 @@ export class ANodeCompiler {
                     I('data'),
                     new ConditionalExpression(
                         BINARY(new Typeof(outputDataExpr), '===', L('function')),
-                        new FunctionCall(outputDataExpr, [dataExpr]),
+                        new FunctionCall(outputDataExpr, [I('data')]),
                         outputDataExpr
                     )
                 )
@@ -277,7 +318,9 @@ export class ANodeCompiler {
         }
 
         // data output
-        const ndo = isRootElement ? I('noDataOutput') : L(true)
+        const normalNoDataOutput = isRootElement ? I('noDataOutput') : L(true)
+        const ndo = (this.componentInfo.ssrType === 'render-only' || this.componentInfo.ssrType === undefined)
+            ? CONDITIONAL(I('renderOnly'), L(false), normalNoDataOutput) : normalNoDataOutput
 
         // child component class
         let ChildComponentClassName = ''
@@ -294,11 +337,24 @@ export class ANodeCompiler {
             [I('noDataOutput'), ndo],
             [I('parentCtx'), I('parentCtx')],
             [I('tagName'), L(aNode.tagName)],
-            [I('slots'), childSlots]
+            [I('slots'), childSlots],
+            [I('isChild'), L(true)]
         ] as ConstructorParameters<typeof MapLiteral>[0]
         if (this.useProvidedComponentClass) {
             assert(ChildComponentClassName !== '')
             mapItems.push([I('ComponentClass'), I(ChildComponentClassName)])
+        }
+        if (isRootElement) {
+            mapItems.push([I('attrs'), I('attrs')])
+            mapItems.push([
+                I('rootOutputData'),
+                BINARY(BINARY(I('info'), '.', I('rootOutputData')), '||', BINARY(I('ctx'), '.', I('data')))
+            ])
+        }
+        if (this.componentInfo.ssrType === 'render-only' || this.componentInfo.ssrType === undefined) {
+            mapItems.push([I(RESERVED_NAMES.renderOnly), this.compileComponentRenderOnlyParam(aNode.tagName)])
+        } else {
+            mapItems.push([I(RESERVED_NAMES.renderOnly), L(false)])
         }
 
         const args = [this.childRenderData(aNode), new MapLiteral(mapItems)]
@@ -307,6 +363,29 @@ export class ANodeCompiler {
             args
         )
         yield createHTMLExpressionAppend(childRenderCall)
+    }
+
+    /**
+     * renderOnly
+     *     ? typeof (info.preferRenderOnly) === "object" ? {cmpt: [...info.preferRenderOnly.cmpt, "ui-c"]}
+     *     : {cmpt: ["ui-c"]} : false
+     */
+    private compileComponentRenderOnlyParam (tagName: AElement['tagName']) {
+        const thenValue = CONDITIONAL(
+            BINARY(new Typeof(BINARY(I('info'), '.', I(RESERVED_NAMES.renderOnly))), '===', L('object')),
+            new MapLiteral([[
+                I('cmpt'),
+                new ArrayLiteral([
+                    [BINARY(I('info'), '.', BINARY(I(RESERVED_NAMES.renderOnly), '.', I('cmpt'))), true],
+                    [L(tagName), false]
+                ])
+            ]]),
+            new MapLiteral([[
+                I('cmpt'),
+                new ArrayLiteral([[L(tagName), false]])
+            ]])
+        )
+        return CONDITIONAL(I('renderOnly'), thenValue, L(false))
     }
 
     private compileSlotRenderer (content: ANode[]) {

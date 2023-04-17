@@ -28,7 +28,8 @@ import {
     Literal,
     TryStatement,
     CatchClause,
-    ConditionalExpression
+    ConditionalExpression,
+    ArrayLiteral
 } from './renderer-ast-dfn'
 
 export function createHTMLLiteralAppend (html: string) {
@@ -77,6 +78,10 @@ export const UNDEFINED = Undefined.create()
 
 export const CTX_DATA = BINARY(I('ctx'), '.', I('data'))
 
+export function CONDITIONAL (cond: Expression, thenExpr: Expression, elseExpr: Expression) {
+    return new ConditionalExpression(cond, thenExpr, elseExpr)
+}
+
 export function BINARY (lhs: Expression, op: BinaryOperator, rhs: Expression) {
     return new BinaryExpression(lhs, op, rhs)
 }
@@ -106,6 +111,7 @@ export function NEW (name: Expression, args: Expression[]) {
 }
 
 export const EMPTY_MAP = new MapLiteral([])
+export const EMPTY_ARRAY = new ArrayLiteral([])
 
 export function isBlock (node: any): node is Block {
     const blocks = [

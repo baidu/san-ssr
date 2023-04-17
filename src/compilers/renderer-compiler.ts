@@ -9,14 +9,15 @@ import { ComponentInfo } from '../models/component-info'
 import { RenderOptions } from './renderer-options'
 import {
     FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper,
-    ComponentReferenceLiteral, ConditionalExpression, BinaryExpression, CreateComponentPrototype, Else
+    ComponentReferenceLiteral, ConditionalExpression, BinaryExpression, CreateComponentPrototype, Else, Typeof
 } from '../ast/renderer-ast-dfn'
 import {
     EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL, UNDEFINED,
-    createTryStatement, createDefineWithDefaultValue
+    createTryStatement, createDefineWithDefaultValue, UNARY, EMPTY_ARRAY
 } from '../ast/renderer-ast-util'
 import { IDGenerator } from '../utils/id-generator'
 import { mergeLiteralAdd } from '../optimizers/merge-literal-add'
+import { RESERVED_NAMES } from './reserved-names'
 
 /**
  * 每个 ComponentClass 对应一个 Render 函数，由 RendererCompiler 生成。
@@ -38,13 +39,18 @@ export class RendererCompiler {
             // 参数太多了，后续要增加的参数统一收敛到这里
             DEF('...info')
         ]
-        const fn = new FunctionDefinition(this.options.functionName || '', args,
-            componentInfo.componentType === 'template'
+        const rendererFunctionBody = componentInfo.ssrType === 'client-render'
+            ? this.compileClientRendererBody()
+            : componentInfo.componentType === 'template'
                 ? this.compileTemplateComponentRendererBody(componentInfo)
                 : this.compileComponentRendererBody(componentInfo)
-        )
+        const fn = new FunctionDefinition(this.options.functionName || '', args, rendererFunctionBody)
         mergeLiteralAdd(fn)
         return fn
+    }
+
+    private compileClientRendererBody () {
+        return [RETURN(L(''))]
     }
 
     private compileComponentRendererBody (info: ComponentInfo) {
@@ -82,6 +88,48 @@ export class RendererCompiler {
         body.push(createDefineWithDefaultValue('parentCtx', BINARY(I('info'), '.', I('parentCtx')), NULL))
         body.push(createDefineWithDefaultValue('tagName', BINARY(I('info'), '.', I('tagName')), L('div')))
         body.push(createDefineWithDefaultValue('slots', BINARY(I('info'), '.', I('slots')), EMPTY_MAP))
+        body.push(createDefineWithDefaultValue('attrs', BINARY(I('info'), '.', I('attrs')), EMPTY_ARRAY))
+
+        // server render component
+        if (info.ssrType === 'render-only' || info.ssrType === undefined) {
+            if (info.ssrType === 'render-only') {
+                // TO: let renderOnly = info.renderOnly !== false
+                body.push(DEF(
+                    'renderOnly',
+                    BINARY(BINARY(I('info'), '.', I(RESERVED_NAMES.renderOnly)), '!==', L(false))
+                ))
+            } else {
+                // TO: let renderOnly = !!(info.renderOnly);
+                body.push(DEF(
+                    'renderOnly',
+                    UNARY('!', UNARY('!', BINARY(I('info'), '.', I(RESERVED_NAMES.renderOnly))))
+                ))
+            }
+
+            body.push(new If(BINARY(I('renderOnly'), '&&', UNARY('!', BINARY(I('info'), '.', I('isChild')))), [
+                STATEMENT(new FunctionCall(BINARY(I('attrs'), '.', I('push')), [L('data-sanssr="render-only"')]))
+            ]))
+        } else {
+            // TO:
+            // if (typeof info.renderOnly === "object") {
+            //     attrs.push('data-sanssr-cmpt="' + info.renderOnly.cmpt.join("/") + '"');
+            // }
+            const cmptJoinCall = new FunctionCall(
+                BINARY(
+                    I('info'),
+                    '.',
+                    BINARY(I(RESERVED_NAMES.renderOnly), '.', BINARY(I('cmpt'), '.', I('join')))
+                ), [L('/')]
+            )
+            body.push(new If(
+                BINARY(new Typeof(BINARY(I('info'), '.', I(RESERVED_NAMES.renderOnly))), '===', L('object')),
+                [
+                    STATEMENT(new FunctionCall(BINARY(I('attrs'), '.', I('push')), [
+                        BINARY(L('data-sanssr-cmpt="'), '+', BINARY(cmptJoinCall, '+', L('"')))
+                    ]))
+                ]
+            ))
+        }
 
         // helper
         body.push(new ImportHelper('_'))
@@ -167,6 +215,7 @@ export class RendererCompiler {
         body.push(createDefineWithDefaultValue('noDataOutput', BINARY(I('info'), '.', I('noDataOutput')), L(false)))
         body.push(createDefineWithDefaultValue('parentCtx', BINARY(I('info'), '.', I('parentCtx')), NULL))
         body.push(createDefineWithDefaultValue('slots', BINARY(I('info'), '.', I('slots')), EMPTY_MAP))
+        body.push(createDefineWithDefaultValue('attrs', BINARY(I('info'), '.', I('attrs')), EMPTY_ARRAY))
 
         // helper
         body.push(new ImportHelper('_'))

@@ -58,7 +58,6 @@ export enum SyntaxKind {
     RegexpReplace = 28,
     JSONStringify = 29,
     HelperCall = 30,
-    GetRootCtxCall = 31,
     ComponentReferenceLiteral = 32,
     SlotRendererDefinition = 33,
     SlotRenderCall = 34,
@@ -73,7 +72,7 @@ export enum SyntaxKind {
 export type Expression = Identifier | FunctionDefinition | Literal | BinaryExpression | UnaryExpression |
     CreateComponentInstance | NewExpression | MapLiteral | ComponentRendererReference | FunctionCall | Null |
     Undefined | MapAssign | ArrayIncludes | ConditionalExpression | FilterCall | HelperCall | EncodeURIComponent |
-    ArrayLiteral | RegexpReplace | JSONStringify | ComputedCall | GetRootCtxCall | ComponentReferenceLiteral |
+    ArrayLiteral | RegexpReplace | JSONStringify | ComputedCall | ComponentReferenceLiteral |
     SlotRendererDefinition | SlotRenderCall | ComponentClassReference | CreateComponentPrototype | Typeof
 
 export type Statement = ReturnStatement | ImportHelper | VariableDefinition | AssignmentStatement | If | ElseIf | Else |
@@ -86,7 +85,7 @@ export type UnaryOperator = '!' | '~' | '+' | '()' | '-'
 export class ArrayLiteral implements SyntaxNode {
     public readonly kind = SyntaxKind.ArrayLiteral
     constructor (
-        public items: [Expression, boolean][]
+        public items: [Expression, boolean][] // [item, isSpread]
     ) {}
 }
 
@@ -303,13 +302,6 @@ export class FilterCall implements SyntaxNode {
     public readonly kind = SyntaxKind.FilterCall
     constructor (
         public name: string,
-        public args: Expression[]
-    ) {}
-}
-
-export class GetRootCtxCall implements SyntaxNode {
-    public readonly kind = SyntaxKind.GetRootCtxCall
-    constructor (
         public args: Expression[]
     ) {}
 }

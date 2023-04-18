@@ -1,3 +1,16 @@
+# [3.13.0](https://github.com/baidu/san-ssr/compare/nv3.12.0...nv3.13.0) (2023-04-18)
+
+
+### Bug Fixes
+
+* component attr string interpolation ([3f0ffac](https://github.com/baidu/san-ssr/commit/3f0ffacde65711b477be8c7b229a870d341723d1))
+* use loader component with mark external ([ee53d66](https://github.com/baidu/san-ssr/commit/ee53d663baee710987d5dbaab82a785af9bf7661))
+
+
+### Features
+
+* render only component ([#165](https://github.com/baidu/san-ssr/issues/165)) ([d78c4c9](https://github.com/baidu/san-ssr/commit/d78c4c94bdebc2ac20d6bdcb0ef7bdf6c58b30e8))
+
 # [3.12.0](https://github.com/baidu/san-ssr/compare/nv3.11.0...nv3.12.0) (2022-05-30)
 
 

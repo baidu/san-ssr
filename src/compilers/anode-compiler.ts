@@ -14,7 +14,7 @@ import * as TypeGuards from '../ast/san-ast-type-guards'
 import { IDGenerator } from '../utils/id-generator'
 import {
     JSONStringify, RegexpReplace, Statement, SlotRendererDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral,
-    ComponentRendererReference, FunctionCall, SlotRenderCall, Expression, ComponentReferenceLiteral,
+    ComponentRendererReference, FunctionCall, SlotRenderCall, Expression, GetRootCtxCall, ComponentReferenceLiteral,
     ComponentClassReference,
     VariableDefinition,
     ConditionalExpression,
@@ -253,7 +253,9 @@ export class ANodeCompiler {
             BINARY(
                 BINARY(I('info'), '.', I('rootOutputData')),
                 '||',
-                BINARY(I('ctx'), '.', I('data'))
+
+                // 这里保留 GetRootCtxCall 是为了兼容与老版本 san-ssr 的编译产物混用的情况
+                BINARY(new GetRootCtxCall([I('ctx')]), '.', I('data'))
             )
         )
         const outputDataExpr = BINARY(I('info'), '.', I('outputData'))

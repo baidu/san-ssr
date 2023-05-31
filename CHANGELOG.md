@@ -1,3 +1,10 @@
+## [3.13.1](https://github.com/baidu/san-ssr/compare/nv3.13.0...nv3.13.1) (2023-05-31)
+
+
+### Bug Fixes
+
+* renderOnly should backward compatible with old version ([#167](https://github.com/baidu/san-ssr/issues/167)) ([a989bb4](https://github.com/baidu/san-ssr/commit/a989bb4ca4be86bc836227f129ae2e9821257b22))
+
 # [3.13.0](https://github.com/baidu/san-ssr/compare/nv3.12.0...nv3.13.0) (2023-04-18)
 
 

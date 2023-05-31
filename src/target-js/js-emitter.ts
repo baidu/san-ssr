@@ -90,6 +90,11 @@ export class JSEmitter extends Emitter {
             this.writeExpressionList(node.args)
             this.write(')')
             break
+        case SyntaxKind.GetRootCtxCall:
+            this.write('_.getRootCtx(')
+            this.writeExpressionList(node.args)
+            this.write(')')
+            break
         case SyntaxKind.HelperCall:
             this.write(`_.${node.name}(`)
             this.writeExpressionList(node.args)

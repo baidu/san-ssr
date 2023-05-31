@@ -179,6 +179,19 @@ function createInstanceFromClass (Clazz: Component<{}> & ComponentDefineOptions)
     return instance
 }
 
+function getRootCtx<T extends {parentCtx?: T}> (ctx: T) {
+    let last = ctx
+    while (ctx.parentCtx) {
+        last = ctx
+        ctx = ctx.parentCtx
+    }
+
+    // 如果跟组件 render 调用的时候传递了 parentCtx，会找到这个对象
+    // 通过 ctx 是否有 data 来判断是不是真正的 rootCtx
+    // @ts-ignore
+    return ctx.data ? ctx : last
+}
+
 function handleError (e: Error, instance: Component<{}>, info: string) {
     let current: Component<{}> | undefined = instance
     while (current) {
@@ -221,6 +234,7 @@ export const _ = {
     xstyleFilter,
     xclassFilter,
     createFromPrototype,
+    getRootCtx,
     iterate,
     callFilter,
     callComputed,

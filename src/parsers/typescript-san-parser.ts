@@ -18,6 +18,7 @@ import { TypedSanSourceFile } from '../models/san-source-file'
 import { parseAndNormalizeTemplate } from './parse-template'
 import { ComponentSSRType, TypedComponentInfo } from '../models/component-info'
 import { componentID } from '../models/component-reference'
+import type { strongParseSanSourceFileOptions } from '../compilers/renderer-options'
 
 const debug = debugFactory('ts-component-parser')
 
@@ -25,8 +26,8 @@ const debug = debugFactory('ts-component-parser')
  * 把包含 San 组件定义的 TypeScript 源码，通过静态分析（AST），得到组件信息。
  */
 export class TypeScriptSanParser {
-    parse (sourceFile: SourceFile) {
-        const componentClassIdentifier = getComponentClassIdentifier(sourceFile)
+    parse (sourceFile: SourceFile, options: strongParseSanSourceFileOptions) {
+        const componentClassIdentifier = getComponentClassIdentifier(sourceFile, options.sanReferenceInfo)
         if (!componentClassIdentifier) {
             return new TypedSanSourceFile([], sourceFile)
         }

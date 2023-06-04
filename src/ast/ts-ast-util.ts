@@ -8,15 +8,14 @@ import type {
     SourceFile, ObjectLiteralExpression
 } from 'ts-morph'
 import { TypeGuards, SyntaxKind } from 'ts-morph'
-import debugFactory from 'debug'
 import { TagName } from '../models/component-info'
 import { componentID, ComponentReference } from '../models/component-reference'
+import { strongParseSanSourceFileOptions } from '../compilers/renderer-options'
 
-const debug = debugFactory('ts-ast-util')
-
-export function getSanImportDeclaration (sourceFile: SourceFile): ImportDeclaration | undefined {
+export function getSanImportDeclaration (sourceFile: SourceFile, moduleNames: string[]): ImportDeclaration | undefined {
+    const moduleNameSet = new Set(moduleNames)
     return sourceFile.getImportDeclaration(
-        node => node.getModuleSpecifierValue() === 'san'
+        node => moduleNameSet.has(node.getModuleSpecifierValue())
     )
 }
 
@@ -24,18 +23,27 @@ export function getSanImportDeclaration (sourceFile: SourceFile): ImportDeclarat
  * import {Component as OtherName} from 'san';
  * 获取到 “OtherName”
  */
-export function getComponentClassIdentifier (sourceFile: SourceFile): string | undefined {
-    const declaration = getSanImportDeclaration(sourceFile)
+export function getComponentClassIdentifier (
+    sourceFile: SourceFile,
+    sanReferenceInfo: strongParseSanSourceFileOptions['sanReferenceInfo']): string | undefined {
+    const declaration = getSanImportDeclaration(sourceFile, sanReferenceInfo.moduleName)
     if (!declaration) return
 
     const namedImports = declaration.getNamedImports()
+    const classNameSet = new Set(sanReferenceInfo.className)
     for (const namedImport of namedImports) {
         const name = namedImport.getName()
-        if (name !== 'Component') continue
+        if (!classNameSet.has(name)) continue
 
         const alias = namedImport.getAliasNode()
         if (alias) return alias.getText()
-        return 'Component'
+        return name
+    }
+
+    const defaultImport = declaration.getDefaultImport()
+    const text = defaultImport?.getText()
+    if (text && classNameSet.has(text)) {
+        return text
     }
 }
 

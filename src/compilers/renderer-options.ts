@@ -31,9 +31,9 @@ export interface RenderOptions {
     removeModules?: RegExp[]
 
     sanReferenceInfo?: {
-        methodName?: string
-        moduleName?: string
-        className?: string
+        methodName?: string | string [];
+        moduleName?: string | string[];
+        className?: string | string[];
     }
 
     /**
@@ -44,4 +44,12 @@ export interface RenderOptions {
 
 export interface parseSanSourceFileOptions {
     sanReferenceInfo?: RenderOptions['sanReferenceInfo']
+}
+
+export interface strongParseSanSourceFileOptions {
+    sanReferenceInfo: {
+        methodName: string[];
+        moduleName: string[];
+        className: string[];
+    }
 }

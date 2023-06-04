@@ -66,8 +66,8 @@ export function getRequireSpecifier (node: Node): string {
 
 // 是否是 require 了 spec 的语句。
 // 例如：对于 node = <require('san')>，isRequireSpecifier(node, 'san') === true
-export function isRequireSpecifier (node: Expression, spec: string) {
-    return isRequire(node) && getRequireSpecifier(node) === spec
+export function isRequireSpecifier (node: Expression, spec: string[]) {
+    return isRequire(node) && spec.includes(getRequireSpecifier(node))
 }
 
 export function isModuleExports (node: Node) {

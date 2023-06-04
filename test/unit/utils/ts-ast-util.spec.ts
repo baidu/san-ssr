@@ -136,22 +136,27 @@ describe('utils/ts-ast-util', function () {
                 .toThrow('invalid "template" property')
         })
     })
+    const defaultSanReferenceInfo = {
+        moduleName: ['san'],
+        className: ['Component'],
+        methodName: ['defineComponent']
+    }
     describe('.getComponentClassIdentifier()', function () {
         it('should get component class identifier', () => {
             const file = proj.createSourceFile('foo.ts', 'import { Component } from \'san\'')
-            expect(getComponentClassIdentifier(file)).toEqual('Component')
+            expect(getComponentClassIdentifier(file, defaultSanReferenceInfo)).toEqual('Component')
         })
         it('should return undefined if "san" not imported', () => {
             const file = proj.createSourceFile('foo.ts', 'import { resolve } from \'path\'')
-            expect(getComponentClassIdentifier(file)).toBeUndefined()
+            expect(getComponentClassIdentifier(file, defaultSanReferenceInfo)).toBeUndefined()
         })
         it('should return undefined if Component not imported', () => {
             const file = proj.createSourceFile('foo.ts', 'import { ANode } from \'san\'')
-            expect(getComponentClassIdentifier(file)).toBeUndefined()
+            expect(getComponentClassIdentifier(file, defaultSanReferenceInfo)).toBeUndefined()
         })
         it('should get component class identifier for import as', () => {
             const file = proj.createSourceFile('foo.ts', 'import { Component as SanComponent } from \'san\'')
-            expect(getComponentClassIdentifier(file)).toEqual('SanComponent')
+            expect(getComponentClassIdentifier(file, defaultSanReferenceInfo)).toEqual('SanComponent')
         })
     })
     describe('.isChildClassOf()', function () {

@@ -1,5 +1,13 @@
 import { JavaScriptSanParser } from '../../../src/parsers/javascript-san-parser'
 
+const defaultOptions = {
+    sanReferenceInfo: {
+        moduleName: ['san'],
+        className: ['Component'],
+        methodName: ['defineComponent']
+    }
+}
+
 describe('JavaScriptSanParser', () => {
     describe('#parseImportedNames()', () => {
         it('should parse imports', () => {
@@ -7,7 +15,7 @@ describe('JavaScriptSanParser', () => {
             import { Component } from 'san'
             const define = require('san').defineComponent
             `
-            const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module')
+            const parser = new JavaScriptSanParser('/tmp/foo.san', defaultOptions, script, 'module')
             const imports = [...parser.parseImportedNames()]
             expect(imports).toHaveLength(2)
             expect(imports[0]).toEqual(['Component', 'san', 'Component'])
@@ -27,7 +35,7 @@ describe('JavaScriptSanParser', () => {
                     inited() {}
                 }
                 `
-                const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module')
+                const parser = new JavaScriptSanParser('/tmp/foo.san', defaultOptions, script, 'module')
                 parser.parseNames()
                 const [components, entry] = parser.parseComponents()
                 expect(components).toHaveLength(1)
@@ -44,7 +52,7 @@ describe('JavaScriptSanParser', () => {
                 const YComponent = defineTemplateComponent({ template: '<div></div>' })
                 export default defineTemplateComponent({ template: '<div></div>' })
                 `
-                const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module')
+                const parser = new JavaScriptSanParser('/tmp/foo.san', defaultOptions, script, 'module')
                 parser.parseNames()
                 const [components, entry] = parser.parseComponents()
                 expect(components).toHaveLength(2)
@@ -58,7 +66,7 @@ describe('JavaScriptSanParser', () => {
                 export class XComponent extends san.Component {}
                 export default class YComponent extends san.Component {}
                 `
-                const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module')
+                const parser = new JavaScriptSanParser('/tmp/foo.san', defaultOptions, script, 'module')
                 parser.parseNames()
                 const [components, entry] = parser.parseComponents()
                 expect(entry).toHaveProperty('id', 'default')
@@ -72,7 +80,7 @@ describe('JavaScriptSanParser', () => {
                 const YComponent = defineComponent({ template: '<input>' })
                 export default san.defineComponent({ template: '<button>' })
                 `
-                const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module')
+                const parser = new JavaScriptSanParser('/tmp/foo.san', defaultOptions, script, 'module')
                 parser.parseNames()
                 const [components, entry] = parser.parseComponents()
                 expect(entry).toHaveProperty('id', 'default')
@@ -86,7 +94,7 @@ describe('JavaScriptSanParser', () => {
                 Foo = defineComponent({})
                 export const Bar = Foo
                 `
-                const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module')
+                const parser = new JavaScriptSanParser('/tmp/foo.san', defaultOptions, script, 'module')
                 parser.parseNames()
                 const [components] = parser.parseComponents()
                 expect(components[0]).toHaveProperty('id', 'Bar')
@@ -98,12 +106,13 @@ describe('JavaScriptSanParser', () => {
                 Foo = define({})
                 export const Bar = Foo
                 `
-                const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module', {
+                const parser = new JavaScriptSanParser('/tmp/foo.san', {
                     sanReferenceInfo: {
-                        methodName: 'define',
-                        moduleName: 'other-san'
+                        methodName: ['define'],
+                        moduleName: ['other-san'],
+                        className: ['Component']
                     }
-                })
+                }, script, 'module')
                 parser.parseNames()
                 const [components] = parser.parseComponents()
                 expect(components[0]).toHaveProperty('id', 'Bar')
@@ -115,7 +124,7 @@ describe('JavaScriptSanParser', () => {
                 const { Component } = require('san')
                 exports = module.exports = class XComponent extends Component {}
                 `
-                const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module')
+                const parser = new JavaScriptSanParser('/tmp/foo.san', defaultOptions, script, 'module')
                 parser.parseNames()
                 const [components, entry] = parser.parseComponents()
                 expect(entry).toHaveProperty('id', 'default')
@@ -129,7 +138,7 @@ describe('JavaScriptSanParser', () => {
                 exports.YComponent = defineTemplateComponent({ template: '<div></div>' })
                 module.exports = defineTemplateComponent({ template: '<div></div>' })
                 `
-                const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module')
+                const parser = new JavaScriptSanParser('/tmp/foo.san', defaultOptions, script, 'module')
                 parser.parseNames()
                 const [components, entry] = parser.parseComponents()
                 expect(components).toHaveLength(2)
@@ -143,7 +152,7 @@ describe('JavaScriptSanParser', () => {
                 class YComponent extends Component {}
                 module.exports = class XComponent extends Component {}
                 `
-                const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module')
+                const parser = new JavaScriptSanParser('/tmp/foo.san', defaultOptions, script, 'module')
                 parser.parseNames()
                 const [components, entry] = parser.parseComponents()
                 expect(entry).toHaveProperty('id', 'default')
@@ -158,7 +167,7 @@ describe('JavaScriptSanParser', () => {
                 module.exports = san.defineComponent({ template: '<button>' })
                 exports.ZComponent = require('san').defineComponent({ template: '<meta>' })
                 `
-                const parser = new JavaScriptSanParser('/tmp/foo.san', script)
+                const parser = new JavaScriptSanParser('/tmp/foo.san', defaultOptions, script)
                 parser.parseNames()
                 const [components, entry] = parser.parseComponents()
                 expect(components).toHaveLength(3)
@@ -174,7 +183,7 @@ describe('JavaScriptSanParser', () => {
                 const YComponent = defineComponent({ template: '<input>' })
                 export const ZComponent = YComponent
                 `
-                const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module')
+                const parser = new JavaScriptSanParser('/tmp/foo.san', defaultOptions, script, 'module')
                 parser.parseNames()
                 const [components, entry] = parser.parseComponents()
                 expect(entry).toBeUndefined()
@@ -188,12 +197,13 @@ describe('JavaScriptSanParser', () => {
                 Foo = define({})
                 exports.Bar = Foo
                 `
-                const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'script', {
+                const parser = new JavaScriptSanParser('/tmp/foo.san', {
                     sanReferenceInfo: {
-                        methodName: 'define',
-                        moduleName: 'other-san'
+                        methodName: ['define'],
+                        moduleName: ['other-san'],
+                        className: ['Component']
                     }
-                })
+                }, script, 'script')
                 parser.parseNames()
                 const [components] = parser.parseComponents()
                 expect(components[0]).toHaveProperty('id', 'Bar')
@@ -210,7 +220,7 @@ describe('JavaScriptSanParser', () => {
                 }
             })
             `
-            const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module')
+            const parser = new JavaScriptSanParser('/tmp/foo.san', defaultOptions, script, 'module')
             parser.parseNames()
             const [components, entry] = parser.parseComponents()
             parser.wireChildComponents()
@@ -227,7 +237,7 @@ describe('JavaScriptSanParser', () => {
                 components: { 'f-o': Foo, Bar }
             })
             `
-            const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module')
+            const parser = new JavaScriptSanParser('/tmp/foo.san', defaultOptions, script, 'module')
             parser.parseNames()
             const [components, entry] = parser.parseComponents()
             parser.wireChildComponents()
@@ -244,7 +254,7 @@ describe('JavaScriptSanParser', () => {
                 components: { foo: foo() }
             })
             `
-            const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module')
+            const parser = new JavaScriptSanParser('/tmp/foo.san', defaultOptions, script, 'module')
             parser.parseNames()
             parser.parseComponents()
             expect(() => parser.wireChildComponents()).toThrow('[131,136) cannot parse components')
@@ -256,7 +266,7 @@ describe('JavaScriptSanParser', () => {
                 components: { foo: createComponentLoader({}), bar: createComponentLoader({}) }
             })
             `
-            const parser = new JavaScriptSanParser('/tmp/foo.san', script, 'module')
+            const parser = new JavaScriptSanParser('/tmp/foo.san', defaultOptions, script, 'module')
             parser.parseNames()
             const [components] = parser.parseComponents()
             parser.wireChildComponents()
@@ -280,7 +290,7 @@ describe('JavaScriptSanParser', () => {
             module.exports = MyComponent
             `
 
-            const parser = new JavaScriptSanParser('/tmp/my.san', script, 'script')
+            const parser = new JavaScriptSanParser('/tmp/my.san', defaultOptions, script, 'script')
             const res = parser.parse()
             expect(res.getFileContent().split('const childA = require(\'./path/to/a\')').length).toBe(2)
         })

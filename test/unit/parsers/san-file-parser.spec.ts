@@ -1,5 +1,13 @@
 import { SanFileParser } from '../../../src/parsers/san-file-parser'
 
+const defaultOptions = {
+    sanReferenceInfo: {
+        moduleName: ['san'],
+        className: ['Component'],
+        methodName: ['defineComponent']
+    }
+}
+
 describe('SanFileParser', () => {
     describe('#parse()', () => {
         it('should parse a single defineComponent', () => {
@@ -9,7 +17,7 @@ describe('SanFileParser', () => {
                 inited() {}
             })`
             const template = '<div>Foo</div>'
-            const parser = new SanFileParser(script, template, '/tmp/foo.san')
+            const parser = new SanFileParser(script, template, '/tmp/foo.san', defaultOptions)
             const sourceFile = parser.parse()
 
             expect(sourceFile.getFilePath()).toEqual('/tmp/foo.san')
@@ -28,7 +36,7 @@ describe('SanFileParser', () => {
                 inited() {}
             }`
             const template = '<div>Foo</div>'
-            const parser = new SanFileParser(script, template, '/tmp/foo.san')
+            const parser = new SanFileParser(script, template, '/tmp/foo.san', defaultOptions)
             const sourceFile = parser.parse()
 
             expect(sourceFile.getFilePath()).toEqual('/tmp/foo.san')
@@ -51,7 +59,7 @@ describe('SanFileParser', () => {
                 }
             }`
             const template = '<div>Foo</div>'
-            const parser = new SanFileParser(script, template, '/tmp/foo.san')
+            const parser = new SanFileParser(script, template, '/tmp/foo.san', defaultOptions)
             const sourceFile = parser.parse()
 
             expect(sourceFile.componentInfos).toHaveLength(1)
@@ -66,7 +74,7 @@ describe('SanFileParser', () => {
             import { Component } from 'san'
             export default class extends Component {}`
             const template = '<div>Foo</div>'
-            const parser = new SanFileParser(script, template, '/tmp/foo.san')
+            const parser = new SanFileParser(script, template, '/tmp/foo.san', defaultOptions)
             const sourceFile = parser.parse()
 
             expect(sourceFile.componentInfos).toHaveLength(1)
@@ -80,7 +88,7 @@ describe('SanFileParser', () => {
             const val = 3
             export default val`
             const template = '<div>Foo</div>'
-            const parser = new SanFileParser(script, template, '/tmp/foo.san')
+            const parser = new SanFileParser(script, template, '/tmp/foo.san', defaultOptions)
             expect(() => parser.parse()).toThrow('entry component not found')
         })
     })

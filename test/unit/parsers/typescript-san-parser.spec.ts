@@ -1,6 +1,13 @@
 import { TypeScriptSanParser } from '../../../src/parsers/typescript-san-parser'
 import { Project } from 'ts-morph'
 
+const defaultOptions = {
+    sanReferenceInfo: {
+        moduleName: ['san'],
+        className: ['Component'],
+        methodName: ['defineComponent']
+    }
+}
 describe('.parseFromTypeScript()', () => {
     let proj
     beforeEach(() => {
@@ -12,7 +19,7 @@ describe('.parseFromTypeScript()', () => {
         class Foo extends Component {}
         export default class Bar extends Component {}
         `)
-        const sourceFile = new TypeScriptSanParser().parse(file)
+        const sourceFile = new TypeScriptSanParser().parse(file, defaultOptions)
         expect(sourceFile.componentInfos[0].classDeclaration.isDefaultExport()).toBe(false)
         expect(sourceFile.componentInfos[1].classDeclaration.isDefaultExport()).toBe(true)
     })
@@ -28,7 +35,7 @@ describe('.parseFromTypeScript()', () => {
                 }
             }
         `)
-        const sourceFile = new TypeScriptSanParser().parse(file)
+        const sourceFile = new TypeScriptSanParser().parse(file, defaultOptions)
         expect(sourceFile.componentInfos).toHaveLength(1)
 
         const [info] = sourceFile.componentInfos
@@ -45,7 +52,7 @@ describe('.parseFromTypeScript()', () => {
                 }
             }
         `)
-        const sourceFile = new TypeScriptSanParser().parse(file)
+        const sourceFile = new TypeScriptSanParser().parse(file, defaultOptions)
         expect(sourceFile.componentInfos).toHaveLength(0)
     })
 
@@ -62,7 +69,7 @@ describe('.parseFromTypeScript()', () => {
             }
         `)
         expect(() => {
-            new TypeScriptSanParser().parse(file)
+            new TypeScriptSanParser().parse(file, defaultOptions)
         }).toThrow()
     })
 })

@@ -14,7 +14,11 @@ import type { Component } from 'san'
 import type {
     TypedSanSourceFile, DynamicSanSourceFile, SanSourceFile, JSSanSourceFile
 } from '../models/san-source-file'
-import type { parseSanSourceFileOptions, RenderOptions } from '../compilers/renderer-options'
+import type {
+    parseSanSourceFileOptions,
+    RenderOptions,
+    strongParseSanSourceFileOptions
+} from '../compilers/renderer-options'
 import type { Renderer } from './renderer'
 import type { CompileOptions } from '../target-js/compilers/compile-options'
 import type { TargetCodeGenerator } from '../models/target-code-generator'
@@ -86,9 +90,17 @@ export class SanProject {
     public parseSanSourceFile (input: CompileInput, options?: parseSanSourceFileOptions): SanSourceFile
     public parseSanSourceFile (input: CompileInput, options?: parseSanSourceFileOptions): SanSourceFile {
         if (isComponentClass(input)) return new ComponentClassParser(input, '').parse()
+
+        const formattedOptions = this.checkAndFormatParseSanSourceFileOptions(options)
         if (isSanFileDescriptor(input)) {
-            return new SanFileParser(input.scriptContent, input.templateContent, input.filePath).parse()
+            return new SanFileParser(
+                input.scriptContent,
+                input.templateContent,
+                input.filePath,
+                formattedOptions
+            ).parse()
         }
+
         const filePath = isFileDescriptor(input) ? input.filePath : input
         const fileContent = isFileDescriptor(input) ? input.fileContent : undefined
         if (/\.ts$/.test(filePath)) {
@@ -97,9 +109,29 @@ export class SanProject {
                 ? this.tsProject.createSourceFile(filePath, fileContent, { overwrite: true })
                 : this.tsProject.addSourceFileAtPath(filePath)
             !fileContent && sourceFile.refreshFromFileSystemSync()
-            return new TypeScriptSanParser().parse(sourceFile)
+            return new TypeScriptSanParser().parse(sourceFile, formattedOptions)
         }
-        return new JavaScriptSanParser(filePath, undefined, 'script', options).parse()
+        return new JavaScriptSanParser(filePath, formattedOptions).parse()
+    }
+
+    private checkAndFormatParseSanSourceFileOptions (options?: parseSanSourceFileOptions)
+        : strongParseSanSourceFileOptions {
+        const moduleName = options?.sanReferenceInfo?.moduleName
+        const methodName = options?.sanReferenceInfo?.methodName
+        const className = options?.sanReferenceInfo?.className
+        return {
+            sanReferenceInfo: {
+                moduleName: moduleName
+                    ? Array.isArray(moduleName) ? moduleName : [moduleName]
+                    : ['san'],
+                className: className
+                    ? Array.isArray(className) ? className : [className]
+                    : ['Component'],
+                methodName: methodName
+                    ? Array.isArray(methodName) ? methodName : [methodName]
+                    : ['defineComponent']
+            }
+        }
     }
 
     /**

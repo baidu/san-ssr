@@ -41,7 +41,7 @@ import {
 import { JSSanSourceFile } from '../models/san-source-file'
 import { componentID, ComponentReference } from '../models/component-reference'
 import { readFileSync } from 'fs'
-import { parseSanSourceFileOptions } from '../compilers/renderer-options'
+import { strongParseSanSourceFileOptions } from '../compilers/renderer-options'
 
 const debug = debugFactory('ts-component-parser')
 const DEFAULT_LOADER_CMP = 'SanSSRDefaultLoaderComponent'
@@ -69,8 +69,6 @@ export class JavaScriptSanParser {
     componentInfos: JSComponentInfo[] = []
     entryComponentInfo?: JSComponentInfo
 
-    private sanComponentIdentifier?: string
-    private defineComponentIdentifier: string
     private defineTemplateComponentIdentifier: string
     private defaultExport?: string
     private imports: Map<LocalName, [ImportSpecifier, ImportName]> = new Map()
@@ -78,15 +76,14 @@ export class JavaScriptSanParser {
     private componentIDs: Map<Node | undefined, string> = new Map()
     private defaultPlaceholderComponent?: JSComponentInfo
     private id = 0
-    private sanReferenceInfo?: parseSanSourceFileOptions['sanReferenceInfo']
+    private sanReferenceInfo: strongParseSanSourceFileOptions['sanReferenceInfo']
 
     constructor (
         private readonly filePath: string,
+        options: strongParseSanSourceFileOptions,
         fileContent?: string,
-        sourceType: 'module' | 'script' = 'script',
-        options?: parseSanSourceFileOptions
+        sourceType: 'module' | 'script' = 'script'
     ) {
-        this.defineComponentIdentifier = 'defineComponent'
         this.defineTemplateComponentIdentifier = 'defineTemplateComponent'
         this.root = parse(
             fileContent === undefined ? readFileSync(filePath, 'utf8') : fileContent,
@@ -223,19 +220,6 @@ export class JavaScriptSanParser {
     parseNames () {
         for (const [local, specifier, imported] of this.parseImportedNames()) {
             this.imports.set(local, [specifier, imported])
-            if (imported === 'Component' && specifier === 'san') {
-                this.sanComponentIdentifier = local
-            }
-            if (imported === 'defineComponent' && specifier === 'san') {
-                this.defineComponentIdentifier = local
-            }
-            if (imported === 'defineTemplateComponent' && specifier === 'san') {
-                this.defineTemplateComponentIdentifier = local
-            }
-        }
-        if (this.sanReferenceInfo) {
-            this.sanComponentIdentifier = this.sanReferenceInfo.moduleName
-            this.defineComponentIdentifier = this.sanReferenceInfo.methodName || this.defineComponentIdentifier
         }
 
         for (const [local, exported] of findExportNames(this.root)) {
@@ -315,7 +299,7 @@ export class JavaScriptSanParser {
     private getComponentType (node: ComponentDefinition): ComponentType {
         if (
             isCallExpression(node) &&
-            this.isImportedFromSanWithName(node.callee, this.defineTemplateComponentIdentifier)
+            this.isImportedFromSanWithName(node.callee, [this.defineTemplateComponentIdentifier])
         ) {
             return 'template'
         }
@@ -325,36 +309,38 @@ export class JavaScriptSanParser {
 
     private isDefineComponentCall (node: Node): node is CallExpression {
         return isCallExpression(node) &&
-            (this.isImportedFromSanWithName(node.callee, this.defineComponentIdentifier) ||
-                this.isImportedFromSanWithName(node.callee, this.defineTemplateComponentIdentifier))
+            (this.isImportedFromSanWithName(node.callee, this.sanReferenceInfo.methodName) ||
+                this.isImportedFromSanWithName(node.callee, [this.defineTemplateComponentIdentifier]))
     }
 
     private isCreateComponentLoaderCall (node: Node): node is CallExpression {
-        return isCallExpression(node) && this.isImportedFromSanWithName(node.callee, 'createComponentLoader')
+        return isCallExpression(node) && this.isImportedFromSanWithName(node.callee, ['createComponentLoader'])
     }
 
     private isComponentClass (node: Node): node is Class {
-        return isClass(node) && !!node.superClass && this.isImportedFromSanWithName(node.superClass, 'Component')
+        return isClass(node) && !!node.superClass &&
+            this.isImportedFromSanWithName(node.superClass, this.sanReferenceInfo.className)
     }
 
-    private isImportedFromSanWithName (expr: Node, sanExport: string): boolean {
+    private isImportedFromSanWithName (expr: Node, sanExport: string[]): boolean {
         if (isIdentifier(expr)) {
-            return this.isImportedFrom(expr.name, this.sanReferenceInfo?.moduleName || 'san', sanExport)
+            return this.isImportedFrom(expr.name, this.sanReferenceInfo.moduleName, sanExport)
         }
         if (isMemberExpression(expr)) {
-            return this.isImportedFromSanWithName(expr.object, 'default') && getStringValue(expr.property) === sanExport
+            return this.isImportedFromSanWithName(expr.object, ['default']) &&
+                sanExport.includes(getStringValue(expr.property))
         }
         if (isCallExpression(expr)) {
-            return isRequireSpecifier(expr, this.sanReferenceInfo?.moduleName || 'san') && sanExport === 'default'
+            return isRequireSpecifier(expr, this.sanReferenceInfo.moduleName) && sanExport.includes('default')
         }
         return false
     }
 
-    private isImportedFrom (localName: string, packageSpec: string, importedName: string) {
+    private isImportedFrom (localName: string, packageSpec: string[], importedName: string[]) {
         if (!this.imports.has(localName)) return false
 
         const [spec, name] = this.imports.get(localName)!
-        return spec === packageSpec && name === importedName
+        return packageSpec.includes(spec) && importedName.includes(name)
     }
 
     private stringify (node: Node) {

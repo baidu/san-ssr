@@ -12,6 +12,7 @@ import {
     findDefaultExport
 } from '../ast/js-ast-util'
 import { JSSanSourceFile } from '../models/san-source-file'
+import { strongParseSanSourceFileOptions } from '../compilers/renderer-options'
 
 export class SanFileParser {
     private readonly parser: JavaScriptSanParser
@@ -19,9 +20,10 @@ export class SanFileParser {
     constructor (
         public readonly scriptContent: string,
         public readonly templateContent: string,
-        private readonly filePath: string
+        private readonly filePath: string,
+        options: strongParseSanSourceFileOptions
     ) {
-        this.parser = new JavaScriptSanParser(filePath, scriptContent, 'module')
+        this.parser = new JavaScriptSanParser(filePath, options, scriptContent, 'module')
     }
 
     parse (): JSSanSourceFile {

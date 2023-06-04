@@ -1,3 +1,10 @@
+## [3.13.2](https://github.com/baidu/san-ssr/compare/nv3.13.1...nv3.13.2) (2023-06-04)
+
+
+### Bug Fixes
+
+* support sanReferenceInfo in ts files ([#168](https://github.com/baidu/san-ssr/issues/168)) ([b9f0f32](https://github.com/baidu/san-ssr/commit/b9f0f32cecaf6068d7ca188154ba37e1e0388d09))
+
 ## [3.13.1](https://github.com/baidu/san-ssr/compare/nv3.13.0...nv3.13.1) (2023-05-31)
 
 

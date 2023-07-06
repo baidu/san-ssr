@@ -18,9 +18,10 @@ render = require('./dist/render-from-js.js')
 console.log(render(data))
 
 // compile component.js to source(case2)
+// Tips: in this case, your fileContent must strictly follow the writing rules
 console.log('---- .js to Source Code(case2) ---')
-writeFileSync('./dist/render-from-js.js', project.compileToSource({
-    filePath: './component.js',
+writeFileSync('./dist/render-from-js2.js', project.compileToSource({
+    filePath: '__virtual.js',
     fileContent: `const { defineComponent } = require('san')
 
     module.exports = defineComponent({
@@ -28,14 +29,14 @@ writeFileSync('./dist/render-from-js.js', project.compileToSource({
             name: function () {
                 const f = this.data.get('firstName')
                 const l = this.data.get('lastName')
-                return f l
+                return f + ' ' + l
             }
         },
         template: '<div><h1>{{name}}</h1></div>'
     })
     `
 }))
-render = require('./dist/render-from-js.js')
+render = require('./dist/render-from-js2.js')
 console.log(render(data))
 
 // compile component.san.html to source

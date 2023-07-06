@@ -1,3 +1,10 @@
+## [3.13.3](https://github.com/baidu/san-ssr/compare/nv3.13.2...nv3.13.3) (2023-07-06)
+
+
+### Bug Fixes
+
+* Support compileToSource to pass parameter fileContent for js files ([#169](https://github.com/baidu/san-ssr/issues/169)) ([3137832](https://github.com/baidu/san-ssr/commit/3137832ffb8c852a181c80ed236b4e0a71390c8b))
+
 ## [3.13.2](https://github.com/baidu/san-ssr/compare/nv3.13.1...nv3.13.2) (2023-06-04)
 
 

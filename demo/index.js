@@ -17,6 +17,27 @@ writeFileSync('./dist/render-from-js.js', project.compileToSource('./component.j
 render = require('./dist/render-from-js.js')
 console.log(render(data))
 
+// compile component.js to source(case2)
+console.log('---- .js to Source Code(case2) ---')
+writeFileSync('./dist/render-from-js.js', project.compileToSource({
+    filePath: './component.js',
+    fileContent: `const { defineComponent } = require('san')
+
+    module.exports = defineComponent({
+        computed: {
+            name: function () {
+                const f = this.data.get('firstName')
+                const l = this.data.get('lastName')
+                return f l
+            }
+        },
+        template: '<div><h1>{{name}}</h1></div>'
+    })
+    `
+}))
+render = require('./dist/render-from-js.js')
+console.log(render(data))
+
 // compile component.san.html to source
 console.log('---- .san to Source Code ---')
 const dom = new JSDOM(readFileSync('./component.san.html'))

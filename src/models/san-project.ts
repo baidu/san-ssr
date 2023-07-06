@@ -111,7 +111,7 @@ export class SanProject {
             !fileContent && sourceFile.refreshFromFileSystemSync()
             return new TypeScriptSanParser().parse(sourceFile, formattedOptions)
         }
-        return new JavaScriptSanParser(filePath, formattedOptions).parse()
+        return new JavaScriptSanParser(filePath, formattedOptions, fileContent).parse()
     }
 
     private checkAndFormatParseSanSourceFileOptions (options?: parseSanSourceFileOptions)

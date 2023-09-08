@@ -43,6 +43,7 @@
   },
   "homepage": "https://github.com/baidu/san-ssr#readme",
   "devDependencies": {
+    "@babel/plugin-transform-class-properties": "^7.22.5",
     "@babel/preset-env": "^7.11.0",
     "@babel/preset-typescript": "^7.10.4",
     "@jest/transform": "^26.2.2",
@@ -86,7 +87,6 @@
     "semantic-release": "^19.0.2"
   },
   "dependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.16.7",
     "@types/estree": "0.0.45",
     "acorn": "^8.0.1",
     "acorn-walk": "^8.0.0",

@@ -86,7 +86,7 @@ export function getPropertyStringValue<T extends string> (clazz: ClassDeclaratio
     throw new Error(`invalid "${memberName}" property`)
 }
 
-export function getPropertyBooleValue (clazz: ClassDeclaration, memberName: string, defaultValue: boolean) {
+export function getPropertyBooleanValue (clazz: ClassDeclaration, memberName: string, defaultValue: boolean) {
     const staticProperties = clazz.getStaticProperties()
     let value = defaultValue
     staticProperties.find(property => {

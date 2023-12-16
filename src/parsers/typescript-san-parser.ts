@@ -12,7 +12,7 @@ import { TypeGuards } from 'ts-morph'
 import debugFactory from 'debug'
 import {
     getChildComponents, getPropertyStringArrayValue, getComponentClassIdentifier,
-    isChildClassOf, getPropertyStringValue, getPropertyBooleValue
+    isChildClassOf, getPropertyStringValue, getPropertyBooleanValue
 } from '../ast/ts-ast-util'
 import { normalizeComponentClass } from './normalize-component'
 import { TypedSanSourceFile } from '../models/san-source-file'
@@ -77,7 +77,7 @@ export class TypeScriptSanParser {
         const template = getPropertyStringValue(classDeclaration, 'template', '')
         const trimWhitespace = getPropertyStringValue<'none' | 'blank' | 'all'>(classDeclaration, 'trimWhitespace')
         const ssrType = getPropertyStringValue<Exclude<ComponentSSRType, undefined>>(classDeclaration, 'ssr')
-        const inheritAttrs = getPropertyBooleValue(classDeclaration, 'inheritAttrs', true)
+        const inheritAttrs = getPropertyBooleanValue(classDeclaration, 'inheritAttrs', true)
         const delimiters = getPropertyStringArrayValue<[string, string]>(classDeclaration, 'delimiters')
         const childComponents = getChildComponents(
             classDeclaration,

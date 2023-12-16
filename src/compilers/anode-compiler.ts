@@ -20,8 +20,7 @@ import {
     ConditionalExpression,
     Typeof,
     AssignmentStatement,
-    ArrayLiteral,
-    HelperCall
+    ArrayLiteral
 } from '../ast/renderer-ast-dfn'
 import {
     CTX_DATA,
@@ -242,20 +241,36 @@ export class ANodeCompiler {
      * add attrs to root element
      */
     private * compileRootAttrs (aNode: AElement, propsAttrAssign: Record<string, unknown>) {
+        const rootAttrExec = []
+        if (Object.keys(propsAttrAssign).length) {
+            rootAttrExec.push(...[
+                DEF('propsAttr', new MapLiteral(Object.keys(propsAttrAssign).map(name => [I(name), I('1')]))),
+                new Foreach(I('key'), I('val'), I('attrs'), [
+                    // 如果props已经存在对应属性，则attr重复的属性需要被删除
+                    new If(
+                        BINARY(
+                            I('propsAttr'),
+                            '[]',
+                            // val值示例：a=1，通过split获取到key值
+                            BINARY(new FunctionCall(BINARY(I('val'), '.', I('split')), [L('=')]), '[]', L(0))
+                        ),
+                        [
+                            STATEMENT(I('continue'))
+                        ]
+                    ),
+                    createHTMLExpressionAppend(BINARY(L(' '), '+', I('val')))
+                ])
+            ])
+        } else {
+            rootAttrExec.push(...[
+                createHTMLLiteralAppend(' '),
+                createHTMLExpressionAppend(new FunctionCall(BINARY(I('attrs'), '.', I('join')), [L(' ')]))
+            ])
+        }
         yield new If(
             BINARY(
                 I('attrs'), '&&', BINARY(I('attrs'), '.', I('length'))
-            ), [
-                createHTMLLiteralAppend(' '),
-                // 如果props已经存在对应属性，则attr重复的属性需要被删除
-                STATEMENT(
-                    new HelperCall(
-                        'deleteAttrByProps',
-                        [I('attrs'), new MapLiteral(Object.keys(propsAttrAssign).map(name => [I(name), I('1')]))]
-                    )
-                ),
-                createHTMLExpressionAppend(new FunctionCall(BINARY(I('attrs'), '.', I('join')), [L(' ')]))
-            ])
+            ), rootAttrExec)
     }
 
     private createDataComment () {
@@ -319,17 +334,39 @@ export class ANodeCompiler {
         yield DEF(childSlots.name, new MapLiteral([]))
 
         // 处理属性合并
-        if (this.componentInfo.inheritAttrs && aNode.attrs) {
+        if (this.componentInfo.inheritAttrs && aNode.attrs && aNode.attrs.length) {
             const attrList = []
+            const attrListMap = []
             for (const attr of aNode.attrs) {
-                const map = new MapLiteral([
-                    [L(attr.name), sanExpr(attr.expr)],
-                    [L('boolNode'), L(TypeGuards.isExprBoolNode(attr.expr))]
-                ])
-                attrList.push([map, false])
+                const result = TypeGuards.isExprBoolNode(attr.expr) || attr.expr.value === ''
+                    ? L(attr.name)
+                    : BINARY(L(`${attr.name}="`), '+', BINARY(sanExpr(attr.expr), '+', L('"')))
+                attrList.push([result, false])
+                attrListMap.push([L(attr.name), L(1)])
             }
-            yield DEF('newAttr', new ArrayLiteral(attrList as any))
-            yield STATEMENT(new HelperCall('mergeAttr', [I('attrs'), I('newAttr')]))
+            yield DEF('selfAttrs', new ArrayLiteral(attrList as any))
+            yield DEF('attrListMap', new MapLiteral(attrListMap as any))
+            yield DEF('filteredParentAttrs', new ArrayLiteral([]))
+
+            yield new Foreach(I('key'), I('val'), I('attrs'), [
+                // 如果props已经存在对应属性，则attr重复的属性需要被删除
+                new If(
+                    BINARY(
+                        I('attrListMap'),
+                        '[]',
+                        // val值示例：a=1，通过split获取到key值
+                        BINARY(new FunctionCall(BINARY(I('val'), '.', I('split')), [L('=')]), '[]', L(0))
+                    ),
+                    [
+                        STATEMENT(I('continue'))
+                    ]
+                ),
+                STATEMENT(new FunctionCall(BINARY(I('filteredParentAttrs'), '.', I('push')), [I('val')]))
+            ])
+            yield ASSIGN(
+                I('attrs'),
+                new FunctionCall(BINARY(I('selfAttrs'), '.', I('concat')), [I('filteredParentAttrs')])
+            )
         }
 
         if (defaultSlotContents.length) {

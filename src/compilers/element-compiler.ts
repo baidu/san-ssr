@@ -44,7 +44,7 @@ export class ElementCompiler {
         aNode: AElement,
         componentInfo: ComponentInfo,
         dynamicTagName?: string,
-        beforeEnd?: (aNode: AElement, propsAssign: any) => Generator<Statement, void, unknown>
+        beforeEnd?: (aNode: AElement, propsAttrAssign: Record<string, unknown>) => Generator<Statement, void, unknown>
     ) {
         const props = aNode.props
         const bindDirective = aNode.directives.bind
@@ -64,22 +64,26 @@ export class ElementCompiler {
         // element properties
         const propsIndex = {}
         for (const prop of props) propsIndex[prop.name] = prop
-        const propsAssign = {}
+        const propsAttrAssign = {}
         if (componentInfo.inheritAttrs) {
             for (const prop of props) {
-                yield * this.compileProperty(tagName, prop, propsIndex, propsAssign)
+                yield * this.compileProperty(tagName, prop, propsIndex, propsAttrAssign)
             }
         }
         if (bindDirective) yield * this.compileBindProperties(tagName, bindDirective)
 
-        if (beforeEnd) yield * beforeEnd(aNode, propsAssign)
+        if (beforeEnd) yield * beforeEnd(aNode, propsAttrAssign)
 
         // element end '>'
         yield createHTMLLiteralAppend('>')
     }
 
     private * compileProperty (
-        tagName: string, prop: AProperty, propsIndex: { [key: string]: AProperty }, propsAssign: any) {
+        tagName: string,
+        prop: AProperty,
+        propsIndex: { [key: string]: AProperty },
+        propsAttrAssign: Record<string, unknown>
+    ) {
         if (prop.name === 'slot') return
         if (prop.name === 'value') {
             if (tagName === 'textarea') return
@@ -132,7 +136,7 @@ export class ElementCompiler {
             }
         }
         if (this.isLiteral(prop.expr)) {
-            propsAssign[prop.name] = 1
+            propsAttrAssign[prop.name] = 1
             yield createHTMLLiteralAppend(_.attrFilter(prop.name, prop.expr.value, true))
         } else {
             yield createHTMLExpressionAppend(

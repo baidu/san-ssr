@@ -241,7 +241,7 @@ export class ANodeCompiler {
     /**
      * add attrs to root element
      */
-    private * compileRootAttrs (aNode: AElement, propsAssign: any) {
+    private * compileRootAttrs (aNode: AElement, propsAttrAssign: Record<string, unknown>) {
         let exitsChild$attr = false
         // 存在s-bind="$attr"则不处理push属性到attrs，优先由ctx.data.get('$attr')来处理拼接
         if (aNode.children && aNode.children.length) {
@@ -264,7 +264,12 @@ export class ANodeCompiler {
             ), [
                 createHTMLLiteralAppend(' '),
                 // 如果props已经存在对应属性，则attr重复的属性需要被删除
-                STATEMENT(new HelperCall('deleteAttrByProps', [I('attrs'), new MapLiteral(Object.keys(propsAssign).map(name => [I(name), I('1')]))])),
+                STATEMENT(
+                    new HelperCall(
+                        'deleteAttrByProps',
+                        [I('attrs'), new MapLiteral(Object.keys(propsAttrAssign).map(name => [I(name), I('1')]))]
+                    )
+                ),
                 createHTMLExpressionAppend(new FunctionCall(BINARY(I('attrs'), '.', I('join')), [L(' ')]))
             ])
     }

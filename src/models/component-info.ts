@@ -27,6 +27,7 @@ import { isATextNode } from '../ast/san-ast-type-guards'
 export type TagName = string
 type TrimWhitespace = 'none' | 'blank' | 'all' | undefined
 export type ComponentSSRType = 'client-render' | 'render-only' | 'render-hydrate' | undefined
+export type ComponentInheritAttrs = false | true | undefined
 
 export type ComponentType = 'normal' | 'template'
 
@@ -39,6 +40,7 @@ export interface ComponentInfo {
     childComponents: Map<TagName, ComponentReference>
     componentType: ComponentType
     ssrType: ComponentSSRType
+    inheritAttrs: ComponentInheritAttrs
     hasMethod (name: string): boolean
     getComputedNames (): string[]
     getFilterNames (): string[]
@@ -64,7 +66,8 @@ abstract class ComponentInfoImpl<R extends ComponentReference = ComponentReferen
         public readonly root: ANode,
         public readonly childComponents: Map<TagName, R>,
         public readonly componentType: ComponentType,
-        public readonly ssrType: ComponentSSRType
+        public readonly ssrType: ComponentSSRType,
+        public readonly inheritAttrs: ComponentInheritAttrs
     ) {}
 
     abstract hasMethod (name: string): boolean
@@ -97,9 +100,10 @@ export class DynamicComponentInfo extends ComponentInfoImpl<DynamicComponentRefe
         childComponents: Map<TagName, DynamicComponentReference>,
         componentType: ComponentType,
         ssrType: ComponentSSRType,
+        inheritAttrs: ComponentInheritAttrs,
         public readonly componentClass: Component
     ) {
-        super(id, root, childComponents, componentType, ssrType)
+        super(id, root, childComponents, componentType, ssrType, inheritAttrs)
         this.proto = Object.assign(componentClass.prototype, componentClass)
     }
 
@@ -137,8 +141,11 @@ export class JSComponentInfo extends ComponentInfoImpl<ComponentReference> imple
         const root = parseAndNormalizeTemplate(template, { trimWhitespace, delimiters })
         const ssrType = properties.has('ssr') ? getLiteralValue(properties.get('ssr')!) as ComponentSSRType
             : undefined
+        const inheritAttrs = properties.has('inheritAttrs')
+            ? getLiteralValue(properties.get('inheritAttrs')!) as ComponentInheritAttrs
+            : true
 
-        super(id, root, new Map(), componentType, ssrType)
+        super(id, root, new Map(), componentType, ssrType, inheritAttrs)
         this.className = className
         this.properties = properties
         this.sourceCode = sourceCode
@@ -180,10 +187,11 @@ export class TypedComponentInfo extends ComponentInfoImpl implements ComponentIn
         root: ANode,
         childComponents: Map<TagName, ComponentReference>,
         ssrType: ComponentSSRType,
+        inheritAttrs: ComponentInheritAttrs,
         public readonly classDeclaration: ClassDeclaration,
         componentType: ComponentType = 'normal'
     ) {
-        super(id, root, childComponents, componentType, ssrType)
+        super(id, root, childComponents, componentType, ssrType, inheritAttrs)
         this.computedNames = getObjectLiteralPropertyKeys(this.classDeclaration, 'computed')
         this.filterNames = getObjectLiteralPropertyKeys(this.classDeclaration, 'filters')
     }

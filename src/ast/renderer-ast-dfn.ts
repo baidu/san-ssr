@@ -318,7 +318,7 @@ export class HelperCall implements SyntaxNode {
     public readonly kind = SyntaxKind.HelperCall
     constructor (
         public name: 'styleFilter' | 'classFilter' | 'xstyleFilter' | 'xclassFilter' | 'attrFilter' | 'boolAttrFilter' |
-            'output' | 'escapeHTML',
+            'output' | 'escapeHTML' | 'deleteAttrByProps' | 'mergeAttr',
         public args: Expression[]
     ) {}
 }

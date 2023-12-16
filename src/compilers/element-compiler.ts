@@ -18,6 +18,7 @@ import {
 import { HelperCall, ArrayIncludes, Else, Foreach, If, MapLiteral, Statement } from '../ast/renderer-ast-dfn'
 import { sanExpr, OutputType } from './san-expr-compiler'
 import assert from 'assert'
+import { ComponentInfo } from '../models/component-info'
 
 const BOOL_ATTRIBUTES = ['readonly', 'disabled', 'multiple', 'checked']
 
@@ -39,7 +40,12 @@ export class ElementCompiler {
     /**
      * 编译元素标签头
      */
-    * tagStart (aNode: AElement, dynamicTagName?: string, beforeEnd?: () => Generator<Statement, void, unknown>) {
+    * tagStart (
+        aNode: AElement,
+        componentInfo: ComponentInfo,
+        dynamicTagName?: string,
+        beforeEnd?: (aNode: AElement, propsAssign: any) => Generator<Statement, void, unknown>
+    ) {
         const props = aNode.props
         const bindDirective = aNode.directives.bind
         const tagName = aNode.tagName!
@@ -58,16 +64,22 @@ export class ElementCompiler {
         // element properties
         const propsIndex = {}
         for (const prop of props) propsIndex[prop.name] = prop
-        for (const prop of props) yield * this.compileProperty(tagName, prop, propsIndex)
+        const propsAssign = {}
+        if (componentInfo.inheritAttrs) {
+            for (const prop of props) {
+                yield * this.compileProperty(tagName, prop, propsIndex, propsAssign)
+            }
+        }
         if (bindDirective) yield * this.compileBindProperties(tagName, bindDirective)
 
-        if (beforeEnd) yield * beforeEnd()
+        if (beforeEnd) yield * beforeEnd(aNode, propsAssign)
 
         // element end '>'
         yield createHTMLLiteralAppend('>')
     }
 
-    private * compileProperty (tagName: string, prop: AProperty, propsIndex: { [key: string]: AProperty }) {
+    private * compileProperty (
+        tagName: string, prop: AProperty, propsIndex: { [key: string]: AProperty }, propsAssign: any) {
         if (prop.name === 'slot') return
         if (prop.name === 'value') {
             if (tagName === 'textarea') return
@@ -120,6 +132,7 @@ export class ElementCompiler {
             }
         }
         if (this.isLiteral(prop.expr)) {
+            propsAssign[prop.name] = 1
             yield createHTMLLiteralAppend(_.attrFilter(prop.name, prop.expr.value, true))
         } else {
             yield createHTMLExpressionAppend(

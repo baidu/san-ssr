@@ -37,7 +37,7 @@ declare namespace san {
         number: ChainableDataTypeChecker;
         bool: ChainableDataTypeChecker;
         symbol: ChainableDataTypeChecker;
-    
+
         arrayOf(arrayItemChecker: DataTypeChecker): ChainableDataTypeChecker;
         instanceOf<T>(expectedClass: new () => T): ChainableDataTypeChecker;
         shape(shapeTypes: { [k: string]: DataTypeChecker }): ChainableDataTypeChecker;
@@ -52,31 +52,31 @@ declare namespace san {
 
         parent: Data<{}>;
         raw: Partial<T>;
-    
+
         listeners: DataChangeListener<T>[];
         listen(listener: DataChangeListener<T>): void;
         unlisten(listener?: DataChangeListener<T>): void;
-    
+
         typeChecker: () => void;
         setTypeChecker(checker: () => void): void;
-    
+
         fire(change: DataChangeInfo): void;
-    
+
         get(): Partial<T>;
         get<TPath extends string>(name: TPath): Get<T, TPath>;
         get(expr: AccessorExpr): any;
-    
+
         set<TPath extends string>(expr: TPath, value: Get<T, TPath>, option?: DataChangeOption): void;
         set(expr: AccessorExpr, value: any, option?: DataChangeOption): void;
-    
+
         assign(source: Partial<T>, options?: DataChangeOption): void;
-    
+
         merge<TPath extends string>(expr: TPath, source: Partial<Get<T, TPath>>, option?: DataChangeOption): void;
         merge(expr: AccessorExpr, source: {}, option?: DataChangeOption): void;
-    
+
         apply<TPath extends string>(expr: TPath, changer: (oldValue: Get<T, TPath>) => Get<T, TPath>, option?: DataChangeOption): void;
         apply(expr: AccessorExpr, changer: (oldValue: any) => any, option?: DataChangeOption): void;
-        
+
         splice(expr: string | AccessorExpr, spliceArgs: Array<any>, option?: DataChangeOption): void;
         push(expr: string | AccessorExpr, item: any, option?: DataChangeOption): number;
         pop(expr: string | AccessorExpr, option?: DataChangeOption): any;
@@ -94,31 +94,31 @@ declare namespace san {
         data: Data<T>;
         parentComponent?: Component<{}>;
         components?: ComponentDefineOptionComponents;
-    
+
         nodeType: NodeType.CMPT;
         lifeCycle: LifeCycleStage;
-    
+
         fire<TEventArg>(eventName: string, eventArg: TEventArg): void;
         on(eventName: string, listener: () => void): void;
         on<TEventArg>(eventName: string, listener: (eventArg: TEventArg) => void): void;
         un(eventName: string, listener?: Function): void;
-    
+
         dispatch<TMsg>(messageName: string, message: TMsg): void;
-    
+
         watch(
-            propName: string, 
+            propName: string,
             watcher: (value: any, arg: {oldValue?: any, newValue?: any}) => void
         ): void;
-        
+
         ref<TCmpt extends Component<{}>>(refName: string): TCmpt;
         ref(refName: string): Component<{}> | Element;
-    
+
         slot(name?: string): SlotNode[];
-    
+
         attach(parentEl: Element, beforeEl?: Element): void;
         detach(): void;
         dispose(): void;
-    
+
         nextTick(handler: () => void): void;
 
 
@@ -178,12 +178,14 @@ declare namespace san {
         LOADER = 8,
         IS = 9
     }
-    
+
     interface Expr {
         type: ExprType;
+        value?: string | number | boolean;
         parenthesized?: boolean;
+        paths?: Expr[];
     }
-    
+
     interface StringLiteral extends Expr {
         type: ExprType.STRING;
         value: string;
@@ -192,16 +194,16 @@ declare namespace san {
         type: ExprType.NUMBER;
         value: number;
     }
-    
+
     interface BoolLiteral extends Expr {
         type: ExprType.BOOL;
         value: boolean;
     }
-    
+
     interface NullLiteral extends Expr {
         type: ExprType.NULL;
     }
-    
+
     interface AccessorExpr extends Expr {
         type: ExprType.ACCESSOR;
         paths: Expr[];
@@ -212,26 +214,26 @@ declare namespace san {
         filters: CallExpr[];
         original?: boolean;
     }
-    
+
     interface CallExpr extends Expr {
         type: ExprType.CALL;
         name: AccessorExpr;
         args: Expr[];
     }
-    
+
     interface TextExpr extends Expr {
         type: ExprType.TEXT;
         segs: Array<InterpExpr | StringLiteral>;
         original?: number;
         value?: string; // segs 由一个 STRING 构成时存在
     }
-    
+
     interface BinaryExpr extends Expr {
         type: ExprType.BINARY;
         segs: [Expr, Expr];
         operator: number;
     }
-    
+
     interface UnaryExpr extends Expr {
         type: ExprType.UNARY;
         operator: number;
@@ -241,7 +243,7 @@ declare namespace san {
         type: ExprType.TERTIARY;
         segs: [Expr, Expr, Expr];
     }
-    
+
     interface ObjectLiteralItem {
         expr: Expr;
         name?: Expr;
@@ -251,12 +253,12 @@ declare namespace san {
         type: ExprType.OBJECT;
         items: ObjectLiteralItem[];
     }
-    
+
     interface ArrayLiteralItem {
         expr: Expr;
         spread?: boolean;
     }
-    
+
     interface ArrayLiteral extends Expr {
         type: ExprType.ARRAY;
         items: ArrayLiteralItem[];
@@ -271,35 +273,35 @@ declare namespace san {
         silent?: boolean;
         force?: boolean;
     }
-    
+
     interface DataChangeListener<T> {
         (this: Data<T>, change: DataChangeInfo): void
     }
-    
+
     interface DataChangeInfo {
         option: DataChangeOption,
         type: DataChangeType,
         expr: AccessorExpr,
         value: any,
     }
-    
+
     type DataTypeChecker = (
-        data: any, 
-        dataName: string, 
-        componentName: string, 
-        fullDataName: string, 
+        data: any,
+        dataName: string,
+        componentName: string,
+        fullDataName: string,
         secret?: any
     ) => void;
 
     interface ChainableDataTypeChecker extends DataTypeChecker {
         isRequired: DataTypeChecker;
     }
-    
-    
+
+
     interface AText {
         textExpr: TextExpr | InterpExpr;
     }
-    
+
     interface Directives {
         if?: ADirectiveIf;
         is?: ADirectiveIs;
@@ -312,7 +314,7 @@ declare namespace san {
         ref?: ADirectiveRef;
         for?: ADirectiveFor;
     }
-    
+
     interface AElement {
         directives: Directives;
         props: AProperty[];
@@ -320,18 +322,19 @@ declare namespace san {
         children: ANode[];
         tagName?: string;
         vars?: AVar[];
+        attrs?: AProperty[];
     }
-    
+
     // TODO: | or &
     type ANode = AText | AElement;
-    
+
     interface AProperty {
         name: string;
         expr: Expr;
         noValue?: number | boolean;
         x?: number | boolean;
     }
-    
+
     interface AEvent {
         name: string;
         expr: CallExpr;
@@ -339,12 +342,12 @@ declare namespace san {
             [K: string]: boolean
         }
     }
-    
+
     interface AVar {
         name: string;
         expr: Expr;
     }
-    
+
     interface ADirective {
         value: {}
     }
@@ -380,15 +383,15 @@ declare namespace san {
         trackBy?: AccessorExpr;
         trackByRaw?: string;
     }
-    
+
     interface AFragmentNode extends AElement {
         tagName: 'fragment' | 'template';
     }
-    
+
     interface AForNode extends AElement {
         directives: RequiredByKeys<Directives, 'for'>;
     }
-    
+
     interface AIfNode extends AElement {
         elses?: AElement[];
         directives: RequiredByKeys<Directives, 'if'>;
@@ -397,7 +400,7 @@ declare namespace san {
     interface ADynamicNode extends AElement {
         directives: RequiredByKeys<Directives, 'is'>;
     }
-    
+
     interface ASlotNode extends AElement {
         tagName: 'slot';
     }
@@ -413,38 +416,38 @@ declare namespace san {
         leaving?: true;
         painting?: true;
     }
-    
+
     interface LifeCycleStart extends LifeCycleStage {
     }
-    
+
     interface LifeCycleCompiled extends LifeCycleStage {
         compiled: true;
     }
-    
+
     interface LifeCycleInited extends LifeCycleStage {
         compiled: true;
         inited: true;
     }
-    
+
     interface LifeCyclePainting extends LifeCycleStage {
         compiled: true;
         inited: true;
         painting: true;
     }
-    
+
     interface LifeCycleCreated extends LifeCycleStage {
         compiled: true;
         inited: true;
         created: true;
     }
-    
+
     interface LifeCycleAttached extends LifeCycleStage {
         compiled: true;
         inited: true;
         created: true;
         attached: true;
     }
-    
+
     interface LifeCycleLeaving extends LifeCycleStage {
         compiled: true;
         inited: true;
@@ -452,18 +455,18 @@ declare namespace san {
         attached: true;
         leaving: true;
     }
-    
+
     interface LifeCycleDetached extends LifeCycleStage {
         compiled: true;
         inited: true;
         created: true;
         detached: true;
     }
-    
+
     interface LifeCycleDisposed extends LifeCycleStage {
         disposed: true;
     }
-    
+
     interface SlotNode {
         isScoped: boolean;
         isInserted: boolean;
@@ -471,7 +474,7 @@ declare namespace san {
         name?: string;
         nodeType: NodeType.SLOT;
     }
-    
+
     interface ComponentNewOptions<T extends {} = {}> {
         data?: Partial<T>;
         owner?: Component<{}>;
@@ -507,7 +510,7 @@ declare namespace san {
         trimWhitespace?: TemplateParseOptionTrimWhitespace;
         delimiters?: TemplateParseOptionDelimiters;
         autoFillStyleAndId?: boolean;
-        
+
         initData?(): Partial<T>;
         construct?(options?: ComponentNewOptions<T>): void;
         compiled?(): void;
@@ -522,7 +525,7 @@ declare namespace san {
         dataTypes?: {
             [k: string]: DataTypeChecker;
         };
-    
+
         // other methods/props on proto
         [key: string]: any;
     }
@@ -533,10 +536,10 @@ declare namespace san {
         placeholder?: DefinedComponentClass<{}, {}>;
         fallback?: DefinedComponentClass<{}, {}>;
     }
-    
+
     interface ComponentLoader {
         new(option?: ComponentLoaderOptions): ComponentLoader;
-    
+
         start(onload: (componentClass: DefinedComponentClass<{}, {}>) => void): void;
         done(componentClass: DefinedComponentClass<{}, {}>): void;
     }
@@ -544,8 +547,8 @@ declare namespace san {
     interface DefinedComponentClass<T extends {}, M> {
         new(option?: ComponentNewOptions<T>): Component<T> & M;
     }
-    
-    type ComponentDefineOptionsWithThis<DataT, OptionsT> = ComponentDefineOptions<DataT> & OptionsT 
+
+    type ComponentDefineOptionsWithThis<DataT, OptionsT> = ComponentDefineOptions<DataT> & OptionsT
         & ThisType<Component<DataT> & ComponentDefineOptions<DataT> & OptionsT>;
 
     function defineComponent<DataT extends {} = {}, OptionsT extends {} = {}>(
@@ -555,9 +558,9 @@ declare namespace san {
     function createComponentLoader(
         options: ComponentLoaderOptions | ComponentLoaderOptions["load"]
     ): ComponentLoader;
-    
+
     function parseTemplate(
-        template: string, 
+        template: string,
         options?: {
             trimWhitespace?: TemplateParseOptionTrimWhitespace;
             delimiters?: TemplateParseOptionDelimiters;
@@ -566,12 +569,11 @@ declare namespace san {
 
     function parseComponentTemplate(componentClass: Component<{}>): ANode;
     function unpackANode(source: Array<string|number|null|undefined>): ANode;
-    
+
     function parseExpr(template: string): Expr;
     function evalExpr<T extends {}>(expr: Expr, data: Data<T>, owner?: Component<T>): any;
-    
+
     function inherits(subClass: Component<{}>, superClass: Component<{}>): void;
     function inherits<T>(subClass: (options: ComponentNewOptions<T>) => void, superClass: Component<{}>): void;
     function nextTick(handler: () => any): void;
 }
-

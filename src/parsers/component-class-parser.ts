@@ -6,7 +6,7 @@
  */
 import { Component, defineComponent, DefinedComponentClass } from 'san'
 import { DynamicSanSourceFile } from '../models/san-source-file'
-import { ComponentSSRType, ComponentType, DynamicComponentInfo } from '../models/component-info'
+import { ComponentInheritAttrs, ComponentSSRType, ComponentType, DynamicComponentInfo } from '../models/component-info'
 import { getMemberFromClass } from '../utils/lang'
 import { isComponentLoader } from '../models/component'
 import { parseAndNormalizeTemplate } from './parse-template'
@@ -39,6 +39,7 @@ export class ComponentClassParser {
             if (parsed.has(componentClass)) continue
             else parsed.add(componentClass)
 
+            // 解析组件并构造产出组件的一些信息
             const info = this.createComponentInfoFromComponentClass(componentClass, id)
             // 先序遍历，结果列表中第一个为根
             componentInfos.push(info)
@@ -69,6 +70,7 @@ export class ComponentClassParser {
         const template = getMemberFromClass(componentClass, 'template', '')
         const trimWhitespace = getMemberFromClass<'none' | 'blank' | 'all'>(componentClass, 'trimWhitespace')
         const ssrType = getMemberFromClass<ComponentSSRType>(componentClass, 'ssr', undefined)
+        const inheritAttrs = getMemberFromClass<ComponentInheritAttrs>(componentClass, 'inheritAttrs', true)
         const delimiters = getMemberFromClass<[string, string]>(componentClass, 'delimiters')
         const rootANode = parseAndNormalizeTemplate(template, { trimWhitespace, delimiters })
         const childComponents = this.getChildComponentClasses(componentClass, id)
@@ -79,6 +81,7 @@ export class ComponentClassParser {
             childComponents,
             this.getComponentType(componentClass as Component),
             ssrType,
+            inheritAttrs,
             componentClass as Component
         )
     }

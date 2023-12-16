@@ -16,6 +16,11 @@ export interface Context {
     instance: any
 }
 
+interface NewAttr {
+    [key: string]: string | boolean;
+    boolNode: boolean;
+}
+
 const HTML_ENTITY = {
     '<': '&lt;',
     '>': '&gt;',
@@ -223,6 +228,53 @@ function mergeChildSlots (childSlots: {[name: string]: Function}) {
     return sourceSlots
 }
 
+/**
+ * 根据props删除重复的定义属性
+ * @param attrs 上层透传接收的属性
+ * @param props 传递的props
+ */
+function deleteAttrByProps (attrs: string[], props: Record<string, number>) {
+    if (!Object.keys(props).length) {
+        return
+    }
+    for (let i = attrs.length - 1; i >= 0; i--) {
+        if (attrs[i] && props[attrs[i].split('=')[0]]) {
+            attrs.splice(i, 1)
+        }
+    }
+}
+
+/**
+ * 合并属性
+ * @param originAttrs 上层透传接收的属性
+ * @param newAttrs 当前元素配置的属性列表
+ */
+function mergeAttr (originAttrs: string[], newAttrs: NewAttr[]) {
+    const result: string[] = []
+
+    const originAttrsMap = new Map<string, string>()
+    for (const item of originAttrs) {
+        originAttrsMap.set(item.split('=')[0], item)
+    }
+
+    for (const item of newAttrs) {
+        const key = Object.keys(item)[0]
+        const value = Object.values(item)[0]
+        const attributeString = value === '' || item.boolNode ? key : `${key}="${value}"`
+
+        if (originAttrsMap.has(key)) {
+            originAttrsMap.delete(key)
+            result.push(attributeString)
+        } else {
+            result.push(attributeString)
+        }
+    }
+
+    result.push(...originAttrsMap.values())
+    originAttrs.length = 0
+    originAttrs.push(...result)
+}
+
 export const _ = {
     output,
     createInstanceFromClass,
@@ -239,5 +291,7 @@ export const _ = {
     callFilter,
     callComputed,
     handleError,
-    mergeChildSlots
+    mergeChildSlots,
+    deleteAttrByProps,
+    mergeAttr
 }

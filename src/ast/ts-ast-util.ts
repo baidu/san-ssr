@@ -89,25 +89,26 @@ export function getPropertyStringValue<T extends string> (clazz: ClassDeclaratio
 export function getPropertyBooleValue (clazz: ClassDeclaration, memberName: string, defaultValue: boolean) {
     const staticProperties = clazz.getStaticProperties()
     let value = defaultValue
-    for (const property of staticProperties) {
-        // 确定属性类型为属性声明
+    staticProperties.find(property => {
         if (PropertyDeclaration.isPropertyDeclaration(property)) {
             const propertyDeclaration = property as PropertyDeclaration
             const propertyName = propertyDeclaration.getName()
             const initializerNode = propertyDeclaration.getInitializer()
 
-            // 处理属性的初始值
             let propertyValue
             if (initializerNode && Node.isBooleanLiteral(initializerNode)) {
                 propertyValue = initializerNode.getLiteralValue() as boolean
             }
-
-            if (propertyName === memberName && propertyValue !== undefined) {
-                value = propertyValue
-                break
+            const result = propertyName === memberName && propertyValue !== undefined
+            if (result) {
+                value = propertyValue as boolean
+                return result
             }
         }
-    }
+
+        return false
+    })
+
     return value
 }
 

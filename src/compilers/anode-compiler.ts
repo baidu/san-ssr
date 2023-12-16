@@ -242,25 +242,9 @@ export class ANodeCompiler {
      * add attrs to root element
      */
     private * compileRootAttrs (aNode: AElement, propsAttrAssign: Record<string, unknown>) {
-        let exitsChild$attr = false
-        // 存在s-bind="$attr"则不处理push属性到attrs，优先由ctx.data.get('$attr')来处理拼接
-        if (aNode.children && aNode.children.length) {
-            for (let child of aNode.children) {
-                child = child as AElement
-                if (
-                    child.directives
-                    && child.directives.bind
-                    && child.directives.bind.value.paths
-                    && child.directives.bind.value.paths[0].value === '$attrs'
-                ) {
-                    exitsChild$attr = true
-                }
-            }
-        }
-        yield DEF('exitsChild$attr', L(!!exitsChild$attr))
         yield new If(
             BINARY(
-                I('attrs'), '&&', BINARY(BINARY(I('attrs'), '.', I('length')), '&&', UNARY('!', I('exitsChild$attr')))
+                I('attrs'), '&&', BINARY(I('attrs'), '.', I('length'))
             ), [
                 createHTMLLiteralAppend(' '),
                 // 如果props已经存在对应属性，则attr重复的属性需要被删除

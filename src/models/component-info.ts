@@ -28,6 +28,7 @@ export type TagName = string
 type TrimWhitespace = 'none' | 'blank' | 'all' | undefined
 export type ComponentSSRType = 'client-render' | 'render-only' | 'render-hydrate' | undefined
 export type ComponentInheritAttrs = false | true | undefined
+export type ComponentAutoFillStyleAndId = false | true | undefined
 
 export type ComponentType = 'normal' | 'template'
 
@@ -41,6 +42,7 @@ export interface ComponentInfo {
     componentType: ComponentType
     ssrType: ComponentSSRType
     inheritAttrs: ComponentInheritAttrs
+    autoFillStyleAndId: ComponentAutoFillStyleAndId
     hasMethod (name: string): boolean
     getComputedNames (): string[]
     getFilterNames (): string[]
@@ -67,7 +69,8 @@ abstract class ComponentInfoImpl<R extends ComponentReference = ComponentReferen
         public readonly childComponents: Map<TagName, R>,
         public readonly componentType: ComponentType,
         public readonly ssrType: ComponentSSRType,
-        public readonly inheritAttrs: ComponentInheritAttrs
+        public readonly inheritAttrs: ComponentInheritAttrs,
+        public readonly autoFillStyleAndId: ComponentAutoFillStyleAndId
     ) {}
 
     abstract hasMethod (name: string): boolean
@@ -101,9 +104,10 @@ export class DynamicComponentInfo extends ComponentInfoImpl<DynamicComponentRefe
         componentType: ComponentType,
         ssrType: ComponentSSRType,
         inheritAttrs: ComponentInheritAttrs,
+        autoFillStyleAndId: ComponentAutoFillStyleAndId,
         public readonly componentClass: Component
     ) {
-        super(id, root, childComponents, componentType, ssrType, inheritAttrs)
+        super(id, root, childComponents, componentType, ssrType, inheritAttrs, autoFillStyleAndId)
         this.proto = Object.assign(componentClass.prototype, componentClass)
     }
 
@@ -144,8 +148,11 @@ export class JSComponentInfo extends ComponentInfoImpl<ComponentReference> imple
         const inheritAttrs = properties.has('inheritAttrs')
             ? getLiteralValue(properties.get('inheritAttrs')!) as ComponentInheritAttrs
             : true
+        const autoFillStyleAndId = properties.has('autoFillStyleAndId')
+            ? getLiteralValue(properties.get('autoFillStyleAndId')!) as ComponentInheritAttrs
+            : true
 
-        super(id, root, new Map(), componentType, ssrType, inheritAttrs)
+        super(id, root, new Map(), componentType, ssrType, inheritAttrs, autoFillStyleAndId)
         this.className = className
         this.properties = properties
         this.sourceCode = sourceCode
@@ -188,10 +195,11 @@ export class TypedComponentInfo extends ComponentInfoImpl implements ComponentIn
         childComponents: Map<TagName, ComponentReference>,
         ssrType: ComponentSSRType,
         inheritAttrs: ComponentInheritAttrs,
+        autoFillStyleAndId: ComponentAutoFillStyleAndId,
         public readonly classDeclaration: ClassDeclaration,
         componentType: ComponentType = 'normal'
     ) {
-        super(id, root, childComponents, componentType, ssrType, inheritAttrs)
+        super(id, root, childComponents, componentType, ssrType, inheritAttrs, autoFillStyleAndId)
         this.computedNames = getObjectLiteralPropertyKeys(this.classDeclaration, 'computed')
         this.filterNames = getObjectLiteralPropertyKeys(this.classDeclaration, 'filters')
     }

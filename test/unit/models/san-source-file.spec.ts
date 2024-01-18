@@ -20,7 +20,7 @@ describe('TypedSanSourceFile', function () {
     })
     describe('#getComponentClassDeclarations()', function () {
         it('should find the component class', () => {
-            const info = new TypedComponentInfo('id', null as ANode, new Map(), undefined, true, sourceFile.getClass('Foo'))
+            const info = new TypedComponentInfo('id', null as ANode, new Map(), undefined, true, true, sourceFile.getClass('Foo'))
             const file = new TypedSanSourceFile([info], sourceFile)
             const decls = [...file.getComponentClassDeclarations()]
             expect(decls).toHaveLength(1)

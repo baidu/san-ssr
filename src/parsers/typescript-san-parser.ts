@@ -78,6 +78,7 @@ export class TypeScriptSanParser {
         const trimWhitespace = getPropertyStringValue<'none' | 'blank' | 'all'>(classDeclaration, 'trimWhitespace')
         const ssrType = getPropertyStringValue<Exclude<ComponentSSRType, undefined>>(classDeclaration, 'ssr')
         const inheritAttrs = getPropertyBooleanValue(classDeclaration, 'inheritAttrs', true)
+        const autoFillStyleAndId = getPropertyBooleanValue(classDeclaration, 'autoFillStyleAndId', true)
         const delimiters = getPropertyStringArrayValue<[string, string]>(classDeclaration, 'delimiters')
         const childComponents = getChildComponents(
             classDeclaration,
@@ -97,6 +98,7 @@ export class TypeScriptSanParser {
             childComponents,
             ssrType,
             inheritAttrs,
+            autoFillStyleAndId,
             classDeclaration,
 
             // TypeScript 目前只支持 class 方式定义组件，还不支持 TemplateComponent

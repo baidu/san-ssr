@@ -71,6 +71,7 @@ export class ComponentClassParser {
         const trimWhitespace = getMemberFromClass<'none' | 'blank' | 'all'>(componentClass, 'trimWhitespace')
         const ssrType = getMemberFromClass<ComponentSSRType>(componentClass, 'ssr', undefined)
         const inheritAttrs = getMemberFromClass<ComponentInheritAttrs>(componentClass, 'inheritAttrs', true)
+        const autoFillStyleAndId = getMemberFromClass<ComponentInheritAttrs>(componentClass, 'autoFillStyleAndId', true)
         const delimiters = getMemberFromClass<[string, string]>(componentClass, 'delimiters')
         const rootANode = parseAndNormalizeTemplate(template, { trimWhitespace, delimiters })
         const childComponents = this.getChildComponentClasses(componentClass, id)
@@ -82,6 +83,7 @@ export class ComponentClassParser {
             this.getComponentType(componentClass as Component),
             ssrType,
             inheritAttrs,
+            autoFillStyleAndId,
             componentClass as Component
         )
     }

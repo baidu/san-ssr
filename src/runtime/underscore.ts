@@ -16,11 +16,6 @@ export interface Context {
     instance: any
 }
 
-interface NewAttr {
-    [key: string]: string | boolean;
-    boolNode: boolean;
-}
-
 const HTML_ENTITY = {
     '<': '&lt;',
     '>': '&gt;',

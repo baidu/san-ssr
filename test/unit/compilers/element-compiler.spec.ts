@@ -18,7 +18,7 @@ describe('compilers/element-compiler', () => {
             const component = defineComponent({
                 template
             })
-            const info = new DynamicComponentInfo('id', aNode, new Map(), 'normal', undefined, true, component)
+            const info = new DynamicComponentInfo('id', aNode, new Map(), 'normal', undefined, true, true, component)
             const nodes = [...compiler.tagStart(aNode, info)]
             expect(nodes).toEqual(expect.arrayContaining([
                 matchHTMLAddEqual({ kind: SyntaxKind.Literal, value: '<' }),
@@ -32,7 +32,7 @@ describe('compilers/element-compiler', () => {
             const component = defineComponent({
                 template
             })
-            const info = new DynamicComponentInfo('id', aNode, new Map(), 'normal', undefined, true, component)
+            const info = new DynamicComponentInfo('id', aNode, new Map(), 'normal', undefined, true, true, component)
             const nodes = [...compiler.tagStart(aNode, info)]
             expect(nodes).toEqual(expect.arrayContaining([
                 matchHTMLAddEqual({ kind: SyntaxKind.Literal, value: '<textarea' }),
@@ -45,7 +45,7 @@ describe('compilers/element-compiler', () => {
             const component = defineComponent({
                 template
             })
-            const info = new DynamicComponentInfo('id', aNode, new Map(), 'normal', undefined, true, component)
+            const info = new DynamicComponentInfo('id', aNode, new Map(), 'normal', undefined, true, true, component)
             const nodes = [...compiler.tagStart(aNode, info)]
             expect(nodes).toHaveLength(3)
             expect(nodes).toEqual(expect.arrayContaining([
@@ -60,7 +60,7 @@ describe('compilers/element-compiler', () => {
             const component = defineComponent({
                 template
             })
-            const info = new DynamicComponentInfo('id', aNode, new Map(), 'normal', undefined, true, component)
+            const info = new DynamicComponentInfo('id', aNode, new Map(), 'normal', undefined, true, true, component)
             const nodes = [...compiler.tagStart(aNode, info)]
             expect(nodes).toEqual(expect.arrayContaining([matchHTMLAddEqual({
                 kind: SyntaxKind.HelperCall,
@@ -82,7 +82,7 @@ describe('compilers/element-compiler', () => {
             const component = defineComponent({
                 template
             })
-            const info = new DynamicComponentInfo('id', aNode, new Map(), 'normal', undefined, true, component)
+            const info = new DynamicComponentInfo('id', aNode, new Map(), 'normal', undefined, true, true, component)
             const nodes = [...compiler.tagStart(aNode, info)]
             expect(nodes).toEqual(expect.arrayContaining([matchHTMLAddEqual({
                 kind: SyntaxKind.HelperCall,
@@ -98,7 +98,7 @@ describe('compilers/element-compiler', () => {
             const component = defineComponent({
                 template
             })
-            const info = new DynamicComponentInfo('id', aNode, new Map(), 'normal', undefined, true, component)
+            const info = new DynamicComponentInfo('id', aNode, new Map(), 'normal', undefined, true, true, component)
             const nodes = [...compiler.tagStart(aNode, info)]
             expect(nodes).toEqual(expect.arrayContaining([matchHTMLAddEqual({
                 kind: SyntaxKind.HelperCall,
@@ -116,7 +116,7 @@ describe('compilers/element-compiler', () => {
             const component = defineComponent({
                 template
             })
-            const info = new DynamicComponentInfo('id', aNode, new Map(), 'normal', undefined, true, component)
+            const info = new DynamicComponentInfo('id', aNode, new Map(), 'normal', undefined, true, true, component)
             const nodes = [...compiler.tagStart(aNode, info)]
             expect(nodes).toEqual(expect.arrayContaining([matchHTMLAddEqual({
                 kind: SyntaxKind.HelperCall,

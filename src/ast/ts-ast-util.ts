@@ -3,11 +3,11 @@
  *
  * 语法树 Spec: https://ts-morph.com/
  */
-import type {
+import {
     Node, MethodDeclaration, ShorthandPropertyAssignment, PropertyAssignment, ImportDeclaration, ClassDeclaration,
     SourceFile, ObjectLiteralExpression
 } from 'ts-morph'
-import { TypeGuards, SyntaxKind } from 'ts-morph'
+import { TypeGuards, SyntaxKind, PropertyDeclaration, ts } from 'ts-morph'
 import { TagName } from '../models/component-info'
 import { componentID, ComponentReference } from '../models/component-reference'
 import { strongParseSanSourceFileOptions } from '../compilers/renderer-options'
@@ -84,6 +84,32 @@ export function getPropertyStringValue<T extends string> (clazz: ClassDeclaratio
         return str as T
     }
     throw new Error(`invalid "${memberName}" property`)
+}
+
+export function getPropertyBooleanValue (clazz: ClassDeclaration, memberName: string, defaultValue: boolean) {
+    const staticProperties = clazz.getStaticProperties()
+    let value = defaultValue
+    staticProperties.find(property => {
+        if (PropertyDeclaration.isPropertyDeclaration(property)) {
+            const propertyDeclaration = property as PropertyDeclaration
+            const propertyName = propertyDeclaration.getName()
+            const initializerNode = propertyDeclaration.getInitializer()
+
+            let propertyValue
+            if (initializerNode && Node.isBooleanLiteral(initializerNode)) {
+                propertyValue = initializerNode.getLiteralValue() as boolean
+            }
+            const result = propertyName === memberName && propertyValue !== undefined
+            if (result) {
+                value = propertyValue as boolean
+                return result
+            }
+        }
+
+        return false
+    })
+
+    return value
 }
 
 export function getPropertyStringArrayValue<T extends string[]> (

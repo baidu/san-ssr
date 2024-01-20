@@ -20,7 +20,7 @@ describe('TypedComponentInfo', function () {
                     b
                 }
             }`)
-            const info = new TypedComponentInfo('id', null as ANode, new Map(), undefined, file.getClass('Foo'))
+            const info = new TypedComponentInfo('id', null as ANode, new Map(), undefined, true, true, file.getClass('Foo'))
             expect(info.getFilterNames()).toEqual(['a', 'x-b', 'b'])
         })
     })
@@ -36,12 +36,12 @@ describe('DynamicComponentInfo', function () {
                 b
             }
         })
-        const info = new DynamicComponentInfo('id', null as ANode, new Map(), 'normal', undefined, component)
+        const info = new DynamicComponentInfo('id', null as ANode, new Map(), 'normal', undefined, true, true, component)
         expect(info.getFilterNames()).toEqual(['a', 'x-b', 'b'])
     })
     it('should return empty array if filters not defined', () => {
         const component = defineComponent({})
-        const info = new DynamicComponentInfo('id', null as ANode, new Map(), 'normal', undefined, component)
+        const info = new DynamicComponentInfo('id', null as ANode, new Map(), 'normal', undefined, true, true, component)
         expect(info.getFilterNames()).toEqual([])
     })
 })

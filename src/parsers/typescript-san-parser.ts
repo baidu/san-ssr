@@ -11,7 +11,8 @@ import type { SourceFile, ClassDeclaration, ObjectLiteralExpression } from 'ts-m
 import { TypeGuards } from 'ts-morph'
 import debugFactory from 'debug'
 import {
-    getChildComponents, getPropertyStringArrayValue, getComponentClassIdentifier, isChildClassOf, getPropertyStringValue
+    getChildComponents, getPropertyStringArrayValue, getComponentClassIdentifier,
+    isChildClassOf, getPropertyStringValue, getPropertyBooleanValue
 } from '../ast/ts-ast-util'
 import { normalizeComponentClass } from './normalize-component'
 import { TypedSanSourceFile } from '../models/san-source-file'
@@ -76,6 +77,8 @@ export class TypeScriptSanParser {
         const template = getPropertyStringValue(classDeclaration, 'template', '')
         const trimWhitespace = getPropertyStringValue<'none' | 'blank' | 'all'>(classDeclaration, 'trimWhitespace')
         const ssrType = getPropertyStringValue<Exclude<ComponentSSRType, undefined>>(classDeclaration, 'ssr')
+        const inheritAttrs = getPropertyBooleanValue(classDeclaration, 'inheritAttrs', true)
+        const autoFillStyleAndId = getPropertyBooleanValue(classDeclaration, 'autoFillStyleAndId', true)
         const delimiters = getPropertyStringArrayValue<[string, string]>(classDeclaration, 'delimiters')
         const childComponents = getChildComponents(
             classDeclaration,
@@ -94,6 +97,8 @@ export class TypeScriptSanParser {
             }),
             childComponents,
             ssrType,
+            inheritAttrs,
+            autoFillStyleAndId,
             classDeclaration,
 
             // TypeScript 目前只支持 class 方式定义组件，还不支持 TemplateComponent

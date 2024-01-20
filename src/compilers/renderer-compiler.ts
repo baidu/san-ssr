@@ -89,6 +89,31 @@ export class RendererCompiler {
         body.push(createDefineWithDefaultValue('tagName', BINARY(I('info'), '.', I('tagName')), L('div')))
         body.push(createDefineWithDefaultValue('slots', BINARY(I('info'), '.', I('slots')), EMPTY_MAP))
         body.push(createDefineWithDefaultValue('attrs', BINARY(I('info'), '.', I('attrs')), EMPTY_ARRAY))
+        body.push(DEF('inheritAttrs', L(info.inheritAttrs)))
+        body.push(DEF('autoFillStyleAndId', L(info.autoFillStyleAndId)))
+
+        // 变量判断当前是否屏蔽了属性传递
+        body.push(new If(
+            new BinaryExpression(
+                I('inheritAttrs'),
+                '===',
+                L(false)
+            ),
+            [ASSIGN(BINARY(I('attrs'), '.', I('length')), I('0'))]
+        ))
+
+        body.push(new If(
+            new BinaryExpression(
+                I('autoFillStyleAndId'),
+                '===',
+                L(false)
+            ),
+            [
+                ASSIGN(BINARY(I('data'), '.', I('id')), L('')),
+                ASSIGN(BINARY(I('data'), '.', I('style')), L('')),
+                ASSIGN(BINARY(I('data'), '.', I('class')), L(''))
+            ]
+        ))
 
         // server render component
         if (info.ssrType === 'render-only' || info.ssrType === undefined) {
@@ -216,6 +241,30 @@ export class RendererCompiler {
         body.push(createDefineWithDefaultValue('parentCtx', BINARY(I('info'), '.', I('parentCtx')), NULL))
         body.push(createDefineWithDefaultValue('slots', BINARY(I('info'), '.', I('slots')), EMPTY_MAP))
         body.push(createDefineWithDefaultValue('attrs', BINARY(I('info'), '.', I('attrs')), EMPTY_ARRAY))
+        body.push(createDefineWithDefaultValue('inheritAttrs', L(info.inheritAttrs), L(true)))
+        body.push(createDefineWithDefaultValue('autoFillStyleAndId', L(info.autoFillStyleAndId), L(true)))
+        // 变量判断当前是否屏蔽了属性传递
+        body.push(new If(
+            new BinaryExpression(
+                I('inheritAttrs'),
+                '===',
+                L(false)
+            ),
+            [ASSIGN(BINARY(I('attrs'), '.', I('length')), I('0'))]
+        ))
+
+        body.push(new If(
+            new BinaryExpression(
+                I('autoFillStyleAndId'),
+                '===',
+                L(false)
+            ),
+            [
+                ASSIGN(BINARY(I('data'), '.', I('id')), L('')),
+                ASSIGN(BINARY(I('data'), '.', I('style')), L('')),
+                ASSIGN(BINARY(I('data'), '.', I('class')), L(''))
+            ]
+        ))
 
         // helper
         body.push(new ImportHelper('_'))

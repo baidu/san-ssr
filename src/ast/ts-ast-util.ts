@@ -5,9 +5,8 @@
  */
 import {
     Node, MethodDeclaration, ShorthandPropertyAssignment, PropertyAssignment, ImportDeclaration, ClassDeclaration,
-    SourceFile, ObjectLiteralExpression
+    SourceFile, ObjectLiteralExpression, PropertyDeclaration, SyntaxKind, TypeGuards
 } from 'ts-morph'
-import { TypeGuards, SyntaxKind, PropertyDeclaration, ts } from 'ts-morph'
 import { TagName } from '../models/component-info'
 import { componentID, ComponentReference } from '../models/component-reference'
 import { strongParseSanSourceFileOptions } from '../compilers/renderer-options'

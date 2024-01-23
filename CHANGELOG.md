@@ -1,3 +1,11 @@
+# [3.14.0](https://github.com/baidu/san-ssr/compare/nv3.13.3...nv3.14.0) (2024-01-23)
+
+
+### Features
+
+* support attr inherit ([#170](https://github.com/baidu/san-ssr/issues/170)) ([221c90b](https://github.com/baidu/san-ssr/commit/221c90b01dec2ce997f70d6e706fd8a70e81178d))
+* support attr inherit ([#171](https://github.com/baidu/san-ssr/issues/171)) ([5ddd882](https://github.com/baidu/san-ssr/commit/5ddd882066c68729afa11019efa23418d807d06d))
+
 ## [3.13.3](https://github.com/baidu/san-ssr/compare/nv3.13.2...nv3.13.3) (2023-07-06)
 
 

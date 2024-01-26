@@ -1,3 +1,10 @@
+## [3.14.1](https://github.com/baidu/san-ssr/compare/nv3.14.0...nv3.14.1) (2024-01-26)
+
+
+### Bug Fixes
+
+* wrap "propsAttr" with quotation ([#173](https://github.com/baidu/san-ssr/issues/173)) ([158cfe1](https://github.com/baidu/san-ssr/commit/158cfe19a3fd98e673570e80f8e1384771e7d7e4))
+
 # [3.14.0](https://github.com/baidu/san-ssr/compare/nv3.13.3...nv3.14.0) (2024-01-23)
 
 

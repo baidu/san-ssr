@@ -244,7 +244,7 @@ export class ANodeCompiler {
         const rootAttrExec = []
         if (Object.keys(propsAttrAssign).length) {
             rootAttrExec.push(...[
-                DEF('propsAttr', new MapLiteral(Object.keys(propsAttrAssign).map(name => [I(name), I('1')]))),
+                DEF('propsAttr', new MapLiteral(Object.keys(propsAttrAssign).map(name => [L(name), L(1)]))),
                 new Foreach(I('key'), I('val'), I('attrs'), [
                     // 如果props已经存在对应属性，则attr重复的属性需要被删除
                     new If(

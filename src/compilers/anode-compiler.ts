@@ -340,7 +340,7 @@ export class ANodeCompiler {
             for (const attr of aNode.attrs) {
                 const result = TypeGuards.isExprBoolNode(attr.expr) || attr.expr.value === ''
                     ? L(attr.name)
-                    : BINARY(L(`${attr.name}="`), '+', BINARY(sanExpr(attr.expr), '+', L('"')))
+                    : BINARY(BINARY(L(`${attr.name}="`), '+', sanExpr(attr.expr)), '+', L('"'))
                 attrList.push([result, false])
                 attrListMap.push([L(attr.name), L(1)])
             }

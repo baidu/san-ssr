@@ -1,3 +1,10 @@
+## [3.14.2](https://github.com/baidu/san-ssr/compare/nv3.14.1...nv3.14.2) (2024-06-24)
+
+
+### Bug Fixes
+
+* attr inherit case in expression ([#176](https://github.com/baidu/san-ssr/issues/176)) ([096742c](https://github.com/baidu/san-ssr/commit/096742c00d4682bc3ccadbdb782fc829e0afe123))
+
 ## [3.14.1](https://github.com/baidu/san-ssr/compare/nv3.14.0...nv3.14.1) (2024-01-26)
 
 

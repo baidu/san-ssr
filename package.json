@@ -1,6 +1,6 @@
 {
   "name": "san-ssr",
-  "version": "3.14.1",
+  "version": "3.14.2",
   "description": "San server-side-render framework and utils",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -72,7 +72,7 @@
     "mkdirp": "^1.0.4",
     "mustache": "^4.0.1",
     "san": "^3.14.1",
-    "san-html-cases": "^3.14.5",
+    "san-html-cases": "^3.14.6",
     "san-ssr-target-fake-cmd": "^1.0.0",
     "san-ssr-target-fake-esm": "^1.0.0",
     "source-map-support": "^0.5.19",

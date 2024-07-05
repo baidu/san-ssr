@@ -20,7 +20,8 @@ import {
     ConditionalExpression,
     Typeof,
     AssignmentStatement,
-    ArrayLiteral
+    ArrayLiteral,
+    HelperCall
 } from '../ast/renderer-ast-dfn'
 import {
     CTX_DATA,
@@ -333,26 +334,33 @@ export class ANodeCompiler {
         const childSlots = I(this.id.next('childSlots'))
         yield DEF(childSlots.name, new MapLiteral([]))
 
+        // joinAttr用于处理属性拼接
+        const attrsNamed = I(this.id.next('joinAttr'))
+        const inheritAttrs = this.componentInfo.inheritAttrs && aNode.attrs && aNode.attrs.length
         // 处理属性合并
-        if (this.componentInfo.inheritAttrs && aNode.attrs && aNode.attrs.length) {
+        if (inheritAttrs && aNode.attrs) {
             const attrList = []
             const attrListMap = []
             for (const attr of aNode.attrs) {
+                const attrValue = new HelperCall('escapeHTML', [sanExpr(attr.expr)])
                 const result = TypeGuards.isExprBoolNode(attr.expr) || attr.expr.value === ''
                     ? L(attr.name)
-                    : BINARY(BINARY(L(`${attr.name}="`), '+', sanExpr(attr.expr)), '+', L('"'))
+                    : BINARY(BINARY(L(`${attr.name}="`), '+', attrValue), '+', L('"'))
                 attrList.push([result, false])
                 attrListMap.push([L(attr.name), L(1)])
             }
-            yield DEF('selfAttrs', new ArrayLiteral(attrList as any))
-            yield DEF('attrListMap', new MapLiteral(attrListMap as any))
-            yield DEF('filteredParentAttrs', new ArrayLiteral([]))
+            const selfAttrsNamed = I(this.id.next('selfAttrs'))
+            const attrListMapNamed = I(this.id.next('attrListMap'))
+            const filteredParentAttrsNamed = I(this.id.next('filteredParentAttrs'))
+            yield DEF(selfAttrsNamed.name, new ArrayLiteral(attrList as any))
+            yield DEF(attrListMapNamed.name, new MapLiteral(attrListMap as any))
+            yield DEF(filteredParentAttrsNamed.name, new ArrayLiteral([]))
 
             yield new Foreach(I('key'), I('val'), I('attrs'), [
                 // 如果props已经存在对应属性，则attr重复的属性需要被删除
                 new If(
                     BINARY(
-                        I('attrListMap'),
+                        I(attrListMapNamed.name),
                         '[]',
                         // val值示例：a=1，通过split获取到key值
                         BINARY(new FunctionCall(BINARY(I('val'), '.', I('split')), [L('=')]), '[]', L(0))
@@ -361,11 +369,12 @@ export class ANodeCompiler {
                         STATEMENT(I('continue'))
                     ]
                 ),
-                STATEMENT(new FunctionCall(BINARY(I('filteredParentAttrs'), '.', I('push')), [I('val')]))
+                STATEMENT(new FunctionCall(BINARY(I(filteredParentAttrsNamed.name), '.', I('push')), [I('val')]))
             ])
-            yield ASSIGN(
-                I('attrs'),
-                new FunctionCall(BINARY(I('selfAttrs'), '.', I('concat')), [I('filteredParentAttrs')])
+
+            yield DEF(
+                attrsNamed.name,
+                new FunctionCall(BINARY(I(selfAttrsNamed.name), '.', I('concat')), [I(filteredParentAttrsNamed.name)])
             )
         }
 
@@ -413,7 +422,7 @@ export class ANodeCompiler {
 
         // 传入attrs数据到下一个组件
         if (isRootElement || aNode.attrs) {
-            mapItems.push([I('attrs'), I('attrs')])
+            mapItems.push([I('attrs'), I(inheritAttrs ? attrsNamed.name : 'attrs')])
         }
 
         if (isRootElement) {

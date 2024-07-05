@@ -336,9 +336,9 @@ export class ANodeCompiler {
 
         // joinAttr用于处理属性拼接
         const attrsNamed = I(this.id.next('joinAttr'))
-        const attrInherit = this.componentInfo.inheritAttrs && aNode.attrs && aNode.attrs.length
+        const inheritAttrs = this.componentInfo.inheritAttrs && aNode.attrs && aNode.attrs.length
         // 处理属性合并
-        if (attrInherit) {
+        if (inheritAttrs && aNode.attrs) {
             const attrList = []
             const attrListMap = []
             for (const attr of aNode.attrs) {
@@ -422,7 +422,7 @@ export class ANodeCompiler {
 
         // 传入attrs数据到下一个组件
         if (isRootElement || aNode.attrs) {
-            mapItems.push([I('attrs'), I(attrInherit ? attrsNamed.name : 'attrs')])
+            mapItems.push([I('attrs'), I(inheritAttrs ? attrsNamed.name : 'attrs')])
         }
 
         if (isRootElement) {

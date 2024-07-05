@@ -1,3 +1,10 @@
+## [3.14.3](https://github.com/baidu/san-ssr/compare/nv3.14.2...nv3.14.3) (2024-07-05)
+
+
+### Bug Fixes
+
+* attr escape and naming confict ([#179](https://github.com/baidu/san-ssr/issues/179)) ([5f66110](https://github.com/baidu/san-ssr/commit/5f66110ee4ac77738502fed7cd83eb6d36ad2833))
+
 ## [3.14.2](https://github.com/baidu/san-ssr/compare/nv3.14.1...nv3.14.2) (2024-06-24)
 
 

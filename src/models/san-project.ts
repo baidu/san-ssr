@@ -87,7 +87,6 @@ export class SanProject {
     public parseSanSourceFile (componentClass: ComponentClass, options?: parseSanSourceFileOptions): DynamicSanSourceFile
     public parseSanSourceFile (fileDescriptor: FileDescriptor, options?: parseSanSourceFileOptions): TypedSanSourceFile
     public parseSanSourceFile (filecontent: string, options?: parseSanSourceFileOptions): JSSanSourceFile
-    public parseSanSourceFile (input: CompileInput, options?: parseSanSourceFileOptions): SanSourceFile
     public parseSanSourceFile (input: CompileInput, options?: parseSanSourceFileOptions): SanSourceFile {
         if (isComponentClass(input)) return new ComponentClassParser(input, '').parse()
 

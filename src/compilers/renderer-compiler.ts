@@ -20,6 +20,18 @@ import { mergeLiteralAdd } from '../optimizers/merge-literal-add'
 import { RESERVED_NAMES } from './reserved-names'
 
 /**
+ * helper 常用函数别名，有利于减少代码压缩体积
+ */
+export const helperAliases = new Map<string, string>([
+    ['attrFilter', '_attrFilter'],
+    ['escapeHTML', '_escapeHTML'],
+    ['classFilter', '_classFilter'],
+    ['styleFilter', '_styleFilter'],
+    ['iterate', '_iterate'],
+    ['output', '_output']
+])
+
+/**
  * 每个 ComponentClass 对应一个 Render 函数，由 RendererCompiler 生成。
  */
 export class RendererCompiler {
@@ -158,6 +170,9 @@ export class RendererCompiler {
 
         // helper
         body.push(new ImportHelper('_'))
+        for (const [name, alias] of helperAliases) {
+            body.push(DEF(alias, BINARY(I('_'), '.', I(name))))
+        }
         body.push(new ImportHelper('SanSSRData'))
 
         if (this.options.useProvidedComponentClass) {
@@ -268,6 +283,9 @@ export class RendererCompiler {
 
         // helper
         body.push(new ImportHelper('_'))
+        for (const [name, alias] of helperAliases) {
+            body.push(DEF(alias, BINARY(I('_'), '.', I(name))))
+        }
 
         // instance preraration
         if (info.hasMethod('initData')) {

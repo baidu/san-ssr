@@ -90,7 +90,7 @@ describe('SanProject', function () {
             })
 
             expect(code).toContain('html += "<div"')
-            expect(code).toContain('html += _.output(ctx.data.name, true)')
+            expect(code).toContain('html += _output(ctx.data.name, true)')
             expect(code).toContain('html += "</div>"')
         })
     })
@@ -109,7 +109,7 @@ describe('SanProject', function () {
         it('the noDataOutput parameter should be optional and default to false', function () {
             const proj = new SanProject()
             const componentClass = defineComponent({ template: '<div>{{name}}</div>' })
-            const render = proj.compileToRenderer(componentClass)
+            const render = proj.compileToRenderer(componentClass as unknown as san.Component<{}>)
 
             expect(render).toBeInstanceOf(Function)
             expect(render({ name: 'Harttle' })).toEqual('<div><!--s-data:{"name":"Harttle"}-->Harttle</div>')
@@ -118,7 +118,7 @@ describe('SanProject', function () {
         it('should escape consecutive hyphen', function () {
             const proj = new SanProject()
             const componentClass = defineComponent({ template: '<div>{{ a + b + c + d }}</div>' })
-            const render = proj.compileToRenderer(componentClass)
+            const render = proj.compileToRenderer(componentClass as unknown as san.Component<{}>)
 
             expect(render({
                 a: -3,

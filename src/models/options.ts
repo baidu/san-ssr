@@ -47,7 +47,7 @@ export type FilePath = string
 export type CompileInput = SanFileDescriptor | FileDescriptor | FilePath | ComponentClass
 
 export function isFileDescriptor (input: CompileInput): input is FileDescriptor {
-    return typeof input['filePath'] === 'string' && typeof input['fileContent'] === 'string'
+    return typeof (input as FileDescriptor)['filePath'] === 'string' && typeof (input as FileDescriptor)['fileContent'] === 'string'
 }
 
 export function isComponentClass (input: CompileInput): input is ComponentClass {
@@ -55,5 +55,5 @@ export function isComponentClass (input: CompileInput): input is ComponentClass 
 }
 
 export function isSanFileDescriptor (input: CompileInput): input is SanFileDescriptor {
-    return typeof input['templateContent'] === 'string'
+    return typeof (input as SanFileDescriptor)['templateContent'] === 'string'
 }

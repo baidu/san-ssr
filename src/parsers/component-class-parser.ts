@@ -13,6 +13,10 @@ import { parseAndNormalizeTemplate } from './parse-template'
 import { componentID, DynamicComponentReference } from '../models/component-reference'
 import { COMPONENT_REFERENCE } from '../helpers/markExternalComponent'
 
+function isExternalComponent<T extends Record<string, any>> (component: T): component is T & { [COMPONENT_REFERENCE]: DynamicComponentReference } {
+    return !!component[COMPONENT_REFERENCE]
+}
+
 /*
  * ComponentClass 解析器
  *
@@ -128,7 +132,7 @@ export class ComponentClassParser {
             }
 
             // 外部组件
-            if (componentClass[COMPONENT_REFERENCE]) {
+            if (isExternalComponent(componentClass)) {
                 children.set(tagName, componentClass[COMPONENT_REFERENCE])
                 continue
             }

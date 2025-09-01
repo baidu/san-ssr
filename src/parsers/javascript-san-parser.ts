@@ -7,7 +7,7 @@
 import debugFactory from 'debug'
 import { ancestor } from 'acorn-walk'
 import { Node as AcornNode, parse } from 'acorn'
-import { CallExpression, Program, Node, Class, ObjectExpression } from 'estree'
+import { CallExpression, Program, Node, Class, ObjectExpression, MemberExpression, Identifier } from 'estree'
 import { generate } from 'astring'
 import { ComponentType, JSComponentInfo } from '../models/component-info'
 import {
@@ -197,11 +197,11 @@ export class JavaScriptSanParser {
         }
         // exports.Foo = Component
         if (isAssignmentExpression(parent) && isExportsMemberExpression(parent.left)) {
-            return this.createComponent(node, getStringValue(parent.left['property']))
+            return this.createComponent(node, getStringValue((parent.left as MemberExpression)['property']))
         }
         // const Foo = Component
         if (isVariableDeclarator(parent)) {
-            return this.createComponent(node, parent.id['name'])
+            return this.createComponent(node, (parent.id as Identifier)['name'])
         }
         // Foo = Component
         if (isAssignmentExpression(parent) && isIdentifier(parent.left)) {
@@ -279,7 +279,7 @@ export class JavaScriptSanParser {
         } else if (isObjectExpression(node)) {
             deletePropertiesFromObject(node, name)
         } else {
-            deletePropertiesFromObject(node['arguments'][0], name)
+            deletePropertiesFromObject((node as CallExpression)['arguments'][0] as ObjectExpression, name)
         }
 
         deleteMemberAssignmentsTo(this.root, targetName, name)
@@ -288,7 +288,7 @@ export class JavaScriptSanParser {
     private * getPropertiesFromComponentDeclaration (node: Node, name: string) {
         if (this.isComponentClass(node)) yield * getMembersFromClassDeclaration(node as Class)
         else if (isObjectExpression(node)) yield * getPropertiesFromObject(node)
-        else yield * getPropertiesFromObject(node['arguments'][0])
+        else yield * getPropertiesFromObject((node as CallExpression)['arguments'][0] as ObjectExpression)
         yield * getMemberAssignmentsTo(this.root, name)
     }
 

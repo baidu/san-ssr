@@ -5,7 +5,7 @@ export function isValidIdentifier (str: string) {
 export function getMemberFromClass<T> (clazz: Function, property: string, defaultValue: T): T
 export function getMemberFromClass<T> (clazz: Function, property: string): T | undefined
 export function getMemberFromClass<T> (clazz: Function, property: string, defaultValue?: T): T | undefined {
-    if (clazz[property] !== undefined) return clazz[property]
+    if ((clazz as any)[property] !== undefined) return (clazz as any)[property]
     if (clazz.prototype && clazz.prototype[property] !== undefined) {
         return clazz.prototype[property]
     }

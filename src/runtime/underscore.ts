@@ -35,7 +35,7 @@ const rENTITY = new RegExp(`[${Object.keys(HTML_ENTITY).join('')}]`, 'g')
 
 function escapeHTML (source: any) {
     if (typeof source === 'string') {
-        return source.replace(rENTITY, (c: string) => HTML_ENTITY[c])
+        return source.replace(rENTITY, (c: string) => HTML_ENTITY[c as keyof typeof HTML_ENTITY])
     }
     return source
 }
@@ -78,7 +78,7 @@ function styleFilter (source: object | string) {
         const keys = Object.keys(source)
         let res = ''
         for (let i = 0; i < keys.length; i++) {
-            const key = keys[i]
+            const key = keys[i] as keyof typeof source
             res += (key + ':' + source[key] + ';')
         }
         return res
@@ -107,7 +107,7 @@ function xstyleFilter (inherits: object | string, own: string) {
 
 function attrFilter (name: string, value: string | number | boolean, needEscape: boolean) {
     // style/class/id 值为 falsy 时不输出属性
-    if (value == null || (!value && BASE_PROPS[name])) {
+    if (value == null || (!value && BASE_PROPS[name as keyof typeof BASE_PROPS])) {
         return ''
     }
     value = '' + value
@@ -175,7 +175,7 @@ function createInstanceFromClass (Clazz: Component<{}> & ComponentDefineOptions)
     if (initData) Clazz.prototype.initData = initData
     if (components) Clazz.prototype.components = components
     Clazz.prototype.template = template
-    if (computed) instance['computed'] = Clazz.prototype.computed = Clazz.computed = computed
+    if (computed) (instance as any)['computed'] = Clazz.prototype.computed = Clazz.computed = computed
     return instance
 }
 

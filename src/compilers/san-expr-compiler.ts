@@ -9,7 +9,8 @@ import * as TypeGuards from '../ast/san-ast-type-guards'
 import { _ } from '../runtime/underscore'
 import {
     EncodeURIComponent, MapLiteral, HelperCall, ArrayLiteral, FilterCall, FunctionCall, Identifier,
-    ConditionalExpression, BinaryExpression, UnaryExpression, Expression
+    ConditionalExpression, BinaryExpression, UnaryExpression, Expression,
+    BinaryOperator
 } from '../ast/renderer-ast-dfn'
 import { CTX_DATA, L, I, NULL } from '../ast/renderer-ast-util'
 import {
@@ -42,7 +43,7 @@ export enum OutputType {
 }
 
 // 二元表达式操作符映射表
-const binaryOp = {
+const binaryOp: Record<string, BinaryOperator> = {
     37: '%',
     43: '+',
     45: '-',

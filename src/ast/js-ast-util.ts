@@ -37,7 +37,8 @@ import {
     Expression,
     ImportSpecifier,
     ImportDefaultSpecifier,
-    VariableDeclarator
+    VariableDeclarator,
+    ExportNamedDeclaration
 } from 'estree'
 
 const OPERATORS = {
@@ -58,7 +59,7 @@ export function filterByType (node: Node, type: string) {
 
 // 获取 require 的模块名。
 // 例如：对于 node = <require('san')>，getRequireSpecifier(node) === 'san'
-export function getRequireSpecifier (node: Node): string {
+export function getRequireSpecifier (node: CallExpression): string {
     const arg = node['arguments'][0]
     assertLiteral(arg)
     return arg.value as string
@@ -74,7 +75,7 @@ export function isModuleExports (node: Node) {
     // exports = Foo
     if (isIdentifier(node) && node['name'] === 'exports') return true
     // module.exports = Foo
-    if (isMemberExpression(node) && node.object['name'] === 'module' && node.property['name'] === 'exports') return true
+    if (isMemberExpression(node) && (node.object as Identifier)['name'] === 'module' && (node.property as Identifier)['name'] === 'exports') return true
     return false
 }
 
@@ -140,14 +141,14 @@ export function findExportNames (root: Program) {
     const names: [string, string][] = []
     simple(root as any as AcornNode, {
         ExportDefaultDeclaration (node) {
-            const decl = node['declaration']
+            const decl = (node as unknown as ExportDefaultDeclaration)['declaration']
             // export default Foo
             if (isIdentifier(decl)) names.push([decl.name, 'default'])
         },
         ExportNamedDeclaration (node) {
-            if (isVariableDeclaration(node['declaration'])) {
+            if (isVariableDeclaration((node as unknown as ExportNamedDeclaration)['declaration']!)) {
                 // export const foo = Foo, bar = Bar
-                for (const decl of node['declaration'].declarations) {
+                for (const decl of ((node as unknown as ExportNamedDeclaration)['declaration'] as VariableDeclaration).declarations) {
                     assertVariableDeclarator(decl)
                     assertIdentifier(decl.id)
                     assertIdentifier(decl.init!)
@@ -198,7 +199,7 @@ export function * getMembersFromClassDeclaration (expr: Class): Generator<[strin
                 if (isExpressionStatement(expr) &&
                     isAssignmentExpression(expr.expression) &&
                     isMemberAssignment(expr.expression.left)
-                ) yield [getStringValue(expr.expression.left['property']), expr.expression.right]
+                ) yield [getStringValue((expr.expression.left as MemberExpression)['property']), expr.expression.right]
             }
         }
         yield [getStringValue(decl.key), decl.value]
@@ -265,7 +266,7 @@ export function getLiteralValue (node: Node): any {
     if (isBinaryExpression(node)) {
         const left = getLiteralValue(node.left)
         const right = getLiteralValue(node.right)
-        const op = OPERATORS[node.operator]
+        const op = OPERATORS[node.operator as '+']
         assert(op, `operator "${node.operator}" not supported'`)
         return op(left, right)
     }
@@ -294,7 +295,7 @@ export function getMemberAssignmentsTo (program: Program, objName: string) {
 }
 
 export function location (node: Node) {
-    return `[${node['start']},${node['end']})`
+    return `[${(node as AcornNode)['start']},${(node as AcornNode)['end']})`
 }
 
 /**
@@ -321,7 +322,7 @@ export function isProgram (node: Node): node is Program {
 }
 
 export function isRequire (node: Node): node is CallExpression {
-    return isCallExpression(node) && node.callee['name'] === 'require'
+    return isCallExpression(node) && (node.callee as Identifier)['name'] === 'require'
 }
 
 export function isMemberExpression (expr: Node): expr is MemberExpression {
@@ -436,7 +437,7 @@ export function deleteMembersFromClassDeclaration (expr: Class, name: string) {
                 if (isExpressionStatement(node) &&
                     isAssignmentExpression(node.expression) &&
                     isMemberAssignment(node.expression.left) &&
-                    getStringValue(node.expression.left['property']) === name
+                    getStringValue((node.expression.left as MemberExpression)['property']) === name
                 ) {
                     constructorDecl.value.body.body.splice(index, 1)
                 }

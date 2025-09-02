@@ -2,6 +2,7 @@ import {
     Literal, Foreach, FunctionDefinition, ArrayLiteral, UnaryExpression, MapLiteral, Statement, SyntaxKind, Expression,
     VariableDefinition, SlotRendererDefinition
 } from '../ast/renderer-ast-dfn'
+import { helperAliases } from '../compilers/renderer-compiler'
 import { Emitter } from '../utils/emitter'
 import { assertNever } from '../utils/lang'
 
@@ -96,7 +97,7 @@ export class JSEmitter extends Emitter {
             this.write(')')
             break
         case SyntaxKind.HelperCall:
-            this.write(`_.${node.name}(`)
+            this.write(`${helperAliases.has(node.name) ? `${helperAliases.get(node.name)}` : `_.${node.name}`}(`)
             this.writeExpressionList(node.args)
             this.write(')')
             break

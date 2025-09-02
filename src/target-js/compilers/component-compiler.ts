@@ -46,7 +46,7 @@ export class ComponentClassCompiler {
         }
     }
 
-    private emitMembers (componentProto: Object) {
+    private emitMembers (componentProto: Record<string, any>) {
         const { emitter } = this
         for (const key of Object.getOwnPropertyNames(componentProto)) {
             const member = componentProto[key]

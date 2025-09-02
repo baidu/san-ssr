@@ -62,7 +62,7 @@ export class ElementCompiler {
         }
 
         // element properties
-        const propsIndex = {}
+        const propsIndex = {} as { [key: string]: AProperty }
         for (const prop of props) propsIndex[prop.name] = prop
         const propsAttrAssign = {}
         if (componentInfo.inheritAttrs) {

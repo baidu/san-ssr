@@ -118,10 +118,10 @@ export function createResolver (exports: {[key: string]: any}, require: nodeRequ
             exports.sanSSRRenders[id] = fn
         },
         getPrototype: function (id: string) {
-            return this['prototypes'][id]
+            return (this as any)['prototypes'][id]
         },
         setPrototype: function (id: string, proto: any) {
-            this['prototypes'][id] = proto
+            (this as any)['prototypes'][id] = proto
         },
         prototypes: {}
     } as Resolver

@@ -79,7 +79,7 @@ export type Expression = Identifier | FunctionDefinition | Literal | BinaryExpre
 export type Statement = ReturnStatement | ImportHelper | VariableDefinition | AssignmentStatement | If | ElseIf | Else |
     Foreach | ExpressionStatement | TryStatement
 
-export type BinaryOperator = '+' | '-' | '*' | '/' | '.' | '===' | '!==' | '||' | '&&' | '[]' | '+=' | '!=' | '=='
+export type BinaryOperator = '+' | '-' | '*' | '/' | '%' | '.' | '===' | '!==' | '||' | '&&' | '[]' | '+=' | '!=' | '==' | '<' | '<=' | '>' | '>='
 
 export type UnaryOperator = '!' | '~' | '+' | '()' | '-'
 

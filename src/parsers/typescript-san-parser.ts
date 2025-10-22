@@ -8,7 +8,7 @@
  * 因为 target 到其他语言时，需要类型信息才能更准确地把组件转换为代码。
  */
 import type { SourceFile, ClassDeclaration, ObjectLiteralExpression } from 'ts-morph'
-import { TypeGuards } from 'ts-morph'
+import { Node } from 'ts-morph'
 import debugFactory from 'debug'
 import {
     getChildComponents, getPropertyStringArrayValue, getComponentClassIdentifier,
@@ -112,7 +112,7 @@ export class TypeScriptSanParser {
             name: className
         })
         for (const prop of rawObjectExpr.getProperties()) {
-            if (!TypeGuards.isPropertyAssignment(prop)) throw new Error(`${JSON.stringify(prop.getText())} not supported`)
+            if (!Node.isPropertyAssignment(prop)) throw new Error(`${JSON.stringify(prop.getText())} not supported`)
             const init = prop.getInitializer()
             const propDecl = classDeclaration.addProperty({
                 isStatic: true,

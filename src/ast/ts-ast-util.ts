@@ -5,13 +5,14 @@
  */
 import {
     Node, MethodDeclaration, ShorthandPropertyAssignment, PropertyAssignment, ImportDeclaration, ClassDeclaration,
-    SourceFile, ObjectLiteralExpression, PropertyDeclaration, SyntaxKind, TypeGuards
+    SourceFile, ObjectLiteralExpression, PropertyDeclaration, SyntaxKind,
+    BooleanLiteral
 } from 'ts-morph'
 import { TagName } from '../models/component-info'
 import { componentID, ComponentReference } from '../models/component-reference'
 import { strongParseSanSourceFileOptions } from '../compilers/renderer-options'
 
-export function getSanImportDeclaration (sourceFile: SourceFile, moduleNames: string[]): ImportDeclaration | undefined {
+function getImportDeclaration (sourceFile: SourceFile, moduleNames: string[]): ImportDeclaration | undefined {
     const moduleNameSet = new Set(moduleNames)
     return sourceFile.getImportDeclaration(
         node => moduleNameSet.has(node.getModuleSpecifierValue())
@@ -25,7 +26,7 @@ export function getSanImportDeclaration (sourceFile: SourceFile, moduleNames: st
 export function getComponentClassIdentifier (
     sourceFile: SourceFile,
     sanReferenceInfo: strongParseSanSourceFileOptions['sanReferenceInfo']): string | undefined {
-    const declaration = getSanImportDeclaration(sourceFile, sanReferenceInfo.moduleName)
+    const declaration = getImportDeclaration(sourceFile, sanReferenceInfo.moduleName)
     if (!declaration) return
 
     const namedImports = declaration.getNamedImports()
@@ -70,7 +71,7 @@ export function getPropertyStringValue<T extends string> (clazz: ClassDeclaratio
     if (value !== undefined) return value as T
 
     // 变量，找到定义处，取其字面值（非字面量跑错）
-    if (TypeGuards.isIdentifier(init)) {
+    if (Node.isIdentifier(init)) {
         const identName = init.getText()
         const file = clazz.getSourceFile()
         const decl = file.getVariableDeclarationOrThrow(identName)
@@ -95,8 +96,8 @@ export function getPropertyBooleanValue (clazz: ClassDeclaration, memberName: st
             const initializerNode = propertyDeclaration.getInitializer()
 
             let propertyValue
-            if (initializerNode && Node.isBooleanLiteral(initializerNode)) {
-                propertyValue = initializerNode.getLiteralValue() as boolean
+            if (initializerNode && initializerNode.getType().isBooleanLiteral()) {
+                propertyValue = (initializerNode as BooleanLiteral).getLiteralValue()
             }
             const result = propertyName === memberName && propertyValue !== undefined
             if (result) {
@@ -121,14 +122,14 @@ export function getPropertyStringArrayValue<T extends string[]> (
     const init = member.getInitializer()
     if (!init) return undefined
 
-    if (!TypeGuards.isArrayLiteralExpression(init)) {
+    if (!Node.isArrayLiteralExpression(init)) {
         throw new Error(`invalid "${memberName}": "${init.getText()}", array literal expected`)
     }
     return init.getElements().map(element => getLiteralText(element)) as T
 }
 
 function getLiteralText (expr: Node) {
-    if (TypeGuards.isStringLiteral(expr) || TypeGuards.isNoSubstitutionTemplateLiteral(expr)) {
+    if (Node.isStringLiteral(expr) || Node.isNoSubstitutionTemplateLiteral(expr)) {
         return expr.getLiteralValue()
     }
 }
@@ -169,7 +170,7 @@ export function getChildComponents (
     // 'x-list' => { specifier: './list', id: '0' }
     const init = member.getInitializerIfKindOrThrow(SyntaxKind.ObjectLiteralExpression)
     for (const prop of init.getProperties()) {
-        if (!TypeGuards.isPropertyAssignment(prop)) throw new Error(`${JSON.stringify(prop.getText())} not supported`)
+        if (!Node.isPropertyAssignment(prop)) throw new Error(`${JSON.stringify(prop.getText())} not supported`)
         const propName = getPropertyAssignmentName(prop)
         // 判断是否为 'self' 使用自己作为组件
         // 用法见 https://baidu.github.io/san/tutorial/component/#components
@@ -217,14 +218,14 @@ export function getObjectLiteralPropertyKeys (clazz: ClassDeclaration, propertyN
 
     const init = prop.getInitializerIfKindOrThrow(SyntaxKind.ObjectLiteralExpression)
     return init.getProperties().map(prop => {
-        if (TypeGuards.isPropertyAssignment(prop)) return getPropertyAssignmentName(prop)
-        if (TypeGuards.isShorthandPropertyAssignment(prop)) return getPropertyAssignmentName(prop)
-        if (TypeGuards.isMethodDeclaration(prop)) return getPropertyAssignmentName(prop)
+        if (Node.isPropertyAssignment(prop)) return getPropertyAssignmentName(prop)
+        if (Node.isShorthandPropertyAssignment(prop)) return getPropertyAssignmentName(prop)
+        if (Node.isMethodDeclaration(prop)) return getPropertyAssignmentName(prop)
         throw new Error('object property not recognized')
     })
 }
 
 export function getPropertyAssignmentName (prop: PropertyAssignment | ShorthandPropertyAssignment | MethodDeclaration) {
     const nameNode = prop.getNameNode()
-    return TypeGuards.isStringLiteral(nameNode) ? nameNode.getLiteralValue() : prop.getName()
+    return Node.isStringLiteral(nameNode) ? nameNode.getLiteralValue() : prop.getName()
 }

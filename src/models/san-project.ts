@@ -48,7 +48,7 @@ export class SanProject {
 
     constructor (public tsConfigFilePath: null | string | undefined = getDefaultTSConfigPath()) {
         if (tsConfigFilePath !== null) {
-            this.tsProject = new Project({ tsConfigFilePath, addFilesFromTsConfig: false })
+            this.tsProject = new Project({ tsConfigFilePath, skipAddingFilesFromTsConfig: false })
         }
     }
 

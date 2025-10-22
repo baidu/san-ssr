@@ -8,7 +8,7 @@
  */
 
 import { ancestor, simple } from 'acorn-walk'
-import assert, { equal } from 'assert'
+import assert, { strictEqual } from 'assert'
 import { Node as AcornNode } from 'acorn'
 import {
     MethodDefinition,
@@ -52,7 +52,7 @@ export function filterByType (node: Node, type: 'MemberExpression'): MemberExpre
 export function filterByType (node: Node, type: string) {
     const results: any[] = []
     simple(node as AcornNode, {
-        [type]: (node) => results.push(node)
+        [type]: (node: AcornNode) => results.push(node)
     })
     return results
 }
@@ -272,7 +272,7 @@ export function getLiteralValue (node: Node): any {
     }
     if (isLiteral(node)) return node.value
     if (isTemplateLiteral(node)) {
-        equal(node.expressions.length, 0, 'template expressions are not supported')
+        strictEqual(node.expressions.length, 0, 'template expressions are not supported')
         return node.quasis.map(quasis => quasis.value.cooked).join('')
     }
     throw new Error(`${location(node)} expected literal`)

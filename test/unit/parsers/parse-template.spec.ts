@@ -1,3 +1,4 @@
+import type { AElement } from 'san'
 import { extractInterpNodeFromRootANode, parseAndNormalizeTemplate } from '../../../src/parsers/parse-template'
 
 describe('parsers/parse-template', function () {
@@ -49,7 +50,7 @@ describe('parsers/parse-template', function () {
     describe('.parseAndNormalizeTemplate()', () => {
         it('shoud not append props', () => {
             const resNode = parseAndNormalizeTemplate('<div class="aaa" style="display: none;" id="bbb"></div>', {})
-            expect(resNode.props.length).toBe(3)
+            expect((resNode as AElement).props.length).toBe(3)
         })
     })
 })

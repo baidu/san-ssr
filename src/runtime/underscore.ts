@@ -3,7 +3,7 @@
  * 因此不能引用外部模块，会因找不到外部模块报错
  */
 
-import type { Component, ComponentDefineOptions } from 'san'
+import type { Component, ComponentClazz } from 'san'
 
 const BASE_PROPS = {
     class: 1,
@@ -150,7 +150,7 @@ function createFromPrototype (proto: object) {
     return new (Creator as any)()
 }
 
-function createInstanceFromClass (Clazz: Component<{}> & ComponentDefineOptions) {
+function createInstanceFromClass (Clazz: ComponentClazz) {
     // method
     // compiled inited initData
     const inited = Clazz.prototype.inited
@@ -170,7 +170,7 @@ function createInstanceFromClass (Clazz: Component<{}> & ComponentDefineOptions)
 
     Clazz.prototype.template = '<div></div>'
 
-    const instance = new Clazz()
+    const instance = new (Clazz as ComponentClazz)()
     if (inited) Clazz.prototype.inited = inited
     if (initData) Clazz.prototype.initData = initData
     if (components) Clazz.prototype.components = components
@@ -199,7 +199,7 @@ function handleError (e: Error, instance: Component<{}>, info: string) {
             current.error(e, instance, info)
             return
         }
-        current = current.parentComponent
+        current = current.parentComponent as Component<{}>
     }
 
     throw e

@@ -30,6 +30,11 @@ export interface RenderOptions {
      */
     removeModules?: RegExp[]
 
+    /**
+     * 对生成的渲染器方法进行摇树优化，移除未使用的 SSR 方法
+     */
+    minifyMethods?: boolean
+
     sanReferenceInfo?: {
         methodName?: string | string [];
         moduleName?: string | string[];

@@ -10,7 +10,7 @@
  * 2. 复杂的编译过程建议使用 SanProject，它提供了更精细的 API。上述两个 API 其实是 SanProject 一个包装。
  */
 
-import type { Component } from 'san'
+import type { Component, DefinedComponentClass } from 'san'
 import type {
     TypedSanSourceFile, DynamicSanSourceFile, SanSourceFile, JSSanSourceFile
 } from '../models/san-source-file'
@@ -48,7 +48,7 @@ export class SanProject {
 
     constructor (public tsConfigFilePath: null | string | undefined = getDefaultTSConfigPath()) {
         if (tsConfigFilePath !== null) {
-            this.tsProject = new Project({ tsConfigFilePath, skipAddingFilesFromTsConfig: false })
+            this.tsProject = new Project({ tsConfigFilePath, skipAddingFilesFromTsConfig: true })
         }
     }
 
@@ -141,7 +141,7 @@ export class SanProject {
      *  * `options.bareFunction` 固定为 true
      */
     public compileToRenderer (
-        componentClass: Component<any>,
+        componentClass: Component<any> | DefinedComponentClass<any>,
         options?: CompileOptions
     ): Renderer {
         const sanSourceFile = new ComponentClassParser(componentClass, '').parse()

@@ -18,6 +18,9 @@ import { RenderOptions } from '../compilers/renderer-options'
 import { CompileOptions } from './compilers/compile-options'
 import { FunctionDefinition } from '../ast/renderer-ast-dfn'
 import { bracketToDot } from '../optimizers/bracket-to-dot'
+import { transformDataProxy, TransformComponentInfo } from './compilers/ssr-data/compiler'
+import { ComponentClazz } from 'san'
+import { DYNAMIC_THIS_FLAG } from '../compilers/reserved-names'
 
 const debug = debugFactory('san-ssr:target-js')
 
@@ -69,8 +72,10 @@ export default class ToJSCompiler implements TargetCodeGenerator {
             emitter.writeFunctionDefinition(this.optimize(info.compileToRenderer(options)))
 
             const rawRendererText = emitter.fullText()
-            const resolvedRenderer = this.createRenderer(rawRendererText, { sanSSRHelpers, sanSSRResolver })
-            sanSSRResolver.setPrototype(info.id, info.componentClass.prototype)
+            const resolvedRenderer = this.createRenderer(rawRendererText, { sanSSRHelpers, sanSSRResolver });
+            // 标记为包含动态 this 的 SSR 组件，对于 this.d.xxx 需要创建对应的 data proxy 实例
+            (info.componentClass as ComponentClazz).prototype[DYNAMIC_THIS_FLAG] = true
+            sanSSRResolver.setPrototype(info.id, (info.componentClass as ComponentClazz).prototype)
             sanSSRResolver.setRenderer(info.id, resolvedRenderer)
         }
         return (data, info) => {
@@ -101,8 +106,8 @@ export default class ToJSCompiler implements TargetCodeGenerator {
 
         if (!options.useProvidedComponentClass) {
             // 编译源文件到 JS
-            if (isTypedSanSourceFile(sourceFile)) this.compileTSComponentToSource(sourceFile, emitter)
-            else if (isJSSanSourceFile(sourceFile)) this.compileJSComponentToSource(sourceFile, emitter)
+            if (isTypedSanSourceFile(sourceFile)) this.compileTSComponentToSource(sourceFile, emitter, options)
+            else if (isJSSanSourceFile(sourceFile)) this.compileJSComponentToSource(sourceFile, emitter, options)
             // DynamicSanSourceFile
             else this.compileComponentClassToSource(sourceFile, emitter)
         } else if (typeof options.useProvidedComponentClass === 'object') {
@@ -145,9 +150,23 @@ export default class ToJSCompiler implements TargetCodeGenerator {
         emitter.writeLine('const sanSSRResolver = sanSSRHelpers.createResolver(exports, require);')
     }
 
-    private compileTSComponentToSource (sourceFile: TypedSanSourceFile, emitter: JSEmitter) {
+    private compileTSComponentToSource (sourceFile: TypedSanSourceFile, emitter: JSEmitter, options: RenderOptions) {
         const dst = tsSourceFile2js(sourceFile.tsSourceFile, this.project.getCompilerOptionsOrThrow())
-        emitter.writeLines(dst)
+        const { code } = transformDataProxy(dst, {
+            minifyMethods: options.minifyMethods,
+            sourceType: 'class',
+            componentInfos: sourceFile.componentInfos
+                .reduce((map, info) => {
+                    const className = info.classDeclaration.getName()
+                    if (className) {
+                        map[className] = {
+                            templateAst: info.root
+                        }
+                    }
+                    return map
+                }, {} as Record<string, TransformComponentInfo>)
+        })
+        emitter.writeLines(code)
 
         for (const info of sourceFile.componentInfos) {
             const className = info.classDeclaration.getName()
@@ -155,13 +174,31 @@ export default class ToJSCompiler implements TargetCodeGenerator {
         }
     }
 
-    private compileJSComponentToSource (sourceFile: JSSanSourceFile, emitter: JSEmitter) {
-        emitter.writeLines(sourceFile.getFileContent())
+    private compileJSComponentToSource (sourceFile: JSSanSourceFile, emitter: JSEmitter, options: RenderOptions) {
+        const { code } = transformDataProxy(sourceFile.getFileContent(), {
+            minifyMethods: options.minifyMethods,
+            sourceType: 'mixed',
+            componentInfos: sourceFile.componentInfos
+                .filter(i => i.className)
+                .reduce((map, info) => {
+                    map[info.className] = {
+                        templateAst: info.root
+                    }
+                    return map
+                }, {} as Record<string, TransformComponentInfo>)
+        })
+        emitter.writeLines(code)
 
         for (const info of sourceFile.componentInfos) {
             const proto = info.isRawObject
                 ? info.sourceCode
-                : `sanSSRHelpers._.createInstanceFromClass(${info.className || info.sourceCode})`
+                : `sanSSRHelpers._.createInstanceFromClass(${info.className || transformDataProxy(info.sourceCode, {
+                    minifyMethods: options.minifyMethods,
+                    sourceType: 'defineComponent',
+                    componentInfo: {
+                        templateAst: info.root
+                    }
+                }).code})`
             emitter.writeLine(`sanSSRResolver.setPrototype("${info.id}", ${proto});`)
         }
     }

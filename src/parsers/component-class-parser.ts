@@ -4,7 +4,7 @@
  * 从根 ComponentClass 递归搜索和解析所有 ComponentClass，
  * 形成**单个** SanSourceFile 实例，包含所有的 ComponentInfo 列表。
  */
-import { Component, defineComponent, DefinedComponentClass } from 'san'
+import { Component, ComponentClazz, defineComponent, DefinedComponentClass } from 'san'
 import { DynamicSanSourceFile } from '../models/san-source-file'
 import { ComponentInheritAttrs, ComponentSSRType, ComponentType, DynamicComponentInfo } from '../models/component-info'
 import { getMemberFromClass } from '../utils/lang'
@@ -27,15 +27,15 @@ export class ComponentClassParser {
     private cids: Map<Component<{}>, string> = new Map()
 
     constructor (
-        private readonly root: Component<{}>,
+        private readonly root: Component<{}> | DefinedComponentClass<{}>,
         private readonly filePath: string
     ) {}
 
     parse (): DynamicSanSourceFile {
         const componentInfos = []
-        const rootId = getMemberFromClass(this.root, 'id')
+        const rootId = getMemberFromClass(this.root as ComponentClazz, 'id')
         const stack: DynamicComponentReference[] = [
-            new DynamicComponentReference('.', typeof rootId === 'string' ? rootId : '' + this.id++, this.root)
+            new DynamicComponentReference('.', typeof rootId === 'string' ? rootId : '' + this.id++, this.root as Component<{}>)
         ]
         const parsed = new Set()
         while (stack.length) {
@@ -60,7 +60,7 @@ export class ComponentClassParser {
      * 从组件 class 得到组件 component info
      */
     createComponentInfoFromComponentClass (
-        componentClass: Component<{}> | DefinedComponentClass<{}, {}>,
+        componentClass: Component<{}> | DefinedComponentClass<{}>,
         id: string
     ): DynamicComponentInfo {
         if (isComponentLoader(componentClass)) {
@@ -71,12 +71,15 @@ export class ComponentClassParser {
         }
         if (!componentClass) componentClass = defineComponent({ template: '' })
 
-        const template = getMemberFromClass(componentClass, 'template', '')
-        const trimWhitespace = getMemberFromClass<'none' | 'blank' | 'all'>(componentClass, 'trimWhitespace')
-        const ssrType = getMemberFromClass<ComponentSSRType>(componentClass, 'ssr', undefined)
-        const inheritAttrs = getMemberFromClass<ComponentInheritAttrs>(componentClass, 'inheritAttrs', true)
-        const autoFillStyleAndId = getMemberFromClass<ComponentInheritAttrs>(componentClass, 'autoFillStyleAndId', true)
-        const delimiters = getMemberFromClass<[string, string]>(componentClass, 'delimiters')
+        const template = getMemberFromClass(componentClass as ComponentClazz, 'template', '')
+        const trimWhitespace = getMemberFromClass<'none' | 'blank' | 'all'>(
+            componentClass as ComponentClazz, 'trimWhitespace')
+        const ssrType = getMemberFromClass<ComponentSSRType>(componentClass as ComponentClazz, 'ssr', undefined)
+        const inheritAttrs = getMemberFromClass<ComponentInheritAttrs>(
+            componentClass as ComponentClazz, 'inheritAttrs', true)
+        const autoFillStyleAndId = getMemberFromClass<ComponentInheritAttrs>(
+            componentClass as ComponentClazz, 'autoFillStyleAndId', true)
+        const delimiters = getMemberFromClass<[string, string]>(componentClass as ComponentClazz, 'delimiters')
         const rootANode = parseAndNormalizeTemplate(template, { trimWhitespace, delimiters })
         const childComponents = this.getChildComponentClasses(componentClass, id)
 
@@ -84,15 +87,15 @@ export class ComponentClassParser {
             id,
             rootANode,
             childComponents,
-            this.getComponentType(componentClass as Component),
+            this.getComponentType(componentClass as ComponentClazz),
             ssrType,
             inheritAttrs,
             autoFillStyleAndId,
-            componentClass as Component
+            componentClass
         )
     }
 
-    getComponentType (component: Component): ComponentType {
+    getComponentType (component: ComponentClazz): ComponentType {
         if (component.prototype.watch) {
             return 'normal'
         }
@@ -104,13 +107,13 @@ export class ComponentClassParser {
      * 从组件 class 得到子组件 class
      */
     getChildComponentClasses (
-        parentComponentClass: Component<{}> | DefinedComponentClass<{}, {}>,
+        parentComponentClass: Component<{}> | DefinedComponentClass<{}>,
         selfId: string
     ): Map<string, DynamicComponentReference> {
         const children: Map<string, DynamicComponentReference> = new Map()
 
         const components: { [key: string]: Component<{}> | undefined } =
-            getMemberFromClass(parentComponentClass, 'components', {})
+            getMemberFromClass(parentComponentClass as ComponentClazz, 'components', {})
         for (let [tagName, componentClass] of Object.entries(components)) {
             if (!componentClass) {
                 continue
@@ -153,7 +156,7 @@ export class ComponentClassParser {
      */
     private getOrSetID (componentClass: Component<{}>): string {
         if (!this.cids.has(componentClass)) {
-            const id = getMemberFromClass(componentClass, 'id')
+            const id = getMemberFromClass(componentClass as ComponentClazz, 'id')
             this.cids.set(componentClass, typeof id === 'string' ? id : String(this.id++))
         }
         return this.cids.get(componentClass)!

@@ -21,8 +21,8 @@ describe('removeModules', () => {
         const proj = new SanProject(resolve(testRoot, '../tsconfig.json'))
         const sanSourceFile = proj.parseSanSourceFile(
             resolve(stubRoot, './remove-modules.comp.ts')
-        ) as TypedSanSourceFile
+        )
         removeModules(sanSourceFile, [/^foo/])
-        expect(sanSourceFile.tsSourceFile.getImportDeclaration('foo')).toBeUndefined()
+        expect((sanSourceFile as unknown as TypedSanSourceFile).tsSourceFile.getImportDeclaration('foo')).toBeUndefined()
     })
 })

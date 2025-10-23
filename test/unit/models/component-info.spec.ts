@@ -1,13 +1,13 @@
 import { JSComponentInfo, TypedComponentInfo, DynamicComponentInfo } from '../../../src/models/component-info'
 import { getPropertiesFromObject } from '../../../src/ast/js-ast-util'
-import { parse } from 'acorn'
+import { CallExpression, ExpressionStatement, ObjectExpression, parse } from 'acorn'
 import { Project } from 'ts-morph'
-import { ANode, defineComponent } from 'san'
+import { AElement, ANode, defineComponent } from 'san'
 
 describe('TypedComponentInfo', function () {
-    let proj
+    let proj: Project
     beforeEach(() => {
-        proj = new Project({ addFilesFromTsConfig: false })
+        proj = new Project({ skipAddingFilesFromTsConfig: true })
     })
     describe('#getFilterNames()', function () {
         it('should return filter names', () => {
@@ -48,16 +48,16 @@ describe('DynamicComponentInfo', function () {
 
 describe('JSComponentInfo', function () {
     it('should support custom delimiters', () => {
-        const obj = parse(`
+        const obj = ((parse(`
             defineComponent({
                 template: '<div>{%name%}</div>',
                 delimiters: ['{%', '%}']
             })
-        `, { ecmaVersion: 2020 })['body'][0].expression.arguments[0]
-        const props = new Map(getPropertiesFromObject(obj))
+        `, { ecmaVersion: 2022 })['body'][0] as ExpressionStatement).expression as CallExpression).arguments[0]
+        const props = new Map(getPropertiesFromObject(obj as ObjectExpression))
         const info = new JSComponentInfo('foo', 'foo', props, '')
         expect(info.root).toHaveProperty('tagName', 'div')
-        expect(info.root.children[0]).toMatchObject({
+        expect((info.root as AElement).children[0]).toMatchObject({
             textExpr: {
                 type: 4,
                 paths: [{ value: 'name' }]
@@ -65,35 +65,35 @@ describe('JSComponentInfo', function () {
         })
     })
     it('should support hasMethod()', () => {
-        const obj = parse(`
+        const obj = ((parse(`
             defineComponent({
                 inited() {}
             })
-        `, { ecmaVersion: 2020 })['body'][0].expression.arguments[0]
-        const props = new Map(getPropertiesFromObject(obj))
+        `, { ecmaVersion: 2022 })['body'][0] as ExpressionStatement).expression as CallExpression).arguments[0]
+        const props = new Map(getPropertiesFromObject(obj as ObjectExpression))
         const info = new JSComponentInfo('foo', 'foo', props, '')
         expect(info.hasMethod('inited')).toBeTruthy()
         expect(info.hasMethod('attached')).toBeFalsy()
     })
     it('should support getFilterNames()', () => {
-        const obj = parse(`
+        const obj = ((parse(`
             defineComponent({
                 template: '<div>{{name}}</div>',
                 filters: { foo: () => false, bar: () => 0 }
             })
-        `, { ecmaVersion: 2020 })['body'][0].expression.arguments[0]
-        const props = new Map(getPropertiesFromObject(obj))
+        `, { ecmaVersion: 2022 })['body'][0] as ExpressionStatement).expression as CallExpression).arguments[0]
+        const props = new Map(getPropertiesFromObject(obj as ObjectExpression))
         const info = new JSComponentInfo('foo', 'foo', props, '')
         expect(info.getFilterNames()).toEqual(['foo', 'bar'])
     })
     it('should support getComputedNames()', () => {
-        const obj = parse(`
+        const obj = ((parse(`
             defineComponent({
                 template: '<div>{{name}}</div>',
                 computed: { foo: () => false, bar: () => 0 }
             })
-        `, { ecmaVersion: 2020 })['body'][0].expression.arguments[0]
-        const props = new Map(getPropertiesFromObject(obj))
+        `, { ecmaVersion: 2022 })['body'][0] as ExpressionStatement).expression as CallExpression).arguments[0]
+        const props = new Map(getPropertiesFromObject(obj as ObjectExpression))
         const info = new JSComponentInfo('foo', 'foo', props, '')
         expect(info.getComputedNames()).toEqual(['foo', 'bar'])
     })

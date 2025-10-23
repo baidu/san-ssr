@@ -51,7 +51,7 @@ export function isChildClassOf (clazz: ClassDeclaration, parentClass: string) {
     const extendClause = clazz.getHeritageClauseByKind(SyntaxKind.ExtendsKeyword)
     if (!extendClause) return false
 
-    const typeNode = extendClause.getTypeNodes().find(x => x.getText() === parentClass)
+    const typeNode = extendClause.getTypeNodes().find(x => x.getExpression().getText() === parentClass)
     if (!typeNode) return false
 
     return true

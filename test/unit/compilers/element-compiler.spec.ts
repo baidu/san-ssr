@@ -1,5 +1,5 @@
 import { ElementCompiler } from '../../../src/compilers/element-compiler'
-import { defineComponent, parseTemplate } from 'san'
+import { AElement, defineComponent, parseTemplate } from 'san'
 import { SyntaxKind } from '../../../src/ast/renderer-ast-dfn'
 import { CTX_DATA } from '../../../src/ast/renderer-ast-util'
 import { matchHTMLAddEqual } from '../../stub/util'
@@ -14,7 +14,7 @@ describe('compilers/element-compiler', () => {
     describe('#tagStart()', () => {
         it('should compile a simple <div> with customized tagName', () => {
             const template = '<div></div>'
-            const aNode = parseTemplate(template)
+            const aNode = (parseTemplate(template) as AElement)
             const component = defineComponent({
                 template
             })
@@ -28,7 +28,7 @@ describe('compilers/element-compiler', () => {
         })
         it('should compile empty textarea', () => {
             const template = '<div><textarea></textarea></div>'
-            const aNode = parseTemplate(template).children[0].children[0]
+            const aNode = ((parseTemplate(template) as AElement).children[0] as AElement).children[0]
             const component = defineComponent({
                 template
             })
@@ -41,7 +41,7 @@ describe('compilers/element-compiler', () => {
         })
         it('should compile input with readonly', () => {
             const template = '<div><input readonly></div>'
-            const aNode = parseTemplate(template).children[0].children[0]
+            const aNode = ((parseTemplate(template) as AElement).children[0] as AElement).children[0]
             const component = defineComponent({
                 template
             })
@@ -56,7 +56,7 @@ describe('compilers/element-compiler', () => {
         })
         it('should compile input with readonly', () => {
             const template = '<div><input readonly="{{foo}}"></div>'
-            const aNode = parseTemplate(template).children[0].children[0]
+            const aNode = ((parseTemplate(template) as AElement).children[0] as AElement).children[0]
             const component = defineComponent({
                 template
             })
@@ -78,7 +78,7 @@ describe('compilers/element-compiler', () => {
         })
         it('should treat checked as a normal property for non-input elements', () => {
             const template = '<div><span checked="{{foo}}"></span></div>'
-            const aNode = parseTemplate(template).children[0].children[0]
+            const aNode = ((parseTemplate(template) as AElement).children[0] as AElement).children[0]
             const component = defineComponent({
                 template
             })
@@ -94,7 +94,7 @@ describe('compilers/element-compiler', () => {
         })
         it('should treat checked as a normal property if input[type] not specified', () => {
             const template = '<div><input checked="{{foo}}" value="1"></div>'
-            const aNode = parseTemplate(template).children[0].children[0]
+            const aNode = ((parseTemplate(template) as AElement).children[0] as AElement).children[0]
             const component = defineComponent({
                 template
             })
@@ -110,9 +110,7 @@ describe('compilers/element-compiler', () => {
         })
         it('should treat checked as a normal property if type not recognized', () => {
             const template = '<div><input checked="{{foo}}" value="1" type="bar"></div>'
-            const aNode = parseTemplate(
-                template
-            ).children[0].children[0]
+            const aNode = ((parseTemplate(template) as AElement).children[0] as AElement).children[0]
             const component = defineComponent({
                 template
             })
@@ -129,7 +127,8 @@ describe('compilers/element-compiler', () => {
     })
     describe('#inner()', () => {
         it('should compile empty textarea', () => {
-            const aNode = parseTemplate('<div><textarea></textarea></div>').children[0].children[0]
+            const template = '<div><textarea></textarea></div>'
+            const aNode = ((parseTemplate(template) as AElement).children[0] as AElement).children[0]
             const nodes = [...compiler.inner(aNode)]
             expect(nodes).toHaveLength(0)
         })
@@ -145,7 +144,8 @@ describe('compilers/element-compiler', () => {
             ]))
         })
         it('should compile empty textarea', () => {
-            const aNode = parseTemplate('<div><textarea></textarea></div>').children[0].children[0]
+            const template = '<div><textarea></textarea></div>'
+            const aNode = ((parseTemplate(template) as AElement).children[0] as AElement).children[0]
             const nodes = [...compiler.tagEnd(aNode)]
             expect(nodes).toEqual(expect.arrayContaining([
                 matchHTMLAddEqual({ kind: SyntaxKind.Literal, value: '</textarea>' })

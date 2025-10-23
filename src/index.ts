@@ -8,7 +8,7 @@ import { SanProject } from './models/san-project'
 import { Renderer } from './models/renderer'
 import { CompileOptions } from './target-js/compilers/compile-options'
 import * as TypeGuards from './ast/san-ast-type-guards'
-import { Component } from 'san'
+import { Component, DefinedComponentClass } from 'san'
 
 // util functions
 export { IDGenerator } from './utils/id-generator'
@@ -46,7 +46,7 @@ export function compileToSource (ComponentClass: string | Component): string {
     return targetCode
 }
 
-export function compileToRenderer (ComponentClass: Component, options?: CompileOptions): Renderer {
+export function compileToRenderer (ComponentClass: Component | DefinedComponentClass, options?: CompileOptions): Renderer {
     defaultProject = defaultProject || new SanProject()
     const renderer = defaultProject.compileToRenderer(ComponentClass, options)
     return renderer

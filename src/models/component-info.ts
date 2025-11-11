@@ -9,11 +9,11 @@
  * 类型：对于 TS 源码输入，解析得到的是 TypedComponentInfo，
  * 对于其他输入，解析得到的是 JSComponentInfo。
  */
-import type { ANode, Component, ComponentDefineOptions } from 'san'
+import type { ANode, Component, ComponentDefineOptions, DefinedComponentClass } from 'san'
 import { FunctionDefinition } from '../ast/renderer-ast-dfn'
 import { parseAndNormalizeTemplate } from '../parsers/parse-template'
 import type { ClassDeclaration } from 'ts-morph'
-import { Node } from 'estree'
+import type { Node } from 'acorn'
 import { visitANodeRecursively } from '../ast/san-ast-util'
 import { ComponentReference, DynamicComponentReference } from './component-reference'
 import { getObjectLiteralPropertyKeys } from '../ast/ts-ast-util'
@@ -96,7 +96,7 @@ export class DynamicComponentInfo extends ComponentInfoImpl<DynamicComponentRefe
      * 确保 computed 等属性都出现在 proto 上，
      * 用于 compileToRenderer() 和 compileToSource()
      */
-    public readonly proto: Component<{}> & ComponentDefineOptions
+    public readonly proto: Component<{}> & ComponentDefineOptions<{}>
     constructor (
         id: string,
         root: ANode,
@@ -105,10 +105,10 @@ export class DynamicComponentInfo extends ComponentInfoImpl<DynamicComponentRefe
         ssrType: ComponentSSRType,
         inheritAttrs: ComponentInheritAttrs,
         autoFillStyleAndId: ComponentAutoFillStyleAndId,
-        public readonly componentClass: Component
+        public readonly componentClass: Component<{}> | DefinedComponentClass<{}>
     ) {
         super(id, root, childComponents, componentType, ssrType, inheritAttrs, autoFillStyleAndId)
-        this.proto = Object.assign(componentClass.prototype, componentClass)
+        this.proto = Object.assign((componentClass as unknown as Function).prototype, componentClass)
     }
 
     hasMethod (name: string) {

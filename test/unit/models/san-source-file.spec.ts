@@ -6,7 +6,7 @@ import { Project } from 'ts-morph'
 import { ANode } from 'san'
 
 describe('TypedSanSourceFile', function () {
-    const proj = new Project({ addFilesFromTsConfig: false })
+    const proj = new Project({ skipAddingFilesFromTsConfig: true })
     const sourceFile = proj.createSourceFile('foo.ts', `
         import { Component } from 'san';
         class Foo extends Component {}
@@ -51,7 +51,7 @@ describe('JSSanSourceFile', function () {
 
 describe('.isTypedComopnentInfo()', function () {
     it('should return true for typed component info', () => {
-        const proj = new Project({ addFilesFromTsConfig: false })
+        const proj = new Project({ skipAddingFilesFromTsConfig: true })
         const sourceFile = proj.createSourceFile('foo.ts', 'class Foo {}')
         const file = new TypedSanSourceFile([], sourceFile)
         expect(isTypedSanSourceFile(file)).toBeTruthy()

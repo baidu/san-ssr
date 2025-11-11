@@ -14,17 +14,17 @@
  * - 不能引用文件系统的其他组件 render：require(ref.specifier)
  * - 也不能利用 exports 引用当前文件的其他组件： exports.sanSSRRenders.X()
  */
-import type { Component } from 'san'
+import type { Component, ComponentClazz, DefinedComponentClass } from 'san'
 import type { GlobalContext } from '../models/global-context'
 
 export interface Resolver {
     getRenderer: (ref: { id: string, specifier?: string }, tagName?: string, context?: GlobalContext) => Function
     getChildComponentClass: (
         ref: { id: string, specifier?: string },
-        CurrentComponentClass: Component,
+        currentComponentClass: Component<{}> | DefinedComponentClass<{}>,
         tagName: string,
         context?: GlobalContext
-    ) => Component
+    ) => Component<{}> | DefinedComponentClass<{}>
     setRenderer: (id: string, fn: Function) => void
     /**
      * 每个组件的每次 render 执行，共用同一个 prototype
@@ -87,10 +87,11 @@ export function createResolver (exports: {[key: string]: any}, require: nodeRequ
                 else if (typeof path === 'function') return path
             }
 
-            const components = instance.components || (instance.prototype && instance.prototype.components)
+            const components = (instance as ComponentClazz).components ||
+                ((instance as ComponentClazz).prototype && (instance as ComponentClazz).prototype.components)
             const ChildComponentClassOrInstance = components && components[tagName]
             if (!ChildComponentClassOrInstance) {
-                throw Error(`child component is not fount: ${tagName}${instance.prototype?.id || ''}`)
+                throw Error(`child component is not fount: ${tagName}${(instance as ComponentClazz).prototype?.id || ''}`)
             }
             if (typeof ChildComponentClassOrInstance === 'string' && ChildComponentClassOrInstance === 'self') {
                 componentClassCache[cacheKey] = instance
@@ -108,7 +109,7 @@ export function createResolver (exports: {[key: string]: any}, require: nodeRequ
                 typeof ChildComponentClassOrInstance !== 'function' &&
                 typeof ChildComponentClassOrInstance !== 'object'
             ) {
-                throw Error(`external component is not provided: ${tagName}${instance.prototype?.id || ''}`)
+                throw Error(`external component is not provided: ${tagName}${(instance as ComponentClazz).prototype?.id || ''}`)
             }
             componentClassCache[cacheKey] = ChildComponentClassOrInstance
             return ChildComponentClassOrInstance

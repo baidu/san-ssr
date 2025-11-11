@@ -127,4 +127,26 @@ describe('runtime/SanSSRData', () => {
             expect(() => data.parseExpr('data1-aaa')).toThrow(/expect . or \[/)
         })
     })
+    describe('.createDataProxy', () => {
+        it('should create a data proxy', () => {
+            const instance = {
+                data: {
+                    raw: { title: 'TITLE', ssr: { count: 1 } } as any
+                },
+                computed: {
+                    foo: () => 'FOO'
+                }
+            }
+            const proxy = SanSSRData.createDataProxy(instance)
+            expect(proxy.foo).toEqual('FOO')
+            expect(proxy.title).toEqual('TITLE')
+            proxy.bar = 'BAR'
+            expect(instance.data.raw.bar).toEqual('BAR')
+            proxy.ssr.count++
+            expect(instance.data.raw.ssr.count).toEqual(2)
+            Object.assign(proxy, { baz: 'BAR-assign', foo: 'Foo-assign' })
+            expect(instance.data.raw.baz).toEqual('BAR-assign')
+            expect(proxy.foo).toEqual('FOO')
+        })
+    })
 })

@@ -4,7 +4,7 @@
  * 从 .san 文件源码，得到它里面的 San 信息，产出 JSSanSourceFile。
  * JSSanSourceFile 包含了若干个 JSComponentInfo 和一个 entryComponentInfo。
  */
-import { ExpressionStatement, MethodDefinition, ObjectExpression, CallExpression, Node } from 'estree'
+import { ExpressionStatement, MethodDefinition, ObjectExpression, CallExpression, Node } from 'acorn'
 import { JavaScriptSanParser } from './javascript-san-parser'
 import assert from 'assert'
 import {
@@ -50,16 +50,22 @@ export class SanFileParser {
                 type: 'MemberExpression',
                 object: {
                     type: 'CallExpression',
-                    callee: { type: 'Identifier', name: 'require' },
-                    arguments: [{ type: 'Literal', value: 'san', raw: "'san'" }],
-                    optional: false
+                    callee: { type: 'Identifier', name: 'require', start: 0, end: 0 },
+                    arguments: [{ type: 'Literal', value: 'san', raw: "'san'", start: 0, end: 0 }],
+                    optional: false,
+                    start: 0,
+                    end: 0
                 },
-                property: { type: 'Identifier', name: 'defineComponent' },
+                property: { type: 'Identifier', name: 'defineComponent', start: 0, end: 0 },
                 computed: false,
-                optional: false
+                optional: false,
+                start: 0,
+                end: 0
             },
             arguments: [{ ...options }],
-            optional: false
+            optional: false,
+            start: 0,
+            end: 0
         }
         Object.assign(options, defineComponent)
     }
@@ -93,15 +99,20 @@ export class SanFileParser {
             kind: 'constructor',
             static: false,
             computed: false,
-            key: { type: 'Identifier', name: 'constructor' },
+            key: { type: 'Identifier', name: 'constructor', start: 0, end: 0 },
             value: {
                 type: 'FunctionExpression',
                 id: null,
                 generator: false,
                 async: false,
                 params: [],
-                body: { type: 'BlockStatement', body: [] }
-            }
+                body: { type: 'BlockStatement', body: [], start: 0, end: 0 },
+                start: 0,
+                end: 0,
+                expression: false
+            },
+            start: 0,
+            end: 0
         }
     }
 
@@ -116,17 +127,25 @@ export class SanFileParser {
                 operator: '=',
                 left: {
                     type: 'MemberExpression',
-                    object: { type: 'ThisExpression' },
-                    property: { type: 'Identifier', name: 'template' },
+                    object: { type: 'ThisExpression', start: 0, end: 0 },
+                    property: { type: 'Identifier', name: 'template', start: 0, end: 0 },
                     computed: false,
-                    optional: false
+                    optional: false,
+                    start: 0,
+                    end: 0
                 },
                 right: {
                     type: 'Literal',
                     value: this.templateContent,
-                    raw: JSON.stringify(this.templateContent)
-                }
-            }
+                    raw: JSON.stringify(this.templateContent),
+                    start: 0,
+                    end: 0
+                },
+                start: 0,
+                end: 0
+            },
+            start: 0,
+            end: 0
         }
     }
 }

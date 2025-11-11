@@ -1,3 +1,4 @@
+import { AElement } from 'san'
 import { SanFileParser } from '../../../src/parsers/san-file-parser'
 
 const defaultOptions = {
@@ -26,7 +27,7 @@ describe('SanFileParser', () => {
             expect(sourceFile.componentInfos).toHaveLength(1)
             expect(sourceFile.componentInfos[0]).toEqual(sourceFile.entryComponentInfo)
             expect(sourceFile.componentInfos[0].hasMethod('inited')).toBeTruthy()
-            expect(sourceFile.componentInfos[0].root.children[0]).toMatchObject({
+            expect((sourceFile.componentInfos[0].root as AElement).children[0]).toMatchObject({
                 textExpr: { type: 1, value: 'Foo' }
             })
         })
@@ -45,7 +46,7 @@ describe('SanFileParser', () => {
             expect(sourceFile.componentInfos).toHaveLength(1)
             expect(sourceFile.componentInfos[0]).toEqual(sourceFile.entryComponentInfo)
             expect(sourceFile.componentInfos[0].hasMethod('inited')).toBeTruthy()
-            expect(sourceFile.componentInfos[0].root.children[0]).toMatchObject({
+            expect((sourceFile.componentInfos[0].root as AElement).children[0]).toMatchObject({
                 textExpr: { type: 1, value: 'Foo' }
             })
         })
@@ -65,7 +66,7 @@ describe('SanFileParser', () => {
             expect(sourceFile.componentInfos).toHaveLength(1)
             expect(sourceFile.componentInfos[0]).toEqual(sourceFile.entryComponentInfo)
             expect(sourceFile.componentInfos[0].getComputedNames()).toEqual(['one'])
-            expect(sourceFile.componentInfos[0].root.children[0]).toMatchObject({
+            expect((sourceFile.componentInfos[0].root as AElement).children[0]).toMatchObject({
                 textExpr: { type: 1, value: 'Foo' }
             })
         })
@@ -79,7 +80,7 @@ describe('SanFileParser', () => {
 
             expect(sourceFile.componentInfos).toHaveLength(1)
             expect(sourceFile.componentInfos[0]).toEqual(sourceFile.entryComponentInfo)
-            expect(sourceFile.componentInfos[0].root.children[0]).toMatchObject({
+            expect((sourceFile.componentInfos[0].root as AElement).children[0]).toMatchObject({
                 textExpr: { type: 1, value: 'Foo' }
             })
         })

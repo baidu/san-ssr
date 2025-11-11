@@ -17,7 +17,7 @@ import {
 } from '../ast/renderer-ast-util'
 import { IDGenerator } from '../utils/id-generator'
 import { mergeLiteralAdd } from '../optimizers/merge-literal-add'
-import { RESERVED_NAMES } from './reserved-names'
+import { RESERVED_NAMES, DYNAMIC_THIS_FLAG } from './reserved-names'
 
 /**
  * helper 常用函数别名，有利于减少代码压缩体积
@@ -187,7 +187,17 @@ export class RendererCompiler {
         if (info.hasMethod('initData')) {
             body.push(...this.emitInitData())
         }
-
+        body.push(new If(
+            new BinaryExpression(
+                BINARY(I('instance'), '.', I(DYNAMIC_THIS_FLAG)),
+                '===',
+                L(true)
+            ),
+            [ASSIGN(
+                BINARY(I('instance'), '.', I('d')),
+                new FunctionCall(BINARY(I('SanSSRData'), '.', I('createDataProxy')), [I('instance')])
+            )]
+        ))
         // call inited
         if (info.hasMethod('inited')) {
             body.push(createTryStatement(

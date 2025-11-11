@@ -1,6 +1,6 @@
 import { _ } from '../../../src/runtime/underscore'
 import { Component } from 'san'
-import type { SanComponent } from 'san'
+import type { Component as SanComponent } from 'san'
 
 describe('utils/underscore', function () {
     describe('.escapeHTML()', function () {
@@ -65,7 +65,7 @@ describe('utils/underscore', function () {
                     inited()
                 }
             }
-            expect(_.createInstanceFromClass(MyComponent)).toHaveProperty('inited')
+            expect(_.createInstanceFromClass(MyComponent as any)).toHaveProperty('inited')
             expect(inited).not.toHaveBeenCalled()
         })
         it('should not call initData', () => {
@@ -73,9 +73,10 @@ describe('utils/underscore', function () {
             class MyComponent extends Component {
                 initData () {
                     mockFn()
+                    return {}
                 }
             }
-            expect(_.createInstanceFromClass(MyComponent)).toHaveProperty('initData')
+            expect(_.createInstanceFromClass(MyComponent as any)).toHaveProperty('initData')
             expect(mockFn).not.toHaveBeenCalled()
         })
         it('should not call computed', () => {
@@ -83,7 +84,7 @@ describe('utils/underscore', function () {
             class MyComponent extends Component {
                 static computed = { foo }
             }
-            expect(_.createInstanceFromClass(MyComponent)).toHaveProperty('computed.foo', foo)
+            expect(_.createInstanceFromClass(MyComponent as any)).toHaveProperty('computed.foo', foo)
             expect(foo).not.toHaveBeenCalled()
         })
         it('should keep components', () => {
@@ -96,7 +97,7 @@ describe('utils/underscore', function () {
                     aaa: AAA
                 }
             }
-            expect(_.createInstanceFromClass(MyComponent)).toHaveProperty('components.aaa', AAA)
+            expect(_.createInstanceFromClass(MyComponent as any)).toHaveProperty('components.aaa', AAA)
         })
     })
     describe('.attrFilter', () => {
@@ -111,8 +112,8 @@ describe('utils/underscore', function () {
             const instance = {
                 parentComponent: {
                     error: spy
-                } as unknown as SanComponent<{}>
-            } as SanComponent<{}>
+                } as unknown as Component<{}>
+            } as unknown as SanComponent<{}>
 
             handleError(new Error('error'), instance, 'test')
 
@@ -158,6 +159,24 @@ describe('utils/underscore', function () {
             const args = spy.mock.calls[0]
             expect(args[0] instanceof Error).toBe(true)
             expect(args[0].message).toBe('error')
+        })
+    })
+
+    describe('.getRootCtx()', () => {
+        const getRootCtx = _.getRootCtx
+        it('should get root ctx', () => {
+            const root = { foo: 'bar' }
+            const mid = { parentCtx: root }
+            const leaf = { parentCtx: mid }
+
+            expect(getRootCtx(leaf as any) === mid).toBeTruthy()
+        })
+        it('should get last ctx if root has data', () => {
+            const root = { foo: 'bar', data: {} }
+            const mid = { parentCtx: root }
+            const leaf = { parentCtx: mid }
+
+            expect(getRootCtx(leaf as any) === root).toBeTruthy()
         })
     })
 })

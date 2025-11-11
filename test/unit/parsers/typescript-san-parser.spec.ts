@@ -9,9 +9,9 @@ const defaultOptions = {
     }
 }
 describe('.parseFromTypeScript()', () => {
-    let proj
+    let proj: Project
     beforeEach(() => {
-        proj = new Project({ addFilesFromTsConfig: false })
+        proj = new Project({ skipAddingFilesFromTsConfig: true })
     })
     it('should parse a typescript file with single component', () => {
         const file = proj.createSourceFile('foo.ts', `

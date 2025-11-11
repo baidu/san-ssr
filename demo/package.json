@@ -10,7 +10,7 @@
   "author": "harttle<yangjvn@126.com>",
   "dependencies": {
     "jsdom": "^16.4.0",
-    "san": "^3.10.0",
+    "san": "^3.15.3",
     "ts-node": "^8.5.4"
   }
 }

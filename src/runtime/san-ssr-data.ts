@@ -6,10 +6,6 @@ interface DataObject {
     [key: string]: any
 }
 
-interface Computed {
-    [k: string]: (this: { data: SanSSRData }) => any
-}
-
 /**
  * 字符串源码读取类，用于模板字符串解析过程
  *
@@ -136,19 +132,21 @@ function readAccessor (walker: Walker) {
  * * 便于编译期优化
  */
 export class SanSSRData {
-    data: DataObject
-    computed: Computed
+    raw: DataObject
+    instance: any
 
     constructor (data: DataObject, instance: any) {
-        this.data = data
-        this.computed = instance.computed || {}
+        this.raw = data
+        this.instance = instance
     }
 
     get (path: string): any {
-        if (arguments.length === 0) return this.data
-        if (this.computed[path]) return this.computed[path].call({ data: this })
+        if (arguments.length === 0) return this.raw
+        if (this.instance.computed?.[path]) {
+            return this.instance.computed[path].call(this.instance)
+        }
 
-        let res = this.data
+        let res = this.raw
         const paths = this.parseExpr(path)
         for (let i = 0; i < paths.length; i++) {
             const p = paths[i]
@@ -163,7 +161,7 @@ export class SanSSRData {
 
     set (path: string, value: any) {
         const seq = this.parseExpr(path)
-        let parent = this.data
+        let parent = this.raw
         for (let i = 0; i < seq.length - 1; i++) {
             const name = seq[i]
             if (parent[name]) {
@@ -183,5 +181,28 @@ export class SanSSRData {
 
     parseExpr (expr: string): (string|number)[] {
         return readAccessor(new Walker(expr))
+    }
+
+    /**
+     * 创建 Data 代理对象，拦截处理 computed 字段，用于 proxy api
+     * @param instance
+     * @returns
+     */
+    static createDataProxy = function (instance: any) {
+        const computedFields = new Set((Object.keys(instance.computed || {})))
+        return new Proxy(instance.data.raw, {
+            get (target, prop) {
+                if (computedFields.has(prop as string)) {
+                    return instance.computed[prop].call(instance)
+                }
+                return target[prop as keyof DataObject]
+            },
+            set (target, prop, value) {
+                if (!computedFields.has(prop as string)) {
+                    target[prop as keyof DataObject] = value
+                }
+                return true
+            }
+        })
     }
 }

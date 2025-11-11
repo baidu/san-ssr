@@ -6,7 +6,7 @@
  */
 import assert from 'assert'
 import { camelCase } from 'lodash'
-import { ANode, AIfNode, AForNode, ASlotNode, AFragmentNode, AText, ADynamicNode, AElement, StringLiteral } from 'san'
+import { ANode, AIfNode, AForNode, ASlotNode, AFragmentNode, AText, AElement, StringLiteral, ADynamicNode } from 'san'
 import { ComponentInfo } from '../models/component-info'
 import { ElementCompiler } from './element-compiler'
 import { getANodePropByName } from '../ast/san-ast-util'
@@ -343,7 +343,7 @@ export class ANodeCompiler {
             const attrListMap = []
             for (const attr of aNode.attrs) {
                 const attrValue = new HelperCall('escapeHTML', [sanExpr(attr.expr)])
-                const result = TypeGuards.isExprBoolNode(attr.expr) || attr.expr.value === ''
+                const result = TypeGuards.isExprBoolNode(attr.expr) || (attr.expr as StringLiteral).value === ''
                     ? L(attr.name)
                     : BINARY(BINARY(L(`${attr.name}="`), '+', attrValue), '+', L('"'))
                 attrList.push([result, false])
@@ -506,7 +506,7 @@ export class ANodeCompiler {
                 }
 
                 const textExprValue = TypeGuards.isExprInterpNode(c.textExpr)
-                    ? (c.textExpr.expr as StringLiteral).value : c.textExpr.value
+                    ? (c.textExpr.expr as StringLiteral).value : (c.textExpr as StringLiteral).value
                 if (!textExprValue || textExprValue.trim() !== '') {
                     return true
                 }
@@ -520,7 +520,7 @@ export class ANodeCompiler {
                 }
 
                 const textExprValue = TypeGuards.isExprInterpNode(c.textExpr)
-                    ? (c.textExpr.expr as StringLiteral).value : c.textExpr.value
+                    ? (c.textExpr.expr as StringLiteral).value : (c.textExpr as StringLiteral).value
                 if (!textExprValue || textExprValue.trim() !== '') {
                     return true
                 }

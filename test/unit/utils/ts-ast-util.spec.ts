@@ -5,9 +5,9 @@ import {
 import { Project } from 'ts-morph'
 
 describe('utils/ts-ast-util', function () {
-    let proj
+    let proj: Project
     beforeEach(() => {
-        proj = new Project({ addFilesFromTsConfig: false })
+        proj = new Project({ skipAddingFilesFromTsConfig: true })
     })
     describe('.getPropertyStringArrayValue()', function () {
         it('should get array of strings', () => {
@@ -53,17 +53,20 @@ describe('utils/ts-ast-util', function () {
         })
     })
     describe('.getChildComponents()', function () {
+        const mockFn = () => {
+            return {} as any
+        }
         it('should get one single child component', () => {
             proj.createSourceFile('b.ts', 'export class B {}')
             const file = proj.createSourceFile('foo.ts', 'import {B} from \'./b\'; class Foo { components = { b: B } }')
-            expect([...getChildComponents(file.getClass('Foo')).entries()]).toEqual([
+            expect([...getChildComponents(file.getClass('Foo'), undefined, mockFn).entries()]).toEqual([
                 ['b', { specifier: './b', id: 'B' }]
             ])
         })
         it('should get default child component', () => {
             proj.createSourceFile('b.ts', 'export class B {}')
             const file = proj.createSourceFile('foo.ts', 'import B from \'./b\'; class Foo { components = { b: B } }')
-            expect([...getChildComponents(file.getClass('Foo')).entries()]).toEqual([
+            expect([...getChildComponents(file.getClass('Foo'), undefined, mockFn).entries()]).toEqual([
                 ['b', { specifier: './b', id: 'default' }]
             ])
         })
@@ -72,26 +75,26 @@ describe('utils/ts-ast-util', function () {
             const file = proj.createSourceFile(
                 'foo.ts', 'import B from \'./b\'; class Foo { components = { \'x-b\': B } }'
             )
-            expect([...getChildComponents(file.getClass('Foo')).entries()]).toEqual([
+            expect([...getChildComponents(file.getClass('Foo'), undefined, mockFn).entries()]).toEqual([
                 ['x-b', { specifier: './b', id: 'default' }]
             ])
         })
         it('should allow child Components from current file', () => {
             const file = proj.createSourceFile('foo.ts', 'class B {}; class Foo { components = { \'x-b\': B } }')
-            expect([...getChildComponents(file.getClass('Foo')).entries()]).toEqual([
+            expect([...getChildComponents(file.getClass('Foo'), undefined, mockFn).entries()]).toEqual([
                 ['x-b', { specifier: '.', id: 'B' }]
             ])
         })
         it('should throw for items not of PropertyAssignment type', () => {
             const file = proj.createSourceFile('foo.ts', 'class B {}; class Foo { components = { B } }')
-            expect(() => getChildComponents(file.getClass('Foo'))).toThrow('"B" not supported')
+            expect(() => getChildComponents(file.getClass('Foo'), undefined, mockFn)).toThrow('"B" not supported')
         })
         it('should throw for invalid string as value', () => {
             proj.createSourceFile('b.ts', 'export class B {}')
             const file = proj.createSourceFile(
                 'foo.ts', 'import B from \'./b\'; class Foo { components = { b: \'B\' } }'
             )
-            expect(() => getChildComponents(file.getClass('Foo'))).toThrow('Invalid component for b')
+            expect(() => getChildComponents(file.getClass('Foo'), undefined, mockFn)).toThrow('Invalid component for b')
         })
     })
 
@@ -157,6 +160,10 @@ describe('utils/ts-ast-util', function () {
         it('should get component class identifier for import as', () => {
             const file = proj.createSourceFile('foo.ts', 'import { Component as SanComponent } from \'san\'')
             expect(getComponentClassIdentifier(file, defaultSanReferenceInfo)).toEqual('SanComponent')
+        })
+        it('should get component class identifier for import default', () => {
+            const file = proj.createSourceFile('foo.ts', 'import Component from \'san\'')
+            expect(getComponentClassIdentifier(file, defaultSanReferenceInfo)).toEqual('Component')
         })
     })
     describe('.isChildClassOf()', function () {

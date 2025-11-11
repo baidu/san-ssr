@@ -1,7 +1,7 @@
 import { sanExpr as expr, OutputType } from '../../../src/compilers/san-expr-compiler'
 import { SyntaxKind } from '../../../src/ast/renderer-ast-dfn'
 import { CTX_DATA } from '../../../src/ast/renderer-ast-util'
-import { parseExpr, parseTemplate } from 'san'
+import { AElement, AText, parseExpr, parseTemplate } from 'san'
 
 describe('compilers/san-expr-compiler', () => {
     describe('.expr()', () => {
@@ -110,7 +110,7 @@ describe('compilers/san-expr-compiler', () => {
         })
         it('should throw for unexpected expression type', () => {
             const e = parseExpr('!b')
-            e.type = 222
+            e.type = 222 as any
             expect(() => expr(e)).toThrow(/unexpected expression/)
         })
         it('should throw for unexpected unary operator', () => {
@@ -119,8 +119,8 @@ describe('compilers/san-expr-compiler', () => {
             expect(() => expr(e)).toThrow('unexpected unary operator "~"')
         })
         it('should compile url filter', () => {
-            const e = parseTemplate('{{"foo"|url}}')
-            const exp = e.children[0].textExpr
+            const e = parseTemplate('{{"foo"|url}}') as AElement
+            const exp = (e.children[0] as AText).textExpr
             expect(expr(exp)).toEqual({
                 kind: SyntaxKind.EncodeURIComponent,
                 value: { kind: SyntaxKind.Literal, value: 'foo' }
@@ -131,8 +131,8 @@ describe('compilers/san-expr-compiler', () => {
             expect(expr(parseExpr('true'))).toEqual({ kind: SyntaxKind.Literal, value: true })
         })
         it('should compile custom filter', () => {
-            const e = parseTemplate('{{"foo"|bar("coo")}}')
-            const exp = e.children[0].textExpr
+            const e = parseTemplate('{{"foo"|bar("coo")}}') as AElement
+            const exp = (e.children[0] as AText).textExpr
             expect(expr(exp)).toEqual({
                 kind: SyntaxKind.FilterCall,
                 name: 'bar',
@@ -143,8 +143,8 @@ describe('compilers/san-expr-compiler', () => {
             })
         })
         it('should escape text value by default', () => {
-            const e = parseTemplate('{{"<"}}<')
-            const exp = e.children[0].textExpr
+            const e = parseTemplate('{{"<"}}<') as AElement
+            const exp = (e.children[0] as AText).textExpr
             expect(expr(exp, OutputType.ESCAPE_HTML)).toEqual({
                 kind: SyntaxKind.BinaryExpression,
                 lhs: {
@@ -160,8 +160,8 @@ describe('compilers/san-expr-compiler', () => {
             })
         })
         it('should not escape text value if raw specified', () => {
-            const e = parseTemplate('{{"\'foo\'" | raw}}')
-            const exp = e.children[0].textExpr
+            const e = parseTemplate('{{"\'foo\'" | raw}}') as AElement
+            const exp = (e.children[0] as AText).textExpr
             expect(expr(exp, OutputType.ESCAPE_HTML)).toEqual({
                 kind: SyntaxKind.HelperCall,
                 name: 'output',
@@ -181,8 +181,8 @@ describe('compilers/san-expr-compiler', () => {
     })
     describe('.interp()', () => {
         it('should compile url filter', () => {
-            const e = parseTemplate('{{"foo"|url}}')
-            const exp = e.children[0].textExpr
+            const e = parseTemplate('{{"foo"|url}}') as AElement
+            const exp = (e.children[0] as AText).textExpr
             expect(expr(exp)).toEqual({
                 kind: SyntaxKind.EncodeURIComponent,
                 value: { kind: SyntaxKind.Literal, value: 'foo' }

@@ -8,9 +8,9 @@
  */
 
 import { ancestor, simple } from 'acorn-walk'
-import assert, { equal } from 'assert'
-import { Node as AcornNode } from 'acorn'
+import assert, { strictEqual } from 'assert'
 import {
+    Node,
     MethodDefinition,
     ExportDefaultDeclaration,
     ImportDeclaration,
@@ -27,7 +27,6 @@ import {
     ArrayExpression,
     CallExpression,
     ObjectExpression,
-    Node,
     Program,
     Pattern,
     VariableDeclaration,
@@ -39,7 +38,7 @@ import {
     ImportDefaultSpecifier,
     VariableDeclarator,
     ExportNamedDeclaration
-} from 'estree'
+} from 'acorn'
 
 const OPERATORS = {
     '+': (l: any, r: any) => l + r
@@ -51,8 +50,8 @@ export function filterByType (node: Node, type: 'ImportDeclaration'): ImportDecl
 export function filterByType (node: Node, type: 'MemberExpression'): MemberExpression[]
 export function filterByType (node: Node, type: string) {
     const results: any[] = []
-    simple(node as AcornNode, {
-        [type]: (node) => results.push(node)
+    simple(node, {
+        [type]: (node: Node) => results.push(node)
     })
     return results
 }
@@ -109,7 +108,7 @@ export function * findScriptRequires (node: Node): Generator<[string, string, st
         if (isMemberExpression(init) && isRequire(init.object)) {
             const specifier = getRequireSpecifier(init.object)
             assertIdentifier(id)
-            yield [id.name, specifier, getStringValue(init.property), decl]
+            yield [id.name, specifier, getStringValue(init.property as Expression), decl]
         }
     }
 }
@@ -128,7 +127,12 @@ export function * findESMImports (root: Node): Generator<[string, string, string
                 yield [spec.local.name, relativeFile, 'default', node]
             }
             if (isImportSpecifier(spec)) {
-                yield [spec.local.name, relativeFile, spec.imported.name, node]
+                yield [
+                    spec.local.name,
+                    relativeFile,
+                    spec.imported.type === 'Identifier' ? spec.imported.name : spec.imported.value as string,
+                    node
+                ]
             }
         }
     }
@@ -139,7 +143,7 @@ export function * findESMImports (root: Node): Generator<[string, string, string
  */
 export function findExportNames (root: Program) {
     const names: [string, string][] = []
-    simple(root as any as AcornNode, {
+    simple(root, {
         ExportDefaultDeclaration (node) {
             const decl = (node as unknown as ExportDefaultDeclaration)['declaration']
             // export default Foo
@@ -160,7 +164,7 @@ export function findExportNames (root: Program) {
             const { left, right } = node as any
             // module.exports.foo = bar
             if (isIdentifier(right) && isMemberExpression(left) && isModuleExports(left.object)) {
-                names.push([right.name, getStringValue(left.property)])
+                names.push([right.name, getStringValue(left.property as Expression)])
             }
             if (isModuleExports(left)) {
                 // module.exports = Foo
@@ -193,22 +197,27 @@ export function getStringArrayValue (expr: Node) {
  */
 export function * getMembersFromClassDeclaration (expr: Class): Generator<[string, Node]> {
     for (const decl of expr.body.body) {
-        if (decl['kind'] === 'constructor') {
-            const constructorDecl = decl
+        if ((decl as MethodDefinition)['kind'] === 'constructor') {
+            const constructorDecl = decl as MethodDefinition
             for (const expr of constructorDecl.value.body.body) {
                 if (isExpressionStatement(expr) &&
                     isAssignmentExpression(expr.expression) &&
                     isMemberAssignment(expr.expression.left)
-                ) yield [getStringValue((expr.expression.left as MemberExpression)['property']), expr.expression.right]
+                ) yield [getStringValue((expr.expression.left as MemberExpression)['property'] as Expression), expr.expression.right]
             }
+        } else if (decl.type === 'MethodDefinition') {
+            yield [getStringValue(decl.key as Expression), decl.value]
+        } else if (decl.type === 'PropertyDefinition') {
+            yield [getStringValue(decl.key as Expression), decl.value as Node]
+        } else if (decl.type === 'StaticBlock') {
+            throw new Error('Static blocks are not supported')
         }
-        yield [getStringValue(decl.key), decl.value]
     }
 }
 
 export function getConstructor (expr: Class): undefined | MethodDefinition {
     for (const method of expr.body.body) {
-        if (method.kind === 'constructor') return method
+        if ((method as MethodDefinition).kind === 'constructor') return method as MethodDefinition
     }
 }
 
@@ -221,9 +230,11 @@ export function addStringPropertyForObject (expr: ObjectExpression, key: string,
         method: false,
         shorthand: false,
         computed: false,
-        key: { type: 'Identifier', name: key },
-        value: { type: 'Literal', value: value, raw: JSON.stringify(value) },
-        kind: 'init'
+        key: { type: 'Identifier', name: key, start: 0, end: 0 },
+        value: { type: 'Literal', value: value, raw: JSON.stringify(value), start: 0, end: 0 },
+        kind: 'init',
+        start: 0,
+        end: 0
     })
 }
 
@@ -262,7 +273,8 @@ export function getStringValue (node: Expression): any {
 /**
  * 获取一个字面量表达式节点的值
  */
-export function getLiteralValue (node: Node): any {
+export function getLiteralValue (node: Node | null): any {
+    if (node == null) return undefined
     if (isBinaryExpression(node)) {
         const left = getLiteralValue(node.left)
         const right = getLiteralValue(node.right)
@@ -272,7 +284,7 @@ export function getLiteralValue (node: Node): any {
     }
     if (isLiteral(node)) return node.value
     if (isTemplateLiteral(node)) {
-        equal(node.expressions.length, 0, 'template expressions are not supported')
+        strictEqual(node.expressions.length, 0, 'template expressions are not supported')
         return node.quasis.map(quasis => quasis.value.cooked).join('')
     }
     throw new Error(`${location(node)} expected literal`)
@@ -283,11 +295,11 @@ export function getLiteralValue (node: Node): any {
  */
 export function getMemberAssignmentsTo (program: Program, objName: string) {
     const results: [string, Node][] = []
-    simple(program as any as AcornNode, {
-        AssignmentExpression (node: AcornNode) {
+    simple(program, {
+        AssignmentExpression (node: Node) {
             const expr = node as any as AssignmentExpression
             if (isMemberExpression(expr.left) && isIdentifier(expr.left.object) && expr.left.object.name === objName) {
-                results.push([getStringValue(expr.left.property), expr.right])
+                results.push([getStringValue(expr.left.property as Expression), expr.right])
             }
         }
     })
@@ -295,7 +307,7 @@ export function getMemberAssignmentsTo (program: Program, objName: string) {
 }
 
 export function location (node: Node) {
-    return `[${(node as AcornNode)['start']},${(node as AcornNode)['end']})`
+    return `[${(node as Node)['start']},${(node as Node)['end']})`
 }
 
 /**
@@ -305,7 +317,7 @@ export function location (node: Node) {
  */
 export function findDefaultExport (node: Program): undefined | Node {
     let result
-    simple(node as any as AcornNode, {
+    simple(node, {
         ExportDefaultDeclaration (node) {
             result = (node as any as ExportDefaultDeclaration).declaration
         },
@@ -431,13 +443,13 @@ export function assertVariableDeclarator (expr: Node): asserts expr is VariableD
 
 export function deleteMembersFromClassDeclaration (expr: Class, name: string) {
     for (const [, decl] of expr.body.body.entries()) {
-        if (decl['kind'] === 'constructor') {
-            const constructorDecl = decl
+        if ((decl as MethodDefinition)['kind'] === 'constructor') {
+            const constructorDecl = decl as MethodDefinition
             for (const [index, node] of constructorDecl.value.body.body.entries()) {
                 if (isExpressionStatement(node) &&
                     isAssignmentExpression(node.expression) &&
                     isMemberAssignment(node.expression.left) &&
-                    getStringValue((node.expression.left as MemberExpression)['property']) === name
+                    getStringValue((node.expression.left as MemberExpression)['property'] as Expression) === name
                 ) {
                     constructorDecl.value.body.body.splice(index, 1)
                 }
@@ -455,8 +467,8 @@ export function deletePropertiesFromObject (obj: ObjectExpression | ObjectPatter
     }
 }
 export function deleteMemberAssignmentsTo (program: Program, objName: string, name: string) {
-    ancestor(program as any as AcornNode, {
-        AssignmentExpression (node: AcornNode, ancestors: AcornNode[]) {
+    ancestor(program, {
+        AssignmentExpression (node: Node, ancestors: Node[]) {
             const expr = node as any as AssignmentExpression
             if (
                 isMemberExpression(expr.left) &&

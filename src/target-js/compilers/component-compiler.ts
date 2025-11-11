@@ -6,7 +6,7 @@ import { COMPONENT_RESERVED_MEMBERS } from '../../models/component'
 import { functionString } from '../../utils/lang'
 import { JSEmitter } from '../js-emitter'
 import { DynamicComponentInfo } from '../../models/component-info'
-import { Component } from 'san'
+import { Component, ComponentClazz } from 'san'
 
 export class ComponentClassCompiler {
     private emittedMemberKeys = new Set();
@@ -28,10 +28,10 @@ export class ComponentClassCompiler {
 
         // 组件继承的可能不直接是 san 的 Component
         // 这里将父类上的属性直接输出
-        this.emitPrototypes(componentInfo.componentClass)
+        this.emitPrototypes(componentInfo.componentClass as ComponentClazz)
     }
 
-    private emitPrototypes (clas: {new(): any}) {
+    private emitPrototypes (clas: ComponentClazz) {
         const proto = Object.getPrototypeOf(clas)
 
         // 这里 proto !== Component 可能拦截不到

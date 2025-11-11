@@ -1,11 +1,11 @@
 import { parse } from 'acorn'
 import {
     getLiteralValue, getStringValue, findExportNames, isModuleExports, findESMImports, findScriptRequires,
-    deleteMembersFromClassDeclaration, filterByType, deleteMemberAssignmentsTo
+    deleteMembersFromClassDeclaration, filterByType, deleteMemberAssignmentsTo, getMembersFromClassDeclaration
 } from '../../../src/ast/js-ast-util'
 
-const pm = (script: string) => parse(script, { sourceType: 'module', ecmaVersion: 2020 }) as any
-const p = (script: string) => parse(script, { ecmaVersion: 2020 }) as any
+const pm = (script: string) => parse(script, { sourceType: 'module', ecmaVersion: 2022 }) as any
+const p = (script: string) => parse(script, { ecmaVersion: 2022 }) as any
 
 describe('js-ast-util', () => {
     describe('.isModuleExports()', () => {
@@ -25,6 +25,15 @@ describe('js-ast-util', () => {
             expect(imports).toHaveLength(2)
             expect(imports[0]).toEqual(['Component', 'san', 'Component', tree.body[0]])
             expect(imports[1]).toEqual(['c', 'san', 'Component', tree.body[1]])
+        })
+        it('should parse literal imports in ES module', () => {
+            const script = `
+            import { "Component" as c } from 'san'
+            `
+            const tree = pm(script)
+            const imports = [...findESMImports(tree)]
+            expect(imports).toHaveLength(1)
+            expect(imports[0]).toEqual(['c', 'san', 'Component', tree.body[0]])
         })
         it('should parse default import in ES module', () => {
             const script = 'import XComponent from "./x-component"'
@@ -72,12 +81,12 @@ describe('js-ast-util', () => {
         })
         it('should find export const foo = bar', () => {
             const script = 'export const foo = bar'
-            const node = parse(script, { sourceType: 'module', ecmaVersion: 2020 }) as any
+            const node = parse(script, { sourceType: 'module', ecmaVersion: 2022 }) as any
             expect(findExportNames(node)).toEqual([['bar', 'foo']])
         })
         it('should find default export', () => {
             const script = 'export default foo'
-            const node = parse(script, { sourceType: 'module', ecmaVersion: 2020 }) as any
+            const node = parse(script, { sourceType: 'module', ecmaVersion: 2022 }) as any
             expect(findExportNames(node)).toEqual([['foo', 'default']])
         })
         it('should find module.exports = foo', () => {
@@ -101,10 +110,13 @@ describe('js-ast-util', () => {
         })
     })
     describe('.getLiteralValue()', () => {
-        it('should thorw if not supported', () => {
+        it('should throw if not supported', () => {
             const script = 'function a() {}'
             const fn = p(script).body[0]
             expect(() => getLiteralValue(fn)).toThrow('[0,15) expected literal')
+        })
+        it('should return undefined', () => {
+            expect(getLiteralValue(null)).toBe(undefined)
         })
     })
     describe('.deleteMembersFromClassDeclaration()', () => {
@@ -149,6 +161,20 @@ describe('js-ast-util', () => {
                 filterByType(node, 'MemberExpression')
                     .find(item => item.property.type === 'Identifier' && item.property.name === 'components')
             ).toBeFalsy()
+        })
+    })
+
+    describe('error handler', () => {
+        it('should throw error on StaticBlock', () => {
+            const script = `
+            class AAA {
+                static {
+                    this.components = {}
+                }
+            }
+            `
+            const node = p(script)
+            expect(() => getMembersFromClassDeclaration(node.body[0]).next()).toThrow('Static blocks are not supported')
         })
     })
 })

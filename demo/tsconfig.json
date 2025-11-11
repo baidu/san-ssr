@@ -11,7 +11,6 @@
     "downlevelIteration": true,
     "strict": true,
     "sourceMap": true,
-    "baseUrl": "types",
-    "suppressImplicitAnyIndexErrors": true
+    "baseUrl": "types"
   }
 }

@@ -6,8 +6,7 @@
  */
 import debugFactory from 'debug'
 import { ancestor } from 'acorn-walk'
-import { Node as AcornNode, parse } from 'acorn'
-import { CallExpression, Program, Node, Class, ObjectExpression, MemberExpression, Identifier } from 'estree'
+import { Node, CallExpression, Program, Class, ObjectExpression, MemberExpression, Identifier, parse, Expression } from 'acorn'
 import { generate } from 'astring'
 import { ComponentType, JSComponentInfo } from '../models/component-info'
 import {
@@ -87,8 +86,8 @@ export class JavaScriptSanParser {
         this.defineTemplateComponentIdentifier = 'defineTemplateComponent'
         this.root = parse(
             fileContent === undefined ? readFileSync(filePath, 'utf8') : fileContent,
-            { ecmaVersion: 2020, sourceType }
-        ) as any as Program
+            { ecmaVersion: 2022, sourceType }
+        )
         this.sanReferenceInfo = options?.sanReferenceInfo
     }
 
@@ -106,7 +105,7 @@ export class JavaScriptSanParser {
     }
 
     parseComponents (): [JSComponentInfo[], JSComponentInfo | undefined] {
-        const visitor = (node: AcornNode, ancestors: AcornNode[]) => {
+        const visitor = (node: Node, ancestors: Node[]) => {
             const parent = ancestors[ancestors.length - 2] as Node
             const n = node as Node
             if (this.isComponent(n)) {
@@ -116,7 +115,7 @@ export class JavaScriptSanParser {
                 }
             }
         }
-        ancestor(this.root as any as AcornNode, {
+        ancestor(this.root, {
             CallExpression: visitor,
             ClassExpression: visitor,
             ClassDeclaration: visitor
@@ -197,7 +196,7 @@ export class JavaScriptSanParser {
         }
         // exports.Foo = Component
         if (isAssignmentExpression(parent) && isExportsMemberExpression(parent.left)) {
-            return this.createComponent(node, getStringValue((parent.left as MemberExpression)['property']))
+            return this.createComponent(node, getStringValue((parent.left as MemberExpression)['property'] as Expression))
         }
         // const Foo = Component
         if (isVariableDeclarator(parent)) {
@@ -328,7 +327,7 @@ export class JavaScriptSanParser {
         }
         if (isMemberExpression(expr)) {
             return this.isImportedFromSanWithName(expr.object, ['default']) &&
-                sanExport.includes(getStringValue(expr.property))
+                sanExport.includes(getStringValue(expr.property as Expression))
         }
         if (isCallExpression(expr)) {
             return isRequireSpecifier(expr, this.sanReferenceInfo.moduleName) && sanExport.includes('default')

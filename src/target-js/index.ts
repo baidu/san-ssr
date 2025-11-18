@@ -68,13 +68,15 @@ export default class ToJSCompiler implements TargetCodeGenerator {
         const sanSSRResolver = sanSSRHelpers.createResolver({}, require)
 
         for (const info of componentInfos) {
+            // 标记为包含动态 this 的 SSR 组件，对于 this.d.xxx 需要创建对应的 data proxy 实例
+            (info.componentClass as ComponentClazz).prototype[DYNAMIC_THIS_FLAG] = true
+            info.proto[DYNAMIC_THIS_FLAG] = true
+
             const emitter = new JSEmitter()
             emitter.writeFunctionDefinition(this.optimize(info.compileToRenderer(options)))
 
             const rawRendererText = emitter.fullText()
-            const resolvedRenderer = this.createRenderer(rawRendererText, { sanSSRHelpers, sanSSRResolver });
-            // 标记为包含动态 this 的 SSR 组件，对于 this.d.xxx 需要创建对应的 data proxy 实例
-            (info.componentClass as ComponentClazz).prototype[DYNAMIC_THIS_FLAG] = true
+            const resolvedRenderer = this.createRenderer(rawRendererText, { sanSSRHelpers, sanSSRResolver })
             sanSSRResolver.setPrototype(info.id, (info.componentClass as ComponentClazz).prototype)
             sanSSRResolver.setRenderer(info.id, resolvedRenderer)
         }
@@ -109,7 +111,7 @@ export default class ToJSCompiler implements TargetCodeGenerator {
             if (isTypedSanSourceFile(sourceFile)) this.compileTSComponentToSource(sourceFile, emitter, options)
             else if (isJSSanSourceFile(sourceFile)) this.compileJSComponentToSource(sourceFile, emitter, options)
             // DynamicSanSourceFile
-            else this.compileComponentClassToSource(sourceFile, emitter)
+            else this.compileComponentClassToSource(sourceFile, emitter, options)
         } else if (typeof options.useProvidedComponentClass === 'object') {
             const { componentPath, componentName } = options.useProvidedComponentClass
             emitter.nextLine(
@@ -203,11 +205,24 @@ export default class ToJSCompiler implements TargetCodeGenerator {
         }
     }
 
-    private compileComponentClassToSource (sourceFile: DynamicSanSourceFile, emitter: JSEmitter) {
+    private compileComponentClassToSource (
+        sourceFile: DynamicSanSourceFile, emitter: JSEmitter, options: RenderOptions) {
         for (const info of sourceFile.componentInfos) {
-            const cc = new ComponentClassCompiler(emitter)
+            const compEmitter = new JSEmitter()
+            compEmitter.write('defineComponent(')
+            compEmitter.writeBlock('', () => new ComponentClassCompiler(compEmitter).compile(info), false)
+            compEmitter.write(')')
+            const { code } = transformDataProxy(compEmitter.fullText(), {
+                minifyMethods: options.minifyMethods,
+                sourceType: 'defineComponent',
+                componentInfo: {
+                    templateAst: info.root
+                }
+            })
+            const compCode = code.replace(/^defineComponent\({/, '{').replace(/}\);?\s*$/, '}')
+
             emitter.nextLine(`sanSSRResolver.setPrototype("${info.id}", `)
-            emitter.writeBlock('', () => cc.compile(info), false)
+            emitter.write(compCode)
             emitter.feedLine(');')
         }
     }

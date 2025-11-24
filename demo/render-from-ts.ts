@@ -27,12 +27,14 @@ export default class MyComponent extends Component<any> {
         // @ts-ignore
         this.d.ssr.initedProxy = 'inited-proxy'
         this.data.set('ssr.initedSet', 'inited-set')
+        // @ts-ignore
+        this.d.list.push(1)
         const field = 'count'
         // @ts-ignore
         this.d['ssr'][field] += 1
         const a = function (this: any) {
             // not transform this.d.notTransformed
-            this.d.ssr.notTransformed = this.d.computedValue + 1
+            this.d.ssr.notTransformed = this.d.computedValue + this.d.list.length
         }
         a.call(this)
     }

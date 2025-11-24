@@ -12,7 +12,7 @@ const project = new SanProject()
     console.log('---- ComponentClass to Renderer ------')
     const render = project.compileToRenderer(require('./render-from-js.js'))
     const html = render(data)
-    assert.strictEqual(html, '<div><!--s-data:{"firstName":"John","lastName":"Smith","name":"John Smith"}--><h1>John Smith</h1><h3>John Smith - MyComponent-Inited</h3><h4>MyComponent2</h4></div>')
+    assert.strictEqual(html, '<div><!--s-data:{"firstName":"John","lastName":"Smith","list":[]}--><h1>John Smith</h1><h3>John Smith - MyComponent-Inited</h3><h4>MyComponent2</h4></div>')
     console.log(html)
 }
 // compile javascript component to source
@@ -21,7 +21,7 @@ const project = new SanProject()
     writeFileSync('./dist/render-from-js.js', project.compileToSource('./render-from-js.js'))
     const render = require('./dist/render-from-js.js')
     const html = render(data)
-    assert.strictEqual(html, '<div><!--s-data:{"firstName":"John","lastName":"Smith","name":"John Smith"}--><h1>John Smith</h1><h3>John Smith - MyComponent-Inited</h3><h4>MyComponent2</h4></div>')
+    assert.strictEqual(html, '<div><!--s-data:{"firstName":"John","lastName":"Smith","list":[],"name":"John Smith"}--><h1>John Smith</h1><h3>John Smith - MyComponent-Inited</h3><h4>MyComponent2</h4></div>')
     console.log(html)
 }
 // compile javascript component to source(case2)
@@ -46,7 +46,7 @@ const project = new SanProject()
     }))
     const render = require('./dist/render-from-js2.js')
     const html = render(data)
-    assert.strictEqual(html, '<div><!--s-data:{"firstName":"John","lastName":"Smith","name":"John Smith"}--><h1>John Smith</h1></div>')
+    assert.strictEqual(html, '<div><!--s-data:{"firstName":"John","lastName":"Smith","list":[],"name":"John Smith"}--><h1>John Smith</h1></div>')
     console.log(html)
 }
 // compile san component file to source
@@ -60,7 +60,7 @@ const project = new SanProject()
     }))
     const render = require('./dist/render-from-san.js')
     const html = render(data)
-    assert.strictEqual(html, '<div><!--s-data:{"firstName":"John","lastName":"Smith","name":"John Smith"}--><h1>John Smith</h1></div>')
+    assert.strictEqual(html, '<div><!--s-data:{"firstName":"John","lastName":"Smith","list":[],"name":"John Smith"}--><h1>John Smith</h1></div>')
     console.log(html)
 }
 // compile typescript component to source
@@ -69,6 +69,6 @@ const project = new SanProject()
     writeFileSync('./dist/render-from-ts.js', project.compileToSource('./render-from-ts.ts'))
     const render = require('./dist/render-from-ts.js')
     const html = render(data)
-    assert.strictEqual(html, '<div><!--s-data:{"firstName":"John","lastName":"Smith","name":"John Smith","ssr":{"count":2,"initedProxy":"inited-proxy","initedSet":"inited-set","notTransformed":2},"computedValue":1}--><h1>John Smith - inited-proxy - inited-set - 2 - 2</h1></div>')
+    assert.strictEqual(html, '<div><!--s-data:{"firstName":"John","lastName":"Smith","list":[],"name":"John Smith","ssr":{"count":1}}--><h1>John Smith - inited-proxy - inited-set - 2 - 2</h1></div>')
     console.log(html)
 }

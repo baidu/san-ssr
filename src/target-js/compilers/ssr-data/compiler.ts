@@ -12,7 +12,8 @@ import {
     isProgram,
     isSpreadElement,
     isLiteral,
-    isTemplateLiteralString
+    isTemplateLiteralString,
+    isVariableDeclarator
 } from './acorn-utils'
 import { ANode } from 'san'
 import { ComponentInfo, DataTransformer, MethodFunction } from './transformer'
@@ -93,146 +94,158 @@ function parseComponents (ast: Node, componentInfos: Record<string, TransformCom
     const definedComponentsToRemove: CallExpression[] = []
     const parsedComponents: ComponentInfo[] = []
     const parsedComponentsMap: Record<string, ComponentInfo> = {}
-    walk.ancestor(ast, {
-        ClassDeclaration: (node, ancestors: Node[]) => {
-            const classDecl = node as ClassDeclaration
-            // class MyComponent extends san.Component {}
-            if (isIdentifier(classDecl.id) && classDecl.superClass && componentInfos[classDecl.id.name]) {
-                const componentName = classDecl.id.name
-                const component: ComponentInfo = {
-                    type: 'class' as const,
-                    componentName,
-                    templateAst: componentInfos[componentName].templateAst,
-                    componentRoot: classDecl,
-                    isDynamic: false,
-                    methods: (classDecl.body.body.filter(
-                        m => isMethodDefinition(m) && isIdentifier(m.key)) as MethodDefinition[])
-                        .reduce((map, m) => {
-                            (m.value as MethodFunction)._methodType = 'method'
-                            map[(m.key as Identifier).name] = m.value as MethodFunction
-                            return map
-                        }, {} as Record<string, MethodFunction>)
-                }
-                // extract computed and filters
-                for (const prop of classDecl.body.body) {
-                    if (isPropertyDefinition(prop) && !prop.computed && isIdentifier(prop.key)) {
-                        if (isObjectExpression(prop.value!)) {
-                            if (prop.key.name === 'computed') {
-                                component.computed = prop.value
-                            } else if (prop.key.name === 'filters') {
-                                component.filters = prop.value
-                            }
+    const parseClassComponent = (node: Node, ancestors: Node[]) => {
+        const classDecl = node as ClassDeclaration
+        // class MyComponent extends san.Component {}
+        if (isIdentifier(classDecl.id) && classDecl.superClass && componentInfos[classDecl.id.name]) {
+            const componentName = classDecl.id.name
+            const component: ComponentInfo = {
+                type: 'class' as const,
+                componentName,
+                templateAst: componentInfos[componentName].templateAst,
+                componentRoot: classDecl,
+                isDynamic: false,
+                methods: (classDecl.body.body.filter(
+                    m => isMethodDefinition(m) && isIdentifier(m.key)) as MethodDefinition[])
+                    .reduce((map, m) => {
+                        (m.value as MethodFunction)._methodType = 'method'
+                        map[(m.key as Identifier).name] = m.value as MethodFunction
+                        return map
+                    }, {} as Record<string, MethodFunction>)
+            }
+            // extract computed and filters
+            for (const prop of classDecl.body.body) {
+                if (isPropertyDefinition(prop) && !prop.computed && isIdentifier(prop.key)) {
+                    if (isObjectExpression(prop.value!)) {
+                        if (prop.key.name === 'computed') {
+                            component.computed = prop.value
+                        } else if (prop.key.name === 'filters') {
+                            component.filters = prop.value
                         }
-                        if (prop.static && prop.key.name === 'template') {
-                            if (isLiteral(prop.value!) || isTemplateLiteralString(prop.value!)) {
-                                component.template = prop.value!
-                            } else {
-                                component.isDynamic = true
-                            }
+                    }
+                    if (prop.static && prop.key.name === 'template') {
+                        if (isLiteral(prop.value!) || isTemplateLiteralString(prop.value!)) {
+                            component.template = prop.value!
+                        } else {
+                            component.isDynamic = true
                         }
                     }
                 }
+            }
 
-                parsedComponents.push(parsedComponentsMap[componentName] = component)
+            parsedComponents.push(parsedComponentsMap[componentName] = component)
 
-                const parent = ancestors[ancestors.length - 2]
-                // find the top-level class members assignments
-                if (isProgram(parent) || isBlockStatement(parent)) {
-                    component.blockRoot = (parent as Program)
-                    component.blockRoot.body.forEach(statment => {
-                        if (isExpressionStatement(statment) && isAssignmentExpression(statment.expression) &&
-                            isMemberExpression(statment.expression.left) &&
-                            isIdentifier(statment.expression.left.property)) {
-                            const left = statment.expression.left
-                            const right = statment.expression.right
-                            // MyComponent.computed = {...}
-                            if (isIdentifier(left.object) && (componentInfos[left.object.name])) {
-                                // MyComponent[abc] = ...
-                                if (left.computed) {
-                                    component.isDynamic = true
-                                }
-                                if (!left.computed && isIdentifier(left.property)) {
-                                    if (left.property.name === 'computed' || left.property.name === 'filters') {
-                                        if (isObjectExpression(right)) {
-                                            const propName = left.property.name as 'computed' | 'filters'
-                                            const className = left.object.name
-                                            if (parsedComponentsMap[className]) {
-                                                parsedComponentsMap[className][propName] = right
-                                            }
-                                        } else {
-                                            component.isDynamic = true
+            const parent = ancestors[ancestors.length - 2]
+            let blockRoot: Program | null = null
+            // find the top-level class members assignments
+            if (isProgram(parent) || isBlockStatement(parent)) {
+                blockRoot = parent as Program
+                // 兼容构建后代码 let MyComponent = class MyComponent extends san.Component {}
+            } else if (isVariableDeclarator(parent) &&
+                isIdentifier(parent.id) && parent.id.name === classDecl.id.name &&
+                (isProgram(ancestors[ancestors.length - 4]) || isBlockStatement(ancestors[ancestors.length - 4]))) {
+                blockRoot = ancestors[ancestors.length - 4] as Program
+            }
+            if (blockRoot) {
+                (component.blockRoot = blockRoot).body.forEach(statment => {
+                    if (isExpressionStatement(statment) && isAssignmentExpression(statment.expression) &&
+                        isMemberExpression(statment.expression.left) &&
+                        isIdentifier(statment.expression.left.property)) {
+                        const left = statment.expression.left
+                        const right = statment.expression.right
+                        // MyComponent.computed = {...}
+                        if (isIdentifier(left.object) && (componentInfos[left.object.name])) {
+                            // MyComponent[abc] = ...
+                            if (left.computed) {
+                                component.isDynamic = true
+                            }
+                            if (!left.computed && isIdentifier(left.property)) {
+                                if (left.property.name === 'computed' || left.property.name === 'filters') {
+                                    if (isObjectExpression(right)) {
+                                        const propName = left.property.name as 'computed' | 'filters'
+                                        const className = left.object.name
+                                        if (parsedComponentsMap[className]) {
+                                            parsedComponentsMap[className][propName] = right
                                         }
-                                    } else if (left.property.name === 'template') {
-                                        if (isLiteral(right) || isTemplateLiteralString(right)) {
-                                            component.template = right
-                                        } else {
-                                            component.isDynamic = true
-                                        }
+                                    } else {
+                                        component.isDynamic = true
                                     }
-                                }
-                            } else if (isMemberExpression(left.object) && isIdentifier(left.object.object) &&
-                                (componentInfos[left.object.object.name]) &&
-                                isIdentifier(left.object.property) && left.object.property.name === 'prototype') {
-                                // MyComponent.prototype[abc] = ...
-                                if (left.computed) {
-                                    component.isDynamic = true
-                                }
-                                // MyComponent.prototype.computed = {...}
-                                if (!left.computed && isIdentifier(left.property)) {
-                                    if (left.property.name === 'computed' || left.property.name === 'filters') {
-                                        if (isObjectExpression(right)) {
-                                            const propName = left.property.name
-                                            const className = left.object.object.name
-                                            if (parsedComponentsMap[className]) {
-                                                parsedComponentsMap[className][propName] = right
-                                            }
-                                        } else {
-                                            component.isDynamic = true
-                                        }
-                                    }
-                                }
-                                // MyComponent.prototype.method = {...}
-                                if (isIdentifier(left.property) && isFunctionExpression(right)) {
-                                    const className = left.object.object.name
-                                    if (parsedComponentsMap[className]) {
-                                        (right as MethodFunction)._methodType = 'prototype-method'
-                                        parsedComponentsMap[className].methods[
-                                            left.property.name] = (right as MethodFunction)
+                                } else if (left.property.name === 'template') {
+                                    if (isLiteral(right) || isTemplateLiteralString(right)) {
+                                        component.template = right
+                                    } else {
+                                        component.isDynamic = true
                                     }
                                 }
                             }
+                        } else if (isMemberExpression(left.object) && isIdentifier(left.object.object) &&
+                            (componentInfos[left.object.object.name]) &&
+                            isIdentifier(left.object.property) && left.object.property.name === 'prototype') {
+                            // MyComponent.prototype[abc] = ...
+                            if (left.computed) {
+                                component.isDynamic = true
+                            }
+                            // MyComponent.prototype.computed = {...}
+                            if (!left.computed && isIdentifier(left.property)) {
+                                if (left.property.name === 'computed' || left.property.name === 'filters') {
+                                    if (isObjectExpression(right)) {
+                                        const propName = left.property.name
+                                        const className = left.object.object.name
+                                        if (parsedComponentsMap[className]) {
+                                            parsedComponentsMap[className][propName] = right
+                                        }
+                                    } else {
+                                        component.isDynamic = true
+                                    }
+                                }
+                            }
+                            // MyComponent.prototype.method = {...}
+                            if (isIdentifier(left.property) && isFunctionExpression(right)) {
+                                const className = left.object.object.name
+                                if (parsedComponentsMap[className]) {
+                                    (right as MethodFunction)._methodType = 'prototype-method'
+                                    parsedComponentsMap[className].methods[
+                                        left.property.name] = (right as MethodFunction)
+                                }
+                            }
                         }
-                    })
-                }
-            }
-        },
-        CallExpression: (callExpr: CallExpression, ancestors: Node[]) => {
-            // defineComponent({...}) or san.defineComponent({...})
-            if (
-                (
-                    isIdentifier(callExpr.callee) &&
-                    callExpr.callee.name === 'defineComponent' &&
-                    isObjectExpression(callExpr.arguments[0])
-                ) ||
-                (
-                    isMemberExpression(callExpr.callee) &&
-                    isIdentifier(callExpr.callee.object) && callExpr.callee.object.name === 'san' &&
-                    isIdentifier(callExpr.callee.property) &&
-                    callExpr.callee.property.name === 'defineComponent' &&
-                    isObjectExpression(callExpr.arguments[0])
-                )
-            ) {
-                const componentName = getDefinedComponentName(ancestors[ancestors.length - 2])
-                // module.exports = defineComponent({...}) 匿名组件需要移除
-                if (!componentName) {
-                    definedComponentsToRemove.push(callExpr)
-                }
-                parsedComponents.push(createDefineComponentInfo(
-                    callExpr.arguments[0] as ObjectExpression,
-                    componentName,
-                    componentInfos[componentName || 'default']?.templateAst))
+                    }
+                })
             }
         }
+    }
+    const parseDefineComponent = (callExpr: CallExpression, ancestors: Node[]) => {
+        // defineComponent({...}) or san.defineComponent({...})
+        if (
+            (
+                isIdentifier(callExpr.callee) &&
+                callExpr.callee.name === 'defineComponent' &&
+                isObjectExpression(callExpr.arguments[0])
+            ) ||
+            (
+                isMemberExpression(callExpr.callee) &&
+                isIdentifier(callExpr.callee.object) && callExpr.callee.object.name === 'san' &&
+                isIdentifier(callExpr.callee.property) &&
+                callExpr.callee.property.name === 'defineComponent' &&
+                isObjectExpression(callExpr.arguments[0])
+            )
+        ) {
+            const componentName = getDefinedComponentName(ancestors[ancestors.length - 2])
+            // module.exports = defineComponent({...}) 匿名组件需要移除
+            if (!componentName) {
+                definedComponentsToRemove.push(callExpr)
+            }
+            parsedComponents.push(createDefineComponentInfo(
+                callExpr.arguments[0] as ObjectExpression,
+                componentName,
+                componentInfos[componentName || 'default']?.templateAst))
+        }
+    }
+    walk.ancestor(ast, {
+        ClassDeclaration: parseClassComponent,
+        // 兼容构建后代码 let MyComponent = class MyComponent extends san.Component {}
+        ClassExpression: parseClassComponent,
+        CallExpression: parseDefineComponent
     })
     return {
         parsedComponents,

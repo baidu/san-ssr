@@ -113,6 +113,11 @@ function transformGetSetDataNode (
         const pathParts = String(pathNode.value).split('.')
         const dataRawExpr = createThisDataRawNode()
         if (!dataNode.isDataSet) {
+            if (pathParts[0].trim().length === 0) {
+                // this.data.get('') to this.data.raw
+                replaceNode(dataNode.callNode, dataRawExpr)
+                return true
+            }
             // this.data.get('a.b.c') to this.data.raw.a?.b?.c
             if (!computedNames.has(pathParts[0])) {
                 replaceNode(dataNode.callNode, createPropertyChain(dataRawExpr, pathParts))

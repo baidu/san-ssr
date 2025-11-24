@@ -223,6 +223,34 @@ function mergeChildSlots (childSlots: {[name: string]: Function}) {
     return sourceSlots
 }
 
+function recursiveDeepClone<T> (obj: T, cache = new WeakMap<any>()): T {
+    if (obj === null || typeof obj !== 'object') {
+        return obj
+    }
+    if (obj instanceof Date) {
+        return new Date(obj.getTime()) as unknown as T
+    }
+    if (obj instanceof RegExp) {
+        return new RegExp(obj) as unknown as T
+    }
+    if (cache.has(obj)) {
+        return cache.get(obj)
+    }
+    const newObj = Array.isArray(obj) ? [] : Object.create(Object.getPrototypeOf(obj))
+    cache.set(obj, newObj)
+    // Recursively clone properties
+    for (const key of Object.keys(obj)) {
+        (newObj as any)[key] = recursiveDeepClone((obj as any)[key], cache)
+    }
+    return newObj as T
+}
+
+declare let structuredClone: (<T>(data: T) => T) | undefined
+function cloneDeep<T = any> (data: T): T {
+    // eslint-disable-next-line no-undef
+    return typeof structuredClone === 'function' ? structuredClone(data) : recursiveDeepClone(data)
+}
+
 export const _ = {
     output,
     createInstanceFromClass,
@@ -239,5 +267,6 @@ export const _ = {
     callFilter,
     callComputed,
     handleError,
-    mergeChildSlots
+    mergeChildSlots,
+    cloneDeep
 }

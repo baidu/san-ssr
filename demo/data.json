@@ -1,4 +1,5 @@
 {
   "firstName": "John",
-  "lastName": "Smith"
+  "lastName": "Smith",
+  "list": []
 }

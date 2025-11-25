@@ -200,6 +200,33 @@ const sanSSRHelpers = (function (exports) {
         }
         return sourceSlots;
     }
+    function recursiveDeepClone(obj, cache = new WeakMap()) {
+        if (obj === null || typeof obj !== 'object') {
+            return obj;
+        }
+        if (obj instanceof Date) {
+            return new Date(obj.getTime());
+        }
+        if (obj instanceof RegExp) {
+            return new RegExp(obj);
+        }
+        if (cache.has(obj)) {
+            return cache.get(obj);
+        }
+        const newObj = Array.isArray(obj) ? [] : Object.create(Object.getPrototypeOf(obj));
+        cache.set(obj, newObj);
+        // Recursively clone properties
+        for (const key in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                newObj[key] = recursiveDeepClone(obj[key], cache);
+            }
+        }
+        return newObj;
+    }
+    function cloneDeep(data) {
+        // eslint-disable-next-line no-undef
+        return typeof structuredClone === 'function' ? structuredClone(data) : recursiveDeepClone(data);
+    }
     exports._ = {
         output,
         createInstanceFromClass,
@@ -216,7 +243,8 @@ const sanSSRHelpers = (function (exports) {
         callFilter,
         callComputed,
         handleError,
-        mergeChildSlots
+        mergeChildSlots,
+        cloneDeep
     };
     //# sourceMappingURL=underscore.js.map
     
@@ -380,7 +408,7 @@ const sanSSRHelpers = (function (exports) {
     }
     exports.SanSSRData = SanSSRData;
     /**
-     * 创建 Data 代理对象，拦截 computed 字段，用于 proxy api
+     * 创建 Data 代理对象，拦截处理 computed 字段，用于 proxy api
      * @param instance
      * @returns
      */
@@ -512,10 +540,11 @@ class MyComponent extends san_1.Component {
   inited() {
     this.data.raw.ssr.initedProxy = 'inited-proxy';
     this.data.set('ssr.initedSet', 'inited-set');
+    this.data.raw.list.push(1);
     const field = 'count';
     this.data.raw['ssr'][field] += 1;
     const a = function () {
-      this.d.ssr.notTransformed = this.d.computedValue + 1;
+      this.d.ssr.notTransformed = this.d.computedValue + this.d.list.length;
     };
     a.call(this);
   }
@@ -592,6 +621,7 @@ sanSSRResolver.setRenderer("default", function  (data, ...info) {
     if (instance._ssrHasDynamicThis === true) {
         instance.d = SanSSRData.createDataProxy(instance);
     }
+    ctx.dataBeforeInit = _.cloneDeep(ctx.data);
     try {
         instance.inited();
     }
@@ -613,12 +643,12 @@ sanSSRResolver.setRenderer("default", function  (data, ...info) {
     }
     html += ">";
     if (!noDataOutput && !renderOnly) {
-        let data = info.renderOnly ? ctx.data : info.rootOutputData || _.getRootCtx(ctx).data
+        let sData = info.renderOnly ? ctx.dataBeforeInit : info.rootOutputData || _.getRootCtx(ctx).dataBeforeInit
         if (info.outputData) {
-            data = typeof (info.outputData) === "function" ? info.outputData(data) : info.outputData;
+            sData = typeof (info.outputData) === "function" ? info.outputData(sData) : info.outputData;
         }
         html += "<!--s-data:";
-        html += JSON.stringify(data).replace(/(?<=-)-/g, "\\-");
+        html += JSON.stringify(sData).replace(/(?<=-)-/g, "\\-");
         html += "-->";
     }
     html += "<h1>";

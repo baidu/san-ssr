@@ -277,30 +277,30 @@ export class ANodeCompiler {
     private createDataComment () {
         const dataExpr = CONDITIONAL(
             BINARY(I('info'), '.', I(RESERVED_NAMES.renderOnly)),
-            BINARY(I('ctx'), '.', I('data')),
+            BINARY(I('ctx'), '.', I('dataBeforeInit')),
             BINARY(
                 BINARY(I('info'), '.', I('rootOutputData')),
                 '||',
 
                 // 这里保留 GetRootCtxCall 是为了兼容与老版本 san-ssr 的编译产物混用的情况
-                BINARY(new GetRootCtxCall([I('ctx')]), '.', I('data'))
+                BINARY(new GetRootCtxCall([I('ctx')]), '.', I('dataBeforeInit'))
             )
         )
         const outputDataExpr = BINARY(I('info'), '.', I('outputData'))
         return [
-            new VariableDefinition('data', dataExpr),
+            new VariableDefinition('sData', dataExpr),
             new If(outputDataExpr, [
                 new AssignmentStatement(
-                    I('data'),
+                    I('sData'),
                     new ConditionalExpression(
                         BINARY(new Typeof(outputDataExpr), '===', L('function')),
-                        new FunctionCall(outputDataExpr, [I('data')]),
+                        new FunctionCall(outputDataExpr, [I('sData')]),
                         outputDataExpr
                     )
                 )
             ]),
             createHTMLLiteralAppend('<!--s-data:'),
-            createHTMLExpressionAppend(new RegexpReplace(new JSONStringify(I('data')), '(?<=-)-', L('\\-'))),
+            createHTMLExpressionAppend(new RegexpReplace(new JSONStringify(I('sData')), '(?<=-)-', L('\\-'))),
             createHTMLLiteralAppend('-->')
         ]
     }

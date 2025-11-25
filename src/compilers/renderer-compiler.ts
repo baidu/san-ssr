@@ -199,6 +199,10 @@ export class RendererCompiler {
             )]
         ))
         // call inited
+        body.push(ASSIGN(BINARY(I('ctx'), '.', I('dataBeforeInit')), new FunctionCall(
+            BINARY(I('_'), '.', I('cloneDeep')),
+            [BINARY(I('ctx'), '.', I('data'))]
+        )))
         if (info.hasMethod('inited')) {
             body.push(createTryStatement(
                 [STATEMENT(new FunctionCall(BINARY(I('instance'), '.', I('inited')), []))],

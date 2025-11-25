@@ -179,4 +179,90 @@ describe('utils/underscore', function () {
             expect(getRootCtx(leaf as any) === root).toBeTruthy()
         })
     })
+    if (typeof structuredClone === 'function') {
+        describe('.cloneDeep() with structuredClone', () => {
+            it('should deep clone object', () => {
+                class AAA {
+                    x = 10
+                }
+                const obj = { a: 1, b: { c: 2, date: new Date(), reg: /a/, aaa: new AAA() } }
+                const cloned = _.cloneDeep(obj)
+                expect(cloned).toEqual(obj)
+                expect(cloned === obj).toBeFalsy()
+                expect(cloned.b === obj.b).toBeFalsy()
+                expect(cloned.b.date).toEqual(obj.b.date)
+                expect(cloned.b.date === obj.b.date).toBeFalsy()
+                expect(cloned.b.reg).toEqual(obj.b.reg)
+                expect(cloned.b.reg === obj.b.reg).toBeFalsy()
+                expect(cloned.b.aaa).toEqual(obj.b.aaa)
+                expect(cloned.b.aaa === obj.b.aaa).toBeFalsy()
+            })
+            it('should deep clone array', () => {
+                const arr = [1, 2, { a: 3 }]
+                const cloned = _.cloneDeep(arr)
+                expect(cloned).toEqual(arr)
+                expect(cloned === arr).toBeFalsy()
+                expect(cloned[2] === arr[2]).toBeFalsy()
+            })
+            it('should handle circular reference', () => {
+                const obj: any = { a: 1 }
+                obj.self = obj
+                const cloned = _.cloneDeep(obj)
+                expect(cloned).toEqual(obj)
+                expect(cloned === obj).toBeFalsy()
+                expect(cloned.self === cloned).toBeTruthy()
+            })
+        })
+    }
+
+    describe('.cloneDeep() with recursiveDeepClone', () => {
+        const structuredClone = global.structuredClone
+        beforeAll(() => {
+            global.structuredClone = undefined
+        })
+
+        afterAll(() => {
+            global.structuredClone = structuredClone
+        })
+
+        it('should deep clone object', () => {
+            const ownProperty = Object.create({
+                inherited: 1
+            })
+            ownProperty.own = 'own'
+            const obj = { a: 1, b: { c: 2, date: new Date(), reg: /a/ }, ownProperty }
+            const cloned = _.cloneDeep(obj)
+            expect(cloned).toEqual(obj)
+            expect(cloned === obj).toBeFalsy()
+            expect(cloned.b === obj.b).toBeFalsy()
+            expect(cloned.b.date).toEqual(obj.b.date)
+            expect(cloned.b.date === obj.b.date).toBeFalsy()
+            expect(cloned.b.reg).toEqual(obj.b.reg)
+            expect(cloned.b.reg === obj.b.reg).toBeFalsy()
+            expect(cloned.ownProperty.own).toEqual('own')
+        })
+        it('should deep clone array', () => {
+            const arr = [1, 2, { a: 3 }]
+            const cloned = _.cloneDeep(arr)
+            expect(cloned).toEqual(arr)
+            expect(cloned === arr).toBeFalsy()
+            expect(cloned[2] === arr[2]).toBeFalsy()
+        })
+        it('should handle circular reference', () => {
+            const obj: any = { a: 1 }
+            obj.self = obj
+            const cloned = _.cloneDeep(obj)
+            expect(cloned).toEqual(obj)
+            expect(cloned === obj).toBeFalsy()
+            expect(cloned.self === cloned).toBeTruthy()
+        })
+
+        it('should use structuredClone', () => {
+            global.structuredClone = (data: any) => data
+            const arr = [1, 2, { a: 3 }]
+            const cloned = _.cloneDeep(arr)
+            expect(cloned === arr).toBeTruthy()
+            global.structuredClone = undefined
+        })
+    })
 })

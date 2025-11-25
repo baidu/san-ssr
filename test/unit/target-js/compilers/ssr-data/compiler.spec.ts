@@ -24,7 +24,7 @@ describe('target-js/compilers/ssr-data/compiler.ts', () => {
         })
 
         it('remove template, hooks', () => {
-            const code1 = `class MyClass extends san.Component {
+            const code1 = `let MyClass = class MyClass extends san.Component {
                 static template = '<div></div>';
                 inited() {
                     this.notHook();
@@ -37,7 +37,7 @@ describe('target-js/compilers/ssr-data/compiler.ts', () => {
                 notHook() {}
             }`
             expect(trimCode(transformDataProxy(code1, { sourceType: 'class', componentInfos: { MyClass: {} } }).code))
-                .toBe(trimCode(`class MyClass extends san.Component {
+                .toBe(trimCode(`let MyClass = class MyClass extends san.Component {
                     inited() {
                         this.notHook();
                     }
@@ -227,6 +227,8 @@ describe('target-js/compilers/ssr-data/compiler.ts', () => {
                     callback(this.d[xxx]);
                     callback(this.d[xxx].abc);
                     this.d[xxx] = 1;
+                    const a = this.data.get();
+                    const b = this.data.get('');
                 }
                 static computed = {
                     newMessage() {
@@ -256,6 +258,8 @@ describe('target-js/compilers/ssr-data/compiler.ts', () => {
                     callback(this.data.get(\`\${xxx}\`));
                     callback(this.data.get(\`\${xxx}\`).abc);
                     this.data.raw[xxx] = 1;
+                    const a = this.data.raw;
+                    const b = this.data.raw;
                 }
                 static computed = {
                     newMessage() {
@@ -274,6 +278,97 @@ describe('target-js/compilers/ssr-data/compiler.ts', () => {
                 .toBe(trimCode(output))
         })
 
+        it('transform class data proxy in compiled code', () => {
+            const code = `let MyClass = class MyClass extends san.Component {
+                inited() {
+                    this.d.ssr.count = 1;
+                    this.d.ssr.message = this.d.ssr.count + 'Hello World';
+                    this.d.ssr.list.push('test');
+                    this.d.ssr.list.unshift('test');
+                    this.d.ssr.list.pop();
+                    this.d.ssr.list.shift();
+                    this.d.ssr.list.splice(0, 1);
+                    Object.assign(this.d, { a: 1 });
+                    Object.assign(this.d.obj1, { a: 1 }, { b: 1 });
+                    const newMessage = this.d.newMessage + this.d[xxx].abc + 'New';
+                    callback(this.d[xxx]);
+                    callback(this.d[xxx].abc);
+                    this.d[xxx] = 1;
+                    const a = this.data.get();
+                    const b = this.data.get('');
+                }
+            };
+            MyClass.computed = {
+                newMessage() {
+                    this.d.ssr = 1;
+                    return this.d.ssr.message + 'New';
+                }
+            }
+            MyClass.filters = {
+                fitler1(val) {
+                    this.d.ssr = 1;
+                    return val + this.d.ssr.list.length + this.d.newMessage;
+                }
+            }
+            `
+            const output = `let MyClass = class MyClass extends san.Component {
+                inited() {
+                    this.data.raw.ssr.count = 1;
+                    this.data.raw.ssr.message = this.data.raw.ssr.count + 'Hello World';
+                    this.data.raw.ssr.list.push('test');
+                    this.data.raw.ssr.list.unshift('test');
+                    this.data.raw.ssr.list.pop();
+                    this.data.raw.ssr.list.shift();
+                    this.data.raw.ssr.list.splice(0, 1);
+                    Object.assign(this.data.raw, { a: 1 });
+                    Object.assign(this.data.raw.obj1, { a: 1 }, { b: 1 });
+                    const newMessage = this.data.get("newMessage") + this.data.get(\`\${xxx}\`).abc + 'New';
+                    callback(this.data.get(\`\${xxx}\`));
+                    callback(this.data.get(\`\${xxx}\`).abc);
+                    this.data.raw[xxx] = 1;
+                    const a = this.data.raw;
+                    const b = this.data.raw;
+                }
+            };
+
+            MyClass.computed = {
+                newMessage() {
+                    this.d.ssr = 1;
+                    return this.data.raw.ssr.message + 'New';
+                }
+            };
+            MyClass.filters = {
+                fitler1(val) {
+                    this.d.ssr = 1;
+                    return val + this.data.raw.ssr.list.length + this.data.get("newMessage");
+                }
+            }
+            `
+            expect(trimCode(transformDataProxy(code, { sourceType: 'class', componentInfos: { MyClass: {} } }).code))
+                .toBe(trimCode(output))
+        })
+
+        it('not transform class when name not same in compiled code (error)', () => {
+            const code = `let MyClass11 = class MyClass extends san.Component {
+                inited() {
+                    this.data.raw.ssr.count = 1;
+                }
+            };
+            MyClass11.computed = {
+                newMessage() {
+                    this.d.ssr = 1;
+                }
+            }
+            MyClass11.filters = {
+                fitler1(val) {
+                    this.d.ssr = 1;
+                }
+            }
+            `
+            expect(trimCode(transformDataProxy(code, { sourceType: 'class', componentInfos: { MyClass: {} } }).code))
+                .toBe(trimCode(code))
+        })
+
         it('transform defineComponent data proxy', () => {
             const code = `const A = san.defineComponent({
                 inited() {
@@ -287,6 +382,8 @@ describe('target-js/compilers/ssr-data/compiler.ts', () => {
                     Object.assign(this.d, { a: 1 });
                     Object.assign(this.d.obj1, { a: 1 }, { b: 1 });
                     const newMessage = this.d.newMessage + this.d[xxx].abc + 'New';
+                    const a = this.data.get();
+                    const b = this.data.get('');
                 },
                 computed: {
                     newMessage() {
@@ -311,6 +408,8 @@ describe('target-js/compilers/ssr-data/compiler.ts', () => {
                     Object.assign(this.data.raw, { a: 1 });
                     Object.assign(this.data.raw.obj1, { a: 1 }, { b: 1 });
                     const newMessage = this.data.get("newMessage") + this.data.get(\`\${xxx}\`).abc + 'New';
+                    const a = this.data.raw;
+                    const b = this.data.raw;
                 },
                 computed: {
                     newMessage() {

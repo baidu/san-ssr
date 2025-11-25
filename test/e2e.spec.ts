@@ -134,6 +134,7 @@ for (const { caseName, caseRoot } of cases) {
         if (ssrSpec.enabled.comrdr) {
             ssrSpec.beforeHook && ssrSpec.beforeHook('comrdr')
             it('component to renderer: ' + caseName, async function () {
+                // console.info('case:', `${caseRoot}/${caseName}/component.js`)
                 const info = Object.assign({}, ssrSpec.info || {})
                 const got = renderOnthefly(caseName, caseRoot, info)
                 const [data, html] = parseSanHTML(got)

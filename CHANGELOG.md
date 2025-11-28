@@ -1,3 +1,11 @@
+# [3.15.0](https://github.com/baidu/san-ssr/compare/nv3.14.3...nv3.15.0) (2025-11-28)
+
+
+### Features
+
+* compile component support data proxy ([#185](https://github.com/baidu/san-ssr/issues/185)) ([a24bdce](https://github.com/baidu/san-ssr/commit/a24bdce0644665d9e45b78bbd064dcb5560fd065))
+* optimize SSR data output, use data before inited called for page output. ([#186](https://github.com/baidu/san-ssr/issues/186)) ([76a7cc6](https://github.com/baidu/san-ssr/commit/76a7cc6cd467f183803dd6305e850739546a5467))
+
 ## [3.14.3](https://github.com/baidu/san-ssr/compare/nv3.14.2...nv3.14.3) (2024-07-05)
 
 

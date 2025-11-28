@@ -57,7 +57,7 @@ if (helpers) {
     process.exit(0)
 }
 
-const componentFile = resolve(yargs.argv._[0])
+const componentFile = resolve(String(yargs.argv._[0]))
 const targetCode = project.compile(componentFile, target, options)
 output(targetCode)
 

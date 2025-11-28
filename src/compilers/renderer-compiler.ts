@@ -9,11 +9,12 @@ import { ComponentInfo } from '../models/component-info'
 import { RenderOptions } from './renderer-options'
 import {
     FunctionDefinition, ComputedCall, Foreach, FunctionCall, MapLiteral, If, CreateComponentInstance, ImportHelper,
-    ComponentReferenceLiteral, ConditionalExpression, BinaryExpression, CreateComponentPrototype, Else, Typeof
+    ComponentReferenceLiteral, Expression, ConditionalExpression, BinaryExpression, CreateComponentPrototype, Else, Typeof,
+    AssignmentStatement, VariableDefinition, JSONStringify, RegexpReplace
 } from '../ast/renderer-ast-dfn'
 import {
     EMPTY_MAP, STATEMENT, NEW, BINARY, ASSIGN, DEF, RETURN, createDefaultValue, L, I, NULL, UNDEFINED,
-    createTryStatement, createDefineWithDefaultValue, UNARY, EMPTY_ARRAY
+    CONDITIONAL, createTryStatement, createDefineWithDefaultValue, UNARY, EMPTY_ARRAY
 } from '../ast/renderer-ast-util'
 import { IDGenerator } from '../utils/id-generator'
 import { mergeLiteralAdd } from '../optimizers/merge-literal-add'
@@ -66,7 +67,7 @@ export class RendererCompiler {
     }
 
     private compileComponentRendererBody (info: ComponentInfo) {
-        const body = []
+        let body = []
         // 没有 ANode 的组件，比如 load-success 样例
         if (!info.root) {
             body.push(RETURN(L('')))
@@ -198,11 +199,10 @@ export class RendererCompiler {
                 new FunctionCall(BINARY(I('SanSSRData'), '.', I('createDataProxy')), [I('instance')])
             )]
         ))
+
+        body = body.concat(this.compileDataStringify(info))
+
         // call inited
-        body.push(ASSIGN(BINARY(I('ctx'), '.', I('dataBeforeInit')), new FunctionCall(
-            BINARY(I('_'), '.', I('cloneDeep')),
-            [BINARY(I('ctx'), '.', I('data'))]
-        )))
         if (info.hasMethod('inited')) {
             body.push(createTryStatement(
                 [STATEMENT(new FunctionCall(BINARY(I('instance'), '.', I('inited')), []))],
@@ -237,7 +237,7 @@ export class RendererCompiler {
     }
 
     private compileTemplateComponentRendererBody (info: ComponentInfo) {
-        const body = []
+        let body = []
         // 没有 ANode 的组件，比如 load-success 样例
         if (!info.root) {
             body.push(RETURN(L('')))
@@ -315,6 +315,8 @@ export class RendererCompiler {
             body.push(...this.compileTemplateComponentContext())
         }
 
+        body = body.concat(this.compileDataStringify(info))
+
         body.push(DEF('html', L('')))
         body.push(ASSIGN(I('parentCtx'), I('ctx')))
         const aNodeCompiler = new ANodeCompiler(
@@ -324,6 +326,54 @@ export class RendererCompiler {
 
         body.push(RETURN(I('html')))
         return body
+    }
+
+    private compileDataStringify(info: ComponentInfo) {
+        const body = []
+        body.push(DEF('dataStr', L('')))
+
+        if (!this.options.ssrOnly) {
+            let dataOutputCondition = UNARY('!', I('noDataOutput')) as Expression
+            if (info.componentType !== 'template' &&
+                (info.ssrType === 'render-only' || info.ssrType === undefined)
+            ) {
+                dataOutputCondition = BINARY(dataOutputCondition, '&&', UNARY('!', I('renderOnly')))
+            }
+            const dataExpr = CONDITIONAL(
+                BINARY(I('info'), '.', I(RESERVED_NAMES.renderOnly)),
+                BINARY(I('ctx'), '.', I('data')),
+                BINARY(
+                    BINARY(I('info'), '.', I('rootOutputData')),
+                    '||',
+                    BINARY(I('ctx'), '.', I('data'))
+                )
+            )
+            const outputDataExpr = BINARY(I('info'), '.', I('outputData'))
+            body.push(
+                new If(
+                    dataOutputCondition, 
+                    [
+                        new VariableDefinition('sData', dataExpr),
+                        new If(outputDataExpr, [
+                            new AssignmentStatement(
+                                I('sData'),
+                                new ConditionalExpression(
+                                    BINARY(new Typeof(outputDataExpr), '===', L('function')),
+                                    new FunctionCall(outputDataExpr, [I('sData')]),
+                                    outputDataExpr
+                                )
+                            )
+                        ]),
+                        ASSIGN(
+                            I('dataStr'),
+                            new RegexpReplace(new JSONStringify(I('sData')), '(?<=-)-', L('\\-'))
+                        )
+                    ]
+                )
+            )
+        }
+
+        return body;
     }
 
     private compileGenInstance (info: ComponentInfo) {

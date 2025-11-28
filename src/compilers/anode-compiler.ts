@@ -224,13 +224,11 @@ export class ANodeCompiler {
         )
         if (aNode.tagName === 'script') this.inScript = true
         if (isRootElement && !this.ssrOnly && !this.inScript) {
-            let dataOutputCondition = UNARY('!', I('noDataOutput')) as Expression
-            if (
-                this.componentInfo.componentType !== 'template' &&
-                (this.componentInfo.ssrType === 'render-only' || this.componentInfo.ssrType === undefined)) {
-                dataOutputCondition = BINARY(dataOutputCondition, '&&', UNARY('!', I('renderOnly')))
-            }
-            yield new If(dataOutputCondition, this.createDataComment())
+            yield new If(I('dataStr'), [
+                createHTMLLiteralAppend('<!--s-data:'),
+                createHTMLExpressionAppend(I('dataStr')),
+                createHTMLLiteralAppend('-->')
+            ])
         }
 
         yield * this.elementCompiler.inner(aNode)
@@ -272,37 +270,6 @@ export class ANodeCompiler {
             BINARY(
                 I('attrs'), '&&', BINARY(I('attrs'), '.', I('length'))
             ), rootAttrExec)
-    }
-
-    private createDataComment () {
-        const dataExpr = CONDITIONAL(
-            BINARY(I('info'), '.', I(RESERVED_NAMES.renderOnly)),
-            BINARY(I('ctx'), '.', I('dataBeforeInit')),
-            BINARY(
-                BINARY(I('info'), '.', I('rootOutputData')),
-                '||',
-
-                // 这里保留 GetRootCtxCall 是为了兼容与老版本 san-ssr 的编译产物混用的情况
-                BINARY(new GetRootCtxCall([I('ctx')]), '.', I('dataBeforeInit'))
-            )
-        )
-        const outputDataExpr = BINARY(I('info'), '.', I('outputData'))
-        return [
-            new VariableDefinition('sData', dataExpr),
-            new If(outputDataExpr, [
-                new AssignmentStatement(
-                    I('sData'),
-                    new ConditionalExpression(
-                        BINARY(new Typeof(outputDataExpr), '===', L('function')),
-                        new FunctionCall(outputDataExpr, [I('sData')]),
-                        outputDataExpr
-                    )
-                )
-            ]),
-            createHTMLLiteralAppend('<!--s-data:'),
-            createHTMLExpressionAppend(new RegexpReplace(new JSONStringify(I('sData')), '(?<=-)-', L('\\-'))),
-            createHTMLLiteralAppend('-->')
-        ]
     }
 
     private * compileComponent (

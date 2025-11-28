@@ -13,13 +13,10 @@ import { getANodePropByName } from '../ast/san-ast-util'
 import * as TypeGuards from '../ast/san-ast-type-guards'
 import { IDGenerator } from '../utils/id-generator'
 import {
-    JSONStringify, RegexpReplace, Statement, SlotRendererDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral,
-    ComponentRendererReference, FunctionCall, SlotRenderCall, Expression, GetRootCtxCall, ComponentReferenceLiteral,
+    Statement, SlotRendererDefinition, ElseIf, Else, MapAssign, Foreach, If, MapLiteral,
+    ComponentRendererReference, FunctionCall, SlotRenderCall, Expression, ComponentReferenceLiteral,
     ComponentClassReference,
-    VariableDefinition,
-    ConditionalExpression,
     Typeof,
-    AssignmentStatement,
     ArrayLiteral,
     HelperCall
 } from '../ast/renderer-ast-dfn'
@@ -31,7 +28,6 @@ import {
     I,
     ASSIGN,
     STATEMENT,
-    UNARY,
     DEF,
     BINARY,
     RETURN,

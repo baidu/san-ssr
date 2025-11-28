@@ -200,33 +200,6 @@ const sanSSRHelpers = (function (exports) {
         }
         return sourceSlots;
     }
-    function recursiveDeepClone(obj, cache = new WeakMap()) {
-        if (obj === null || typeof obj !== 'object') {
-            return obj;
-        }
-        if (obj instanceof Date) {
-            return new Date(obj.getTime());
-        }
-        if (obj instanceof RegExp) {
-            return new RegExp(obj);
-        }
-        if (cache.has(obj)) {
-            return cache.get(obj);
-        }
-        const newObj = Array.isArray(obj) ? [] : Object.create(Object.getPrototypeOf(obj));
-        cache.set(obj, newObj);
-        // Recursively clone properties
-        for (const key in obj) {
-            if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                newObj[key] = recursiveDeepClone(obj[key], cache);
-            }
-        }
-        return newObj;
-    }
-    function cloneDeep(data) {
-        // eslint-disable-next-line no-undef
-        return typeof structuredClone === 'function' ? structuredClone(data) : recursiveDeepClone(data);
-    }
     exports._ = {
         output,
         createInstanceFromClass,
@@ -243,8 +216,7 @@ const sanSSRHelpers = (function (exports) {
         callFilter,
         callComputed,
         handleError,
-        mergeChildSlots,
-        cloneDeep
+        mergeChildSlots
     };
     //# sourceMappingURL=underscore.js.map
     
@@ -545,13 +517,28 @@ const MyComponent2 = san.defineComponent({
     this.data.raw.name = 'MyComponent2';
   }
 });
+const SubChild = san.defineComponent({
+  ssr: 'render-hydrate'
+});
+const Child = san.defineComponent({});
+const ULabel = san.defineComponent({
+  ssr: 'render-hydrate'
+});
+const MyComponent3 = san.defineComponent({
+  ssr: 'render-only'
+});
 module.exports = {}
 sanSSRResolver.setPrototype("MyComponent", sanSSRHelpers._.createInstanceFromClass(MyComponent));
 sanSSRResolver.setPrototype("MyComponent2", sanSSRHelpers._.createInstanceFromClass(MyComponent2));
+sanSSRResolver.setPrototype("SubChild", sanSSRHelpers._.createInstanceFromClass(SubChild));
+sanSSRResolver.setPrototype("Child", sanSSRHelpers._.createInstanceFromClass(Child));
+sanSSRResolver.setPrototype("ULabel", sanSSRHelpers._.createInstanceFromClass(ULabel));
+sanSSRResolver.setPrototype("MyComponent3", sanSSRHelpers._.createInstanceFromClass(MyComponent3));
 sanSSRResolver.setPrototype("default", sanSSRHelpers._.createInstanceFromClass(san.defineComponent({
   components: {
     MyComponent,
-    MyComponent2
+    MyComponent2,
+    MyComponent3
   },
   computed: {
     name: function () {
@@ -620,7 +607,14 @@ sanSSRResolver.setRenderer("MyComponent", function  (data, ...info) {
     if (instance._ssrHasDynamicThis === true) {
         instance.d = SanSSRData.createDataProxy(instance);
     }
-    ctx.dataBeforeInit = _.cloneDeep(ctx.data);
+    let dataStr = ""
+    if (!noDataOutput && !renderOnly) {
+        let sData = info.renderOnly ? ctx.data : info.rootOutputData || ctx.data
+        if (info.outputData) {
+            sData = typeof (info.outputData) === "function" ? info.outputData(sData) : info.outputData;
+        }
+        dataStr = JSON.stringify(sData).replace(/(?<=-)-/g, "\\-");
+    }
     try {
         instance.inited();
     }
@@ -640,13 +634,9 @@ sanSSRResolver.setRenderer("MyComponent", function  (data, ...info) {
         html += attrs.join(" ");
     }
     html += ">";
-    if (!noDataOutput && !renderOnly) {
-        let sData = info.renderOnly ? ctx.dataBeforeInit : info.rootOutputData || _.getRootCtx(ctx).dataBeforeInit
-        if (info.outputData) {
-            sData = typeof (info.outputData) === "function" ? info.outputData(sData) : info.outputData;
-        }
+    if (dataStr) {
         html += "<!--s-data:";
-        html += JSON.stringify(sData).replace(/(?<=-)-/g, "\\-");
+        html += dataStr;
         html += "-->";
     }
     html += _output(ctx.data.myName, true);
@@ -699,7 +689,14 @@ sanSSRResolver.setRenderer("MyComponent2", function  (data, ...info) {
     if (instance._ssrHasDynamicThis === true) {
         instance.d = SanSSRData.createDataProxy(instance);
     }
-    ctx.dataBeforeInit = _.cloneDeep(ctx.data);
+    let dataStr = ""
+    if (!noDataOutput && !renderOnly) {
+        let sData = info.renderOnly ? ctx.data : info.rootOutputData || ctx.data
+        if (info.outputData) {
+            sData = typeof (info.outputData) === "function" ? info.outputData(sData) : info.outputData;
+        }
+        dataStr = JSON.stringify(sData).replace(/(?<=-)-/g, "\\-");
+    }
     try {
         instance.inited();
     }
@@ -718,17 +715,316 @@ sanSSRResolver.setRenderer("MyComponent2", function  (data, ...info) {
         html += attrs.join(" ");
     }
     html += ">";
-    if (!noDataOutput && !renderOnly) {
-        let sData = info.renderOnly ? ctx.dataBeforeInit : info.rootOutputData || _.getRootCtx(ctx).dataBeforeInit
-        if (info.outputData) {
-            sData = typeof (info.outputData) === "function" ? info.outputData(sData) : info.outputData;
-        }
+    if (dataStr) {
         html += "<!--s-data:";
-        html += JSON.stringify(sData).replace(/(?<=-)-/g, "\\-");
+        html += dataStr;
         html += "-->";
     }
     html += _output(ctx.data.name, true);
     html += "</h4>";
+    return html;
+});
+sanSSRResolver.setRenderer("SubChild", function  (data, ...info) {
+    if (info.length === 1) {
+        info = info[0] || {};
+    }
+    else {
+        info = {noDataOutput: info[1], parentCtx: info[2], tagName: info[3], slots: info[4]};
+    }
+    let noDataOutput = info.noDataOutput == null ? false : info.noDataOutput
+    let parentCtx = info.parentCtx == null ? null : info.parentCtx
+    let tagName = info.tagName == null ? "div" : info.tagName
+    let slots = info.slots == null ? {} : info.slots
+    let attrs = info.attrs == null ? [] : info.attrs
+    let inheritAttrs = true
+    let autoFillStyleAndId = true
+    if (inheritAttrs === false) {
+        attrs.length = 0;
+    }
+    if (autoFillStyleAndId === false) {
+        data.id = "";
+        data.style = "";
+        data.class = "";
+    }
+    if (typeof (info.renderOnly) === "object") {
+        attrs.push("data-sanssr-cmpt=\"" + (info.renderOnly.cmpt.join("/") + ("\"")));
+    }
+    const _ = sanSSRHelpers._;
+    let _attrFilter = _.attrFilter
+    let _escapeHTML = _.escapeHTML
+    let _classFilter = _.classFilter
+    let _styleFilter = _.styleFilter
+    let _iterate = _.iterate
+    let _output = _.output
+    const SanSSRData = sanSSRHelpers.SanSSRData;
+    let instance = _.createFromPrototype(sanSSRResolver.getPrototype("SubChild"));
+    instance.data = new SanSSRData(data, instance);
+    instance.sourceSlots = _.mergeChildSlots(slots);
+    instance.lifeCycle = {compiled: true, inited: false};
+    if (parentCtx) {
+        instance.parentComponent = parentCtx.instance;
+    }
+    let refs = {}
+    let ctx = {instance, slots, data, parentCtx, refs, context: parentCtx && parentCtx.context}
+    if (instance._ssrHasDynamicThis === true) {
+        instance.d = SanSSRData.createDataProxy(instance);
+    }
+    let dataStr = ""
+    if (!noDataOutput) {
+        let sData = info.renderOnly ? ctx.data : info.rootOutputData || ctx.data
+        if (info.outputData) {
+            sData = typeof (info.outputData) === "function" ? info.outputData(sData) : info.outputData;
+        }
+        dataStr = JSON.stringify(sData).replace(/(?<=-)-/g, "\\-");
+    }
+    instance.lifeCycle.inited = true;
+    let html = ""
+    parentCtx = ctx;
+    html += "<i";
+    html += _attrFilter("class", _escapeHTML(_classFilter(_.xclassFilter(ctx.data.class))), false);
+    html += _attrFilter("style", _escapeHTML(_styleFilter(_.xstyleFilter(ctx.data.style))), false);
+    html += _attrFilter("id", _escapeHTML(ctx.data.id), false);
+    if (attrs && attrs.length) {
+        html += " ";
+        html += attrs.join(" ");
+    }
+    html += ">";
+    if (dataStr) {
+        html += "<!--s-data:";
+        html += dataStr;
+        html += "-->";
+    }
+    html += _output(ctx.data.text, true);
+    html += "</i>";
+    return html;
+});
+sanSSRResolver.setRenderer("Child", function  (data, ...info) {
+    if (info.length === 1) {
+        info = info[0] || {};
+    }
+    else {
+        info = {noDataOutput: info[1], parentCtx: info[2], tagName: info[3], slots: info[4]};
+    }
+    let noDataOutput = info.noDataOutput == null ? false : info.noDataOutput
+    let parentCtx = info.parentCtx == null ? null : info.parentCtx
+    let tagName = info.tagName == null ? "div" : info.tagName
+    let slots = info.slots == null ? {} : info.slots
+    let attrs = info.attrs == null ? [] : info.attrs
+    let inheritAttrs = true
+    let autoFillStyleAndId = true
+    if (inheritAttrs === false) {
+        attrs.length = 0;
+    }
+    if (autoFillStyleAndId === false) {
+        data.id = "";
+        data.style = "";
+        data.class = "";
+    }
+    let renderOnly = !!info.renderOnly
+    if (renderOnly && !info.isChild) {
+        attrs.push("data-sanssr=\"render-only\"");
+    }
+    const _ = sanSSRHelpers._;
+    let _attrFilter = _.attrFilter
+    let _escapeHTML = _.escapeHTML
+    let _classFilter = _.classFilter
+    let _styleFilter = _.styleFilter
+    let _iterate = _.iterate
+    let _output = _.output
+    const SanSSRData = sanSSRHelpers.SanSSRData;
+    let instance = _.createFromPrototype(sanSSRResolver.getPrototype("Child"));
+    instance.data = new SanSSRData(data, instance);
+    instance.sourceSlots = _.mergeChildSlots(slots);
+    instance.lifeCycle = {compiled: true, inited: false};
+    if (parentCtx) {
+        instance.parentComponent = parentCtx.instance;
+    }
+    let refs = {}
+    let ctx = {instance, slots, data, parentCtx, refs, context: parentCtx && parentCtx.context}
+    if (instance._ssrHasDynamicThis === true) {
+        instance.d = SanSSRData.createDataProxy(instance);
+    }
+    let dataStr = ""
+    if (!noDataOutput && !renderOnly) {
+        let sData = info.renderOnly ? ctx.data : info.rootOutputData || ctx.data
+        if (info.outputData) {
+            sData = typeof (info.outputData) === "function" ? info.outputData(sData) : info.outputData;
+        }
+        dataStr = JSON.stringify(sData).replace(/(?<=-)-/g, "\\-");
+    }
+    instance.lifeCycle.inited = true;
+    let html = ""
+    parentCtx = ctx;
+    html += "<p";
+    html += _attrFilter("class", _escapeHTML(_classFilter(_.xclassFilter(ctx.data.class))), false);
+    html += _attrFilter("style", _escapeHTML(_styleFilter(_.xstyleFilter(ctx.data.style))), false);
+    html += _attrFilter("id", _escapeHTML(ctx.data.id), false);
+    if (attrs && attrs.length) {
+        html += " ";
+        html += attrs.join(" ");
+    }
+    html += ">";
+    if (dataStr) {
+        html += "<!--s-data:";
+        html += dataStr;
+        html += "-->";
+    }
+    let childSlots = {}
+    html += sanSSRResolver.getRenderer({specifier: ".", id: "SubChild"}, "ui-sub", ctx.context)({"text": ctx.data.dt}, {noDataOutput: renderOnly ? false : true, parentCtx, tagName: "ui-sub", slots: childSlots, isChild: true, renderOnly: renderOnly ? typeof (info.renderOnly) === "object" ? {cmpt: [...info.renderOnly.cmpt, "ui-sub"]} : {cmpt: ["ui-sub"]} : false});
+    html += "</p>";
+    return html;
+});
+sanSSRResolver.setRenderer("ULabel", function  (data, ...info) {
+    if (info.length === 1) {
+        info = info[0] || {};
+    }
+    else {
+        info = {noDataOutput: info[1], parentCtx: info[2], tagName: info[3], slots: info[4]};
+    }
+    let noDataOutput = info.noDataOutput == null ? false : info.noDataOutput
+    let parentCtx = info.parentCtx == null ? null : info.parentCtx
+    let tagName = info.tagName == null ? "div" : info.tagName
+    let slots = info.slots == null ? {} : info.slots
+    let attrs = info.attrs == null ? [] : info.attrs
+    let inheritAttrs = true
+    let autoFillStyleAndId = true
+    if (inheritAttrs === false) {
+        attrs.length = 0;
+    }
+    if (autoFillStyleAndId === false) {
+        data.id = "";
+        data.style = "";
+        data.class = "";
+    }
+    if (typeof (info.renderOnly) === "object") {
+        attrs.push("data-sanssr-cmpt=\"" + (info.renderOnly.cmpt.join("/") + ("\"")));
+    }
+    const _ = sanSSRHelpers._;
+    let _attrFilter = _.attrFilter
+    let _escapeHTML = _.escapeHTML
+    let _classFilter = _.classFilter
+    let _styleFilter = _.styleFilter
+    let _iterate = _.iterate
+    let _output = _.output
+    const SanSSRData = sanSSRHelpers.SanSSRData;
+    let instance = _.createFromPrototype(sanSSRResolver.getPrototype("ULabel"));
+    instance.data = new SanSSRData(data, instance);
+    instance.sourceSlots = _.mergeChildSlots(slots);
+    instance.lifeCycle = {compiled: true, inited: false};
+    if (parentCtx) {
+        instance.parentComponent = parentCtx.instance;
+    }
+    let refs = {}
+    let ctx = {instance, slots, data, parentCtx, refs, context: parentCtx && parentCtx.context}
+    if (instance._ssrHasDynamicThis === true) {
+        instance.d = SanSSRData.createDataProxy(instance);
+    }
+    let dataStr = ""
+    if (!noDataOutput) {
+        let sData = info.renderOnly ? ctx.data : info.rootOutputData || ctx.data
+        if (info.outputData) {
+            sData = typeof (info.outputData) === "function" ? info.outputData(sData) : info.outputData;
+        }
+        dataStr = JSON.stringify(sData).replace(/(?<=-)-/g, "\\-");
+    }
+    instance.lifeCycle.inited = true;
+    let html = ""
+    parentCtx = ctx;
+    html += "<u";
+    html += _attrFilter("class", _escapeHTML(_classFilter(_.xclassFilter(ctx.data.class))), false);
+    html += _attrFilter("style", _escapeHTML(_styleFilter(_.xstyleFilter(ctx.data.style))), false);
+    html += _attrFilter("id", _escapeHTML(ctx.data.id), false);
+    if (attrs && attrs.length) {
+        html += " ";
+        html += attrs.join(" ");
+    }
+    html += ">";
+    if (dataStr) {
+        html += "<!--s-data:";
+        html += dataStr;
+        html += "-->";
+    }
+    html += _output(ctx.data.text, true);
+    html += "</u>";
+    return html;
+});
+sanSSRResolver.setRenderer("MyComponent3", function  (data, ...info) {
+    if (info.length === 1) {
+        info = info[0] || {};
+    }
+    else {
+        info = {noDataOutput: info[1], parentCtx: info[2], tagName: info[3], slots: info[4]};
+    }
+    let noDataOutput = info.noDataOutput == null ? false : info.noDataOutput
+    let parentCtx = info.parentCtx == null ? null : info.parentCtx
+    let tagName = info.tagName == null ? "div" : info.tagName
+    let slots = info.slots == null ? {} : info.slots
+    let attrs = info.attrs == null ? [] : info.attrs
+    let inheritAttrs = true
+    let autoFillStyleAndId = true
+    if (inheritAttrs === false) {
+        attrs.length = 0;
+    }
+    if (autoFillStyleAndId === false) {
+        data.id = "";
+        data.style = "";
+        data.class = "";
+    }
+    let renderOnly = info.renderOnly !== false
+    if (renderOnly && !info.isChild) {
+        attrs.push("data-sanssr=\"render-only\"");
+    }
+    const _ = sanSSRHelpers._;
+    let _attrFilter = _.attrFilter
+    let _escapeHTML = _.escapeHTML
+    let _classFilter = _.classFilter
+    let _styleFilter = _.styleFilter
+    let _iterate = _.iterate
+    let _output = _.output
+    const SanSSRData = sanSSRHelpers.SanSSRData;
+    let instance = _.createFromPrototype(sanSSRResolver.getPrototype("MyComponent3"));
+    instance.data = new SanSSRData(data, instance);
+    instance.sourceSlots = _.mergeChildSlots(slots);
+    instance.lifeCycle = {compiled: true, inited: false};
+    if (parentCtx) {
+        instance.parentComponent = parentCtx.instance;
+    }
+    let refs = {}
+    let ctx = {instance, slots, data, parentCtx, refs, context: parentCtx && parentCtx.context}
+    if (instance._ssrHasDynamicThis === true) {
+        instance.d = SanSSRData.createDataProxy(instance);
+    }
+    let dataStr = ""
+    if (!noDataOutput && !renderOnly) {
+        let sData = info.renderOnly ? ctx.data : info.rootOutputData || ctx.data
+        if (info.outputData) {
+            sData = typeof (info.outputData) === "function" ? info.outputData(sData) : info.outputData;
+        }
+        dataStr = JSON.stringify(sData).replace(/(?<=-)-/g, "\\-");
+    }
+    instance.lifeCycle.inited = true;
+    let html = ""
+    parentCtx = ctx;
+    html += "<div";
+    html += _attrFilter("class", _escapeHTML(_classFilter(_.xclassFilter(ctx.data.class))), false);
+    html += _attrFilter("style", _escapeHTML(_styleFilter(_.xstyleFilter(ctx.data.style))), false);
+    html += _attrFilter("id", _escapeHTML(ctx.data.id), false);
+    if (attrs && attrs.length) {
+        html += " ";
+        html += attrs.join(" ");
+    }
+    html += ">";
+    if (dataStr) {
+        html += "<!--s-data:";
+        html += dataStr;
+        html += "-->";
+    }
+    let childSlots = {}
+    html += sanSSRResolver.getRenderer({specifier: ".", id: "Child"}, "ui-c", ctx.context)({"dt": ctx.data.name}, {noDataOutput: renderOnly ? false : true, parentCtx, tagName: "ui-c", slots: childSlots, isChild: true, renderOnly: renderOnly ? typeof (info.renderOnly) === "object" ? {cmpt: [...info.renderOnly.cmpt, "ui-c"]} : {cmpt: ["ui-c"]} : false});
+    html += "<a>";
+    let childSlots1 = {}
+    html += sanSSRResolver.getRenderer({specifier: ".", id: "ULabel"}, "ui-u", ctx.context)({"text": ctx.data.email}, {noDataOutput: renderOnly ? false : true, parentCtx, tagName: "ui-u", slots: childSlots1, isChild: true, renderOnly: renderOnly ? typeof (info.renderOnly) === "object" ? {cmpt: [...info.renderOnly.cmpt, "ui-u"]} : {cmpt: ["ui-u"]} : false});
+    html += "</a></div>";
     return html;
 });
 sanSSRResolver.setRenderer("default", function  (data, ...info) {
@@ -777,7 +1073,14 @@ sanSSRResolver.setRenderer("default", function  (data, ...info) {
     if (instance._ssrHasDynamicThis === true) {
         instance.d = SanSSRData.createDataProxy(instance);
     }
-    ctx.dataBeforeInit = _.cloneDeep(ctx.data);
+    let dataStr = ""
+    if (!noDataOutput && !renderOnly) {
+        let sData = info.renderOnly ? ctx.data : info.rootOutputData || ctx.data
+        if (info.outputData) {
+            sData = typeof (info.outputData) === "function" ? info.outputData(sData) : info.outputData;
+        }
+        dataStr = JSON.stringify(sData).replace(/(?<=-)-/g, "\\-");
+    }
     data.name = _.callComputed(ctx, "name");
     instance.lifeCycle.inited = true;
     let html = ""
@@ -791,13 +1094,9 @@ sanSSRResolver.setRenderer("default", function  (data, ...info) {
         html += attrs.join(" ");
     }
     html += ">";
-    if (!noDataOutput && !renderOnly) {
-        let sData = info.renderOnly ? ctx.dataBeforeInit : info.rootOutputData || _.getRootCtx(ctx).dataBeforeInit
-        if (info.outputData) {
-            sData = typeof (info.outputData) === "function" ? info.outputData(sData) : info.outputData;
-        }
+    if (dataStr) {
         html += "<!--s-data:";
-        html += JSON.stringify(sData).replace(/(?<=-)-/g, "\\-");
+        html += dataStr;
         html += "-->";
     }
     html += "<h1>";

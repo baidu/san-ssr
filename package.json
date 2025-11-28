@@ -1,6 +1,6 @@
 {
   "name": "san-ssr",
-  "version": "3.14.4",
+  "version": "3.15.0",
   "description": "San server-side-render framework and utils",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -27,9 +27,9 @@
     "e2e": "jest test/e2e.spec.ts",
     "perf": "node ./test/perf/run.js cases",
     "check": "npm test && npm run lint",
-    "demo": "cd demo && node index.js",
-    "test": "jest",
-    "coverage": "jest --coverage",
+    "demo": "npm run build && cd demo && node index.js",
+    "test": "npm run build && jest",
+    "coverage": "npm run build && jest --coverage",
     "semantic-release": "semantic-release",
     "esbuild": "esbuild `find src -name '*.ts'` --sourcemap --platform=node --target=node10 --format=cjs --outdir=dist"
   },

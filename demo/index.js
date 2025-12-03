@@ -15,6 +15,21 @@ const project = new SanProject()
     assert.strictEqual(html, '<div><!--s-data:{"firstName":"John","lastName":"Smith","list":[]}--><h1>John Smith</h1><h3>John Smith - MyComponent-Inited</h3><h4>MyComponent2</h4></div>')
     console.log(html)
 }
+// 兼容旧版 san 代码
+{
+    console.log('---- ComponentClass to Renderer ------')
+    const render = project.compileToRenderer(require('./render-from-js.js'))
+    const html = render(data, true)
+    assert.strictEqual(html, '<div><h1>John Smith</h1><h3>John Smith - MyComponent-Inited</h3><h4>MyComponent2</h4></div>')
+    console.log(html)
+}
+{
+    console.log('---- ComponentClass to Renderer ------')
+    const render = project.compileToRenderer(require('./render-from-js.js'))
+    const html = render(data, false)
+    assert.strictEqual(html, '<div><!--s-data:{"firstName":"John","lastName":"Smith","list":[],"name":"John Smith"}--><h1>John Smith</h1><h3>John Smith - MyComponent-Inited</h3><h4>MyComponent2</h4></div>')
+    console.log(html)
+}
 // compile javascript component to source
 {
     console.log('---- .js to Source Code ---')

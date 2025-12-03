@@ -507,11 +507,11 @@ sanSSRResolver.setPrototype("default", sanSSRHelpers._.createInstanceFromClass(d
   }
 })));
 sanSSRResolver.setRenderer("default", function  (data, ...info) {
-    if (info.length === 1) {
+    if (info[0] && typeof (info[0]) === "object") {
         info = info[0] || {};
     }
     else {
-        info = {noDataOutput: info[1], parentCtx: info[2], tagName: info[3], slots: info[4]};
+        info = {noDataOutput: info[0], parentCtx: info[1], tagName: info[2], slots: info[3]};
     }
     let noDataOutput = info.noDataOutput == null ? false : info.noDataOutput
     let parentCtx = info.parentCtx == null ? null : info.parentCtx

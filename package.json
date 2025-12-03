@@ -78,9 +78,7 @@
     "san-ssr-target-fake-esm": "^1.0.0",
     "source-map-support": "^0.5.19",
     "swig-templates": "^2.0.3",
-    "terser": "^5.43.1"
-  },
-  "optionalDependencies": {
+    "terser": "^5.43.1",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/commit-analyzer": "^9.0.2",
     "@semantic-release/git": "^10.0.1",

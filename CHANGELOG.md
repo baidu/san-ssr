@@ -1,3 +1,10 @@
+## [3.15.1](https://github.com/baidu/san-ssr/compare/nv3.15.0...nv3.15.1) (2025-12-04)
+
+
+### Bug Fixes
+
+* support for old version of ssr render params ([#187](https://github.com/baidu/san-ssr/issues/187)) ([6a94022](https://github.com/baidu/san-ssr/commit/6a94022b59b6156f133a7646a80ada0d675ba37b))
+
 # [3.15.0](https://github.com/baidu/san-ssr/compare/nv3.14.3...nv3.15.0) (2025-11-28)
 
 

@@ -77,9 +77,13 @@ export class RendererCompiler {
         // 兼容多参数的情况
         body.push(new If(
             new BinaryExpression(
-                BINARY(I('info'), '.', I('length')),
-                '===',
-                L(1)
+                BINARY(I('info'), '[]', L(0)),
+                '&&',
+                new BinaryExpression(
+                    new Typeof(BINARY(I('info'), '[]', L(0))),
+                    '===',
+                    L('object')
+                )
             ),
             [ASSIGN(I('info'), BINARY(
                 BINARY(I('info'), '[]', L(0)),
@@ -89,10 +93,10 @@ export class RendererCompiler {
         ))
         body.push(new Else([
             ASSIGN(I('info'), new MapLiteral([
-                [I('noDataOutput'), BINARY(I('info'), '[]', L(1))],
-                [I('parentCtx'), BINARY(I('info'), '[]', L(2))],
-                [I('tagName'), BINARY(I('info'), '[]', L(3))],
-                [I('slots'), BINARY(I('info'), '[]', L(4))]
+                [I('noDataOutput'), BINARY(I('info'), '[]', L(0))],
+                [I('parentCtx'), BINARY(I('info'), '[]', L(1))],
+                [I('tagName'), BINARY(I('info'), '[]', L(2))],
+                [I('slots'), BINARY(I('info'), '[]', L(3))]
             ]))
         ]))
 
@@ -328,7 +332,7 @@ export class RendererCompiler {
         return body
     }
 
-    private compileDataStringify(info: ComponentInfo) {
+    private compileDataStringify (info: ComponentInfo) {
         const body = []
         body.push(DEF('dataStr', L('')))
 
@@ -351,7 +355,7 @@ export class RendererCompiler {
             const outputDataExpr = BINARY(I('info'), '.', I('outputData'))
             body.push(
                 new If(
-                    dataOutputCondition, 
+                    dataOutputCondition,
                     [
                         new VariableDefinition('sData', dataExpr),
                         new If(outputDataExpr, [
@@ -373,7 +377,7 @@ export class RendererCompiler {
             )
         }
 
-        return body;
+        return body
     }
 
     private compileGenInstance (info: ComponentInfo) {

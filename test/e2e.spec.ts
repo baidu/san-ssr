@@ -29,10 +29,10 @@ caseRoots.forEach(caseRoot => {
 })
 
 // npm run e2e xxx
-const caseName = process.argv[3]
-const cases = caseName ? ls().filter(item => item.caseName === caseName) : ls()
+const e2eCaseName = process.argv[3]
+const cases = e2eCaseName ? ls().filter(item => item.caseName === e2eCaseName) : ls()
 if (cases.length === 0) {
-    console.warn(`no case found for ${caseName}`)
+    console.warn(`no case found for ${e2eCaseName}`)
 }
 
 for (const { caseName, caseRoot } of cases) {
@@ -89,7 +89,11 @@ for (const { caseName, caseRoot } of cases) {
                 ssrSpec.afterHook && ssrSpec.afterHook('jssrc')
 
                 // render
-                const render = require(join(caseRoot, caseName, 'output', folderName, 'ssr.js')) as Renderer
+                const renderPath = join(caseRoot, caseName, 'output', folderName, 'ssr.js')
+                if (e2eCaseName) {
+                    console.debug('renderPath:', renderPath)
+                }
+                const render = require(renderPath) as Renderer
                 // 测试在 strict mode，因此需要手动传入 require
                 const got = render(
                     ...getRenderArguments(caseName, caseRoot, ssrSpec.info || {})

@@ -93,10 +93,10 @@ export function getANodeExprCalls (root: ANode): {calls: string[], filterCalls: 
     }
     const traverseNode = (node: ANode) => {
         if (isElementNode(node)) {
-            ['if', 'is', 'elif', 'for', 'show', 'bind'].forEach(dirName => {
-                const dir = node.directives[dirName as keyof typeof node.directives]
-                if (dir) {
-                    traverseExpr(dir.value as Expr)
+            ['if', 'is', 'elif', 'for', 'show', 'bind', 'html'].forEach(dirName => {
+                const directive = node.directives[dirName as keyof typeof node.directives]
+                if (directive) {
+                    traverseExpr(directive.value as Expr)
                 }
             })
             if (isAIfNode(node)) {
@@ -108,13 +108,12 @@ export function getANodeExprCalls (root: ANode): {calls: string[], filterCalls: 
                 traverseExpr(v.expr)
             })
             node.props?.forEach(p => {
-                // event handler 不处理
                 traverseExpr(p.expr)
             });
             (node as AElement).attrs?.forEach(p => {
-                // event handler 不处理
                 traverseExpr(p.expr)
             })
+            // event handler 不处理
             node.children.forEach(traverseNode)
         } else if (isTextNode(node)) {
             traverseExpr(node.textExpr)

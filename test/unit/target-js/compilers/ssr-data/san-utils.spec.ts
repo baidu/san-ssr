@@ -35,6 +35,9 @@ describe('target-js/compilers/ssr-data/san-utils', () => {
                 <div>{{[abc]()}}</div>
                 <div attr-data-click="{{getLinkData(colIndex, index, list, item.clickLog)}}"></div>
                 <div data-click="{{clickData(colIndex, index, list, item.clickLog)}}"></div>
+                <div s-html="{{fnHTML(data)}}"></div>
+                <div s-transition="trans"></div>
+                <div s-ref="{{ref}}"></div>
             </div>`))
             expect(result).toEqual({
                 calls: [
@@ -42,7 +45,8 @@ describe('target-js/compilers/ssr-data/san-utils', () => {
                     'text1', 'text2', 'text3', 'text4', 'text5',
                     'text6', 'text7', 'text8', 'text9', 'text10',
                     'if1', 'if2', 'if3', 'elif1', 'show1', 'is1', 'bindKeyFn',
-                    'callchain', 'callchain2', 'getLinkData', 'clickData'
+                    'callchain', 'callchain2', 'getLinkData', 'clickData',
+                    'fnHTML'
                 ],
                 filterCalls: ['upperFn', 'filter2', '_class']
             })

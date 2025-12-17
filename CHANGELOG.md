@@ -1,3 +1,11 @@
+## 3.15.2 (2025-12-17)
+
+### Bug Fixes
+
+* fix s-html function call detection
+* fix attr-props function call detection
+
+
 ## [3.15.1](https://github.com/baidu/san-ssr/compare/nv3.15.0...nv3.15.1) (2025-12-04)
 
 

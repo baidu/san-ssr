@@ -66,5 +66,10 @@ module.exports = san.defineComponent({
             return `${f} ${l}`
         }
     },
-    template: '<div><h1>{{name}}</h1><MyComponent name="{{name}}"/><MyComponent2/></div>'
+
+    getLog (name) {
+        return `log-${name}`
+    },
+
+    template: '<div><h1>{{name}}</h1><MyComponent name="{{name}}"/><MyComponent2  attr-log="{{getLog(1)}}"/></div>'
 })

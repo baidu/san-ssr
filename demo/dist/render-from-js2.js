@@ -405,7 +405,7 @@ const sanSSRHelpers = (function (exports) {
     
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.createResolver = void 0;
+    exports.createResolver = createResolver;
     function createResolver(exports, require) {
         const renderCache = {};
         return {
@@ -489,7 +489,6 @@ const sanSSRHelpers = (function (exports) {
             prototypes: {}
         };
     }
-    exports.createResolver = createResolver;
     //# sourceMappingURL=resolver.js.map
     
     return exports;

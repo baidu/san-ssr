@@ -405,7 +405,7 @@ const sanSSRHelpers = (function (exports) {
     
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.createResolver = void 0;
+    exports.createResolver = createResolver;
     function createResolver(exports, require) {
         const renderCache = {};
         return {
@@ -489,7 +489,6 @@ const sanSSRHelpers = (function (exports) {
             prototypes: {}
         };
     }
-    exports.createResolver = createResolver;
     //# sourceMappingURL=resolver.js.map
     
     return exports;
@@ -546,6 +545,9 @@ sanSSRResolver.setPrototype("default", sanSSRHelpers._.createInstanceFromClass(s
       const l = this.data.raw.lastName;
       return `${f} ${l}`;
     }
+  },
+  getLog(name) {
+    return `log-${name}`;
   }
 })));
 sanSSRResolver.setRenderer("MyComponent", function  (data, ...info) {
@@ -1105,7 +1107,17 @@ sanSSRResolver.setRenderer("default", function  (data, ...info) {
     let childSlots = {}
     html += sanSSRResolver.getRenderer({specifier: ".", id: "MyComponent"}, "MyComponent", ctx.context)({"name": ctx.data.name}, {noDataOutput: renderOnly ? false : true, parentCtx, tagName: "MyComponent", slots: childSlots, isChild: true, renderOnly: renderOnly ? typeof (info.renderOnly) === "object" ? {cmpt: [...info.renderOnly.cmpt, "MyComponent"]} : {cmpt: ["MyComponent"]} : false});
     let childSlots1 = {}
-    html += sanSSRResolver.getRenderer({specifier: ".", id: "MyComponent2"}, "MyComponent2", ctx.context)({}, {noDataOutput: renderOnly ? false : true, parentCtx, tagName: "MyComponent2", slots: childSlots1, isChild: true, renderOnly: renderOnly ? typeof (info.renderOnly) === "object" ? {cmpt: [...info.renderOnly.cmpt, "MyComponent2"]} : {cmpt: ["MyComponent2"]} : false});
+    let selfAttrs = ["log=\"" + (_escapeHTML(ctx.instance.getLog(1))) + ("\"")]
+    let attrListMap = {"log": 1}
+    let filteredParentAttrs = []
+    for (let [key, val] of _.iterate(attrs)) {
+        if (attrListMap[val.split("=")[0]]) {
+            continue;
+        }
+        filteredParentAttrs.push(val);
+    }
+    let joinAttr1 = selfAttrs.concat(filteredParentAttrs)
+    html += sanSSRResolver.getRenderer({specifier: ".", id: "MyComponent2"}, "MyComponent2", ctx.context)({"$attrs": {"log": ctx.instance.getLog(1)}}, {noDataOutput: renderOnly ? false : true, parentCtx, tagName: "MyComponent2", slots: childSlots1, isChild: true, attrs: joinAttr1, renderOnly: renderOnly ? typeof (info.renderOnly) === "object" ? {cmpt: [...info.renderOnly.cmpt, "MyComponent2"]} : {cmpt: ["MyComponent2"]} : false});
     html += "</div>";
     return html;
 });

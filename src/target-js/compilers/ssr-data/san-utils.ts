@@ -110,6 +110,10 @@ export function getANodeExprCalls (root: ANode): {calls: string[], filterCalls: 
             node.props?.forEach(p => {
                 // event handler 不处理
                 traverseExpr(p.expr)
+            });
+            (node as AElement).attrs?.forEach(p => {
+                // event handler 不处理
+                traverseExpr(p.expr)
             })
             node.children.forEach(traverseNode)
         } else if (isTextNode(node)) {

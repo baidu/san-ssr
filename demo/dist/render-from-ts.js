@@ -405,7 +405,7 @@ const sanSSRHelpers = (function (exports) {
     
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.createResolver = void 0;
+    exports.createResolver = createResolver;
     function createResolver(exports, require) {
         const renderCache = {};
         return {
@@ -489,7 +489,6 @@ const sanSSRHelpers = (function (exports) {
             prototypes: {}
         };
     }
-    exports.createResolver = createResolver;
     //# sourceMappingURL=resolver.js.map
     
     return exports;
@@ -522,7 +521,6 @@ class MyComponent extends san_1.Component {
   }
   _ssrHasDynamicThis = true;
 }
-exports.default = MyComponent;
 MyComponent.computed = {
   name() {
     const f = this.data.raw.firstName;
@@ -532,7 +530,8 @@ MyComponent.computed = {
   computedValue() {
     return 1;
   }
-}
+};
+exports.default = MyComponent
 sanSSRResolver.setPrototype("default", sanSSRHelpers._.createInstanceFromClass(MyComponent));
 sanSSRResolver.setRenderer("default", function  (data, ...info) {
     if (info[0] && typeof (info[0]) === "object") {
